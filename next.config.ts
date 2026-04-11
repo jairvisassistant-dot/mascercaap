@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Evita que Turbopack/webpack intente bundlear Sanity Studio internamente.
+  // Sin esto, React.createContext falla durante el build del /studio route.
+  serverExternalPackages: ["sanity", "@sanity/ui", "@sanity/icons"],
   images: {
     remotePatterns: [
       {
