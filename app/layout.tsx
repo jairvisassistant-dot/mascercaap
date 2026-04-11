@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -63,6 +64,10 @@ export default function RootLayout({
           <Footer />
           <WhatsAppButton />
         </div>
+      {/* Google Analytics 4 — solo se carga si NEXT_PUBLIC_GA_ID está configurado */}
+      {process.env.NEXT_PUBLIC_GA_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+      )}
       </body>
     </html>
   );

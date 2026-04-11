@@ -19,6 +19,10 @@ export type Product = {
   description: string;
   ingredients?: string[];
   benefits?: string[];
+  // Campos de estado — gestionados desde Sanity Studio
+  isSoldOut?: boolean;
+  isBestSeller?: boolean;
+  featured?: boolean;
 };
 
 export type ProductLineConfig = {
