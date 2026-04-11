@@ -52,6 +52,7 @@ function FlipCard({ value, label }: { value: number; label: string }) {
 }
 
 export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
+  const [mounted, setMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     hours: 0,
     minutes: 0,
@@ -59,6 +60,7 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
   });
 
   useEffect(() => {
+    setMounted(true);
     setTimeLeft(calculateTimeLeft(targetDate));
 
     const timer = setInterval(() => {
@@ -67,6 +69,20 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
 
     return () => clearInterval(timer);
   }, [targetDate]);
+
+  // Skeleton durante hydration — evita el flash de 00:00:00 (UX-03)
+  if (!mounted) {
+    return (
+      <div className="flex gap-4 justify-center">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div className="bg-white/20 rounded-lg w-16 h-20 animate-pulse" />
+            <div className="bg-white/20 rounded h-3 w-12 animate-pulse" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-4 justify-center">

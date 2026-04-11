@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SITE_CONFIG } from "@/lib/config";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,8 +29,8 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Mas Cerca Ap",
-  url: "https://mascercap.com",
-  logo: "https://mascercap.com/logo.png",
+  url: SITE_CONFIG.siteUrl,
+  logo: `${SITE_CONFIG.siteUrl}/logo.png`,
   description: "Productores de jugos y cítricos 100% naturales en Bogotá, Colombia.",
   address: {
     "@type": "PostalAddress",
@@ -38,7 +39,7 @@ const jsonLd = {
   },
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+57-300-123-4567",
+    telephone: SITE_CONFIG.phoneTel,
     contactType: "customer service",
     availableLanguage: "Spanish",
   },

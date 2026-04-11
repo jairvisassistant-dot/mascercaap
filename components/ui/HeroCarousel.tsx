@@ -53,6 +53,13 @@ export default function HeroCarousel() {
     return () => clearInterval(interval);
   }, [isAutoPlaying]);
 
+  // Limpia el timeout de reanudación al desmontar el componente (BUG-01)
+  useEffect(() => {
+    return () => {
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    };
+  }, []);
+
   // Cancela el timer anterior antes de crear uno nuevo — evita múltiples timers en vuelo
   const pauseAndResume = () => {
     setIsAutoPlaying(false);
@@ -92,6 +99,7 @@ export default function HeroCarousel() {
             src={slides[currentSlide].image}
             alt={slides[currentSlide].title}
             fill
+            sizes="100vw"
             className="object-cover"
             priority={currentSlide === 0}
           />

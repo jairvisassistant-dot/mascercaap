@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { SITE_CONFIG } from "@/lib/config";
 
-const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573001234567";
 const defaultMessage = encodeURIComponent("Hola! Quiero información sobre sus productos.");
 
 export default function WhatsAppButton() {
@@ -14,7 +14,7 @@ export default function WhatsAppButton() {
       className="fixed bottom-6 right-6 z-50"
     >
       <motion.a
-        href={`https://wa.me/${whatsappNumber}?text=${defaultMessage}`}
+        href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${defaultMessage}`}
         target="_blank"
         rel="noopener noreferrer"
         animate={{ scale: [1, 1.1, 1] }}

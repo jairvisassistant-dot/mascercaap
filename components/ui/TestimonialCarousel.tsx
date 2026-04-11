@@ -12,12 +12,15 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (testimonials.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 6000);
 
     return () => clearInterval(interval);
   }, [testimonials.length]);
+
+  if (testimonials.length === 0) return null;
 
   return (
     <div className="relative max-w-3xl mx-auto px-4">
