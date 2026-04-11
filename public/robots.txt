@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mascercap.com/sitemap.xml
+
+# Disallow API routes
+Disallow: /api/
