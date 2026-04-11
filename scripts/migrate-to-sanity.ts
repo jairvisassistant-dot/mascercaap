@@ -15,6 +15,7 @@
  */
 
 import { createClient } from "@sanity/client";
+import { LexoRank } from "lexorank";
 import * as fs from "fs";
 import * as path from "path";
 import * as dotenv from "dotenv";
@@ -103,8 +104,14 @@ async function migrate() {
   let successCount = 0;
   let errorCount = 0;
 
+  // Genera ranks LexoRank secuenciales — el mismo algoritmo que usa el botón
+  // "Reset Order" del plugin @sanity/orderable-document-list.
+  let currentRank = LexoRank.min();
+
   for (const [index, product] of products.entries()) {
     console.log(`[${index + 1}/${products.length}] Migrando: ${product.id}`);
+    // Avanza dos pasos (igual que resetOrder) para dejar espacio antes del primer item
+    currentRank = currentRank.genNext().genNext();
 
     let imageRef: object | undefined;
 
@@ -143,6 +150,9 @@ async function migrate() {
         isSoldOut: false,
         isBestSeller: false,
         featured: isFeaturedCandidate,
+        // Campo requerido por @sanity/orderable-document-list.
+        // Sin esto el Studio muestra "X documents have no order".
+        orderRank: currentRank.toString(),
       });
 
       console.log(`   ✅ Creado en Sanity`);

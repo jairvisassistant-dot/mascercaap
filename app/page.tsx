@@ -8,24 +8,23 @@ import { featuredProducts as staticFeaturedProducts } from "@/data/products";
 import { client } from "@/sanity/lib/client";
 import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import Link from "next/link";
+import { SITE_CONFIG } from "@/lib/config";
 
 // Revalida la página cada 60 segundos (ISR)
 // Los cambios en Sanity Studio aparecen en el sitio en máximo 60s
 export const revalidate = 60;
 
-const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "573001234567";
-const whatsappCta = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hola! Quiero hacer un pedido")}`;
+const whatsappCta = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent("Hola! Quiero hacer un pedido")}`;
 
 export default async function HomePage() {
-  // Fetchea de Sanity en paralelo; si falla, cae al fallback estático
-  const [featuredProducts, testimonials] = await Promise.all([
-    client
-      .fetch(FEATURED_PRODUCTS_QUERY)
-      .catch(() => staticFeaturedProducts),
-    client
-      .fetch(ALL_TESTIMONIALS_QUERY)
-      .catch(() => staticTestimonials),
+  // Fetchea de Sanity en paralelo; si falla o devuelve vacío, cae al fallback estático
+  const [sanityProducts, sanityTestimonials] = await Promise.all([
+    client.fetch(FEATURED_PRODUCTS_QUERY).catch(() => []),
+    client.fetch(ALL_TESTIMONIALS_QUERY).catch(() => []),
   ]);
+
+  const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;
+  const testimonials = sanityTestimonials.length > 0 ? sanityTestimonials : staticTestimonials;
 
   return (
     <>
