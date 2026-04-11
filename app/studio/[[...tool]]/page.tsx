@@ -1,8 +1,14 @@
-import { NextStudio } from "next-sanity/studio";
+"use client";
+
+import dynamic from "next/dynamic";
 import config from "@/sanity.config";
 
-// Fuerza renderizado dinámico — el Studio no puede ser estático
-export const dynamic = "force-dynamic";
+// Carga el Studio solo en el cliente — nunca en SSR.
+// Turbopack no puede bundlear Sanity Studio durante el build del servidor.
+const NextStudio = dynamic(
+  () => import("next-sanity/studio").then((mod) => mod.NextStudio),
+  { ssr: false, loading: () => <div className="flex items-center justify-center h-screen text-gray-500">Cargando Studio...</div> }
+);
 
 export default function StudioPage() {
   return <NextStudio config={config} />;
