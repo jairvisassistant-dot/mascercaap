@@ -47,9 +47,9 @@ const flipCards = [
   {
     src: "/imgs/Naranja-Frio.webp",
     alt: "Proceso artesanal de exprimido en frío de naranja",
-    icon: "🧊",
-    title: "Frío por convicción",
-    body: "Exprimimos en frío para que las vitaminas lleguen intactas a tu mesa. La temperatura no es un detalle técnico — es nuestro compromiso con tu salud.",
+    icon: "🧃",
+    title: "Artesanal por convicción",
+    body: "No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sentís en el sabor.",
   },
   {
     src: "/imgs/Naranja-Frescuras.webp",
