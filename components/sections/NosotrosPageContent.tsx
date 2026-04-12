@@ -87,7 +87,7 @@ export default function NosotrosPageContent() {
             >
               <div className="relative h-80 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/imgs/QuieneSomos.png"
+                  src="/imgs/QuieneSomos.webp"
                   alt="Quiénes somos — Más Cerca AP"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
