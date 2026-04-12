@@ -38,18 +38,18 @@ const flipCards = [
     body: "Sin intermediarios. El campesino colombiano merece un precio justo y vos merecés saber exactamente de dónde viene lo que tomás.",
   },
   {
-    src: "/imgs/Naranja-Frio.webp",
-    alt: "Proceso artesanal de exprimido en frío de naranja",
-    icon: "🧊",
-    title: "Frío por convicción",
-    body: "Exprimimos en frío para que las vitaminas lleguen intactas a tu mesa. La temperatura no es un detalle técnico — es nuestro compromiso con tu salud.",
-  },
-  {
     src: "/imgs/Naranja-Tiene-Juez.webp",
     alt: "Control de calidad — cada naranja es inspeccionada a mano",
     icon: "🔍",
     title: "Cada fruta tiene un juez",
     body: "Antes de entrar a producción, cada fruta pasa por manos que saben lo que buscan. Si no cumple, no entra. Así de simple, así de honesto.",
+  },
+  {
+    src: "/imgs/Naranja-Frio.webp",
+    alt: "Proceso artesanal de exprimido en frío de naranja",
+    icon: "🧊",
+    title: "Frío por convicción",
+    body: "Exprimimos en frío para que las vitaminas lleguen intactas a tu mesa. La temperatura no es un detalle técnico — es nuestro compromiso con tu salud.",
   },
   {
     src: "/imgs/Naranja-Frescuras.webp",
