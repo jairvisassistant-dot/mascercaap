@@ -1,4 +1,5 @@
 import HeroCarousel from "@/components/ui/HeroCarousel";
+import ProductCategories from "@/components/sections/ProductCategories";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
@@ -30,6 +31,9 @@ export default async function HomePage() {
     <>
       {/* Hero Carousel */}
       <HeroCarousel />
+
+      {/* Product Categories */}
+      <ProductCategories />
 
       {/* Featured Products */}
       <FeaturedProducts products={featuredProducts} />

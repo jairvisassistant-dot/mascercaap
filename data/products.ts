@@ -286,11 +286,11 @@ export const products: Product[] = [
     id: "kumiss-coming",
     name: "Kumiss",
     line: "kumiss",
-    presentation: "Próximamente",
+    presentation: "1L",
     presentationOrder: 1,
-    image: "",
+    image: "/imgs/KumisAP.webp",
     description: "Bebida láctea fermentada de tradición colombiana, elaborada con leche fresca de campo.",
   },
 ];
 
-export const featuredProducts = products.filter((p) => p.image !== "").slice(0, 6);
+export const featuredProducts = products.filter((p) => p.image !== "").slice(0, 3);

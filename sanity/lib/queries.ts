@@ -19,7 +19,7 @@ export const ALL_PRODUCTS_QUERY = defineQuery(`
 `);
 
 export const FEATURED_PRODUCTS_QUERY = defineQuery(`
-  *[_type == "product" && featured == true] | order(orderRank) {
+  *[_type == "product" && featured == true] | order(orderRank) [0...3] {
     "id": id.current,
     name,
     line,

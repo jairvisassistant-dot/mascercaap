@@ -6,13 +6,25 @@ import Link from "next/link";
 import ProductLineRow from "@/components/ui/ProductLineRow";
 import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
 
+const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
+  jugos: ["limon", "limonada-cereza", "limonada-coco", "maracuya"],
+  pulpas: ["pulpas"],
+  lacteos: ["kumiss"],
+};
+
 interface ProductosClientProps {
   products: Product[];
   productLines: ProductLineConfig[];
+  initialCategory?: string;
 }
 
-export default function ProductosClient({ products, productLines }: ProductosClientProps) {
-  const [activeLines, setActiveLines] = useState<Set<ProductLineKey>>(new Set());
+export default function ProductosClient({ products, productLines, initialCategory }: ProductosClientProps) {
+  const [activeLines, setActiveLines] = useState<Set<ProductLineKey>>(() => {
+    if (initialCategory && CATEGORY_LINES[initialCategory]) {
+      return new Set(CATEGORY_LINES[initialCategory]);
+    }
+    return new Set();
+  });
   const [activeSize, setActiveSize] = useState<string>("todos");
   const [isSticky, setIsSticky] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
