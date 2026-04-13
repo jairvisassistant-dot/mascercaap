@@ -72,7 +72,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-primary p-2"
-              aria-label="Toggle menu"
+              aria-label="Abrir o cerrar menú"
             >
               <svg
                 className="w-6 h-6"

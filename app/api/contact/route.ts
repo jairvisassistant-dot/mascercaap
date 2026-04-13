@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { contactSchema } from "@/lib/schemas/contact";
+import { contactSchema, type ContactFormData } from "@/lib/schemas/contact";
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 // TODO [SEC-03]: Este endpoint no tiene rate limiting. Riesgo: spam de emails
@@ -28,7 +28,7 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
-function buildEmailHtml(data: z.infer<typeof contactSchema>): string {
+function buildEmailHtml(data: ContactFormData): string {
   // Escapar todos los datos de usuario antes de interpolar en HTML
   const nombre   = escapeHtml(data.nombre);
   const empresa  = data.empresa ? escapeHtml(data.empresa) : null;

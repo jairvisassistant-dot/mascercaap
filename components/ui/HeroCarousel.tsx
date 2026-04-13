@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/config";
 
@@ -207,6 +207,8 @@ export default function HeroCarousel() {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isVisible = useInView(sectionRef, { amount: 0.1 });
 
   const slide = slides[currentSlide];
   const frameCount = slide.frames.length;
@@ -218,23 +220,23 @@ export default function HeroCarousel() {
     setCurrentFrame(0);
   }, [currentSlide]);
 
-  // Autoplay del carrusel externo (entre slides)
+  // Autoplay del carrusel externo (entre slides) — pausa cuando no es visible (PERF-04)
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || !isVisible) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, slide.duration);
     return () => clearInterval(interval);
-  }, [isAutoPlaying, currentSlide, slide.duration]);
+  }, [isAutoPlaying, isVisible, currentSlide, slide.duration]);
 
-  // Ciclo interno de frames dentro de cada slide
+  // Ciclo interno de frames dentro de cada slide — pausa cuando no es visible (PERF-04)
   useEffect(() => {
-    if (frameCount <= 1) return;
+    if (frameCount <= 1 || !isVisible) return;
     const interval = setInterval(() => {
       setCurrentFrame((prev) => (prev + 1) % frameCount);
     }, frameDurationMs);
     return () => clearInterval(interval);
-  }, [currentSlide, frameCount, frameDurationMs]);
+  }, [currentSlide, frameCount, frameDurationMs, isVisible]);
 
   // Limpieza del timer de reanudación al desmontar
   useEffect(() => {
@@ -268,7 +270,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <section className="relative h-[500px] md:h-[600px] overflow-hidden">
+    <section ref={sectionRef} className="relative h-[500px] md:h-[600px] overflow-hidden">
 
       {/* ── Transición externa entre slides ─────────────────────────────────── */}
       <AnimatePresence mode="wait">

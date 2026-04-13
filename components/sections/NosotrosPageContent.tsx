@@ -71,6 +71,7 @@ function FlipCard({ card, index }: { card: typeof flipCards[0]; index: number })
   const [flipped, setFlipped] = useState(false);
   const [hinted, setHinted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const returnRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInView = useInView(ref, { once: true });
 
   // Peek automático: cuando la card entra al viewport hace un flip breve
@@ -79,14 +80,23 @@ function FlipCard({ card, index }: { card: typeof flipCards[0]; index: number })
     if (!isInView || hinted) return;
     const peekDelay = setTimeout(() => {
       setFlipped(true);
-      const returnDelay = setTimeout(() => {
+      returnRef.current = setTimeout(() => {
         setFlipped(false);
         setHinted(true);
       }, 1100);
-      return () => clearTimeout(returnDelay);
     }, 800 + index * 280);
-    return () => clearTimeout(peekDelay);
+    return () => {
+      clearTimeout(peekDelay);
+      if (returnRef.current) clearTimeout(returnRef.current);
+    };
   }, [isInView, hinted, index]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setFlipped((f) => !f);
+    }
+  };
 
   return (
     <motion.div
@@ -97,7 +107,9 @@ function FlipCard({ card, index }: { card: typeof flipCards[0]; index: number })
       transition={{ delay: index * 0.08 }}
       className="relative h-48 md:h-64 [perspective:1000px] cursor-pointer group"
       onClick={() => setFlipped((f) => !f)}
+      onKeyDown={handleKeyDown}
       role="button"
+      tabIndex={0}
       aria-label={`Ver descripción de: ${card.title}`}
     >
       {/* Inner — gira sobre el eje Y */}

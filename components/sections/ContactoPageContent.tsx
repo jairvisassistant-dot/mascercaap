@@ -24,7 +24,7 @@ export default function ContactoPageContent() {
             transition={{ delay: 0.1 }}
             className="text-xl opacity-90 max-w-2xl mx-auto"
           >
-            Estamos listos para levarte la frescura a tu puerta
+            Estamos listos para llevarte la frescura a tu puerta
           </motion.p>
         </div>
       </section>

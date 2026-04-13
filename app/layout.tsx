@@ -14,11 +14,11 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Mas Cerca Ap - Jugos 100% Naturales Bogotá",
+  title: "Más Cerca AP - Jugos 100% Naturales Bogotá",
   description: "Jugos y cítricos 100% naturales. Del campo al vaso en horas. Bogotá.",
   keywords: ["jugos", "naturales", "Bogotá", "limón", "naranja", "zumos", "bebidas"],
   openGraph: {
-    title: "Mas Cerca Ap - Jugos 100% Naturales",
+    title: "Más Cerca AP - Jugos 100% Naturales",
     description: "Jugos y cítricos 100% naturales. Del campo al vaso en horas.",
     type: "website",
     locale: "es_CO",

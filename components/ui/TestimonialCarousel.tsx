@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import type { Testimonial } from "@/types";
 
 interface TestimonialCarouselProps {
@@ -10,20 +10,23 @@ interface TestimonialCarouselProps {
 
 export default function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isVisible = useInView(sectionRef, { amount: 0.1 });
 
+  // Pausa el autoplay cuando el carrusel no está en el viewport (PERF-04)
   useEffect(() => {
-    if (testimonials.length === 0) return;
+    if (testimonials.length === 0 || !isVisible) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 6000);
 
     return () => clearInterval(interval);
-  }, [testimonials.length]);
+  }, [testimonials.length, isVisible]);
 
   if (testimonials.length === 0) return null;
 
   return (
-    <div className="relative max-w-3xl mx-auto px-4">
+    <div ref={sectionRef} className="relative max-w-3xl mx-auto px-4">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
