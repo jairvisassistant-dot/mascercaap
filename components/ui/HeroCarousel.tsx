@@ -363,7 +363,7 @@ export default function HeroCarousel() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="text-4xl md:text-5xl font-bold mb-4 whitespace-pre-line leading-tight"
+                className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4 whitespace-pre-line leading-tight"
               >
                 {slide.title}
               </motion.h1>
@@ -372,7 +372,7 @@ export default function HeroCarousel() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
-                className="text-lg mb-8 opacity-90"
+                className="text-sm sm:text-base md:text-lg mb-6 md:mb-8 opacity-90"
               >
                 {slide.description}
               </motion.p>

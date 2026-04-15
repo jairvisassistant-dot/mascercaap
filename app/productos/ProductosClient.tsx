@@ -8,7 +8,7 @@ import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
 
 const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
   jugos: ["limon", "limonada-cereza", "limonada-coco", "maracuya"],
-  pulpas: ["pulpas"],
+  pulpas: ["pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-feijoa", "pulpa-tomate-arbol"],
   lacteos: ["kumiss"],
 };
 

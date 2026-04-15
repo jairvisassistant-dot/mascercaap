@@ -5,7 +5,13 @@ export type ProductLineKey =
   | "limonada-cereza"
   | "limonada-coco"
   | "maracuya"
-  | "pulpas"
+  | "pulpa-maracuya"
+  | "pulpa-mora"
+  | "pulpa-fresa"
+  | "pulpa-mango"
+  | "pulpa-guanabana"
+  | "pulpa-feijoa"
+  | "pulpa-tomate-arbol"
   | "kumiss";
 
 export type Product = {

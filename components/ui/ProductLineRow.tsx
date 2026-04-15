@@ -76,7 +76,7 @@ export default function ProductLineRow({ line, products }: ProductLineRowProps) 
         ref={scrollRef}
         className="overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent"
       >
-        <div className="flex gap-5 w-fit">
+        <div className="flex gap-5 w-fit mx-auto">
           {products.map((product) => (
             <ProductCard
               key={product.id}
