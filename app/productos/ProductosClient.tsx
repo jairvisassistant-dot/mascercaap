@@ -102,8 +102,7 @@ export default function ProductosClient({ products, productLines, initialCategor
             transition={{ delay: 0.1 }}
             className="text-xl opacity-90 max-w-2xl mx-auto"
           >
-            Del campo colombiano directo a tu mesa. Jugos, pulpas y bebidas
-            naturales sin conservantes ni aditivos.
+            Zumos, pulpas y bebidas de calidad, directamente del campo colombiano a tu mesa.
           </motion.p>
         </div>
       </section>

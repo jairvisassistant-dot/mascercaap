@@ -12,21 +12,21 @@ export const productLines: ProductLineConfig[] = [
   },
   {
     key: "limonada-cereza",
-    label: "Limonada con Cereza",
+    label: "Zumo de Limonada con Cereza",
     description: "La acidez del limón con el dulzor natural de la cereza.",
     gradient: "from-rose-400 to-red-600",
     iconEmoji: "🍒",
   },
   {
     key: "limonada-coco",
-    label: "Limonada con Coco",
+    label: "Zumo de Limonada con Coco",
     description: "Refrescante combinación tropical con toque cremoso.",
     gradient: "from-cyan-400 to-teal-600",
     iconEmoji: "🥥",
   },
   {
     key: "maracuya",
-    label: "Jugo de Maracuyá",
+    label: "Zumo de Maracuyá",
     description: "Sabor exótico y vibrante directo del campo colombiano.",
     gradient: "from-yellow-400 to-orange-500",
     iconEmoji: "🌟",
@@ -97,10 +97,10 @@ export const products: Product[] = [
     benefits: ["Rico en vitamina C", "Refrescante", "Sin conservantes"],
   },
 
-  // ── Limonada con Cereza (3 presentaciones) ────────────────────────────────
+  // ── Zumo de Limonada con Cereza (3 presentaciones) ────────────────────────
   {
     id: "cereza-350",
-    name: "Limonada con Cereza",
+    name: "Zumo de Limonada con Cereza",
     line: "limonada-cereza",
     presentation: "350ml",
     presentationOrder: 1,
@@ -111,7 +111,7 @@ export const products: Product[] = [
   },
   {
     id: "cereza-1000",
-    name: "Limonada con Cereza",
+    name: "Zumo de Limonada con Cereza",
     line: "limonada-cereza",
     presentation: "1L",
     presentationOrder: 2,
@@ -122,7 +122,7 @@ export const products: Product[] = [
   },
   {
     id: "cereza-2000",
-    name: "Limonada con Cereza",
+    name: "Zumo de Limonada con Cereza",
     line: "limonada-cereza",
     presentation: "2L",
     presentationOrder: 3,
@@ -132,10 +132,10 @@ export const products: Product[] = [
     benefits: ["Antioxidantes", "Vitamina C", "Sin conservantes"],
   },
 
-  // ── Limonada con Coco (3 presentaciones) ──────────────────────────────────
+  // ── Zumo de Limonada con Coco (3 presentaciones) ──────────────────────────────────
   {
     id: "coco-350",
-    name: "Limonada con Coco",
+    name: "Zumo de Limonada con Coco",
     line: "limonada-coco",
     presentation: "350ml",
     presentationOrder: 1,
@@ -146,7 +146,7 @@ export const products: Product[] = [
   },
   {
     id: "coco-1000",
-    name: "Limonada con Coco",
+    name: "Zumo de Limonada con Coco",
     line: "limonada-coco",
     presentation: "1L",
     presentationOrder: 2,
@@ -157,7 +157,7 @@ export const products: Product[] = [
   },
   {
     id: "coco-2000",
-    name: "Limonada con Coco",
+    name: "Zumo de Limonada con Coco",
     line: "limonada-coco",
     presentation: "2L",
     presentationOrder: 3,
@@ -167,10 +167,10 @@ export const products: Product[] = [
     benefits: ["Electrolitos naturales", "Vitamina C", "Sin conservantes"],
   },
 
-  // ── Jugo de Maracuyá (3 presentaciones) ───────────────────────────────────
+  // ── Zumo de Maracuyá (3 presentaciones) ───────────────────────────────────
   {
     id: "maracuya-350",
-    name: "Jugo de Maracuyá",
+    name: "Zumo de Maracuyá",
     line: "maracuya",
     presentation: "350ml",
     presentationOrder: 1,
@@ -181,7 +181,7 @@ export const products: Product[] = [
   },
   {
     id: "maracuya-1000",
-    name: "Jugo de Maracuyá",
+    name: "Zumo de Maracuyá",
     line: "maracuya",
     presentation: "1L",
     presentationOrder: 2,
@@ -192,7 +192,7 @@ export const products: Product[] = [
   },
   {
     id: "maracuya-2000",
-    name: "Jugo de Maracuyá",
+    name: "Zumo de Maracuyá",
     line: "maracuya",
     presentation: "2L",
     presentationOrder: 3,

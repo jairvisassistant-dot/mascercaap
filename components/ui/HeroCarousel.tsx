@@ -60,15 +60,15 @@ const slides: Slide[] = [
   {
     id: 1,
     title: "La fruta sale del campo hoy.\nMañana está en tu mesa.",
-    subtitle: "DIRECTO DEL CAMPO COLOMBIANO",
-    description: "Sin intermediarios. Sin conservantes. Pura frescura.",
+    subtitle: "PULPAS 100% NATURALES · SIN CONSERVANTES · SIN COLORANTES",
+    description: "Fruta colombiana congelada en su punto exacto de madurez. Conserva sus aromas, color y sabor — exactamente como recién cosechada.",
     cta: "Conocer nuestra historia",
     ctaHref: "/nosotros",
     ctaColor: "bg-accent hover:bg-accent-dark",
-    duration: 8000,
+    duration: 12000,
     frames: [
       {
-        // Campo colombiano, golden hour, manos campesino sosteniendo maracuyá partido
+        // Acto 1 — El campo: manos campesino sosteniendo maracuyá, golden hour
         image: "/imgs/Slide1.1.webp",
         kenBurns: {
           initial: { scale: 1.05, x: "0%" },
@@ -76,39 +76,63 @@ const slides: Slide[] = [
         },
       },
       {
-        // Mesa rústica: maracuyá partido (izq) + botella con condensación (der)
-        image: "/imgs/Slide1.2-1.webp",
+        // Acto 2 — La producción: operarias despulpando fruta en maquinaria industrial
+        image: "/imgs/Slide1.2.png",
         kenBurns: {
-          initial: { scale: 1.12, x: "-5%" },
-          animate: { scale: 1.12, x: "3%" },
+          initial: { scale: 1.1, x: "-4%" },
+          animate: { scale: 1.1, x: "4%" },
         },
       },
-    ],
-  },
-  {
-    id: 2,
-    title: "Tu restaurante merece el mejor jugo.\nSin pagar el precio del mejor jugo.",
-    subtitle: "CALIDAD VS PRECIO",
-    description: "Lo que los industriales cobran el doble no supera nuestra frescura.",
-    cta: "Hacer pedido",
-    ctaHref: whatsappUrl,
-    ctaColor: "bg-primary hover:bg-primary-dark",
-    duration: 8000,
-    frames: [
       {
-        // Restaurante bogotano cálido, mesero con bandeja, vaso de jugo vibrante
-        image: "/imgs/Slide2.1.webp",
+        // Acto 3 — La cadena de frío: operario en cámara frigorífica, sin conservantes
+        image: "/imgs/Slide1.3.png",
         kenBurns: {
           initial: { scale: 1.08, x: "0%" },
           animate: { scale: 1.18, x: "0%" },
         },
       },
       {
-        // Primer plano vaso de jugo con condensación — botella Mas Cerca AP al fondo
-        image: "/imgs/Slide2.2.webp",
+        // Acto 4 — El producto final: pulpa lista para tu mesa
+        image: "/imgs/pulpa-maracuya.webp",
+        kenBurns: {
+          initial: { scale: 1.2, x: "0%" },
+          animate: { scale: 1.05, x: "0%" },
+        },
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "La calidad de nuestros productos\nno se compara.",
+    subtitle: "FÁCIL DE PREPARAR, LISTO AL INSTANTE",
+    description: "Elaborados con los más altos estándares de calidad para que disfrutes del sabor auténtico de la fruta que te gusta en cada sorbo.",
+    cta: "Ver zumos",
+    ctaHref: "/productos",
+    ctaColor: "bg-primary hover:bg-primary-dark",
+    duration: 9000,
+    frames: [
+      {
+        // Acto 1 — El producto: botella de concentrado, condensación, cocina cálida
+        image: "/imgs/Slide2.1.png",
         kenBurns: {
           initial: { scale: 1.05, x: "0%" },
           animate: { scale: 1.18, x: "0%" },
+        },
+      },
+      {
+        // Acto 2 — La preparación: concentrado vertiéndose en jarra con agua, remolino de color
+        image: "/imgs/Slide2.2.png",
+        kenBurns: {
+          initial: { scale: 1.1, x: "-4%" },
+          animate: { scale: 1.1, x: "4%" },
+        },
+      },
+      {
+        // Acto 3 — El disfrute: jarra y vasos servidos en restaurante, bokeh cálido
+        image: "/imgs/Slide2.3.png",
+        kenBurns: {
+          initial: { scale: 1.2, x: "0%" },
+          animate: { scale: 1.05, x: "0%" },
         },
       },
     ],
@@ -143,29 +167,36 @@ const slides: Slide[] = [
   },
   {
     id: 4,
-    title: "El sabor del campo colombiano\nen cada sorbo.",
-    subtitle: "JUGO DE MARACUYÁ",
-    description: "Vitaminas A y C. Sin conservantes. Exótico de verdad.",
-    cta: "Ver presentaciones",
-    ctaHref: "/productos",
-    ctaColor: "bg-accent hover:bg-accent-dark",
-    duration: 8000,
+    title: "Servimos con amor, honestidad\ny fe en cada entrega.",
+    subtitle: "MÁS CERCA AP — TU ALIADO COMERCIAL",
+    description: "Más que distribuidores, somos el puente que acerca los mejores productos colombianos a tu negocio.",
+    cta: "Conocer nuestra historia",
+    ctaHref: "/nosotros",
+    ctaColor: "bg-primary hover:bg-primary-dark",
+    duration: 12000,
     frames: [
       {
-        // Macro extremo interior maracuyá — pulpa naranja eléctrica, semillas negras
-        // Ken Burns: zoom OUT (único slide que hace pull back — genera contraste)
-        image: "/imgs/Slide4.1.webp",
-        kenBurns: {
-          initial: { scale: 1.2, x: "0%" },
-          animate: { scale: 1.05, x: "0%" },
-        },
-      },
-      {
-        // Vaso de jugo retroiluminado — naranja luminiscente, fruta alrededor, fondo oscuro
-        image: "/imgs/Slide4.2.webp",
+        // Acto 1 — El origen: agricultor colombiano con poncho y sombrero, sacos de fruta, montañas al fondo
+        image: "/imgs/Slide4.1.png",
         kenBurns: {
           initial: { scale: 1.05, x: "0%" },
           animate: { scale: 1.18, x: "0%" },
+        },
+      },
+      {
+        // Acto 2 — El acuerdo: representante Más Cerca AP da la mano al campesino proveedor en el campo
+        image: "/imgs/Slide4.2.png",
+        kenBurns: {
+          initial: { scale: 1.1, x: "-4%" },
+          animate: { scale: 1.1, x: "4%" },
+        },
+      },
+      {
+        // Acto 3 — La entrega: representante cierra trato con cliente en bodega, productos en mesa
+        image: "/imgs/Slide4.3.png",
+        kenBurns: {
+          initial: { scale: 1.2, x: "0%" },
+          animate: { scale: 1.05, x: "0%" },
         },
       },
     ],
@@ -213,7 +244,7 @@ export default function HeroCarousel() {
   const slide = slides[currentSlide];
   const frameCount = slide.frames.length;
   const frameDurationMs = Math.floor(slide.duration / frameCount);
-  const frame = slide.frames[currentFrame];
+  const frame = slide.frames[Math.min(currentFrame, frameCount - 1)];
 
   // Resetea el frame interno cuando cambia el slide externo
   useEffect(() => {

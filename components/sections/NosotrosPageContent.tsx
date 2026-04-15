@@ -16,8 +16,8 @@ const timelineSteps = [
 ];
 
 const values = [
-  { icon: "🙏", title: "Fe y Compromiso",   description: "Todo lo que somos nace del amor a Dios y a las personas.",                                                          color: "from-violet-400 to-purple-600" },
-  { icon: "🤝", title: "Servicio Genuino",   description: "Servir a la gente no es lo que hacemos: es por lo qué existimos.",                                                 color: "from-sky-400 to-blue-600"     },
+  { icon: "🙏", title: "Fe y Compromiso",   description: "Todo lo que somos nace del amor a Dios y a las personas.",                                                          color: "from-amber-400 to-yellow-600"  },
+  { icon: "🤝", title: "Servicio Genuino",   description: "Servir a la gente no es lo que hacemos: es por lo qué existimos.",                                                 color: "from-teal-400 to-emerald-600"  },
   { icon: "⭐", title: "Calidad",            description: "La calidad en Más Cerca AP no viene de una certificación sino de la convicción de que la gente merece lo mejor.", color: "from-green-400 to-green-600"  },
   { icon: "🌱", title: "Impacto Social",     description: "Crecer está bien. Crecer impulsando el crecimiento de otros es mejor.",                                            color: "from-orange-400 to-orange-600"},
 ];

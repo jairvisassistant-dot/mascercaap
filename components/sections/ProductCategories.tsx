@@ -16,9 +16,9 @@ type Category = {
 const CATEGORIES: Category[] = [
   {
     key: "jugos",
-    label: "Jugos Naturales",
+    label: "Zumos y Limonadas",
     description:
-      "Limonadas, zumos y maracuyá. Frescos, sin conservantes, directo del campo colombiano.",
+      "Limón, cereza, coco y maracuyá. Sabor auténtico, elaborados con los más altos estándares de calidad.",
     image: "/imgs/SKU_LimonCereza1000.webp",
     href: "/productos?categoria=jugos",
   },

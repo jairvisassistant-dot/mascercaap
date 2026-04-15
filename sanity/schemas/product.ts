@@ -33,9 +33,9 @@ export const productSchema = defineType({
       options: {
         list: [
           { title: "Zumo de Limón", value: "limon" },
-          { title: "Limonada con Cereza", value: "limonada-cereza" },
-          { title: "Limonada con Coco", value: "limonada-coco" },
-          { title: "Jugo de Maracuyá", value: "maracuya" },
+          { title: "Zumo de Limonada con Cereza", value: "limonada-cereza" },
+          { title: "Zumo de Limonada con Coco", value: "limonada-coco" },
+          { title: "Zumo de Maracuyá", value: "maracuya" },
           { title: "Pulpas de Frutas", value: "pulpas" },
           { title: "Kumiss", value: "kumiss" },
         ],
