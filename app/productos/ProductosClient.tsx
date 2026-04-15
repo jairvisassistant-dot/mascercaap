@@ -142,9 +142,9 @@ export default function ProductosClient({ products, productLines, initialCategor
           </div>
 
           {/* Filtro por presentación */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className={`text-xs font-medium uppercase tracking-wide transition-colors duration-500 ${isSticky ? "text-primary-dark" : "text-gray-400"}`}>Tamaño:</span>
-            <div className="flex gap-1.5">
+          <div className="flex items-center gap-2 min-w-0 overflow-x-auto pb-0.5 scrollbar-none">
+            <span className={`text-xs font-medium uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark" : "text-gray-400"}`}>Tamaño:</span>
+            <div className="flex gap-1.5 shrink-0">
               {["todos", ...availableSizes].map((size) => (
                 <button
                   key={size}

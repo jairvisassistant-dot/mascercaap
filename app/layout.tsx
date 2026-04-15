@@ -59,7 +59,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${poppins.variable} font-poppins antialiased`}>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col overflow-x-hidden">
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
