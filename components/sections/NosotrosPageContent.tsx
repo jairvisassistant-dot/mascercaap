@@ -205,13 +205,7 @@ export default function NosotrosPageContent() {
                 Nuestra Historia
               </h2>
               <p className="text-gray-600 leading-relaxed text-justify">
-                Somos Más Cerca AP, una empresa colombiana fundada por una pareja
-                que creyó que servir a la gente era la mejor forma de emprender.
-                Producimos y comercializamos jugos, pulpas y productos frescos de
-                origen directo, comprando a los campesinos en finca y siendo la
-                plataforma que lleva sus productos a hogares, negocios y nuevos mercados.
-                Nos mueve la fe en Dios, nos guía la honestidad y nos define el
-                compromiso con el campo colombiano.
+                Somos Más Cerca AP, una empresa colombiana fundada por una pareja que creyó que servir a la gente era la mejor forma de emprender y recibir el favor de Dios. Producimos y comercializamos zumos de frutas, pulpas de frutas y productos frescos de origen directo, comprando a los campesinos en finca y siendo la plataforma que lleva sus productos a hogares, negocios y nuevos mercados. Nos mueve la fe en Dios, nos guía la honestidad y nos define el compromiso con el campo colombiano.
               </p>
             </motion.div>
             <motion.div

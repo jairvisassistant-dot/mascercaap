@@ -57,13 +57,17 @@ export default function Footer() {
               directamente del campo. Del campo al vaso en horas, sin conservantes.
             </p>
             <div className="flex gap-4">
-              {socialLinks.map((social) => (
+              {socialLinks.map((social, index) => (
                 <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition-all hover:scale-110"
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                    index === 1
+                      ? "bg-accent hover:bg-accent/90"
+                      : "bg-primary hover:bg-primary/90"
+                  }`}
                   aria-label={social.name}
                 >
                   {social.icon}

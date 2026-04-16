@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import ProductLineRow from "@/components/ui/ProductLineRow";
+import PulpaFruitGrid from "@/components/ui/PulpaFruitGrid";
 import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
 
 const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
@@ -69,6 +70,13 @@ export default function ProductosClient({ products, productLines, initialCategor
   const visibleLines = productLines.filter(
     (line) => activeLines.size === 0 || activeLines.has(line.key)
   );
+
+  const PULPA_KEYS = new Set<ProductLineKey>([
+    "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
+    "pulpa-guanabana", "pulpa-feijoa", "pulpa-tomate-arbol",
+  ]);
+  const nonPulpaLines = visibleLines.filter((l) => !PULPA_KEYS.has(l.key));
+  const pulpaVisibleLines = visibleLines.filter((l) => PULPA_KEYS.has(l.key));
 
   // Productos de una línea, filtrados por tamaño y ordenados
   const getLineProducts = (lineKey: ProductLineKey) => {
@@ -181,7 +189,8 @@ export default function ProductosClient({ products, productLines, initialCategor
       {/* ── Líneas de producto ── */}
       <section className="py-10 bg-gray-50 min-h-[50vh]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col gap-12">
-          {visibleLines.map((line, lineIndex) => {
+          {/* Zumos + Kumiss — filas individuales */}
+          {nonPulpaLines.map((line, lineIndex) => {
             const lineProducts = getLineProducts(line.key);
 
             return (
@@ -210,6 +219,25 @@ export default function ProductosClient({ products, productLines, initialCategor
               </motion.div>
             );
           })}
+
+          {/* Pulpas — grilla de sabores con selector de fruta */}
+          {pulpaVisibleLines.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: nonPulpaLines.length * 0.08 }}
+            >
+              <PulpaFruitGrid
+                pulpaLines={pulpaVisibleLines}
+                products={products.filter(
+                  (p) =>
+                    PULPA_KEYS.has(p.line) &&
+                    (activeSize === "todos" || p.presentation === activeSize)
+                )}
+              />
+            </motion.div>
+          )}
         </div>
       </section>
 

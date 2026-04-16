@@ -48,7 +48,7 @@ export default function ContactoPageContent() {
                 </svg>
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Ubicación</h3>
-              <p className="text-gray-600">Bogotá, Colombia</p>
+              <p className="text-gray-600">Chía, Colombia</p>
             </motion.div>
 
             <motion.div
@@ -65,7 +65,6 @@ export default function ContactoPageContent() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Email</h3>
               <p className="text-gray-600">{SITE_CONFIG.emailContact}</p>
-              <p className="text-gray-600">{SITE_CONFIG.emailOrders}</p>
             </motion.div>
 
             <motion.div
@@ -119,7 +118,7 @@ export default function ContactoPageContent() {
 
                 {/* Mapa — dirección real de la bodega */}
                 <iframe
-                  src="https://maps.google.com/maps?q=Cl+2a+%2341-65+El+Jazm%C3%ADn+Puente+Aranda+Bogot%C3%A1+Colombia&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  src="https://maps.google.com/maps?q=Calle+12a+%2315-53+Chia+Colombia&t=&z=16&ie=UTF8&iwloc=&output=embed"
                   width="100%"
                   height="280"
                   style={{ border: 0 }}

@@ -17,7 +17,7 @@ const misionVision = {
     bgTo: "#2E7D32",
     accentColor: "#A5D6A7",
     title: "Nuestra Misión",
-    text: "Somos Más Cerca AP, una empresa impulsada por el amor al servicio y la convicción de que cada persona merece acceso a productos frescos, naturales y de calidad. Conectamos directamente a agricultores colombianos con hogares, negocios y nuevos mercados, siendo el puente que acerca el campo a la mesa y los pequeños productores a grandes oportunidades. Actuamos con honestidad y compromiso, y reconocemos que el amor a Dios y el temor santo a su nombre son el fundamento de cada decisión que tomamos.",
+    text: "Somos Más Cerca AP, una empresa impulsada por el amor al servicio y la convicción de que cada persona merece acceso a productos frescos, naturales y de alta calidad. Conectamos directamente a agricultores colombianos con hogares, negocios y nuevos mercados, siendo el puente que acerca el campo a la mesa y los pequeños productores a grandes oportunidades. Actuamos con honestidad, compromiso, y vocación de servicio como fundamento de cada decisión que tomamos.",
   },
   vision: {
     label: "Visión",
@@ -32,7 +32,7 @@ const misionVision = {
     bgTo: "#E65100",
     accentColor: "#FFCC80",
     title: "Nuestra Visión",
-    text: "Consolidarnos en el mercado como el principal referente en la comercialización de productos de alta calidad de pequeños productores en Colombia, reconocidos por transformar emprendimientos y por ser el puente más confiable y eficiente entre la riqueza rural y los mercados urbanos.",
+    text: "En el corto y mediano plazo, Más Cerca AP será cada vez más fiel a su nombre: una empresa que sigue acercando el campo al mundo, los productores a nuevos mercados y los productos colombianos a nuevas fronteras. Creceremos siendo la plataforma que impulsa el crecimiento de otros, y siendo el puente más confiable y eficiente entre la riqueza rural y los mercados urbanos, fieles a nuestra razón de ser: servir con amor, honestidad y fe en Dios como nuestro fundamento.",
   },
 };
 

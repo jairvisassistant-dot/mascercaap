@@ -9,13 +9,13 @@ export const SITE_CONFIG = {
   /** Teléfono con guiones para JSON-LD y atributos tel: */
   phoneTel: "+57-300-123-4567",
   /** Email de contacto general */
-  emailContact: "hola@mascercap.com",
+  emailContact: "apalejandraplata@gmail.com",
   /** Email para pedidos */
-  emailOrders: "pedidos@mascercap.com",
+  emailOrders: "apalejandraplata@gmail.com",
   /** URL canónica del sitio */
   siteUrl: "https://mascercap.com",
   /** Dirección física de la bodega */
-  address: "Cl. 2a # 41-65, Barrio El Jazmín",
+  address: "Calle 12a # 15-53, Chia",
   /** Localidad y ciudad */
-  addressCity: "Puente Aranda, Bogotá",
+  addressCity: "Cundinamarca, Colombia",
 } as const;
