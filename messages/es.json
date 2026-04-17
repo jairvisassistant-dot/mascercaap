@@ -328,5 +328,20 @@
   },
   "languageSwitcher": {
     "label": "ES"
+  },
+  "chatbot": {
+    "title": "Preguntas Frecuentes",
+    "welcome": "Hola! 👋 Soy el asistente de Más Cerca AP. Seleccioná una categoría o escribí tu pregunta.",
+    "placeholder": "Escribí tu pregunta...",
+    "fallback": "No tengo información sobre eso. ¿Te gustaría hablar con nuestro equipo?",
+    "talkToHuman": "Hablar con una persona",
+    "helpful": "¿Te fue útil esta respuesta?",
+    "yes": "Sí, gracias",
+    "no": "No del todo",
+    "thankYou": "¡Gracias por tu feedback!",
+    "backToCategories": "← Volver a categorías",
+    "categories": "¿Sobre qué querés consultar?",
+    "ariaOpen": "Abrir asistente de preguntas frecuentes",
+    "ariaClose": "Cerrar asistente"
   }
 }

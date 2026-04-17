@@ -6,6 +6,7 @@ import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import ChatBot from "@/components/ui/ChatBot";
 import { SITE_CONFIG } from "@/lib/config";
 
 export async function generateStaticParams() {
@@ -63,6 +64,7 @@ export default async function LangLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <ChatBot />
           <WhatsAppButton />
         </div>
       </DictionaryProvider>

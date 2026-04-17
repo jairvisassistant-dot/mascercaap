@@ -1,0 +1,565 @@
+export type FAQQuestion = {
+  id: string;
+  question: { es: string; en: string };
+  answer: { es: string; en: string };
+  keywords: string[];
+};
+
+export type FAQCategory = {
+  id: string;
+  label: { es: string; en: string };
+  icon: string;
+  questions: FAQQuestion[];
+};
+
+export type FAQData = {
+  categories: FAQCategory[];
+  fallback: { es: string; en: string };
+};
+
+export const faqData: FAQData = {
+  categories: [
+    {
+      id: "productos",
+      label: { es: "Productos", en: "Products" },
+      icon: "🍊",
+      questions: [
+        {
+          id: "que-productos",
+          question: {
+            es: "¿Qué productos ofrecen?",
+            en: "What products do you offer?",
+          },
+          answer: {
+            es: "Ofrecemos zumos naturales de limón, limonada con cereza, limonada con coco y maracuyá, además de pulpas congeladas de maracuyá, mora, fresa, mango, guanábana, lulo, guayaba, frutos rojos, tomate de árbol y kumiss. Todo 100% natural, sin conservantes ni colorantes.",
+            en: "We offer natural juices of lemon, lemonade with cherry, lemonade with coconut and passion fruit, plus frozen pulps of passion fruit, blackberry, strawberry, mango, soursop, lulo, guava, mixed berries, tree tomato, and kumiss. 100% natural, no preservatives or colorings.",
+          },
+          keywords: [
+            "productos",
+            "ofrecen",
+            "venden",
+            "catalogo",
+            "catálogo",
+            "jugos",
+            "zumos",
+            "pulpas",
+            "products",
+            "offer",
+            "sell",
+            "catalog",
+            "juices",
+            "pulps",
+          ],
+        },
+        {
+          id: "conservantes",
+          question: {
+            es: "¿Los jugos tienen conservantes o colorantes?",
+            en: "Do the juices have preservatives or colorings?",
+          },
+          answer: {
+            es: "No. Todos nuestros productos son 100% naturales, sin conservantes, sin colorantes y sin azúcar añadida. Solo fruta colombiana pura.",
+            en: "No. All our products are 100% natural, with no preservatives, no colorings, and no added sugar. Just pure Colombian fruit.",
+          },
+          keywords: [
+            "conservantes",
+            "colorantes",
+            "aditivos",
+            "natural",
+            "artificiales",
+            "quimicos",
+            "químicos",
+            "preservatives",
+            "colorings",
+            "additives",
+            "artificial",
+            "chemicals",
+          ],
+        },
+        {
+          id: "duracion",
+          question: {
+            es: "¿Cuánto tiempo duran los productos?",
+            en: "How long do the products last?",
+          },
+          answer: {
+            es: "Los zumos frescos duran entre 3 y 5 días refrigerados. Las pulpas congeladas conservan su frescura hasta 6 meses en el congelador manteniendo todas sus propiedades.",
+            en: "Fresh juices last 3 to 5 days refrigerated. Frozen pulps maintain their freshness for up to 6 months in the freezer, preserving all their properties.",
+          },
+          keywords: [
+            "duran",
+            "vencimiento",
+            "vida util",
+            "caducidad",
+            "fecha",
+            "conservar",
+            "cuanto tiempo",
+            "last",
+            "shelf life",
+            "expiration",
+            "how long",
+          ],
+        },
+        {
+          id: "conservar-pulpas",
+          question: {
+            es: "¿Cómo se conservan las pulpas?",
+            en: "How do you store the pulps?",
+          },
+          answer: {
+            es: "Las pulpas deben conservarse congeladas a -18°C. Una vez descongeladas no deben volver a congelarse. Para usarlas, descongelalas en la nevera o a temperatura ambiente y preparalas de inmediato.",
+            en: "Pulps must be kept frozen at -18°C. Once thawed, they should not be refrozen. To use them, thaw in the refrigerator or at room temperature and prepare immediately.",
+          },
+          keywords: [
+            "conservar",
+            "guardar",
+            "congelar",
+            "almacenar",
+            "nevera",
+            "freezer",
+            "store",
+            "keep",
+            "freeze",
+            "refrigerate",
+            "storage",
+          ],
+        },
+        {
+          id: "sin-azucar",
+          question: {
+            es: "¿Tienen productos sin azúcar?",
+            en: "Do you have sugar-free products?",
+          },
+          answer: {
+            es: "Sí. Todos nuestros productos están libres de azúcar añadida. El dulzor natural proviene exclusivamente de la fruta. Son aptos para personas con dietas bajas en azúcar.",
+            en: "Yes. All our products are free of added sugar. The natural sweetness comes exclusively from the fruit. They are suitable for people on low-sugar diets.",
+          },
+          keywords: [
+            "azucar",
+            "azúcar",
+            "sin azucar",
+            "diabetico",
+            "diabético",
+            "dieta",
+            "keto",
+            "light",
+            "sugar",
+            "sugar-free",
+            "diabetic",
+            "diet",
+          ],
+        },
+        {
+          id: "tamanios",
+          question: {
+            es: "¿Cuáles son los tamaños disponibles?",
+            en: "What sizes are available?",
+          },
+          answer: {
+            es: "Los zumos están disponibles en presentaciones de 250ml, 500ml y 1 litro. Las pulpas congeladas vienen en bolsas de 100g, 250g y 500g. Para pedidos al por mayor hay presentaciones especiales.",
+            en: "Juices are available in 250ml, 500ml, and 1 liter sizes. Frozen pulps come in 100g, 250g, and 500g bags. For wholesale orders, special sizes are available.",
+          },
+          keywords: [
+            "tamaños",
+            "tamanios",
+            "presentaciones",
+            "litro",
+            "ml",
+            "gramos",
+            "sizes",
+            "presentations",
+            "liter",
+            "grams",
+          ],
+        },
+      ],
+    },
+    {
+      id: "pedidos",
+      label: { es: "Pedidos y Entregas", en: "Orders & Delivery" },
+      icon: "🚚",
+      questions: [
+        {
+          id: "como-pedir",
+          question: {
+            es: "¿Cómo hago un pedido?",
+            en: "How do I place an order?",
+          },
+          answer: {
+            es: "Podés hacer tu pedido por WhatsApp al +57 300 123 4567, por email a apalejandraplata@gmail.com o a través del formulario de contacto en nuestro sitio web. Te responderemos en menos de 2 horas en horario de atención.",
+            en: "You can place your order via WhatsApp at +57 300 123 4567, by email at apalejandraplata@gmail.com, or through the contact form on our website. We'll respond within 2 hours during business hours.",
+          },
+          keywords: [
+            "pedir",
+            "pedido",
+            "comprar",
+            "orden",
+            "ordenar",
+            "como",
+            "cómo",
+            "order",
+            "buy",
+            "purchase",
+            "how to order",
+          ],
+        },
+        {
+          id: "pedido-minimo",
+          question: {
+            es: "¿Cuál es el pedido mínimo?",
+            en: "What is the minimum order?",
+          },
+          answer: {
+            es: "El pedido mínimo para entrega a domicilio es de $30.000 COP. Para pedidos de distribución o mayoreo el mínimo es diferente — contáctanos para más información.",
+            en: "The minimum order for home delivery is $30,000 COP. For distribution or wholesale orders the minimum is different — contact us for more information.",
+          },
+          keywords: [
+            "minimo",
+            "mínimo",
+            "cuanto minimo",
+            "pedido minimo",
+            "minimum",
+            "minimum order",
+          ],
+        },
+        {
+          id: "zonas-entrega",
+          question: {
+            es: "¿En qué zonas entregan?",
+            en: "What areas do you deliver to?",
+          },
+          answer: {
+            es: "Hacemos entregas en Chía, Cajicá, Sopó, La Calera, Tocancipá y norte de Bogotá. Para otras zonas del país, coordinamos envíos por transportadora. Consultanos por tu zona específica.",
+            en: "We deliver in Chía, Cajicá, Sopó, La Calera, Tocancipá, and northern Bogotá. For other regions, we coordinate shipments via courier. Ask us about your specific area.",
+          },
+          keywords: [
+            "zona",
+            "entrega",
+            "domicilio",
+            "envio",
+            "envío",
+            "chia",
+            "bogota",
+            "cobertura",
+            "delivery",
+            "area",
+            "zone",
+            "coverage",
+            "shipping",
+          ],
+        },
+        {
+          id: "tiempo-entrega",
+          question: {
+            es: "¿Cuánto tarda la entrega?",
+            en: "How long does delivery take?",
+          },
+          answer: {
+            es: "Para Chía y municipios cercanos, las entregas se realizan el mismo día o al día siguiente según el horario de pedido. Para Bogotá y zonas más lejanas, el tiempo es de 1 a 2 días hábiles.",
+            en: "For Chía and nearby municipalities, deliveries are made the same day or next day depending on order time. For Bogotá and farther areas, delivery takes 1 to 2 business days.",
+          },
+          keywords: [
+            "demora",
+            "tiempo",
+            "dias",
+            "días",
+            "cuanto tarda",
+            "rapido",
+            "urgente",
+            "delivery time",
+            "how long",
+            "days",
+            "fast",
+            "urgent",
+          ],
+        },
+        {
+          id: "medios-pago",
+          question: {
+            es: "¿Cuáles son los medios de pago?",
+            en: "What payment methods do you accept?",
+          },
+          answer: {
+            es: "Aceptamos efectivo contra entrega, transferencia bancaria (Nequi, Daviplata, PSE), y pagos en efectivo en nuestra bodega. Para clientes frecuentes manejamos crédito semanal.",
+            en: "We accept cash on delivery, bank transfers (Nequi, Daviplata, PSE), and cash payments at our warehouse. For regular customers, we offer weekly credit.",
+          },
+          keywords: [
+            "pago",
+            "pagos",
+            "nequi",
+            "daviplata",
+            "efectivo",
+            "transferencia",
+            "tarjeta",
+            "payment",
+            "pay",
+            "cash",
+            "transfer",
+            "credit",
+          ],
+        },
+      ],
+    },
+    {
+      id: "distribucion",
+      label: { es: "Distribución / Mayoreo", en: "Distribution / Wholesale" },
+      icon: "🤝",
+      questions: [
+        {
+          id: "ser-distribuidor",
+          question: {
+            es: "¿Puedo ser distribuidor?",
+            en: "Can I become a distributor?",
+          },
+          answer: {
+            es: "¡Sí! Estamos buscando aliados comerciales en toda Colombia. Si tenés un negocio de alimentos, restaurante, cafetería o tienda naturista, podemos ofrecerte condiciones especiales. Contáctanos por WhatsApp para conocer el programa.",
+            en: "Yes! We're looking for commercial partners throughout Colombia. If you have a food business, restaurant, café, or health store, we can offer you special conditions. Contact us via WhatsApp to learn about the program.",
+          },
+          keywords: [
+            "distribuidor",
+            "distribuir",
+            "aliado",
+            "revendedor",
+            "franquicia",
+            "negocio",
+            "distributor",
+            "reseller",
+            "partner",
+            "franchise",
+            "business",
+          ],
+        },
+        {
+          id: "precios-mayoreo",
+          question: {
+            es: "¿Tienen precios para mayoreo?",
+            en: "Do you have wholesale prices?",
+          },
+          answer: {
+            es: "Sí, manejamos precios especiales para compras por mayor. A partir de ciertos volúmenes obtenés descuentos progresivos. Escribinos por WhatsApp para recibir nuestra lista de precios mayoristas.",
+            en: "Yes, we have special prices for bulk purchases. From certain volumes you get progressive discounts. Write us on WhatsApp to receive our wholesale price list.",
+          },
+          keywords: [
+            "mayoreo",
+            "mayorista",
+            "volumen",
+            "descuento",
+            "precio especial",
+            "wholesale",
+            "bulk",
+            "volume",
+            "discount",
+            "special price",
+          ],
+        },
+        {
+          id: "requisitos-distribuidor",
+          question: {
+            es: "¿Qué requisitos necesito para ser distribuidor?",
+            en: "What are the requirements to become a distributor?",
+          },
+          answer: {
+            es: "Los requisitos básicos son: tener un negocio activo o canal de distribución, capacidad de almacenamiento en frío (nevera o congelador), y comprometerse a un pedido mínimo mensual. No se necesita inversión inicial en licencias.",
+            en: "The basic requirements are: having an active business or distribution channel, cold storage capacity (refrigerator or freezer), and committing to a minimum monthly order. No initial investment in licenses required.",
+          },
+          keywords: [
+            "requisitos",
+            "condiciones",
+            "como ser",
+            "cómo ser",
+            "registro",
+            "requirements",
+            "conditions",
+            "how to become",
+            "registration",
+          ],
+        },
+        {
+          id: "marca-blanca",
+          question: {
+            es: "¿Manejan marca blanca?",
+            en: "Do you offer white label products?",
+          },
+          answer: {
+            es: "Sí, ofrecemos producción bajo marca blanca para negocios que quieran vender nuestros productos con su propia marca. Esto aplica para volúmenes mínimos. Contáctanos para más detalles.",
+            en: "Yes, we offer white label production for businesses that want to sell our products under their own brand. This applies to minimum volumes. Contact us for more details.",
+          },
+          keywords: [
+            "marca blanca",
+            "marca propia",
+            "etiqueta",
+            "personalizado",
+            "white label",
+            "private label",
+            "custom",
+            "own brand",
+          ],
+        },
+      ],
+    },
+    {
+      id: "empresa",
+      label: { es: "Empresa", en: "Company" },
+      icon: "🏢",
+      questions: [
+        {
+          id: "ubicacion",
+          question: {
+            es: "¿Dónde están ubicados?",
+            en: "Where are you located?",
+          },
+          answer: {
+            es: "Estamos ubicados en Calle 12a # 15-53, Chía, Cundinamarca, Colombia. Podés venir a recoger tu pedido directamente en nuestra bodega.",
+            en: "We are located at Calle 12a # 15-53, Chía, Cundinamarca, Colombia. You can come pick up your order directly at our warehouse.",
+          },
+          keywords: [
+            "ubicados",
+            "dirección",
+            "direccion",
+            "donde",
+            "dónde",
+            "bodega",
+            "chia",
+            "location",
+            "address",
+            "where",
+            "warehouse",
+          ],
+        },
+        {
+          id: "horario",
+          question: {
+            es: "¿Cuál es el horario de atención?",
+            en: "What are your business hours?",
+          },
+          answer: {
+            es: "Atendemos de lunes a sábado de 7:00 AM a 5:00 PM. Los domingos estamos disponibles por WhatsApp para pedidos urgentes hasta las 12:00 PM.",
+            en: "We attend Monday to Saturday from 7:00 AM to 5:00 PM. On Sundays we are available via WhatsApp for urgent orders until 12:00 PM.",
+          },
+          keywords: [
+            "horario",
+            "horas",
+            "atienden",
+            "disponible",
+            "abierto",
+            "horarios",
+            "hours",
+            "schedule",
+            "open",
+            "available",
+            "business hours",
+          ],
+        },
+        {
+          id: "visitar-bodega",
+          question: {
+            es: "¿Puedo visitar la bodega?",
+            en: "Can I visit the warehouse?",
+          },
+          answer: {
+            es: "Sí, podés visitar nuestra bodega en horario de atención (lunes a sábado 7AM-5PM). Te recomendamos agendar tu visita por WhatsApp para asegurarnos de atenderte bien.",
+            en: "Yes, you can visit our warehouse during business hours (Monday to Saturday 7AM-5PM). We recommend scheduling your visit via WhatsApp to ensure we can attend you properly.",
+          },
+          keywords: [
+            "visitar",
+            "visita",
+            "ir",
+            "bodega",
+            "instalaciones",
+            "conocer",
+            "visit",
+            "warehouse",
+            "facilities",
+            "come",
+          ],
+        },
+      ],
+    },
+    {
+      id: "proceso",
+      label: { es: "Proceso y Calidad", en: "Process & Quality" },
+      icon: "✅",
+      questions: [
+        {
+          id: "origen-frutas",
+          question: {
+            es: "¿De dónde vienen las frutas?",
+            en: "Where do the fruits come from?",
+          },
+          answer: {
+            es: "Trabajamos directamente con campesinos colombianos, comprando en finca sin intermediarios. Nuestras frutas provienen principalmente de Cundinamarca, Boyacá y regiones tropicales de Colombia.",
+            en: "We work directly with Colombian farmers, buying at the farm without intermediaries. Our fruits come primarily from Cundinamarca, Boyacá, and tropical regions of Colombia.",
+          },
+          keywords: [
+            "frutas",
+            "origen",
+            "campo",
+            "campesino",
+            "colombia",
+            "provienen",
+            "fruits",
+            "origin",
+            "farm",
+            "farmer",
+            "where from",
+          ],
+        },
+        {
+          id: "registro-sanitario",
+          question: {
+            es: "¿Tienen registro sanitario / INVIMA?",
+            en: "Do you have health/sanitary registration?",
+          },
+          answer: {
+            es: "Nuestros productos cumplen con las normas sanitarias colombianas. Para información específica sobre registros y certificaciones, contáctanos directamente y te enviamos la documentación.",
+            en: "Our products comply with Colombian sanitary regulations. For specific information about registrations and certifications, contact us directly and we'll send you the documentation.",
+          },
+          keywords: [
+            "invima",
+            "registro sanitario",
+            "certificado",
+            "certificacion",
+            "certificación",
+            "normas",
+            "sanitario",
+            "health",
+            "sanitary",
+            "certificate",
+            "certification",
+            "registration",
+          ],
+        },
+        {
+          id: "proceso-produccion",
+          question: {
+            es: "¿Cuál es el proceso de producción?",
+            en: "What is the production process?",
+          },
+          answer: {
+            es: "Compramos la fruta directamente al campesino, la seleccionamos a mano, la procesamos artesanalmente el mismo día y la entregamos fresca. Las pulpas se congelan inmediatamente después del procesado para conservar todos los nutrientes.",
+            en: "We buy the fruit directly from the farmer, select it by hand, process it artisanally the same day, and deliver it fresh. Pulps are frozen immediately after processing to preserve all nutrients.",
+          },
+          keywords: [
+            "proceso",
+            "produccion",
+            "producción",
+            "elaboracion",
+            "elaboración",
+            "como hacen",
+            "cómo hacen",
+            "artesanal",
+            "process",
+            "production",
+            "how do they make",
+            "artisanal",
+            "handmade",
+          ],
+        },
+      ],
+    },
+  ],
+  fallback: {
+    es: "No tengo información sobre eso. ¿Te gustaría hablar directamente con nuestro equipo?",
+    en: "I don't have information about that. Would you like to talk directly with our team?",
+  },
+};

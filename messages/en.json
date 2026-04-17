@@ -328,5 +328,20 @@
   },
   "languageSwitcher": {
     "label": "EN"
+  },
+  "chatbot": {
+    "title": "Frequently Asked Questions",
+    "welcome": "Hi! 👋 I'm the Más Cerca AP assistant. Select a category or type your question.",
+    "placeholder": "Type your question...",
+    "fallback": "I don't have information about that. Would you like to talk to our team?",
+    "talkToHuman": "Talk to a person",
+    "helpful": "Was this answer helpful?",
+    "yes": "Yes, thanks",
+    "no": "Not really",
+    "thankYou": "Thanks for your feedback!",
+    "backToCategories": "← Back to categories",
+    "categories": "What would you like to know?",
+    "ariaOpen": "Open FAQ assistant",
+    "ariaClose": "Close assistant"
   }
 }
