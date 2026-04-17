@@ -3,8 +3,12 @@
 import { motion } from "framer-motion";
 import { SITE_CONFIG } from "@/lib/config";
 import ContactForm from "@/components/sections/ContactForm";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
 export default function ContactoPageContent() {
+  const { dict } = useDictionary();
+  const t = dict.contact;
+
   return (
     <div className="pt-20">
 
@@ -16,7 +20,7 @@ export default function ContactoPageContent() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold mb-4"
           >
-            Contáctanos
+            {t.hero.title}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -24,7 +28,7 @@ export default function ContactoPageContent() {
             transition={{ delay: 0.1 }}
             className="text-xl opacity-90 max-w-2xl mx-auto"
           >
-            Estamos listos para llevarte la frescura a tu puerta
+            {t.hero.subtitle}
           </motion.p>
         </div>
       </section>
@@ -47,8 +51,8 @@ export default function ContactoPageContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Ubicación</h3>
-              <p className="text-gray-600">Chía, Colombia</p>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">{t.cards.location.title}</h3>
+              <p className="text-gray-600">{t.cards.location.value}</p>
             </motion.div>
 
             <motion.div
@@ -63,7 +67,7 @@ export default function ContactoPageContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Email</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">{t.cards.email.title}</h3>
               <p className="text-gray-600">{SITE_CONFIG.emailContact}</p>
             </motion.div>
 
@@ -79,9 +83,9 @@ export default function ContactoPageContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Teléfono</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">{t.cards.phone.title}</h3>
               <p className="text-gray-600">{SITE_CONFIG.phoneDisplay}</p>
-              <p className="text-sm text-gray-500">WhatsApp disponible</p>
+              <p className="text-sm text-gray-500">{t.cards.phone.whatsapp}</p>
             </motion.div>
 
           </div>
@@ -93,7 +97,7 @@ export default function ContactoPageContent() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12">
 
-            {/* Formulario — Client Component con validación y auto-close toast */}
+            {/* Formulario */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -109,14 +113,12 @@ export default function ContactoPageContent() {
               viewport={{ once: true }}
               className="space-y-8"
             >
-              {/* Dónde estamos */}
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
-                  <h3 className="text-xl font-bold text-gray-800 mb-1">Dónde estamos</h3>
-                  <p className="text-gray-500 text-sm">Podés pasar a buscar tu pedido directamente en nuestra bodega.</p>
+                  <h3 className="text-xl font-bold text-gray-800 mb-1">{t.map.title}</h3>
+                  <p className="text-gray-500 text-sm">{t.map.subtitle}</p>
                 </div>
 
-                {/* Mapa — dirección real de la bodega */}
                 <iframe
                   src="https://maps.google.com/maps?q=Calle+12a+%2315-53+Chia+Colombia&t=&z=16&ie=UTF8&iwloc=&output=embed"
                   width="100%"
@@ -126,7 +128,7 @@ export default function ContactoPageContent() {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   sandbox="allow-scripts allow-same-origin allow-popups"
-                  title="Ubicación bodega Mas Cerca Ap"
+                  title={t.map.iframeTitle}
                 />
 
                 <div className="p-6 flex items-start gap-4">

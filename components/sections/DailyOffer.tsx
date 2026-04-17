@@ -1,13 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
-const badges = [
-  { emoji: "🤝", top: "ATENCIÓN", bottom: "PERSONALIZADA" },
-  { emoji: "🌿", top: "PRODUCTOS", bottom: "FRESCOS" },
-  { emoji: "🏆", top: "CALIDAD", bottom: "GARANTIZADA" },
-  { emoji: "🚚", top: "ENTREGA", bottom: "RÁPIDA" },
-];
+const emojis = ["🤝", "🌿", "🏆", "🚚"];
 
 function SealBadge({
   emoji,
@@ -22,7 +18,6 @@ function SealBadge({
   delay: number;
   index: number;
 }) {
-  // IDs únicos basados en índice — evita colisiones con caracteres especiales en los defs SVG
   const uid = `seal-${index}`;
 
   return (
@@ -45,19 +40,13 @@ function SealBadge({
             <stop offset="50%" stopColor="#F59E0B" />
             <stop offset="100%" stopColor="#92400E" />
           </linearGradient>
-          {/* Sombra suave para el texto — mejora legibilidad sobre dorado */}
           <filter id={`shadow-${uid}`} x="-10%" y="-10%" width="120%" height="120%">
             <feDropShadow dx="0" dy="1" stdDeviation="1.2" floodColor="rgba(0,0,0,0.5)" />
           </filter>
-
-          {/* Radio diferente para cada arco — compensa que el texto crece en dirección opuesta:
-              Superior crece hacia afuera → baseline más adentro (radio 58)
-              Inferior crece hacia adentro → baseline más afuera (radio 71) */}
           <path id={`top-${uid}`} d="M 42,100 A 58,58 0 0,1 158,100" />
           <path id={`bot-${uid}`} d="M 29,100 A 71,71 0 0,0 171,100" />
         </defs>
 
-        {/* Rayos del sol */}
         {[0, 22.5, 45, 67.5].map((deg) => (
           <rect
             key={deg}
@@ -71,10 +60,8 @@ function SealBadge({
           />
         ))}
 
-        {/* Círculo base */}
         <circle cx="100" cy="100" r="83" fill={`url(#gold-${uid})`} />
 
-        {/* Anillo decorativo — radio 44 para ampliar aún más la zona de texto */}
         <circle
           cx="100"
           cy="100"
@@ -85,10 +72,8 @@ function SealBadge({
           strokeDasharray="4 3"
         />
 
-        {/* Área interior */}
         <circle cx="100" cy="100" r="43" fill="rgba(146, 64, 14, 0.18)" />
 
-        {/* Emoji central */}
         <text
           x="100"
           y="100"
@@ -99,7 +84,6 @@ function SealBadge({
           {emoji}
         </text>
 
-        {/* Texto superior — Impact para máxima legibilidad en espacio reducido */}
         <text
           fill="white"
           fontSize="14"
@@ -112,7 +96,6 @@ function SealBadge({
           </textPath>
         </text>
 
-        {/* Texto inferior */}
         <text
           fill="white"
           fontSize="14"
@@ -130,6 +113,9 @@ function SealBadge({
 }
 
 export default function DailyOffer() {
+  const { dict } = useDictionary();
+  const badges = dict.home.dailyOffer.badges;
+
   return (
     <section className="py-16 bg-gradient-to-r from-primary to-primary-dark">
       <div className="max-w-7xl mx-auto px-4">
@@ -141,10 +127,10 @@ export default function DailyOffer() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Nuestra promesa
+            {dict.home.dailyOffer.title}
           </h2>
           <p className="text-white/80 max-w-2xl mx-auto">
-            Cada entrega lleva el compromiso de quienes trabajan con amor por lo natural.
+            {dict.home.dailyOffer.subtitle}
           </p>
         </motion.div>
 
@@ -152,7 +138,7 @@ export default function DailyOffer() {
           {badges.map((badge, index) => (
             <SealBadge
               key={index}
-              emoji={badge.emoji}
+              emoji={emojis[index]}
               top={badge.top}
               bottom={badge.bottom}
               delay={index * 0.12}

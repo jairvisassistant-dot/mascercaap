@@ -10,7 +10,9 @@ export type ProductLineKey =
   | "pulpa-fresa"
   | "pulpa-mango"
   | "pulpa-guanabana"
-  | "pulpa-feijoa"
+  | "pulpa-lulo"
+  | "pulpa-guayaba"
+  | "pulpa-frutos-rojos"
   | "pulpa-tomate-arbol"
   | "kumiss";
 

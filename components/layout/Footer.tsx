@@ -1,15 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/config";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
-const footerLinks = [
-  { href: "/", label: "Inicio" },
-  { href: "/productos", label: "Productos" },
-  { href: "/nosotros", label: "Nosotros" },
-  { href: "/contacto", label: "Contacto" },
-];
-
-// TODO [#PENDIENTE]: Actualizar con las URLs reales de redes sociales cuando
-// el cliente confirme sus cuentas oficiales. Actualmente apuntan a handles placeholder.
 const socialLinks = [
   {
     name: "Facebook",
@@ -41,20 +35,28 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { dict, lang } = useDictionary();
+
+  const footerLinks = [
+    { href: `/${lang}`, label: dict.nav.home },
+    { href: `/${lang}/productos`, label: dict.nav.products },
+    { href: `/${lang}/nosotros`, label: dict.nav.about },
+    { href: `/${lang}/contacto`, label: dict.nav.contact },
+  ];
+
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Logo and description */}
           <div className="md:col-span-2">
-            <Link href="/" className="flex items-center gap-2 text-2xl font-bold mb-4">
+            <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold mb-4">
               <span className="text-3xl">🍋</span>
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
             </Link>
             <p className="text-gray-400 mb-4 max-w-md">
-              Jugos y cítricos 100% naturales, elaborados con frutas seleccionadas 
-              directamente del campo. Del campo al vaso en horas, sin conservantes.
+              {dict.footer.description}
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social, index) => (
@@ -78,7 +80,7 @@ export default function Footer() {
 
           {/* Quick links */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Enlaces Rápidos</h3>
+            <h3 className="font-semibold text-lg mb-4">{dict.footer.quickLinks}</h3>
             <ul className="space-y-2">
               {footerLinks.map((link) => (
                 <li key={link.href}>
@@ -95,14 +97,14 @@ export default function Footer() {
 
           {/* Contact info */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Contacto</h3>
+            <h3 className="font-semibold text-lg mb-4">{dict.footer.contact}</h3>
             <ul className="space-y-2 text-gray-400">
               <li className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                Bogotá, Colombia
+                {dict.footer.location}
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,8 +123,8 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-          <p>© 2026 Mas Cerca Ap. Todos los derechos reservados.</p>
-          <p className="mt-2 text-sm">Hecho con 🍋 y 🍊 en Bogotá, Colombia</p>
+          <p>{dict.footer.copyright}</p>
+          <p className="mt-2 text-sm">{dict.footer.madeWith}</p>
         </div>
       </div>
     </footer>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Testimonial } from "@/types";
 
 interface TestimonialCarouselProps {
@@ -9,6 +10,7 @@ interface TestimonialCarouselProps {
 }
 
 export default function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
+  const { dict } = useDictionary();
   const [currentIndex, setCurrentIndex] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
@@ -76,7 +78,7 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
             className={`w-3 h-3 rounded-full transition-all ${
               index === currentIndex ? "bg-primary w-6" : "bg-gray-300 hover:bg-gray-400"
             }`}
-            aria-label={`Ir a testimonio ${index + 1}`}
+            aria-label={`${dict.home.testimonials.goTo} ${index + 1}`}
           />
         ))}
       </div>

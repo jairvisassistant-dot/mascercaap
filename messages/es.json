@@ -1,0 +1,332 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "cta": "Pedir ahora",
+    "menuAriaLabel": "Abrir o cerrar menú"
+  },
+  "footer": {
+    "description": "Jugos y cítricos 100% naturales, elaborados con frutas seleccionadas directamente del campo. Del campo al vaso en horas, sin conservantes.",
+    "quickLinks": "Enlaces Rápidos",
+    "contact": "Contacto",
+    "location": "Chía, Colombia",
+    "copyright": "© 2026 Mas Cerca Ap. Todos los derechos reservados.",
+    "madeWith": "Hecho con 🍋 y 🍊 en Colombia"
+  },
+  "whatsapp": {
+    "message": "Hola! Quiero información sobre sus productos.",
+    "ariaLabel": "Contactar por WhatsApp"
+  },
+  "home": {
+    "hero": {
+      "slides": [
+        {
+          "title": "La fruta sale del campo hoy.\nMañana está en tu mesa.",
+          "subtitle": "PULPAS 100% NATURALES · SIN CONSERVANTES · SIN COLORANTES",
+          "description": "Fruta colombiana congelada en su punto exacto de madurez. Conserva sus aromas, color y sabor — exactamente como recién cosechada.",
+          "cta": "Conocer nuestra historia"
+        },
+        {
+          "title": "La calidad de nuestros productos\nno se compara.",
+          "subtitle": "FÁCIL DE PREPARAR, LISTO AL INSTANTE",
+          "description": "Elaborados con los más altos estándares de calidad para que disfrutes del sabor auténtico de la fruta que te gusta en cada sorbo.",
+          "cta": "Ver zumos"
+        },
+        {
+          "title": "Ahorrá 3 horas en cocina.\nSin sacrificar sabor.",
+          "subtitle": "PULPAS PREPROCESADAS",
+          "description": "Nuestras pulpas llegan listas. Vos solo servís.",
+          "cta": "Ver pulpas"
+        },
+        {
+          "title": "Servimos con amor, honestidad\ny fe en cada entrega.",
+          "subtitle": "MÁS CERCA AP — TU ALIADO COMERCIAL",
+          "description": "Más que distribuidores, somos el puente que acerca los mejores productos colombianos a tu negocio.",
+          "cta": "Conocer nuestra historia"
+        },
+        {
+          "title": "Pedís hoy.\nLo tenés mañana en tu negocio.",
+          "subtitle": "ENTREGA EN BOGOTÁ",
+          "description": "Desde Puente Aranda a toda la ciudad en menos de 24 horas.",
+          "cta": "Hacer pedido ahora"
+        }
+      ],
+      "prevSlide": "Slide anterior",
+      "nextSlide": "Slide siguiente",
+      "goToSlide": "Ir al slide"
+    },
+    "categories": {
+      "title": "Categorías de Productos",
+      "subtitle": "Tres líneas de productos naturales para cada momento del día.",
+      "items": [
+        {
+          "label": "Zumos y Limonadas",
+          "description": "Limón, cereza, coco y maracuyá. Sabor auténtico, elaborados con los más altos estándares de calidad."
+        },
+        {
+          "label": "Pulpas de Frutas",
+          "description": "Frutas colombianas congeladas en su punto exacto de madurez. Listas para preparar."
+        },
+        {
+          "label": "Lácteos",
+          "description": "Kumis artesanal de hacienda colombiana. Tradición y sabor en cada sorbo."
+        }
+      ],
+      "comingSoon": "Próximamente",
+      "viewProducts": "Ver productos"
+    },
+    "featured": {
+      "title": "Productos Destacados",
+      "subtitle": "Descubre nuestra selección de los jugos más populares, elaborados con frutas frescas del campo."
+    },
+    "whyChooseUs": {
+      "title": "Por qué elegirnos",
+      "subtitle": "Comprometidos con tu bienestar y el sabor auténtico de lo natural.",
+      "pillars": [
+        {
+          "title": "100% Natural",
+          "description": "Sin conservantes ni aditivos artificiales. Solo fruta fresca y agua purificada."
+        },
+        {
+          "title": "Sin Conservantes",
+          "description": "Productos frescos que mantienen sus propiedades nutricionales."
+        },
+        {
+          "title": "Hecho en Colombia",
+          "description": "Producido localmente con frutas de proveedores cercanos."
+        },
+        {
+          "title": "Entrega Rápida",
+          "description": "De nuestro almacén a tu puerta en menos de 24 horas."
+        }
+      ]
+    },
+    "dailyOffer": {
+      "title": "Nuestra promesa",
+      "subtitle": "Cada entrega lleva el compromiso de quienes trabajan con amor por lo natural.",
+      "badges": [
+        { "top": "ATENCIÓN", "bottom": "PERSONALIZADA" },
+        { "top": "PRODUCTOS", "bottom": "FRESCOS" },
+        { "top": "CALIDAD", "bottom": "GARANTIZADA" },
+        { "top": "ENTREGA", "bottom": "RÁPIDA" }
+      ]
+    },
+    "testimonials": {
+      "title": "Lo que dicen nuestros clientes",
+      "subtitle": "Empresas y negocios que confían en Mas Cerca Ap para sus necesidades de jugos naturales.",
+      "goTo": "Ir a testimonio"
+    },
+    "cta": {
+      "title": "¿Listo para probar la frescura?",
+      "text": "Contáctanos por WhatsApp y haz tu pedido. Entregamos en toda Bogotá.",
+      "button": "Hacer pedido por WhatsApp"
+    }
+  },
+  "products": {
+    "hero": {
+      "title": "Nuestros Productos",
+      "subtitle": "Zumos, pulpas y bebidas de calidad, directamente del campo colombiano a tu mesa."
+    },
+    "filters": {
+      "size": "Tamaño:",
+      "all": "Todos",
+      "clear": "Limpiar"
+    },
+    "cta": {
+      "title": "¿No encontrás lo que buscás?",
+      "text": "Contáctanos directamente. Tenemos más variedades y podemos armar pedidos a la medida de tu negocio.",
+      "button": "Hablar con nosotros"
+    },
+    "pulpaGrid": {
+      "title": "Nuestros Sabores",
+      "subtitle": "Tocá una fruta para ver sus presentaciones disponibles",
+      "presentation": "presentación",
+      "presentations": "presentaciones",
+      "available": "disponible",
+      "availablePlural": "disponibles"
+    },
+    "card": {
+      "soldOut": "Agotado",
+      "bestSeller": "Más Vendido",
+      "viewImage": "Ver imagen de",
+      "comingSoon": "Próximamente"
+    },
+    "scrollPrev": "Ver productos anteriores de",
+    "scrollNext": "Ver más productos de"
+  },
+  "about": {
+    "hero": {
+      "title": "Sobre Nosotros",
+      "subtitle": "Conoce la historia detrás de Mas Cerca Ap y nuestro compromiso con la frescura y calidad."
+    },
+    "history": {
+      "title": "Nuestra Historia",
+      "text": "Somos Más Cerca AP, una empresa colombiana fundada por una pareja que creyó que servir a la gente era la mejor forma de emprender y recibir el favor de Dios. Producimos y comercializamos zumos de frutas, pulpas de frutas y productos frescos de origen directo, comprando a los campesinos en finca y siendo la plataforma que lleva sus productos a hogares, negocios y nuevos mercados. Nos mueve la fe en Dios, nos guía la honestidad y nos define el compromiso con el campo colombiano."
+    },
+    "timeline": {
+      "title": "Del Campo a Tu Mesa",
+      "subtitle": "Nuestro proceso artesanal garantiza la máxima frescura y calidad en cada jugo que producimos.",
+      "steps": [
+        { "title": "Cultivo", "description": "Seleccionamos las mejores frutas de proveedores locales en Cundinamarca." },
+        { "title": "Selección", "description": "Inspeccionamos cada fruta para garantizar solo la mejor calidad." },
+        { "title": "Lavado", "description": "Lavado profundo con agua purificada para máxima higiene." },
+        { "title": "Exprimido", "description": "Expresión en frío para preservar vitaminas y nutrientes." },
+        { "title": "Embotellado", "description": "Envasado esterilizado para mantener la frescura." },
+        { "title": "Entrega", "description": "Distribución en toda Bogotá en menos de 24 horas." }
+      ]
+    },
+    "missionVision": {
+      "sectionSubtitle": "Quiénes somos",
+      "sectionTitle": "Misión & Visión",
+      "mission": {
+        "label": "Misión",
+        "title": "Nuestra Misión",
+        "text": "Somos Más Cerca AP, una empresa impulsada por el amor al servicio y la convicción de que cada persona merece acceso a productos frescos, naturales y de alta calidad. Conectamos directamente a agricultores colombianos con hogares, negocios y nuevos mercados, siendo el puente que acerca el campo a la mesa y los pequeños productores a grandes oportunidades. Actuamos con honestidad, compromiso, y vocación de servicio como fundamento de cada decisión que tomamos."
+      },
+      "vision": {
+        "label": "Visión",
+        "title": "Nuestra Visión",
+        "text": "En el corto y mediano plazo, Más Cerca AP será cada vez más fiel a su nombre: una empresa que sigue acercando el campo al mundo, los productores a nuevos mercados y los productos colombianos a nuevas fronteras. Creceremos siendo la plataforma que impulsa el crecimiento de otros, y siendo el puente más confiable y eficiente entre la riqueza rural y los mercados urbanos, fieles a nuestra razón de ser: servir con amor, honestidad y fe en Dios como nuestro fundamento."
+      }
+    },
+    "values": {
+      "subtitle": "Lo que nos guía",
+      "title": "Nuestros Valores",
+      "items": [
+        { "title": "Fe y Compromiso", "description": "Todo lo que somos nace del amor a Dios y a las personas." },
+        { "title": "Servicio Genuino", "description": "Servir a la gente no es lo que hacemos: es por lo qué existimos." },
+        { "title": "Calidad", "description": "La calidad en Más Cerca AP no viene de una certificación sino de la convicción de que la gente merece lo mejor." },
+        { "title": "Impacto Social", "description": "Crecer está bien. Crecer impulsando el crecimiento de otros es mejor." }
+      ]
+    },
+    "gallery": {
+      "title": "Nuestro Proceso en Imágenes",
+      "subtitle": "Una mirada detrás de escenas a cómo preparamos cada jugo.",
+      "mobileHint": "Presioná cada imagen para conocer el proceso",
+      "pressMore": "Presioná para saber más",
+      "pressBack": "Presioná para volver",
+      "cards": [
+        { "title": "El origen lo es todo", "body": "Madrugamos junto al campesino para elegir solo la fruta en su punto exacto de madurez. No hay atajos en el campo — y nosotros tampoco los tomamos." },
+        { "title": "Compramos en finca", "body": "Sin intermediarios. El campesino colombiano merece un precio justo y vos merecés saber exactamente de dónde viene lo que tomás." },
+        { "title": "Cada fruta tiene un juez", "body": "Antes de entrar a producción, cada fruta pasa por manos que saben lo que buscan. Si no cumple, no entra. Así de simple, así de honesto." },
+        { "title": "Artesanal por convicción", "body": "No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sentís en el sabor." },
+        { "title": "La frescura no espera", "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el jugo llega a vos con todo lo que la fruta tenía cuando salió del campo." },
+        { "title": "Detrás de cada botella", "body": "Somos una pareja que apostó por lo natural cuando nadie lo pedía. Cada entrega lleva nuestro nombre — y eso nos obliga a dar siempre lo mejor." }
+      ]
+    },
+    "cta": {
+      "title": "¿Quieres probar nuestros productos?",
+      "text": "Contáctanos y descubre por qué somos la opción favorita de tantos bogotanos.",
+      "button": "Contáctanos"
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contáctanos",
+      "subtitle": "Estamos listos para llevarte la frescura a tu puerta"
+    },
+    "cards": {
+      "location": { "title": "Ubicación", "value": "Chía, Colombia" },
+      "email": { "title": "Email" },
+      "phone": { "title": "Teléfono", "whatsapp": "WhatsApp disponible" }
+    },
+    "map": {
+      "title": "Dónde estamos",
+      "subtitle": "Podés pasar a buscar tu pedido directamente en nuestra bodega.",
+      "iframeTitle": "Ubicación bodega Mas Cerca Ap"
+    },
+    "form": {
+      "title": "Envíanos un mensaje",
+      "labels": {
+        "name": "Nombre completo *",
+        "company": "Empresa / Negocio (opcional)",
+        "email": "Email *",
+        "phone": "Teléfono *",
+        "type": "Tipo de consulta *",
+        "message": "Mensaje *"
+      },
+      "placeholders": {
+        "name": "Tu nombre",
+        "company": "Nombre de tu empresa",
+        "email": "tu@email.com",
+        "phone": "300 123 4567",
+        "message": "Cuéntanos cómo podemos ayudarte..."
+      },
+      "options": {
+        "default": "Selecciona una opción",
+        "order": "Realizar un pedido",
+        "distribution": "Distribuidor / Mayoreo",
+        "other": "Otro"
+      },
+      "submit": "Enviar mensaje",
+      "submitting": "Enviando...",
+      "success": {
+        "title": "¡Mensaje enviado!",
+        "text": "Te respondemos pronto. También podés escribirnos directo por WhatsApp.",
+        "quickResponse": "¿Querés una respuesta más rápida?",
+        "whatsappButton": "Continuar por WhatsApp"
+      },
+      "error": "Hubo un error al enviar. Por favor intentá de nuevo.",
+      "whatsappMsg": {
+        "greeting": "Hola Más Cerca AP! 👋",
+        "intro": "Mi nombre es *{name}* y me contacté por el formulario web para {reason}.",
+        "company": "🏢 Empresa: {company}",
+        "email": "📧 Email: {email}",
+        "phone": "📞 Teléfono: {phone}",
+        "message": "💬 Mensaje:",
+        "tipoLabel": {
+          "pedido": "realizar un pedido",
+          "distribucion": "ser distribuidor / mayoreo",
+          "otro": "hacer una consulta"
+        }
+      }
+    },
+    "validation": {
+      "nameMin": "El nombre debe tener al menos 2 caracteres",
+      "emailInvalid": "Ingresa un email válido",
+      "phoneMin": "El teléfono debe tener al menos 7 dígitos",
+      "typeRequired": "Selecciona un tipo de consulta",
+      "messageMin": "El mensaje debe tener al menos 10 caracteres"
+    }
+  },
+  "productLines": {
+    "limon": { "label": "Zumo de Limón", "description": "Puro, fresco y sin aditivos. El clásico que nunca falla." },
+    "limonada-cereza": { "label": "Zumo de Limonada con Cereza", "description": "La acidez del limón con el dulzor natural de la cereza." },
+    "limonada-coco": { "label": "Zumo de Limonada con Coco", "description": "Refrescante combinación tropical con toque cremoso." },
+    "maracuya": { "label": "Zumo de Maracuyá", "description": "Sabor exótico y vibrante directo del campo colombiano." },
+    "pulpa-maracuya": { "label": "Pulpa de Maracuyá", "description": "Exótica y aromática, congelada en su punto exacto de madurez." },
+    "pulpa-mora": { "label": "Pulpa de Mora", "description": "Mora colombiana pura, lista para jugos, postres y helados." },
+    "pulpa-fresa": { "label": "Pulpa de Fresa", "description": "Fresa fresca del campo colombiano, congelada para preservar su sabor." },
+    "pulpa-mango": { "label": "Pulpa de Mango", "description": "Mango tropical colombiano en su punto ideal de dulzor y madurez." },
+    "pulpa-guanabana": { "label": "Pulpa de Guanábana", "description": "Cremosa y aromática, directa del campo colombiano." },
+    "pulpa-lulo": { "label": "Pulpa de Lulo", "description": "Agridulce y tropical, el sabor más colombiano del catálogo." },
+    "pulpa-guayaba": { "label": "Pulpa de Guayaba", "description": "Dulce y aromática, ideal para jugos, salsas y postres." },
+    "pulpa-frutos-rojos": { "label": "Pulpa de Frutos Rojos", "description": "Mix de berries antioxidantes, intenso y natural." },
+    "pulpa-tomate-arbol": { "label": "Pulpa de Tomate de Árbol", "description": "Ideal para jugos y salsas naturales, bajo en calorías." },
+    "kumiss": { "label": "Kumiss", "description": "Bebida láctea fermentada, tradición y sabor en cada sorbo." }
+  },
+  "metadata": {
+    "home": {
+      "title": "Más Cerca AP - Jugos 100% Naturales Colombia",
+      "description": "Jugos y cítricos 100% naturales. Del campo al vaso en horas.",
+      "keywords": "jugos, naturales, Colombia, limón, naranja, zumos, bebidas"
+    },
+    "products": {
+      "title": "Productos — Mas Cerca Ap",
+      "description": "Zumos, pulpas de frutas y bebidas naturales elaborados con frutas colombianas. Del campo a tu mesa."
+    },
+    "about": {
+      "title": "Nosotros — Mas Cerca Ap",
+      "description": "Conocé la historia de Más Cerca AP: una empresa colombiana que produce y comercializa jugos, pulpas y productos frescos comprando directamente al campesino."
+    },
+    "contact": {
+      "title": "Contacto — Mas Cerca Ap",
+      "description": "Contactá a Más Cerca AP para hacer un pedido, ser distribuidor o hacer una consulta."
+    }
+  },
+  "languageSwitcher": {
+    "label": "ES"
+  }
+}

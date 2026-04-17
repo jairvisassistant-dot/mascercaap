@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
-const misionVision = {
+const misionVisionConfig = {
   mision: {
-    label: "Misión",
     icon: (
       <svg viewBox="0 0 64 64" className="w-16 h-16" fill="none">
         <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="3" strokeDasharray="6 4" />
@@ -16,11 +16,8 @@ const misionVision = {
     bgFrom: "#4CAF50",
     bgTo: "#2E7D32",
     accentColor: "#A5D6A7",
-    title: "Nuestra Misión",
-    text: "Somos Más Cerca AP, una empresa impulsada por el amor al servicio y la convicción de que cada persona merece acceso a productos frescos, naturales y de alta calidad. Conectamos directamente a agricultores colombianos con hogares, negocios y nuevos mercados, siendo el puente que acerca el campo a la mesa y los pequeños productores a grandes oportunidades. Actuamos con honestidad, compromiso, y vocación de servicio como fundamento de cada decisión que tomamos.",
   },
   vision: {
-    label: "Visión",
     icon: (
       <svg viewBox="0 0 64 64" className="w-16 h-16" fill="none">
         <path d="M4 32C4 32 14 12 32 12C50 12 60 32 60 32C60 32 50 52 32 52C14 52 4 32 4 32Z" stroke="currentColor" strokeWidth="3" />
@@ -31,14 +28,15 @@ const misionVision = {
     bgFrom: "#FF9800",
     bgTo: "#E65100",
     accentColor: "#FFCC80",
-    title: "Nuestra Visión",
-    text: "En el corto y mediano plazo, Más Cerca AP será cada vez más fiel a su nombre: una empresa que sigue acercando el campo al mundo, los productores a nuevos mercados y los productos colombianos a nuevas fronteras. Creceremos siendo la plataforma que impulsa el crecimiento de otros, y siendo el puente más confiable y eficiente entre la riqueza rural y los mercados urbanos, fieles a nuestra razón de ser: servir con amor, honestidad y fe en Dios como nuestro fundamento.",
   },
 };
 
 export default function MisionVisionTabs() {
+  const { dict } = useDictionary();
   const [activeTab, setActiveTab] = useState<"mision" | "vision">("mision");
-  const active = misionVision[activeTab];
+  const config = misionVisionConfig[activeTab];
+  const mv = dict.about.missionVision;
+  const activeText = activeTab === "mision" ? mv.mission : mv.vision;
 
   return (
     <section className="py-24 bg-white overflow-hidden">
@@ -52,10 +50,10 @@ export default function MisionVisionTabs() {
           className="text-center mb-12"
         >
           <span className="inline-block text-sm font-semibold tracking-widest text-primary uppercase mb-3">
-            Quiénes somos
+            {mv.sectionSubtitle}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-            Misión &amp; Visión
+            {mv.sectionTitle}
           </h2>
         </motion.div>
 
@@ -70,7 +68,8 @@ export default function MisionVisionTabs() {
           <div className="inline-flex bg-gray-100 rounded-full p-1 shadow-inner">
             {(["mision", "vision"] as const).map((tab) => {
               const isActive = activeTab === tab;
-              const cfg = misionVision[tab];
+              const cfg = misionVisionConfig[tab];
+              const label = tab === "mision" ? mv.mission.label : mv.vision.label;
               return (
                 <button
                   key={tab}
@@ -80,7 +79,7 @@ export default function MisionVisionTabs() {
                   }`}
                   style={isActive ? { background: `linear-gradient(135deg, ${cfg.bgFrom}, ${cfg.bgTo})` } : {}}
                 >
-                  {cfg.label}
+                  {label}
                 </button>
               );
             })}
@@ -96,15 +95,15 @@ export default function MisionVisionTabs() {
             exit={{ opacity: 0, y: -24, scale: 0.98 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
             className="relative rounded-3xl overflow-hidden shadow-2xl"
-            style={{ background: `linear-gradient(135deg, ${active.bgFrom}, ${active.bgTo})` }}
+            style={{ background: `linear-gradient(135deg, ${config.bgFrom}, ${config.bgTo})` }}
           >
             <div
               className="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-20 blur-3xl"
-              style={{ background: active.accentColor }}
+              style={{ background: config.accentColor }}
             />
             <div
               className="absolute -bottom-16 -left-16 w-64 h-64 rounded-full opacity-20 blur-3xl"
-              style={{ background: active.accentColor }}
+              style={{ background: config.accentColor }}
             />
 
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-10 p-10 md:p-14">
@@ -112,12 +111,12 @@ export default function MisionVisionTabs() {
                 className="shrink-0 w-28 h-28 rounded-2xl flex items-center justify-center shadow-lg"
                 style={{ background: "rgba(255,255,255,0.15)", color: "white" }}
               >
-                {active.icon}
+                {config.icon}
               </div>
               <div className="text-white">
-                <h3 className="text-2xl md:text-3xl font-bold mb-4">{active.title}</h3>
+                <h3 className="text-2xl md:text-3xl font-bold mb-4">{activeText.title}</h3>
                 <p className="text-white/85 text-lg leading-relaxed max-w-2xl text-justify">
-                  {active.text}
+                  {activeText.text}
                 </p>
               </div>
             </div>

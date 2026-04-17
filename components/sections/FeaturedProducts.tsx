@@ -3,12 +3,15 @@
 import { motion } from "framer-motion";
 import ProductCard from "@/components/ui/ProductCard";
 import type { Product } from "@/types";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
 interface FeaturedProductsProps {
   products: Product[];
 }
 
 export default function FeaturedProducts({ products }: FeaturedProductsProps) {
+  const { dict } = useDictionary();
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
@@ -20,11 +23,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Productos Destacados
+            {dict.home.featured.title}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Descubre nuestra selección de los jugos más populares, elaborados 
-            con frutas frescas del campo.
+            {dict.home.featured.subtitle}
           </p>
         </motion.div>
 

@@ -4,17 +4,20 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const navLinks = [
-  { href: "/", label: "Inicio" },
-  { href: "/productos", label: "Productos" },
-  { href: "/nosotros", label: "Nosotros" },
-  { href: "/contacto", label: "Contacto" },
-];
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { dict, lang } = useDictionary();
+
+  const navLinks = [
+    { href: `/${lang}`, label: dict.nav.home },
+    { href: `/${lang}/productos`, label: dict.nav.products },
+    { href: `/${lang}/nosotros`, label: dict.nav.about },
+    { href: `/${lang}/contacto`, label: dict.nav.contact },
+  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,6 +29,11 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const isActive = (href: string) => {
+    if (href === `/${lang}`) return pathname === `/${lang}` || pathname === `/${lang}/`;
+    return pathname.startsWith(href);
+  };
+
   return (
     <>
       <motion.header
@@ -34,7 +42,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary">
+            <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold text-primary">
               <span className="text-3xl">🍋</span>
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
@@ -42,37 +50,37 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => {
-                const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`nav-link font-medium transition-colors ${
-                      isActive
-                        ? "text-primary nav-link-active"
-                        : "text-gray-600 hover:text-primary"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`nav-link font-medium transition-colors ${
+                    isActive(link.href)
+                      ? "text-primary nav-link-active"
+                      : "text-gray-600 hover:text-primary"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
 
-            {/* CTA Button */}
-            <Link
-              href="/contacto"
-              className="hidden md:inline-block bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
-            >
-              Pedir ahora
-            </Link>
+            {/* CTA + Language Switcher */}
+            <div className="hidden md:flex items-center gap-3">
+              <LanguageSwitcher />
+              <Link
+                href={`/${lang}/contacto`}
+                className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
+              >
+                {dict.nav.cta}
+              </Link>
+            </div>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-primary p-2"
-              aria-label="Abrir o cerrar menú"
+              aria-label={dict.nav.menuAriaLabel}
             >
               <svg
                 className="w-6 h-6"
@@ -107,30 +115,30 @@ export default function Navbar() {
           className="md:hidden overflow-hidden bg-white border-t"
         >
           <div className="px-4 py-4 space-y-4">
-            {navLinks.map((link) => {
-              const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`block font-medium py-2 border-l-2 pl-3 transition-colors ${
-                    isActive
-                      ? "text-primary border-accent"
-                      : "text-gray-600 border-transparent hover:text-primary hover:border-accent"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-            <Link
-              href="/contacto"
-              onClick={() => setIsOpen(false)}
-              className="block bg-accent text-white font-semibold py-3 px-6 rounded-full text-center"
-            >
-              Pedir ahora
-            </Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className={`block font-medium py-2 border-l-2 pl-3 transition-colors ${
+                  isActive(link.href)
+                    ? "text-primary border-accent"
+                    : "text-gray-600 border-transparent hover:text-primary hover:border-accent"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="flex items-center gap-3 pt-2">
+              <LanguageSwitcher />
+              <Link
+                href={`/${lang}/contacto`}
+                onClick={() => setIsOpen(false)}
+                className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center"
+              >
+                {dict.nav.cta}
+              </Link>
+            </div>
           </div>
         </motion.div>
       </motion.header>

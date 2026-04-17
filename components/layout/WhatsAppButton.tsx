@@ -2,10 +2,12 @@
 
 import { motion } from "framer-motion";
 import { SITE_CONFIG } from "@/lib/config";
-
-const defaultMessage = encodeURIComponent("Hola! Quiero información sobre sus productos.");
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
 export default function WhatsAppButton() {
+  const { dict } = useDictionary();
+  const message = encodeURIComponent(dict.whatsapp.message);
+
   return (
     <motion.div
       initial={{ scale: 0 }}
@@ -14,7 +16,7 @@ export default function WhatsAppButton() {
       className="fixed bottom-6 right-6 z-50"
     >
       <motion.a
-        href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${defaultMessage}`}
+        href={`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${message}`}
         target="_blank"
         rel="noopener noreferrer"
         animate={{ scale: [1, 1.1, 1] }}
@@ -22,7 +24,7 @@ export default function WhatsAppButton() {
         whileHover={{ scale: 1.2 }}
         whileTap={{ scale: 0.95 }}
         className="flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full shadow-lg"
-        aria-label="Contactar por WhatsApp"
+        aria-label={dict.whatsapp.ariaLabel}
       >
         <svg
           className="w-8 h-8 text-white"

@@ -1,3 +1,6 @@
+import { notFound } from "next/navigation";
+import { getDictionary, hasLocale } from "@/lib/i18n";
+import type { Metadata } from "next";
 import HeroCarousel from "@/components/ui/HeroCarousel";
 import ProductCategories from "@/components/sections/ProductCategories";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
@@ -11,14 +14,29 @@ import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/qu
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/config";
 
-// Revalida la página cada 60 segundos (ISR)
-// Los cambios en Sanity Studio aparecen en el sitio en máximo 60s
 export const revalidate = 60;
 
-const whatsappCta = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent("Hola! Quiero hacer un pedido")}`;
+type Props = { params: Promise<{ lang: string }> };
 
-export default async function HomePage() {
-  // Fetchea de Sanity en paralelo; si falla o devuelve vacío, cae al fallback estático
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  if (!hasLocale(lang)) return {};
+  const dict = await getDictionary(lang);
+  return {
+    title: dict.metadata.home.title,
+    description: dict.metadata.home.description,
+    keywords: dict.metadata.home.keywords,
+  };
+}
+
+export default async function HomePage({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+
+  const dict = await getDictionary(lang);
+
+  const whatsappCta = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`;
+
   const [sanityProducts, sanityTestimonials] = await Promise.all([
     client.fetch(FEATURED_PRODUCTS_QUERY).catch(() => []),
     client.fetch(ALL_TESTIMONIALS_QUERY).catch(() => []),
@@ -29,30 +47,24 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero Carousel */}
       <HeroCarousel />
 
-      {/* Product Categories */}
       <ProductCategories />
 
-      {/* Featured Products */}
       <FeaturedProducts products={featuredProducts} />
 
-      {/* Why Choose Us */}
       <WhyChooseUs />
 
-      {/* Daily Offer with Countdown */}
       <DailyOffer />
 
-      {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-              Lo que dicen nuestros clientes
+              {dict.home.testimonials.title}
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Empresas y negocios que confían en Mas Cerca Ap para sus necesidades de jugos naturales.
+              {dict.home.testimonials.subtitle}
             </p>
           </div>
 
@@ -60,14 +72,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA Banner */}
       <section className="py-16 bg-primary">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            ¿Listo para probar la frescura?
+            {dict.home.cta.title}
           </h2>
           <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-            Contáctanos por WhatsApp y haz tu pedido. Entregamos en toda Bogotá.
+            {dict.home.cta.text}
           </p>
           <Link
             href={whatsappCta}
@@ -75,7 +86,7 @@ export default async function HomePage() {
             rel="noopener noreferrer"
             className="inline-block bg-accent hover:bg-accent-dark text-white font-bold py-4 px-8 rounded-full transition-all hover:scale-105 text-lg"
           >
-            Hacer pedido por WhatsApp
+            {dict.home.cta.button}
           </Link>
         </div>
       </section>
