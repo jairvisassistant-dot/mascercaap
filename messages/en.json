@@ -305,7 +305,7 @@
     "pulpa-guayaba": { "label": "Guava Pulp", "description": "Sweet and aromatic, perfect for juices, sauces, and desserts." },
     "pulpa-frutos-rojos": { "label": "Mixed Berry Pulp", "description": "Antioxidant-rich berry blend, intense and all natural." },
     "pulpa-tomate-arbol": { "label": "Tree Tomato Pulp", "description": "Ideal for natural juices and sauces, low in calories." },
-    "kumiss": { "label": "Kumis", "description": "Fermented dairy drink, tradition and flavor in every sip." }
+    "kumiss": { "label": "Dairy", "description": "Fermented dairy drink, tradition and flavor in every sip." }
   },
   "metadata": {
     "home": {

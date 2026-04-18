@@ -283,7 +283,7 @@ export default function HeroCarousel() {
           <div className="hero-overlay absolute inset-0" />
 
           <div className="relative h-full flex items-center justify-center">
-            <div className="text-center text-white px-4 max-w-3xl">
+            <div className="text-center text-white px-14 sm:px-8 md:px-4 max-w-3xl">
 
               <motion.p
                 initial={{ y: 20, opacity: 0 }}
@@ -307,7 +307,7 @@ export default function HeroCarousel() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
-                className="text-sm sm:text-base md:text-lg mb-6 md:mb-8 opacity-90"
+                className="text-xs sm:text-base md:text-lg mb-6 md:mb-8 opacity-90 mt-1 sm:mt-0"
               >
                 {slideText.description}
               </motion.p>
@@ -332,19 +332,19 @@ export default function HeroCarousel() {
 
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
         aria-label={dict.home.hero.prevSlide}
       >
-        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 sm:w-6 sm:h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
         aria-label={dict.home.hero.nextSlide}
       >
-        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 sm:w-6 sm:h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>

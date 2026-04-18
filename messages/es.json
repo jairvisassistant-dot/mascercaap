@@ -305,7 +305,7 @@
     "pulpa-guayaba": { "label": "Pulpa de Guayaba", "description": "Dulce y aromática, ideal para jugos, salsas y postres." },
     "pulpa-frutos-rojos": { "label": "Pulpa de Frutos Rojos", "description": "Mix de berries antioxidantes, intenso y natural." },
     "pulpa-tomate-arbol": { "label": "Pulpa de Tomate de Árbol", "description": "Ideal para jugos y salsas naturales, bajo en calorías." },
-    "kumiss": { "label": "Kumiss", "description": "Bebida láctea fermentada, tradición y sabor en cada sorbo." }
+    "kumiss": { "label": "Lácteos", "description": "Bebida láctea fermentada, tradición y sabor en cada sorbo." }
   },
   "metadata": {
     "home": {
