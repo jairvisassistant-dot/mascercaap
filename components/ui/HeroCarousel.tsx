@@ -319,6 +319,9 @@ export default function HeroCarousel() {
               >
                 <Link
                   href={resolveHref(slide.ctaHref)}
+                  {...(slide.ctaHref === "__whatsapp__"
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   className={`inline-block ${slide.ctaColor} text-white font-bold py-3 px-8 rounded-full transition-all hover:scale-105`}
                 >
                   {slideText.cta}

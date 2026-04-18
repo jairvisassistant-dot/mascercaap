@@ -3,14 +3,33 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { contactSchema, type ContactFormData } from "@/lib/schemas/contact";
 
-// ─── Rate Limiting ────────────────────────────────────────────────────────────
-// TODO [SEC-03]: Este endpoint no tiene rate limiting. Riesgo: spam de emails
-// que agote el cupo de Resend. Implementar con @upstash/ratelimit + Redis:
-//   const ratelimit = new Ratelimit({ limiter: Ratelimit.slidingWindow(5, "1 m") });
-//   const { success } = await ratelimit.limit(request.headers.get("x-forwarded-for") ?? "anon");
-//   if (!success) return NextResponse.json({ error: "Too many requests" }, { status: 429 });
-// Documentado en Informe_Auditoria_2026-04-11.md — hallazgo H-1.
-// ─────────────────────────────────────────────────────────────────────────────
+// Rate Limiting — sliding window, in-memory
+// 5 requests per IP per 60s. Resets on cold start — acceptable for a contact
+// form. Upgrade to @upstash/ratelimit + Vercel KV for cross-instance persistence
+// if spam volume justifies the operational cost.
+const requestLog = new Map<string, number[]>();
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  const timestamps = (requestLog.get(ip) ?? []).filter((t) => t > windowStart);
+
+  if (timestamps.length >= RATE_LIMIT_MAX) return false;
+
+  timestamps.push(now);
+  requestLog.set(ip, timestamps);
+
+  // Prevent unbounded growth: purge fully-expired entries when map exceeds 500 keys
+  if (requestLog.size > 500) {
+    for (const [key, times] of requestLog.entries()) {
+      if (times.every((t) => t <= windowStart)) requestLog.delete(key);
+    }
+  }
+
+  return true;
+}
 
 const tipoLabel: Record<string, string> = {
   pedido: "Realizar un pedido",
@@ -141,6 +160,19 @@ function buildEmailHtml(data: ContactFormData): string {
 }
 
 export async function POST(request: Request) {
+  // Rate limiting — block before any processing
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "anonymous";
+
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { success: false, error: "Demasiadas solicitudes. Intentá de nuevo en un minuto." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
+
   try {
     const body = await request.json();
     const data = contactSchema.parse(body);

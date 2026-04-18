@@ -154,7 +154,11 @@
       "comingSoon": "Próximamente"
     },
     "scrollPrev": "Ver productos anteriores de",
-    "scrollNext": "Ver más productos de"
+    "scrollNext": "Ver más productos de",
+    "lightbox": {
+      "ingredients": "Ingredientes",
+      "benefits": "Beneficios"
+    }
   },
   "about": {
     "hero": {
@@ -163,7 +167,8 @@
     },
     "history": {
       "title": "Nuestra Historia",
-      "text": "Más Cerca AP no es solo un negocio: es un regalo de Dios, y la prueba viva de que los nuevos comienzos existen. Fue fundada por una pareja que creyó que servir a la gente era la mejor forma de emprender. Producimos y comercializamos zumos de frutas, pulpas de frutas y productos frescos de origen directo, comprando a los campesinos en la finca y siendo la plataforma que lleva sus productos a hogares, negocios y nuevos mercados. Nos mueve la fe en Dios, nos guía la honestidad y nos define el compromiso con el campo colombiano."
+      "text": "Más Cerca AP no es solo un negocio: es un regalo de Dios, y la prueba viva de que los nuevos comienzos existen. Fue fundada por una pareja que creyó que servir a la gente era la mejor forma de emprender. Producimos y comercializamos zumos de frutas, pulpas de frutas y productos frescos de origen directo, comprando a los campesinos en la finca y siendo la plataforma que lleva sus productos a hogares, negocios y nuevos mercados. Nos mueve la fe en Dios, nos guía la honestidad y nos define el compromiso con el campo colombiano.",
+      "imageAlt": "Fundadoras de Más Cerca AP en su bodega de producción en Chía, Cundinamarca"
     },
     "timeline": {
       "title": "Del Campo a Tu Mesa",
@@ -342,6 +347,8 @@
     "backToCategories": "← Volver a categorías",
     "categories": "¿Sobre qué querés consultar?",
     "ariaOpen": "Abrir asistente de preguntas frecuentes",
-    "ariaClose": "Cerrar asistente"
+    "ariaClose": "Cerrar asistente",
+    "sendAriaLabel": "Enviar mensaje",
+    "inputLabel": "Escribí tu pregunta"
   }
 }

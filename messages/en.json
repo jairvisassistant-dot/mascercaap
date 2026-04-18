@@ -154,7 +154,11 @@
       "comingSoon": "Coming Soon"
     },
     "scrollPrev": "View previous products of",
-    "scrollNext": "View more products of"
+    "scrollNext": "View more products of",
+    "lightbox": {
+      "ingredients": "Ingredients",
+      "benefits": "Benefits"
+    }
   },
   "about": {
     "hero": {
@@ -163,7 +167,8 @@
     },
     "history": {
       "title": "Our Story",
-      "text": "Más Cerca AP is not just a business — it is a gift from God, and living proof that new beginnings are possible. It was founded by a couple who believed that serving people was the best way to build something. We produce and sell fruit juices, fruit pulps and fresh products sourced directly from farms, buying from farmers at their land and serving as the platform that brings their products to homes, businesses and new markets. We are driven by faith in God, guided by honesty and defined by our commitment to the Colombian countryside."
+      "text": "Más Cerca AP is not just a business — it is a gift from God, and living proof that new beginnings are possible. It was founded by a couple who believed that serving people was the best way to build something. We produce and sell fruit juices, fruit pulps and fresh products sourced directly from farms, buying from farmers at their land and serving as the platform that brings their products to homes, businesses and new markets. We are driven by faith in God, guided by honesty and defined by our commitment to the Colombian countryside.",
+      "imageAlt": "Mas Cerca AP founders at their production facility in Chia, Cundinamarca"
     },
     "timeline": {
       "title": "From Farm to Table",
@@ -342,6 +347,8 @@
     "backToCategories": "← Back to categories",
     "categories": "What would you like to know?",
     "ariaOpen": "Open FAQ assistant",
-    "ariaClose": "Close assistant"
+    "ariaClose": "Close assistant",
+    "sendAriaLabel": "Send message",
+    "inputLabel": "Type your question"
   }
 }

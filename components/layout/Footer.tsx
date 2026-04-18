@@ -1,8 +1,7 @@
-"use client";
-
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/config";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 const socialLinks = [
   {
@@ -34,9 +33,12 @@ const socialLinks = [
   },
 ];
 
-export default function Footer() {
-  const { dict, lang } = useDictionary();
+interface FooterProps {
+  dict: Dictionary;
+  lang: Locale;
+}
 
+export default function Footer({ dict, lang }: FooterProps) {
   const footerLinks = [
     { href: `/${lang}`, label: dict.nav.home },
     { href: `/${lang}/productos`, label: dict.nav.products },

@@ -34,7 +34,7 @@ function FlipCard({ card, cardText, pressMore, pressBack, index }: {
 }) {
   const [flipped, setFlipped] = useState(false);
   const [hinted, setHinted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLButtonElement>(null);
   const returnRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInView = useInView(ref, { once: true });
 
@@ -61,18 +61,17 @@ function FlipCard({ card, cardText, pressMore, pressBack, index }: {
   };
 
   return (
-    <motion.div
+    <motion.button
       ref={ref}
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.08 }}
-      className="relative h-48 md:h-64 [perspective:1000px] cursor-pointer group"
+      className="relative h-48 md:h-64 w-full [perspective:1000px] cursor-pointer group text-left"
       onClick={() => setFlipped((f) => !f)}
       onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
       aria-label={cardText.title}
+      aria-pressed={flipped}
     >
       <div
         className={`relative w-full h-full [transform-style:preserve-3d] transition-transform duration-700 ${
@@ -107,7 +106,7 @@ function FlipCard({ card, cardText, pressMore, pressBack, index }: {
           </span>
         </div>
       </div>
-    </motion.div>
+    </motion.button>
   );
 }
 
@@ -140,7 +139,7 @@ export default function NosotrosPageContent() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
               <div className="relative h-80 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
-                <Image src="/imgs/QuieneSomos.webp" alt="Más Cerca AP" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                <Image src="/imgs/QuieneSomos.webp" alt={t.history.imageAlt} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               </div>
             </motion.div>
           </div>

@@ -58,5 +58,6 @@ export type SalesPoint = {
   phone: string;
 };
 
-// ContactFormData se infiere de Zod en app/contacto/page.tsx
-// Fuente de verdad: z.infer<typeof contactSchema>
+// ContactFormData: inferida desde Zod (fuente de verdad), re-exportada aquí para
+// que types/index.ts siga siendo el punto de importación único del proyecto.
+export type { ContactFormData } from "@/lib/schemas/contact";

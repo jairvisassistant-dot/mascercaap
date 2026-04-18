@@ -38,8 +38,14 @@ export default async function HomePage({ params }: Props) {
   const whatsappCta = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`;
 
   const [sanityProducts, sanityTestimonials] = await Promise.all([
-    client.fetch(FEATURED_PRODUCTS_QUERY).catch(() => []),
-    client.fetch(ALL_TESTIMONIALS_QUERY).catch(() => []),
+    client.fetch(FEATURED_PRODUCTS_QUERY).catch((err: unknown) => {
+      console.error("[Sanity] Failed to fetch featured products:", err);
+      return [];
+    }),
+    client.fetch(ALL_TESTIMONIALS_QUERY).catch((err: unknown) => {
+      console.error("[Sanity] Failed to fetch testimonials:", err);
+      return [];
+    }),
   ]);
 
   const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;

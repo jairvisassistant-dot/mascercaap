@@ -4,6 +4,7 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Image from "next/image";
 import type { Product } from "@/types";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
 interface ProductLightboxProps {
   product: Product;
@@ -12,6 +13,9 @@ interface ProductLightboxProps {
 }
 
 export default function ProductLightbox({ product, isOpen, onClose }: ProductLightboxProps) {
+  const { dict } = useDictionary();
+  const t = dict.products.lightbox;
+
   if (!product.image || !isOpen) return null;
 
   return (
@@ -27,7 +31,6 @@ export default function ProductLightbox({ product, isOpen, onClose }: ProductLig
         },
       ]}
       render={{
-        // Usa next/image en vez del <img> nativo para mantener optimización
         slide: ({ slide }) => (
           <div className="relative w-full h-full flex items-center justify-center">
             <Image
@@ -40,7 +43,6 @@ export default function ProductLightbox({ product, isOpen, onClose }: ProductLig
             />
           </div>
         ),
-        // Footer con info del producto
         slideFooter: () => (
           <div className="px-6 py-4 bg-black/70 text-white text-center max-w-xl mx-auto rounded-xl mb-4">
             <p className="font-bold text-lg">
@@ -52,13 +54,13 @@ export default function ProductLightbox({ product, isOpen, onClose }: ProductLig
             <p className="text-sm opacity-80 mt-1">{product.description}</p>
             {product.ingredients && product.ingredients.length > 0 && (
               <p className="text-xs opacity-60 mt-1">
-                <span className="font-semibold">Ingredientes:</span>{" "}
+                <span className="font-semibold">{t.ingredients}:</span>{" "}
                 {product.ingredients.join(", ")}
               </p>
             )}
             {product.benefits && product.benefits.length > 0 && (
               <p className="text-xs opacity-60 mt-0.5">
-                <span className="font-semibold">Beneficios:</span>{" "}
+                <span className="font-semibold">{t.benefits}:</span>{" "}
                 {product.benefits.join(" · ")}
               </p>
             )}

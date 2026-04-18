@@ -63,7 +63,7 @@ export default async function LangLayout({
         <div className="min-h-screen flex flex-col overflow-x-hidden">
           <Navbar />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <Footer dict={dict} lang={lang} />
           <ChatBot />
           <WhatsAppButton />
         </div>

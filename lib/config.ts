@@ -3,7 +3,7 @@
 
 export const SITE_CONFIG = {
   /** Número de WhatsApp para links wa.me — sin +, sin espacios */
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "573001234567",
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
   /** Teléfono formateado para mostrar en UI */
   phoneDisplay: "+57 300 123 4567",
   /** Teléfono con guiones para JSON-LD y atributos tel: */
