@@ -43,14 +43,14 @@ const slides: SlideStructure[] = [
         },
       },
       {
-        image: "/imgs/Slide1.2.png",
+        image: "/imgs/Slide1.2.webp",
         kenBurns: {
           initial: { scale: 1.1, x: "-4%" },
           animate: { scale: 1.1, x: "4%" },
         },
       },
       {
-        image: "/imgs/Slide1.3.png",
+        image: "/imgs/Slide1.3.webp",
         kenBurns: {
           initial: { scale: 1.08, x: "0%" },
           animate: { scale: 1.18, x: "0%" },
@@ -72,21 +72,21 @@ const slides: SlideStructure[] = [
     duration: 9000,
     frames: [
       {
-        image: "/imgs/Slide2.1.png",
+        image: "/imgs/Slide2.1.webp",
         kenBurns: {
           initial: { scale: 1.05, x: "0%" },
           animate: { scale: 1.18, x: "0%" },
         },
       },
       {
-        image: "/imgs/Slide2.2.png",
+        image: "/imgs/Slide2.2.webp",
         kenBurns: {
           initial: { scale: 1.1, x: "-4%" },
           animate: { scale: 1.1, x: "4%" },
         },
       },
       {
-        image: "/imgs/Slide2.3.png",
+        image: "/imgs/Slide2.3.webp",
         kenBurns: {
           initial: { scale: 1.2, x: "0%" },
           animate: { scale: 1.05, x: "0%" },
@@ -123,21 +123,21 @@ const slides: SlideStructure[] = [
     duration: 12000,
     frames: [
       {
-        image: "/imgs/Slide4.1.png",
+        image: "/imgs/Slide4.1.webp",
         kenBurns: {
           initial: { scale: 1.05, x: "0%" },
           animate: { scale: 1.18, x: "0%" },
         },
       },
       {
-        image: "/imgs/Slide4.2.png",
+        image: "/imgs/Slide4.2.webp",
         kenBurns: {
           initial: { scale: 1.1, x: "-4%" },
           animate: { scale: 1.1, x: "4%" },
         },
       },
       {
-        image: "/imgs/Slide4.3.png",
+        image: "/imgs/Slide4.3.webp",
         kenBurns: {
           initial: { scale: 1.2, x: "0%" },
           animate: { scale: 1.05, x: "0%" },

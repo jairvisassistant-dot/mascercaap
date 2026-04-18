@@ -96,7 +96,7 @@ export const productLines: ProductLineConfig[] = [
   },
   {
     key: "kumiss",
-    label: "Kumiss",
+    label: "Lácteos",
     description: "Bebida láctea fermentada, tradición y sabor en cada sorbo.",
     gradient: "from-amber-300 to-yellow-500",
     iconEmoji: "🥛",
@@ -575,15 +575,30 @@ export const products: Product[] = [
     benefits: ["Vitamina A, C y E", "Bajo en calorías", "Sin conservantes"],
   },
 
-  // ── Kumiss (próximamente) ──────────────────────────────────────────────────
+  // ── Kumiss ────────────────────────────────────────────────────────────────
   {
-    id: "kumiss-coming",
-    name: "Kumiss",
+    id: "kumiss-del-hato-250ml",
+    name: "Kumis Del Hato",
     line: "kumiss",
-    presentation: "1L",
+    presentation: "250ml",
     presentationOrder: 1,
-    image: "/imgs/KumisAP.webp",
-    description: "Bebida láctea fermentada de tradición colombiana, elaborada con leche fresca de campo.",
+    image: "/imgs/Kumis-Hato.webp",
+    description: "Bebida láctea fermentada semidescremada con dulce, de tradición colombiana y elaborada con leche fresca de campo.",
+    ingredients: ["Leche semidescremada", "Cultivos lácticos", "Azúcar"],
+    benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
+  },
+
+  // ── Yogurt ────────────────────────────────────────────────────────────────
+  {
+    id: "yogurt-del-hato-250ml",
+    name: "Yogurt Del Hato",
+    line: "kumiss",
+    presentation: "250ml",
+    presentationOrder: 2,
+    image: "/imgs/Yogurt-Hato.webp",
+    description: "Yogurt semidescremado con dulce sabor a melocotón, elaborado con leche fresca colombiana.",
+    ingredients: ["Leche semidescremada", "Cultivos lácticos", "Azúcar", "Sabor artificial a melocotón"],
+    benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
   },
 ];
 

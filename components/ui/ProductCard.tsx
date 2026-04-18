@@ -35,7 +35,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
             src={product.image}
             alt={`${product.name} ${product.presentation}`}
             fill
-            className="object-cover"
+            className={product.line === "kumiss" ? "object-contain p-2" : "object-cover"}
             sizes="208px"
           />
         ) : (
