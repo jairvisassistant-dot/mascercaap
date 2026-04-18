@@ -21,7 +21,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   return (
     <div className="relative shrink-0 w-[234px] rounded-2xl overflow-hidden shadow-md bg-white">
       {/* Imagen */}
-      <div className="relative h-60 bg-gray-100">
+      <div className={`relative h-60 ${product.line === "kumiss" ? "bg-white" : "bg-gray-100"}`}>
         {product.image && !isComingSoon && (
           <button
             onClick={() => setLightboxOpen(true)}
@@ -35,7 +35,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
             src={product.image}
             alt={`${product.name} ${product.presentation}`}
             fill
-            className={product.line === "kumiss" ? "object-contain p-2" : "object-cover"}
+            className={product.line === "kumiss" ? "object-contain object-center p-3" : "object-cover"}
             sizes="208px"
           />
         ) : (
