@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -200,7 +200,7 @@ export default function ContactForm() {
       {/* Notificaciones con auto-cierre a los 8s */}
       <AnimatePresence>
         {submitStatus === "success" && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
@@ -233,10 +233,10 @@ export default function ContactForm() {
                 </a>
               </div>
             )}
-          </motion.div>
+          </m.div>
         )}
         {submitStatus === "error" && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
@@ -244,7 +244,7 @@ export default function ContactForm() {
           >
             <span className="text-xl">❌</span>
             <p className="text-sm">{t.error}</p>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

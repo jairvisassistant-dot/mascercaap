@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { m, AnimatePresence, useInView } from "framer-motion";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -245,7 +245,7 @@ export default function HeroCarousel() {
     <section ref={sectionRef} className="relative h-[500px] md:h-[600px] overflow-hidden">
 
       <AnimatePresence mode="wait">
-        <motion.div
+        <m.div
           key={currentSlide}
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
@@ -254,7 +254,7 @@ export default function HeroCarousel() {
           className="absolute inset-0"
         >
           <AnimatePresence mode="sync">
-            <motion.div
+            <m.div
               key={`${currentSlide}-${currentFrame}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -262,7 +262,7 @@ export default function HeroCarousel() {
               transition={{ duration: FRAME_CROSSFADE_S, ease: "easeInOut" }}
               className="absolute inset-0"
             >
-              <motion.div
+              <m.div
                 initial={frame.kenBurns.initial}
                 animate={frame.kenBurns.animate}
                 transition={{ duration: frameDurationMs / 1000, ease: "linear" }}
@@ -276,8 +276,8 @@ export default function HeroCarousel() {
                   className="object-cover"
                   priority={currentSlide === 0 && currentFrame === 0}
                 />
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
           </AnimatePresence>
 
           <div className="hero-overlay absolute inset-0" />
@@ -285,34 +285,34 @@ export default function HeroCarousel() {
           <div className="relative h-full flex items-center justify-center">
             <div className="text-center text-white px-14 sm:px-8 md:px-4 max-w-3xl">
 
-              <motion.p
+              <m.p
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="inline-block text-xs md:text-sm font-bold tracking-[0.25em] mb-3 text-cyan-200 uppercase bg-black/30 backdrop-blur-sm px-4 py-1.5 rounded-full border border-cyan-300/50"
               >
                 {slideText.subtitle}
-              </motion.p>
+              </m.p>
 
-              <motion.h1
+              <m.h1
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
                 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4 whitespace-pre-line leading-tight"
               >
                 {slideText.title}
-              </motion.h1>
+              </m.h1>
 
-              <motion.p
+              <m.p
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
                 className="text-xs sm:text-base md:text-lg mb-6 md:mb-8 opacity-90 mt-1 sm:mt-0"
               >
                 {slideText.description}
-              </motion.p>
+              </m.p>
 
-              <motion.div
+              <m.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
@@ -326,11 +326,11 @@ export default function HeroCarousel() {
                 >
                   {slideText.cta}
                 </Link>
-              </motion.div>
+              </m.div>
 
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </AnimatePresence>
 
       <button

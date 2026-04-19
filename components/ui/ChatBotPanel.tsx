@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { faqData } from "@/data/faq";
 import { findAnswer } from "@/lib/faq-matcher";
@@ -118,7 +118,7 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
     : null;
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -155,7 +155,7 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2 bg-gray-50">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
-            <motion.div
+            <m.div
               key={msg.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -171,14 +171,14 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
               >
                 {msg.text}
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </AnimatePresence>
 
         {/* Feedback buttons after last bot message */}
         <AnimatePresence>
           {showFeedback && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -197,14 +197,14 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
               >
                 {t.no}
               </button>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
 
         {/* WhatsApp fallback button — shown after fallback message */}
         <AnimatePresence>
           {messages[messages.length - 1]?.text === t.fallback && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -221,7 +221,7 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
                 </svg>
                 {t.talkToHuman}
               </a>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
 
@@ -232,7 +232,7 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
       <div className="px-3 py-2 bg-white border-t border-gray-100">
         <AnimatePresence mode="wait">
           {view === "categories" ? (
-            <motion.div
+            <m.div
               key="categories"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -252,9 +252,9 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
                   </button>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           ) : (
-            <motion.div
+            <m.div
               key="questions"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -278,7 +278,7 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
                   </button>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>
@@ -309,6 +309,6 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
           </button>
         </div>
       </form>
-    </motion.div>
+    </m.div>
   );
 }

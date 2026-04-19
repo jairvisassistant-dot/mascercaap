@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -36,7 +36,7 @@ export default function ProductCategories() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -49,11 +49,11 @@ export default function ProductCategories() {
           <p className="text-gray-600 max-w-2xl mx-auto">
             {dict.home.categories.subtitle}
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {CATEGORIES.map((category, index) => (
-            <motion.div
+            <m.div
               key={category.key}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -67,7 +67,7 @@ export default function ProductCategories() {
                 viewProductsLabel={dict.home.categories.viewProducts}
                 lang={lang}
               />
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

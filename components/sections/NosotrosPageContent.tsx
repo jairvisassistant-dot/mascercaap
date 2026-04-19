@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import MisionVisionTabs from "@/components/sections/MisionVisionTabs";
@@ -61,7 +61,7 @@ function FlipCard({ card, cardText, pressMore, pressBack, index }: {
   };
 
   return (
-    <motion.button
+    <m.button
       ref={ref}
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -106,7 +106,7 @@ function FlipCard({ card, cardText, pressMore, pressBack, index }: {
           </span>
         </div>
       </div>
-    </motion.button>
+    </m.button>
   );
 }
 
@@ -120,12 +120,12 @@ export default function NosotrosPageContent() {
       {/* Hero */}
       <section className="relative py-20 bg-gradient-to-r from-primary to-accent">
         <div className="max-w-7xl mx-auto px-4 text-center text-white">
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold mb-4">
+          <m.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold mb-4">
             {t.hero.title}
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-xl opacity-90 max-w-2xl mx-auto">
+          </m.h1>
+          <m.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-xl opacity-90 max-w-2xl mx-auto">
             {t.hero.subtitle}
-          </motion.p>
+          </m.p>
         </div>
       </section>
 
@@ -133,15 +133,15 @@ export default function NosotrosPageContent() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <m.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <h2 className="text-3xl font-bold text-gray-800 mb-6">{t.history.title}</h2>
               <p className="text-gray-600 leading-relaxed text-justify">{t.history.text}</p>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
+            </m.div>
+            <m.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
               <div className="relative h-80 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
                 <Image src="/imgs/QuieneSomos.webp" alt={t.history.imageAlt} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>
@@ -149,17 +149,17 @@ export default function NosotrosPageContent() {
       {/* Timeline */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+          <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t.timeline.title}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">{t.timeline.subtitle}</p>
-          </motion.div>
+          </m.div>
           <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
             {t.timeline.steps.map((step, index) => (
-              <motion.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }} className="text-center">
+              <m.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }} className="text-center">
                 <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg">{timelineIcons[index]}</div>
                 <h3 className="font-bold text-gray-800 mb-2">{step.title}</h3>
                 <p className="text-sm text-gray-600">{step.description}</p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -171,20 +171,20 @@ export default function NosotrosPageContent() {
       {/* Valores */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+          <m.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <span className="inline-block text-sm font-semibold tracking-widest text-accent uppercase mb-3">{t.values.subtitle}</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800">{t.values.title}</h2>
-          </motion.div>
+          </m.div>
           <div className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {t.values.items.map((value, index) => (
-              <motion.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.12 }} whileHover={{ y: -6 }} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+              <m.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.12 }} whileHover={{ y: -6 }} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
                 <div className={`h-1.5 w-full bg-gradient-to-r ${valuesMeta[index].color}`} />
                 <div className="p-8">
                   <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center text-2xl shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>{valuesMeta[index].icon}</div>
                   <h3 className="text-xl font-bold text-gray-800 mb-3">{value.title}</h3>
                   <p className="text-gray-500 leading-relaxed">{value.description}</p>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -193,10 +193,10 @@ export default function NosotrosPageContent() {
       {/* Galería de Proceso */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t.gallery.title}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">{t.gallery.subtitle}</p>
-          </motion.div>
+          </m.div>
           <p className="md:hidden flex items-center justify-center gap-2 text-sm text-gray-500 italic mb-6">
             <span className="text-lg">👆</span>
             {t.gallery.mobileHint}

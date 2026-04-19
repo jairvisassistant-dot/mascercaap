@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
 const misionVisionConfig = {
@@ -43,7 +43,7 @@ export default function MisionVisionTabs() {
       <div className="max-w-5xl mx-auto px-4">
 
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -55,10 +55,10 @@ export default function MisionVisionTabs() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
             {mv.sectionTitle}
           </h2>
-        </motion.div>
+        </m.div>
 
         {/* Tab Toggle */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -84,11 +84,11 @@ export default function MisionVisionTabs() {
               );
             })}
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Animated Card */}
         <AnimatePresence mode="wait">
-          <motion.div
+          <m.div
             key={activeTab}
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -120,7 +120,7 @@ export default function MisionVisionTabs() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </AnimatePresence>
       </div>
     </section>

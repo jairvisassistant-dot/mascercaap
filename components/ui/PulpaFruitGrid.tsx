@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import ProductCard from "@/components/ui/ProductCard";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -151,7 +151,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
       {/* Expandable product panel */}
       <AnimatePresence mode="wait">
         {selectedKey && selectedLine && selectedProducts.length > 0 && (
-          <motion.div
+          <m.div
             key={selectedKey}
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -190,7 +190,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 ))}
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

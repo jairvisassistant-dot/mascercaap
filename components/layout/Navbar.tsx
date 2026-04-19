@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -36,7 +36,7 @@ export default function Navbar() {
 
   return (
     <>
-      <motion.header
+      <m.header
         className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md"
       >
         <div className="max-w-7xl mx-auto px-4 py-4">
@@ -109,7 +109,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        <motion.div
+        <m.div
           initial={false}
           animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
           className="md:hidden overflow-hidden bg-white border-t"
@@ -140,8 +140,8 @@ export default function Navbar() {
               </Link>
             </div>
           </div>
-        </motion.div>
-      </motion.header>
+        </m.div>
+      </m.header>
     </>
   );
 }

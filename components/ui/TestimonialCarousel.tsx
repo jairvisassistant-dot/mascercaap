@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { m, AnimatePresence, useInView } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Testimonial } from "@/types";
 
@@ -30,7 +30,7 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
   return (
     <div ref={sectionRef} className="relative max-w-3xl mx-auto px-4">
       <AnimatePresence mode="wait">
-        <motion.div
+        <m.div
           key={currentIndex}
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -66,7 +66,7 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
               {testimonials[currentIndex].role}
             </p>
           </div>
-        </motion.div>
+        </m.div>
       </AnimatePresence>
 
       {/* Dots */}

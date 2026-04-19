@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { SITE_CONFIG } from "@/lib/config";
 import ContactForm from "@/components/sections/ContactForm";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -15,21 +15,21 @@ export default function ContactoPageContent() {
       {/* Hero */}
       <section className="bg-gradient-to-r from-primary to-primary-dark py-16">
         <div className="max-w-7xl mx-auto px-4 text-center text-white">
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold mb-4"
           >
             {t.hero.title}
-          </motion.h1>
-          <motion.p
+          </m.h1>
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-xl opacity-90 max-w-2xl mx-auto"
           >
             {t.hero.subtitle}
-          </motion.p>
+          </m.p>
         </div>
       </section>
 
@@ -38,7 +38,7 @@ export default function ContactoPageContent() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -53,9 +53,9 @@ export default function ContactoPageContent() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">{t.cards.location.title}</h3>
               <p className="text-gray-600">{t.cards.location.value}</p>
-            </motion.div>
+            </m.div>
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -69,9 +69,9 @@ export default function ContactoPageContent() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">{t.cards.email.title}</h3>
               <p className="text-gray-600">{SITE_CONFIG.emailContact}</p>
-            </motion.div>
+            </m.div>
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -86,7 +86,7 @@ export default function ContactoPageContent() {
               <h3 className="text-xl font-bold text-gray-800 mb-2">{t.cards.phone.title}</h3>
               <p className="text-gray-600">{SITE_CONFIG.phoneDisplay}</p>
               <p className="text-sm text-gray-500">{t.cards.phone.whatsapp}</p>
-            </motion.div>
+            </m.div>
 
           </div>
         </div>
@@ -98,16 +98,16 @@ export default function ContactoPageContent() {
           <div className="grid lg:grid-cols-2 gap-12">
 
             {/* Formulario */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
               <ContactForm />
-            </motion.div>
+            </m.div>
 
             {/* Mapa + Puntos de Venta */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -144,7 +144,7 @@ export default function ContactoPageContent() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
           </div>
         </div>

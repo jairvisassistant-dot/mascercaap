@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import ProductLineRow from "@/components/ui/ProductLineRow";
 import PulpaFruitGrid from "@/components/ui/PulpaFruitGrid";
@@ -99,21 +99,21 @@ export default function ProductosClient({ products, productLines, initialCategor
       {/* Hero */}
       <section className="bg-gradient-to-r from-primary to-primary-dark py-16">
         <div className="max-w-7xl mx-auto px-4 text-center text-white">
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold mb-4"
           >
             {dict.products.hero.title}
-          </motion.h1>
-          <motion.p
+          </m.h1>
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-xl opacity-90 max-w-2xl mx-auto"
           >
             {dict.products.hero.subtitle}
-          </motion.p>
+          </m.p>
         </div>
       </section>
 
@@ -193,7 +193,7 @@ export default function ProductosClient({ products, productLines, initialCategor
             const lineProducts = getLineProducts(line.key);
 
             return (
-              <motion.div
+              <m.div
                 key={line.key}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -213,12 +213,12 @@ export default function ProductosClient({ products, productLines, initialCategor
                 {lineProducts.length > 0 ? (
                   <ProductLineRow line={line} products={lineProducts} />
                 ) : null}
-              </motion.div>
+              </m.div>
             );
           })}
 
           {pulpaVisibleLines.length > 0 && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -232,7 +232,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                     (activeSize === "todos" || p.presentation === activeSize)
                 )}
               />
-            </motion.div>
+            </m.div>
           )}
         </div>
       </section>
