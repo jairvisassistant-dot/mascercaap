@@ -41,7 +41,7 @@ export default async function ProductosPage({ params, searchParams }: Props) {
 
   const products = rawProducts.map((p: (typeof staticProducts)[0]) =>
     p.line === "kumiss" && !p.image
-      ? { ...p, image: "/imgs/KumisAP.webp", presentation: "1L" }
+      ? { ...p, image: "/imgs/Kumis-Hato.webp", presentation: "1L" }
       : p
   );
 

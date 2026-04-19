@@ -25,7 +25,7 @@ const CATEGORIES: CategoryStructure[] = [
   },
   {
     key: "lacteos",
-    image: "/imgs/KumisAP.webp",
+    image: "/imgs/Kumis-Hato.webp",
     href: "/productos?categoria=lacteos",
   },
 ];
