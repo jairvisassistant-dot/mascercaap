@@ -26,6 +26,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: dict.metadata.home.title,
     description: dict.metadata.home.description,
     keywords: dict.metadata.home.keywords,
+    alternates: {
+      canonical: `${SITE_CONFIG.siteUrl}/${lang}`,
+      languages: {
+        es: `${SITE_CONFIG.siteUrl}/es`,
+        en: `${SITE_CONFIG.siteUrl}/en`,
+      },
+    },
   };
 }
 

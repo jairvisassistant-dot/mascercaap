@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import NosotrosPageContent from "@/components/sections/NosotrosPageContent";
+import { SITE_CONFIG } from "@/lib/config";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -17,6 +18,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: dict.metadata.about.description,
       type: "website",
       locale: lang === "es" ? "es_CO" : "en_US",
+    },
+    alternates: {
+      canonical: `${SITE_CONFIG.siteUrl}/${lang}/nosotros`,
+      languages: {
+        es: `${SITE_CONFIG.siteUrl}/es/nosotros`,
+        en: `${SITE_CONFIG.siteUrl}/en/nosotros`,
+      },
     },
   };
 }

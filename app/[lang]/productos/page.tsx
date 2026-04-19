@@ -5,6 +5,7 @@ import { ALL_PRODUCTS_QUERY } from "@/sanity/lib/queries";
 import { products as staticProducts, productLines } from "@/data/products";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
+import { SITE_CONFIG } from "@/lib/config";
 
 export const revalidate = 60;
 
@@ -25,6 +26,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: dict.metadata.products.description,
       type: "website",
       locale: lang === "es" ? "es_CO" : "en_US",
+    },
+    alternates: {
+      canonical: `${SITE_CONFIG.siteUrl}/${lang}/productos`,
+      languages: {
+        es: `${SITE_CONFIG.siteUrl}/es/productos`,
+        en: `${SITE_CONFIG.siteUrl}/en/productos`,
+      },
     },
   };
 }
