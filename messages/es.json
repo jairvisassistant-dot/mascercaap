@@ -5,7 +5,9 @@
     "about": "Nosotros",
     "contact": "Contacto",
     "cta": "Pedir ahora",
-    "menuAriaLabel": "Abrir o cerrar menú"
+    "menuAriaLabel": "Abrir o cerrar menú",
+    "switchToEnglish": "Switch to English",
+    "switchToSpanish": "Cambiar a Español"
   },
   "footer": {
     "description": "Jugos y cítricos 100% naturales, elaborados con frutas seleccionadas directamente del campo. Del campo al vaso en horas, sin conservantes.",

@@ -140,8 +140,8 @@ export const faqData: FAQData = {
             en: "What sizes are available?",
           },
           answer: {
-            es: "Los zumos están disponibles en presentaciones de 350ml, 600ml, 1L, 2L y 5L. Las pulpas congeladas vienen en presentaciones de 120g, 300g y 1000g. Para pedidos al por mayor hay presentaciones especiales.",
-            en: "Juices are available in 350ml, 600ml, 1L, 2L, and 5L sizes. Frozen pulps come in 120g, 300g, and 1000g packs. For wholesale orders, special sizes are available.",
+            es: "El zumo de limón viene en 600ml, 1L, 2L y 5L. Los zumos de cereza, coco y maracuyá están disponibles en 350ml, 1L y 2L. Las pulpas congeladas vienen en 120g, 300g y 1000g. Para pedidos al por mayor hay presentaciones especiales.",
+            en: "Lemon juice comes in 600ml, 1L, 2L, and 5L. Cherry, coconut, and passion fruit juices are available in 350ml, 1L, and 2L. Frozen pulps come in 120g, 300g, and 1000g packs. For wholesale orders, special sizes are available.",
           },
           keywords: [
             "tamaños",

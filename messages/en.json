@@ -5,7 +5,9 @@
     "about": "About Us",
     "contact": "Contact",
     "cta": "Order now",
-    "menuAriaLabel": "Open or close menu"
+    "menuAriaLabel": "Open or close menu",
+    "switchToEnglish": "Switch to English",
+    "switchToSpanish": "Switch to Spanish"
   },
   "footer": {
     "description": "100% natural juices and citrus fruits, made with hand-picked fruit straight from the farm. From farm to glass in hours, no preservatives.",
