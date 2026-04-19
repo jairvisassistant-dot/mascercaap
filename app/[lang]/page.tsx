@@ -45,14 +45,18 @@ export default async function HomePage({ params }: Props) {
 
   const [sanityProducts, sanityTestimonials] = sanityReady
     ? await Promise.all([
-        client.fetch(FEATURED_PRODUCTS_QUERY).catch((err: unknown) => {
-          console.error("[Sanity] Failed to fetch featured products:", err instanceof Error ? err.message : "unknown");
-          return [];
-        }),
-        client.fetch(ALL_TESTIMONIALS_QUERY).catch((err: unknown) => {
-          console.error("[Sanity] Failed to fetch testimonials:", err instanceof Error ? err.message : "unknown");
-          return [];
-        }),
+        client
+          .fetch(FEATURED_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } })
+          .catch((err: unknown) => {
+            console.error("[Sanity] Failed to fetch featured products:", err instanceof Error ? err.message : "unknown");
+            return [];
+          }),
+        client
+          .fetch(ALL_TESTIMONIALS_QUERY, {}, { next: { revalidate: 3600 } })
+          .catch((err: unknown) => {
+            console.error("[Sanity] Failed to fetch testimonials:", err instanceof Error ? err.message : "unknown");
+            return [];
+          }),
       ])
     : [[], []];
 

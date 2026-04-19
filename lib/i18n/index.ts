@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 
 export const locales = ["es", "en"] as const;
 export type Locale = (typeof locales)[number];
@@ -12,6 +13,9 @@ const dictionaries = {
   en: () => import("@/messages/en.json").then((m) => m.default),
 };
 
-export const getDictionary = async (locale: Locale) => dictionaries[locale]();
+// React.cache() deduplicates calls dentro del mismo request:
+// layout, generateMetadata y el componente de página comparten el mismo resultado
+// sin cargar el JSON más de una vez por request.
+export const getDictionary = cache(async (locale: Locale) => dictionaries[locale]());
 
 export type Dictionary = Awaited<ReturnType<typeof getDictionary>>;
