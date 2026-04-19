@@ -183,7 +183,43 @@ import { m } from "framer-motion";
 
 14. **Parámetros sin usar**: Si una función recibe un parámetro que no usa en todas sus ramas, es un bug. Verificar antes de commit.
 
-15. **Código muerto**: Los componentes sin importadores (`CountdownTimer.tsx`) deben documentarse con un comentario explicando su estado. No dejar componentes huérfanos sin contexto.
+15. **Código muerto**: Los componentes sin importadores deben documentarse o eliminarse. No dejar componentes huérfanos sin contexto — son ruido en auditorías futuras.
+
+16. **Schemas Zod con mensajes hardcodeados en un solo idioma**: Si el schema usa mensajes de validación fijos (ej. en español), los usuarios en otros idiomas ven errores en el idioma incorrecto. Usar `createContactSchema(msgs)` con mensajes como parámetro y pasarlos desde el diccionario i18n.
+
+---
+
+---
+
+## CAUSA RAÍZ #11 — Schema Zod con mensajes de error en un solo idioma
+
+**Qué pasó:** `lib/schemas/contact.ts` tenía los mensajes de validación hardcodeados en español. Los usuarios en la versión `/en/` del sitio veían errores como *"El nombre debe tener al menos 2 caracteres"* en lugar de *"Name must be at least 2 characters"*.
+
+**Por qué ocurrió:** El schema Zod fue escrito al principio del proyecto como un módulo estático. En ese momento solo existía el idioma español. Al agregar i18n al sitio, los mensajes de validación quedaron afuera del sistema de traducción. Las claves `contact.validation` se agregaron al JSON pero nunca se conectaron al schema.
+
+**Cómo se detectó:** Auditoría de código muerto — `contact.validation` existía en los JSONs pero ningún componente la referenciaba. Al investigar por qué, se descubrió el bug de localización.
+
+**Cómo se arregló:** `contactSchema` estático se convirtió en `createContactSchema(msgs)`, una función que acepta los mensajes de validación como parámetro. `ContactForm.tsx` la llama con `dict.contact.validation`. La API route sigue usando el schema estático en español (es server-side, no visible al usuario).
+
+**Regla derivada:** Todo schema Zod que valide input de usuario VISIBLE debe aceptar mensajes localizados. El patrón correcto es `createXxxSchema(msgs)` — una función factory que recibe mensajes del diccionario. Nunca hardcodear strings de error en un schema compartido entre cliente y servidor.
+
+**Patrón correcto:**
+```typescript
+// ❌ MAL — mensajes hardcodeados, solo funciona en un idioma
+export const contactSchema = z.object({
+  nombre: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+});
+
+// ✅ BIEN — mensajes como parámetro, localizables
+export function createContactSchema(msgs: ContactValidationMessages) {
+  return z.object({
+    nombre: z.string().min(2, msgs.nameMin),
+  });
+}
+// En el componente: zodResolver(createContactSchema(dict.contact.validation))
+```
+
+**Archivos afectados:** `lib/schemas/contact.ts`, `components/sections/ContactForm.tsx`, `messages/es.json`, `messages/en.json`
 
 ---
 
