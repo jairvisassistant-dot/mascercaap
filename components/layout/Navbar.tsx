@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { m } from "framer-motion";
+// m solo se usa para el menú mobile animado — el header no usa animaciones
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -36,9 +37,7 @@ export default function Navbar() {
 
   return (
     <>
-      <m.header
-        className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md"
-      >
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -113,6 +112,7 @@ export default function Navbar() {
           initial={false}
           animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
           className="md:hidden overflow-hidden bg-white border-t"
+          style={{ pointerEvents: isOpen ? "auto" : "none" }}
         >
           <div className="px-4 py-4 space-y-4">
             {navLinks.map((link) => (
@@ -141,7 +141,7 @@ export default function Navbar() {
             </div>
           </div>
         </m.div>
-      </m.header>
+      </header>
     </>
   );
 }
