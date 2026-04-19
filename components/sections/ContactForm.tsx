@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { contactSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
@@ -27,7 +27,7 @@ export default function ContactForm() {
     formState: { errors },
     reset,
   } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
+    resolver: zodResolver(createContactSchema(dict.contact.validation)),
   });
 
   const onSubmit = async (data: ContactFormData) => {

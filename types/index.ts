@@ -72,14 +72,6 @@ export type Testimonial = {
   rating: 1 | 2 | 3 | 4 | 5;
 };
 
-export type SalesPoint = {
-  id: string;
-  name: string;
-  address: string;
-  neighborhood: string;
-  schedule: string;
-  phone: string;
-};
 
 // ContactFormData: inferida desde Zod (fuente de verdad), re-exportada aquí para
 // que types/index.ts siga siendo el punto de importación único del proyecto.

@@ -1,4 +1,5 @@
-import { faqData, type FAQQuestion, type FAQCategory } from "@/data/faq";
+import { faqData } from "@/data/faq";
+import type { FAQQuestion, FAQCategory } from "@/types";
 import type { Locale } from "@/lib/i18n";
 
 export type FAQMatch = {
@@ -57,6 +58,3 @@ export function findAnswer(query: string, _lang: Locale): FAQMatch | null {
   return best;
 }
 
-export function getCategoryById(id: string): FAQCategory | undefined {
-  return faqData.categories.find((c) => c.id === id);
-}

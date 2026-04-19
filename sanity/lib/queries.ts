@@ -45,14 +45,3 @@ export const ALL_TESTIMONIALS_QUERY = defineQuery(`
     rating
   }
 `);
-
-export const ALL_SALES_POINTS_QUERY = defineQuery(`
-  *[_type == "salesPoint"] | order(_createdAt asc) {
-    "id": _id,
-    name,
-    address,
-    neighborhood,
-    schedule,
-    phone
-  }
-`);

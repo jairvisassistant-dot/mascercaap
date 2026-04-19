@@ -333,9 +333,6 @@
       "description": "Contactá a Más Cerca AP para hacer un pedido, ser distribuidor o hacer una consulta."
     }
   },
-  "languageSwitcher": {
-    "label": "ES"
-  },
   "chatbot": {
     "title": "Preguntas Frecuentes",
     "welcome": "Hola! 👋 Soy el asistente de Más Cerca AP. Seleccioná una categoría o escribí tu pregunta.",

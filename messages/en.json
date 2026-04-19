@@ -333,9 +333,6 @@
       "description": "Contact Mas Cerca AP to place an order, become a distributor or make an inquiry."
     }
   },
-  "languageSwitcher": {
-    "label": "EN"
-  },
   "chatbot": {
     "title": "Frequently Asked Questions",
     "welcome": "Hi! 👋 I'm the Más Cerca AP assistant. Select a category or type your question.",

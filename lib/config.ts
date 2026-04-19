@@ -10,8 +10,6 @@ export const SITE_CONFIG = {
   phoneTel: "+57-300-123-4567",
   /** Email de contacto general */
   emailContact: "apalejandraplata@gmail.com",
-  /** Email para pedidos */
-  emailOrders: "apalejandraplata@gmail.com",
   /** URL canónica del sitio */
   siteUrl: "https://mascercap.com",
   /** Dirección física de la bodega */
