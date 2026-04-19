@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { m } from "framer-motion";
+import type { Dictionary } from "@/lib/i18n";
 
 const emojis = ["🤝", "🌿", "🏆", "🚚"];
 
@@ -21,7 +21,7 @@ function SealBadge({
   const uid = `seal-${index}`;
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
       whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
       viewport={{ once: true }}
@@ -108,18 +108,17 @@ function SealBadge({
           </textPath>
         </text>
       </svg>
-    </motion.div>
+    </m.div>
   );
 }
 
-export default function DailyOffer() {
-  const { dict } = useDictionary();
+export default function DailyOffer({ dict }: { dict: Dictionary }) {
   const badges = dict.home.dailyOffer.badges;
 
   return (
     <section className="py-16 bg-gradient-to-r from-primary to-primary-dark">
       <div className="max-w-7xl mx-auto px-4">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -132,7 +131,7 @@ export default function DailyOffer() {
           <p className="text-white/80 max-w-2xl mx-auto">
             {dict.home.dailyOffer.subtitle}
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="flex flex-wrap justify-center gap-8 md:gap-16">
           {badges.map((badge, index) => (

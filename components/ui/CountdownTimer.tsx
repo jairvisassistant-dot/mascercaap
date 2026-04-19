@@ -51,6 +51,8 @@ function FlipCard({ value, label }: { value: number; label: string }) {
   );
 }
 
+// Componente listo para usar. Pendiente de integración en DailyOffer cuando se active la oferta del día.
+// Implementa hydration skeleton correcto (UX-03) y cleanup de interval (BUG-01).
 export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
   const [mounted, setMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({

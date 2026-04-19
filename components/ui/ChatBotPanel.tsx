@@ -32,6 +32,13 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
   const [showFeedback, setShowFeedback] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Auto-dismiss feedback after 15s if user doesn't interact (UX-01)
+  useEffect(() => {
+    if (!showFeedback) return;
+    const timer = setTimeout(() => setShowFeedback(null), 15_000);
+    return () => clearTimeout(timer);
+  }, [showFeedback]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -98,7 +105,7 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
   function handleFeedback(helpful: boolean) {
     setShowFeedback(null);
     if (!helpful) {
-      addMessage("bot", t.thankYou);
+      addMessage("bot", t.notHelpful);
     } else {
       addMessage("bot", t.thankYou);
     }

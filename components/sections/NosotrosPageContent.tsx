@@ -17,12 +17,12 @@ const valuesMeta = [
 ];
 
 const flipCardsMeta = [
-  { src: "/imgs/Naranja-Seleccion.webp", alt: "Orange selection at sunrise", icon: "🌅" },
-  { src: "/imgs/Naranja-Compra.webp", alt: "Direct purchase from farmer", icon: "🤝" },
-  { src: "/imgs/Naranja-Tiene-Juez.webp", alt: "Quality control inspection", icon: "🔍" },
-  { src: "/imgs/Naranja-Frio.webp", alt: "Cold pressing process", icon: "🧃" },
-  { src: "/imgs/Naranja-Frescuras.webp", alt: "Fresh juice bottling", icon: "✨" },
-  { src: "/imgs/Naranja-Detras-Cada-Botella.webp", alt: "Founders working", icon: "💚" },
+  { src: "/imgs/Naranja-Seleccion.webp", alt: "Selección de naranjas al amanecer", icon: "🌅" },
+  { src: "/imgs/Naranja-Compra.webp", alt: "Compra directa al campesino colombiano", icon: "🤝" },
+  { src: "/imgs/Naranja-Tiene-Juez.webp", alt: "Control de calidad e inspección de fruta", icon: "🔍" },
+  { src: "/imgs/Naranja-Frio.webp", alt: "Proceso artesanal de exprimido en frío", icon: "🧃" },
+  { src: "/imgs/Naranja-Frescuras.webp", alt: "Embotellado fresco de jugo de naranja", icon: "✨" },
+  { src: "/imgs/Naranja-Detras-Cada-Botella.webp", alt: "Fundadoras de Más Cerca AP trabajando", icon: "💚" },
 ];
 
 function FlipCard({ card, cardText, pressMore, pressBack, index }: {

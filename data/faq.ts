@@ -1,21 +1,5 @@
-export type FAQQuestion = {
-  id: string;
-  question: { es: string; en: string };
-  answer: { es: string; en: string };
-  keywords: string[];
-};
-
-export type FAQCategory = {
-  id: string;
-  label: { es: string; en: string };
-  icon: string;
-  questions: FAQQuestion[];
-};
-
-export type FAQData = {
-  categories: FAQCategory[];
-  fallback: { es: string; en: string };
-};
+import type { FAQQuestion, FAQCategory, FAQData } from "@/types";
+import { SITE_CONFIG } from "@/lib/config";
 
 export const faqData: FAQData = {
   categories: [
@@ -107,7 +91,7 @@ export const faqData: FAQData = {
             en: "How do you store the pulps?",
           },
           answer: {
-            es: "Las pulpas deben conservarse congeladas a -18°C. Una vez descongeladas no deben volver a congelarse. Para usarlas, descongelalas en la nevera o a temperatura ambiente y preparalas de inmediato.",
+            es: "Las pulpas deben conservarse congeladas a -18°C. Una vez descongeladas no deben volver a congelarse. Para usarlas, descongélalas en la nevera o a temperatura ambiente y prepáralas de inmediato.",
             en: "Pulps must be kept frozen at -18°C. Once thawed, they should not be refrozen. To use them, thaw in the refrigerator or at room temperature and prepare immediately.",
           },
           keywords: [
@@ -156,8 +140,8 @@ export const faqData: FAQData = {
             en: "What sizes are available?",
           },
           answer: {
-            es: "Los zumos están disponibles en presentaciones de 250ml, 500ml y 1 litro. Las pulpas congeladas vienen en bolsas de 100g, 250g y 500g. Para pedidos al por mayor hay presentaciones especiales.",
-            en: "Juices are available in 250ml, 500ml, and 1 liter sizes. Frozen pulps come in 100g, 250g, and 500g bags. For wholesale orders, special sizes are available.",
+            es: "Los zumos están disponibles en presentaciones de 350ml, 600ml, 1L, 2L y 5L. Las pulpas congeladas vienen en presentaciones de 120g, 300g y 1000g. Para pedidos al por mayor hay presentaciones especiales.",
+            en: "Juices are available in 350ml, 600ml, 1L, 2L, and 5L sizes. Frozen pulps come in 120g, 300g, and 1000g packs. For wholesale orders, special sizes are available.",
           },
           keywords: [
             "tamaños",
@@ -186,8 +170,8 @@ export const faqData: FAQData = {
             en: "How do I place an order?",
           },
           answer: {
-            es: "Podés hacer tu pedido por WhatsApp al +57 300 123 4567, por email a apalejandraplata@gmail.com o a través del formulario de contacto en nuestro sitio web. Te responderemos en menos de 2 horas en horario de atención.",
-            en: "You can place your order via WhatsApp at +57 300 123 4567, by email at apalejandraplata@gmail.com, or through the contact form on our website. We'll respond within 2 hours during business hours.",
+            es: `Podés hacer tu pedido por WhatsApp al ${SITE_CONFIG.phoneDisplay}, por email a ${SITE_CONFIG.emailContact} o a través del formulario de contacto en nuestro sitio web. Te responderemos en menos de 2 horas en horario de atención.`,
+            en: `You can place your order via WhatsApp at ${SITE_CONFIG.phoneDisplay}, by email at ${SITE_CONFIG.emailContact}, or through the contact form on our website. We'll respond within 2 hours during business hours.`,
           },
           keywords: [
             "pedir",

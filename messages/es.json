@@ -145,7 +145,9 @@
       "presentation": "presentación",
       "presentations": "presentaciones",
       "available": "disponible",
-      "availablePlural": "disponibles"
+      "availablePlural": "disponibles",
+      "scrollPrev": "Ver sabores anteriores",
+      "scrollNext": "Ver más sabores"
     },
     "card": {
       "soldOut": "Agotado",
@@ -344,6 +346,7 @@
     "yes": "Sí, gracias",
     "no": "No del todo",
     "thankYou": "¡Gracias por tu feedback!",
+    "notHelpful": "Entendido, gracias por decírnoslo. Podés contactarnos directamente por WhatsApp para más ayuda.",
     "backToCategories": "← Volver a categorías",
     "categories": "¿Sobre qué querés consultar?",
     "ariaOpen": "Abrir asistente de preguntas frecuentes",

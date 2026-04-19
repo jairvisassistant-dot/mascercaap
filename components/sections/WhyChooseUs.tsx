@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { m } from "framer-motion";
+import type { Dictionary } from "@/lib/i18n";
 
 const icons = [
   <svg key="natural" className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -19,14 +19,13 @@ const icons = [
   </svg>,
 ];
 
-export default function WhyChooseUs() {
-  const { dict } = useDictionary();
+export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
   const pillars = dict.home.whyChooseUs.pillars;
 
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -39,11 +38,11 @@ export default function WhyChooseUs() {
           <p className="text-gray-600 max-w-2xl mx-auto">
             {dict.home.whyChooseUs.subtitle}
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {pillars.map((pillar, index) => (
-            <motion.div
+            <m.div
               key={index}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -56,7 +55,7 @@ export default function WhyChooseUs() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">{pillar.title}</h3>
               <p className="text-gray-600">{pillar.description}</p>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

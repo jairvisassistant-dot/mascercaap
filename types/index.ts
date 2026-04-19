@@ -1,5 +1,28 @@
 // Tipos para el sitio web de Mas Cerca Ap
 
+// ── FAQ / Chatbot ──────────────────────────────────────────────────────────
+export type FAQQuestion = {
+  id: string;
+  question: { es: string; en: string };
+  answer: { es: string; en: string };
+  keywords: string[];
+};
+
+export type FAQCategory = {
+  id: string;
+  label: { es: string; en: string };
+  icon: string;
+  questions: FAQQuestion[];
+};
+
+export type FAQData = {
+  categories: FAQCategory[];
+  fallback: { es: string; en: string };
+};
+
+// ── Product lines translation ──────────────────────────────────────────────
+export type ProductLineTranslation = { label: string; description: string };
+
 export type ProductLineKey =
   | "limon"
   | "limonada-cereza"

@@ -57,11 +57,11 @@ export default async function HomePage({ params }: Props) {
 
       <ProductCategories />
 
-      <FeaturedProducts products={featuredProducts} />
+      <FeaturedProducts products={featuredProducts} dict={dict} />
 
-      <WhyChooseUs />
+      <WhyChooseUs dict={dict} />
 
-      <DailyOffer />
+      <DailyOffer dict={dict} />
 
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">

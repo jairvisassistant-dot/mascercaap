@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import ProductCard from "@/components/ui/ProductCard";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
-import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
+import type { Product, ProductLineConfig, ProductLineKey, ProductLineTranslation } from "@/types";
 
 function FruitImage({ slug, name }: { slug: string; name: string }) {
   const [src, setSrc] = useState(`/imgs/fruta-${slug}.webp`);
@@ -33,7 +33,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const pl = dict.productLines as Record<string, { label: string; description: string }>;
+  const pl = dict.productLines as Record<string, ProductLineTranslation>;
 
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -82,7 +82,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
         {/* Left arrow */}
         <button
           onClick={() => scroll("left")}
-          aria-label="Ver anteriores"
+          aria-label={dict.products.pulpaGrid.scrollPrev}
           className={`shrink-0 w-8 h-8 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary transition-all ${
             canScrollLeft ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
@@ -137,7 +137,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
         {/* Right arrow */}
         <button
           onClick={() => scroll("right")}
-          aria-label="Ver más sabores"
+          aria-label={dict.products.pulpaGrid.scrollNext}
           className={`shrink-0 w-8 h-8 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary transition-all ${
             canScrollRight ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}

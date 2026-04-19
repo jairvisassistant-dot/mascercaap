@@ -96,7 +96,7 @@ const slides: SlideStructure[] = [
   },
   {
     id: 3,
-    ctaHref: "/productos",
+    ctaHref: "/productos?categoria=pulpas",
     ctaColor: "bg-accent hover:bg-accent-dark",
     duration: 8000,
     frames: [

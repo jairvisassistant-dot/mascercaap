@@ -4,7 +4,9 @@ import { locales } from "@/lib/i18n";
 const baseUrl = "https://mascercap.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date("2026-04-09");
+  // Fecha fija intencional — evita NEXT-06: new Date() sin args genera checksums distintos en cada build.
+  // Actualizar manualmente al hacer cambios de contenido significativos.
+  const now = new Date("2026-04-19");
 
   const staticPages = [
     { path: "", priority: 1, changefreq: "weekly" as const },

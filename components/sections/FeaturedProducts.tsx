@@ -1,21 +1,20 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import ProductCard from "@/components/ui/ProductCard";
 import type { Product } from "@/types";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
 
 interface FeaturedProductsProps {
   products: Product[];
+  dict: Dictionary;
 }
 
-export default function FeaturedProducts({ products }: FeaturedProductsProps) {
-  const { dict } = useDictionary();
-
+export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -28,11 +27,11 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           <p className="text-gray-600 max-w-2xl mx-auto">
             {dict.home.featured.subtitle}
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {products.map((product, index) => (
-            <motion.div
+            <m.div
               key={product.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -40,7 +39,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
               <ProductCard product={product} />
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

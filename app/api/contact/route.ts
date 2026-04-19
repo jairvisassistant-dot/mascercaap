@@ -210,7 +210,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    console.error("Error al enviar email:", error);
+    console.error("Error al enviar email:", error instanceof Error ? error.message : "unknown error");
     return NextResponse.json(
       { success: false, error: "Error al enviar el mensaje" },
       { status: 500 }

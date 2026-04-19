@@ -145,7 +145,9 @@
       "presentation": "presentation",
       "presentations": "presentations",
       "available": "available",
-      "availablePlural": "available"
+      "availablePlural": "available",
+      "scrollPrev": "View previous flavors",
+      "scrollNext": "View more flavors"
     },
     "card": {
       "soldOut": "Sold Out",
@@ -344,6 +346,7 @@
     "yes": "Yes, thanks",
     "no": "Not really",
     "thankYou": "Thanks for your feedback!",
+    "notHelpful": "Got it, thanks for letting us know. You can contact us directly via WhatsApp for more help.",
     "backToCategories": "← Back to categories",
     "categories": "What would you like to know?",
     "ariaOpen": "Open FAQ assistant",
