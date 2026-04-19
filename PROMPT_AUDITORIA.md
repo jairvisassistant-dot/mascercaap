@@ -106,7 +106,7 @@ Para cada schema Zod del proyecto:
 - NEXT-08: JSON-LD en `app/[lang]/layout.tsx`
 - NEXT-09: API routes retornan códigos HTTP correctos
 - NEXT-10: `NEXT_PUBLIC_*` solo para datos no sensibles
-- **NEXT-NUEVO**: El middleware está en `middleware.ts` en la raíz (no proxy.ts, no otro nombre)
+- **NEXT-NUEVO**: El proxy está en `proxy.ts` en la raíz con función exportada `proxy`. En Next.js 16, `middleware.ts` es la convención DEPRECADA — genera warning. SIEMPRE verificar la convención vigente en `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/` antes de tocar este archivo.
 
 #### CAT-4 — TypeScript
 - TS-01: No hay `any` explícito ni implícito
@@ -206,6 +206,8 @@ createContactSchema(dict.contact.validation)
 // ✅ presentationOrder
 // Siempre 1, 2, 3 por línea — resetear en cada nueva línea
 
-// ✅ Middleware
-// middleware.ts en la raíz — nunca otro nombre
+// ✅ Proxy (Next.js 16)
+// proxy.ts en la raíz, función exportada: export default function proxy(request)
+// middleware.ts es la convención DEPRECADA en Next.js 16 — genera warning
+// Verificar convención en node_modules/next/dist/docs/ si cambia la versión
 ```

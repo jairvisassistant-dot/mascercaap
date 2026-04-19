@@ -113,13 +113,17 @@ import { m } from "framer-motion";
 
 ---
 
-## CAUSA RAÍZ #8 — Middleware nombrado incorrectamente (proxy.ts en lugar de middleware.ts)
+## CAUSA RAÍZ #8 — Convención de archivo de proxy en Next.js 16
 
-**Qué pasó:** El archivo de middleware de Next.js estaba nombrado `proxy.ts` en lugar del nombre convencional `middleware.ts`. Next.js busca específicamente `middleware.ts` en la raíz del proyecto.
+**Qué pasó:** En Next.js 16, el archivo de middleware fue renombrado de `middleware.ts` a `proxy.ts`. Usar `middleware.ts` genera el warning `⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.`
 
-**Por qué ocurrió:** El archivo fue creado con un nombre descriptivo de su función ("proxy de idioma") sin respetar la convención de Next.js.
+**Por qué ocurrió:** El ecosistema de tutoriales y documentación antigua usa `middleware.ts`. Next.js 16 deprecó esa convención y la renombró a `proxy.ts` para clarificar su propósito.
 
-**Regla derivada:** El middleware de Next.js SIEMPRE debe estar en `middleware.ts` (o `middleware.js`) en la raíz del proyecto. No hay excepciones. Next.js no busca otros nombres. El archivo fue renombrado a `middleware.ts` el 2026-04-19.
+**Error del agente:** En la auditoría 2026-04-19, el agente (Claude) erróneamente renombró `proxy.ts` a `middleware.ts`, creyendo que era al revés. Esto introdujo el warning y rompió la convención. Fue revertido el mismo día.
+
+**Regla derivada:** En este proyecto (Next.js 16), el archivo de proxy/interceptor SIEMPRE debe llamarse `proxy.ts` en la raíz. La función exportada debe llamarse `proxy` (no `middleware`). Nunca renombrar a `middleware.ts` — eso es la convención ANTERIOR deprecada.
+
+**Verificar antes de tocar este archivo:** Leer `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md` para confirmar la convención vigente en la versión instalada.
 
 ---
 
@@ -151,7 +155,7 @@ import { m } from "framer-motion";
 
 2. **LazyMotion**: Siempre usar `m` en lugar de `motion`. `LazyMotion` ya está configurado en `DictionaryProvider.tsx`. Si se necesita agregar un nuevo componente con animaciones, usar `import { m } from "framer-motion"`.
 
-3. **Middleware**: El archivo debe llamarse `middleware.ts` en la raíz. Sin excepciones.
+3. **Proxy (Next.js 16)**: El archivo debe llamarse `proxy.ts` en la raíz. La función exportada debe llamarse `proxy`. `middleware.ts` es la convención ANTERIOR deprecada — usarla genera un warning. Verificar siempre en `node_modules/next/dist/docs/` si cambia la versión.
 
 4. **Sitemap**: La fecha en `sitemap.ts` es fija intencional. No cambiar a `new Date()` — rompe la determinism del build.
 
