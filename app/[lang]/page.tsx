@@ -37,16 +37,24 @@ export default async function HomePage({ params }: Props) {
 
   const whatsappCta = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`;
 
-  const [sanityProducts, sanityTestimonials] = await Promise.all([
-    client.fetch(FEATURED_PRODUCTS_QUERY).catch((err: unknown) => {
-      console.error("[Sanity] Failed to fetch featured products:", err);
-      return [];
-    }),
-    client.fetch(ALL_TESTIMONIALS_QUERY).catch((err: unknown) => {
-      console.error("[Sanity] Failed to fetch testimonials:", err);
-      return [];
-    }),
-  ]);
+  // Evitar llamadas a Sanity cuando no está configurado — el placeholder genera
+  // requests fallidas que tardan ~900ms antes de caer al fallback estático.
+  const sanityReady =
+    !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
+
+  const [sanityProducts, sanityTestimonials] = sanityReady
+    ? await Promise.all([
+        client.fetch(FEATURED_PRODUCTS_QUERY).catch((err: unknown) => {
+          console.error("[Sanity] Failed to fetch featured products:", err instanceof Error ? err.message : "unknown");
+          return [];
+        }),
+        client.fetch(ALL_TESTIMONIALS_QUERY).catch((err: unknown) => {
+          console.error("[Sanity] Failed to fetch testimonials:", err instanceof Error ? err.message : "unknown");
+          return [];
+        }),
+      ])
+    : [[], []];
 
   const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;
   const testimonials = sanityTestimonials.length > 0 ? sanityTestimonials : staticTestimonials;

@@ -66,6 +66,7 @@ export default function ProductCategories() {
                 comingSoonLabel={dict.home.categories.comingSoon}
                 viewProductsLabel={dict.home.categories.viewProducts}
                 lang={lang}
+                priority={index === 0}
               />
             </m.div>
           ))}
@@ -81,12 +82,14 @@ function CategoryCard({
   comingSoonLabel,
   viewProductsLabel,
   lang,
+  priority = false,
 }: {
   category: CategoryStructure;
   text: { label: string; description: string };
   comingSoonLabel: string;
   viewProductsLabel: string;
   lang: string;
+  priority?: boolean;
 }) {
   const inner = (
     <div className="relative h-96 rounded-2xl overflow-hidden group">
@@ -98,6 +101,8 @@ function CategoryCard({
           category.comingSoon ? "brightness-75" : "group-hover:scale-105"
         }`}
         sizes="(max-width: 768px) 100vw, 33vw"
+        loading={priority ? "eager" : "lazy"}
+        priority={priority}
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />

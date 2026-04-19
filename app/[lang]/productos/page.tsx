@@ -35,9 +35,13 @@ export default async function ProductosPage({ params, searchParams }: Props) {
 
   const { categoria } = await searchParams;
 
-  const rawProducts = await client
-    .fetch(ALL_PRODUCTS_QUERY)
-    .catch(() => staticProducts);
+  const sanityReady =
+    !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
+
+  const rawProducts = sanityReady
+    ? await client.fetch(ALL_PRODUCTS_QUERY).catch(() => staticProducts)
+    : staticProducts;
 
   const products = rawProducts.map((p: (typeof staticProducts)[0]) =>
     p.line === "kumiss" && !p.image
