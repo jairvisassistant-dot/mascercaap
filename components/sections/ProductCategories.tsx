@@ -9,6 +9,9 @@ type CategoryStructure = {
   key: string;
   image: string;
   href: string;
+  gradient: string;
+  glowColor: string;
+  emoji: string;
   comingSoon?: boolean;
 };
 
@@ -17,16 +20,25 @@ const CATEGORIES: CategoryStructure[] = [
     key: "jugos",
     image: "/imgs/SKU_LimonCereza1000.webp",
     href: "/productos?categoria=jugos",
+    gradient: "from-emerald-950 via-green-900 to-emerald-800",
+    glowColor: "bg-green-400/20",
+    emoji: "🍋",
   },
   {
     key: "pulpas",
-    image: "/imgs/pulpa-mora.webp",
+    image: "/imgs/pulpa-maracuya.webp",
     href: "/productos?categoria=pulpas",
+    gradient: "from-orange-700 via-orange-600 to-amber-500",
+    glowColor: "bg-orange-300/25",
+    emoji: "🍓",
   },
   {
     key: "lacteos",
     image: "/imgs/Kumis-Hato.webp",
     href: "/productos?categoria=lacteos",
+    gradient: "from-teal-950 via-teal-900 to-emerald-800",
+    glowColor: "bg-teal-400/20",
+    emoji: "🥛",
   },
 ];
 
@@ -92,54 +104,89 @@ function CategoryCard({
   priority?: boolean;
 }) {
   const inner = (
-    <div className="relative h-96 rounded-2xl overflow-hidden group">
-      <Image
-        src={category.image}
-        alt={text.label}
-        fill
-        className={`object-cover transition-transform duration-700 ${
-          category.comingSoon ? "brightness-75" : "group-hover:scale-105"
-        }`}
-        sizes="(max-width: 768px) 100vw, 33vw"
-        loading={priority ? "eager" : "lazy"}
-        priority={priority}
-      />
+    <div className={`relative h-96 rounded-2xl overflow-hidden group bg-gradient-to-br ${category.gradient}`}>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+      {/* Glow decorativo detrás de la imagen */}
+      <div className={`absolute -bottom-8 -right-8 w-64 h-64 rounded-full blur-3xl ${category.glowColor} pointer-events-none`} />
 
+      {/* Puntos decorativos */}
+      <div className="absolute top-4 right-4 opacity-20 pointer-events-none">
+        <div className="grid grid-cols-3 gap-1.5">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div key={i} className="w-1.5 h-1.5 rounded-full bg-white" />
+          ))}
+        </div>
+      </div>
+
+      {/* Imagen del producto — derecha inferior */}
+      <div className="absolute bottom-0 right-0 w-48 h-72 pointer-events-none">
+        {/* Degradado lateral que absorbe el borde de la imagen */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[inherit] via-transparent to-transparent" />
+        <Image
+          src={category.image}
+          alt={text.label}
+          fill
+          className={`object-contain object-bottom transition-transform duration-700 drop-shadow-2xl ${
+            !category.comingSoon ? "group-hover:scale-105 group-hover:-translate-y-2" : "brightness-75"
+          }`}
+          sizes="(max-width: 768px) 50vw, 20vw"
+          loading={priority ? "eager" : "lazy"}
+          priority={priority}
+        />
+      </div>
+
+      {/* Degradado desde la izquierda para legibilidad del texto */}
+      <div className={`absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent pointer-events-none`} />
+
+      {/* Blur si comingSoon */}
       {category.comingSoon && (
-        <div className="absolute inset-0 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 backdrop-blur-[2px] z-20" />
       )}
 
+      {/* Badge comingSoon */}
       {category.comingSoon && (
-        <div className="absolute top-4 right-4 bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-semibold tracking-wide px-3 py-1.5 rounded-full">
+        <div className="absolute top-4 right-4 z-30 bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-semibold tracking-wide px-3 py-1.5 rounded-full">
           {comingSoonLabel}
         </div>
       )}
 
-      <div className="absolute bottom-0 left-0 right-0 p-6">
-        <h3 className="text-white text-2xl font-bold mb-2">{text.label}</h3>
-        <p className="text-white/80 text-sm leading-relaxed mb-4">
-          {text.description}
-        </p>
-        {!category.comingSoon && (
-          <span className="inline-flex items-center gap-2 text-white text-sm font-semibold border-b border-white/40 pb-0.5 transition-all group-hover:border-white group-hover:gap-3">
-            {viewProductsLabel}
-            <svg
-              className="w-4 h-4 transition-transform group-hover:translate-x-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
+      {/* Contenido de texto — izquierda */}
+      <div className="absolute inset-0 flex flex-col justify-between p-6 z-10">
+        {/* Emoji + label tag arriba */}
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{category.emoji}</span>
+          <span className="text-white/70 text-xs font-bold tracking-widest uppercase">
+            {text.label}
           </span>
-        )}
+        </div>
+
+        {/* Título y descripción abajo a la izquierda */}
+        <div className="max-w-[55%]">
+          <h3 className="text-white text-2xl font-bold mb-2 leading-tight">
+            {text.label}
+          </h3>
+          <p className="text-white/75 text-xs leading-relaxed mb-4 line-clamp-3">
+            {text.description}
+          </p>
+          {!category.comingSoon && (
+            <span className="inline-flex items-center gap-2 text-white text-sm font-semibold border-b border-white/40 pb-0.5 transition-all group-hover:border-white group-hover:gap-3">
+              {viewProductsLabel}
+              <svg
+                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
