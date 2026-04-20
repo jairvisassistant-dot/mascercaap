@@ -8,11 +8,12 @@ import type { Product, ProductLineConfig } from "@/types";
 interface ProductLineRowProps {
   line: ProductLineConfig;
   products: Product[];
+  firstLine?: boolean;
 }
 
 const SCROLL_AMOUNT = 254; // card width (234) + gap (20)
 
-export default function ProductLineRow({ line, products }: ProductLineRowProps) {
+export default function ProductLineRow({ line, products, firstLine = false }: ProductLineRowProps) {
   const { dict } = useDictionary();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -79,11 +80,12 @@ export default function ProductLineRow({ line, products }: ProductLineRowProps) 
         className="overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent"
       >
         <div className="flex gap-5 w-fit mx-auto">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <ProductCard
               key={product.id}
               product={product}
               accentGradient={line.gradient}
+              priority={firstLine && index === 0}
             />
           ))}
         </div>

@@ -9,9 +9,10 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 interface ProductCardProps {
   product: Product;
   accentGradient?: string;
+  priority?: boolean;
 }
 
-export default function ProductCard({ product, accentGradient = "from-primary to-primary-dark" }: ProductCardProps) {
+export default function ProductCard({ product, accentGradient = "from-primary to-primary-dark", priority = false }: ProductCardProps) {
   const { dict } = useDictionary();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const isComingSoon = product.presentation === "Próximamente";
@@ -37,6 +38,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
             fill
             className={product.line === "kumiss" ? "object-contain object-center p-3" : "object-cover"}
             sizes="208px"
+            priority={priority}
           />
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${accentGradient} flex flex-col items-center justify-center gap-2`}>

@@ -211,7 +211,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                 </div>
 
                 {lineProducts.length > 0 ? (
-                  <ProductLineRow line={line} products={lineProducts} />
+                  <ProductLineRow line={line} products={lineProducts} firstLine={lineIndex === 0} />
                 ) : null}
               </m.div>
             );
