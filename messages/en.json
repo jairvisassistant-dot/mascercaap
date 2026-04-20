@@ -11,7 +11,13 @@
   },
   "footer": {
     "description": "100% natural juices and citrus fruits, made with hand-picked fruit straight from the farm. From farm to glass in hours, no preservatives.",
-    "quickLinks": "Quick Links",
+    "quickLinks": "Navigation",
+    "productsTitle": "Products",
+    "productLines": {
+      "jugos": "Juices & Lemonades",
+      "pulpas": "Fruit Pulps",
+      "lacteos": "Dairy"
+    },
     "contact": "Contact",
     "location": "Chia, Colombia",
     "copyright": "© 2026 Mas Cerca Ap. All rights reserved.",
@@ -109,10 +115,22 @@
       "title": "Our Promise",
       "subtitle": "Every delivery carries the commitment of those who work with love for what's natural.",
       "badges": [
-        { "top": "PERSONALIZED", "bottom": "SERVICE" },
-        { "top": "FRESH", "bottom": "PRODUCTS" },
-        { "top": "GUARANTEED", "bottom": "QUALITY" },
-        { "top": "FAST", "bottom": "DELIVERY" }
+        {
+          "top": "PERSONALIZED",
+          "bottom": "SERVICE"
+        },
+        {
+          "top": "FRESH",
+          "bottom": "PRODUCTS"
+        },
+        {
+          "top": "GUARANTEED",
+          "bottom": "QUALITY"
+        },
+        {
+          "top": "FAST",
+          "bottom": "DELIVERY"
+        }
       ]
     },
     "testimonials": {
@@ -172,18 +190,41 @@
     "history": {
       "title": "Our Story",
       "text": "Más Cerca AP is not just a business — it is a gift from God, and living proof that new beginnings are possible. It was founded by a couple who believed that serving people was the best way to build something. We produce and sell fruit juices, fruit pulps and fresh products sourced directly from farms, buying from farmers at their land and serving as the platform that brings their products to homes, businesses and new markets. We are driven by faith in God, guided by honesty and defined by our commitment to the Colombian countryside.",
-      "imageAlt": "Mas Cerca AP founders at their production facility in Chia, Cundinamarca"
+      "imageAlt": "Mas Cerca AP founders at their production facility in Chia, Cundinamarca",
+      "headline": {
+        "prefix": "We connect the",
+        "highlight": "Colombian countryside",
+        "suffix": "with your table"
+      }
     },
     "timeline": {
       "title": "From Farm to Table",
       "subtitle": "Our artisanal process guarantees maximum freshness and quality in every juice we produce.",
       "steps": [
-        { "title": "Growing", "description": "We select the finest fruits from local suppliers in Cundinamarca." },
-        { "title": "Selection", "description": "We inspect every fruit to guarantee only the best quality." },
-        { "title": "Washing", "description": "Deep cleaning with purified water for maximum hygiene." },
-        { "title": "Pressing", "description": "Cold pressing to preserve vitamins and nutrients." },
-        { "title": "Bottling", "description": "Sterilized packaging to maintain freshness." },
-        { "title": "Delivery", "description": "Distribution across Bogota in under 24 hours." }
+        {
+          "title": "Growing",
+          "description": "We select the finest fruits from local suppliers in Cundinamarca."
+        },
+        {
+          "title": "Selection",
+          "description": "We inspect every fruit to guarantee only the best quality."
+        },
+        {
+          "title": "Washing",
+          "description": "Deep cleaning with purified water for maximum hygiene."
+        },
+        {
+          "title": "Pressing",
+          "description": "Cold pressing to preserve vitamins and nutrients."
+        },
+        {
+          "title": "Bottling",
+          "description": "Sterilized packaging to maintain freshness."
+        },
+        {
+          "title": "Delivery",
+          "description": "Distribution across Bogota in under 24 hours."
+        }
       ]
     },
     "missionVision": {
@@ -204,10 +245,22 @@
       "subtitle": "What Guides Us",
       "title": "Our Values",
       "items": [
-        { "title": "Faith & Commitment", "description": "Everything we are is born from our love for God and people." },
-        { "title": "Genuine Service", "description": "Serving people isn't just what we do — it's why we exist." },
-        { "title": "Quality", "description": "Quality at Mas Cerca AP doesn't come from a certification but from the conviction that people deserve the best." },
-        { "title": "Social Impact", "description": "Growing is good. Growing while driving the growth of others is better." }
+        {
+          "title": "Faith & Commitment",
+          "description": "Everything we are is born from our love for God and people."
+        },
+        {
+          "title": "Genuine Service",
+          "description": "Serving people isn't just what we do — it's why we exist."
+        },
+        {
+          "title": "Quality",
+          "description": "Quality at Mas Cerca AP doesn't come from a certification but from the conviction that people deserve the best."
+        },
+        {
+          "title": "Social Impact",
+          "description": "Growing is good. Growing while driving the growth of others is better."
+        }
       ]
     },
     "gallery": {
@@ -217,18 +270,79 @@
       "pressMore": "Tap to learn more",
       "pressBack": "Tap to go back",
       "cards": [
-        { "title": "The origin is everything", "body": "We rise early with the farmer to choose only the fruit at its exact peak of ripeness. There are no shortcuts in the field — and we don't take any either." },
-        { "title": "We buy at the farm", "body": "No middlemen. The Colombian farmer deserves a fair price and you deserve to know exactly where what you drink comes from." },
-        { "title": "Every fruit has a judge", "body": "Before entering production, every fruit passes through hands that know what they're looking for. If it doesn't meet the standard, it doesn't get in. That simple, that honest." },
-        { "title": "Artisanal by conviction", "body": "We're not an industrial plant. Every orange passes through hands that know what they're doing — no shortcuts, no machines that lose the soul of the fruit. That's what you taste." },
-        { "title": "Freshness doesn't wait", "body": "From orange to jar in minutes. No pasteurizing, no preservatives — the juice reaches you with everything the fruit had when it left the field." },
-        { "title": "Behind every bottle", "body": "We're a couple who bet on natural when nobody was asking for it. Every delivery carries our name — and that drives us to always give our best." }
+        {
+          "title": "The origin is everything",
+          "body": "We rise early with the farmer to choose only the fruit at its exact peak of ripeness. There are no shortcuts in the field — and we don't take any either."
+        },
+        {
+          "title": "We buy at the farm",
+          "body": "No middlemen. The Colombian farmer deserves a fair price and you deserve to know exactly where what you drink comes from."
+        },
+        {
+          "title": "Every fruit has a judge",
+          "body": "Before entering production, every fruit passes through hands that know what they're looking for. If it doesn't meet the standard, it doesn't get in. That simple, that honest."
+        },
+        {
+          "title": "Artisanal by conviction",
+          "body": "We're not an industrial plant. Every orange passes through hands that know what they're doing — no shortcuts, no machines that lose the soul of the fruit. That's what you taste."
+        },
+        {
+          "title": "Freshness doesn't wait",
+          "body": "From orange to jar in minutes. No pasteurizing, no preservatives — the juice reaches you with everything the fruit had when it left the field."
+        },
+        {
+          "title": "Behind every bottle",
+          "body": "We're a couple who bet on natural when nobody was asking for it. Every delivery carries our name — and that drives us to always give our best."
+        }
       ]
     },
     "cta": {
       "title": "Want to try our products?",
       "text": "Contact us and discover why we are the favorite choice of so many businesses.",
       "button": "Contact Us"
+    },
+    "trayectoria": {
+      "label": "Our Journey",
+      "title": "The path we've walked",
+      "milestones": [
+        {
+          "year": "2020",
+          "text": "Más Cerca AP is born with the vision of bringing Colombian field products closer to urban families in Bogotá."
+        },
+        {
+          "year": "2021",
+          "text": "We expanded our catalog to include frozen fruit pulps, adding 9 varieties of Colombian tropical fruits."
+        },
+        {
+          "year": "2023",
+          "text": "We added the artisan dairy line with Kumis and Del Hato Yogurt, a Colombian tradition."
+        },
+        {
+          "year": "2026",
+          "text": "Today we reach all of Bogotá with over 13 varieties of natural products and a committed team."
+        }
+      ],
+      "stats": {
+        "label": "By the Numbers",
+        "items": [
+          {
+            "value": "13+",
+            "description": "Product varieties"
+          },
+          {
+            "value": "100%",
+            "description": "Natural, no preservatives"
+          },
+          {
+            "value": "<24h",
+            "description": "Delivery in Bogotá"
+          },
+          {
+            "value": "3",
+            "description": "Product lines"
+          }
+        ]
+      }
     }
   },
   "contact": {
@@ -237,9 +351,17 @@
       "subtitle": "We're ready to bring freshness to your door"
     },
     "cards": {
-      "location": { "title": "Location", "value": "Chia, Colombia" },
-      "email": { "title": "Email" },
-      "phone": { "title": "Phone", "whatsapp": "WhatsApp available" }
+      "location": {
+        "title": "Location",
+        "value": "Chia, Colombia"
+      },
+      "email": {
+        "title": "Email"
+      },
+      "phone": {
+        "title": "Phone",
+        "whatsapp": "WhatsApp available"
+      }
     },
     "map": {
       "title": "Where We Are",
@@ -301,20 +423,62 @@
     }
   },
   "productLines": {
-    "limon": { "label": "Lemon Juice", "description": "Pure, fresh and additive-free. The classic that never fails." },
-    "limonada-cereza": { "label": "Cherry Lemonade", "description": "The acidity of lemon with the natural sweetness of cherry." },
-    "limonada-coco": { "label": "Coconut Lemonade", "description": "Refreshing tropical combination with a creamy touch." },
-    "maracuya": { "label": "Passion Fruit Juice", "description": "Exotic and vibrant flavor straight from the Colombian countryside." },
-    "pulpa-maracuya": { "label": "Passion Fruit Pulp", "description": "Exotic and aromatic, frozen at its exact peak of ripeness." },
-    "pulpa-mora": { "label": "Blackberry Pulp", "description": "Pure Colombian blackberry, ready for juices, desserts and ice cream." },
-    "pulpa-fresa": { "label": "Strawberry Pulp", "description": "Fresh strawberries from the Colombian countryside, frozen to preserve their flavor." },
-    "pulpa-mango": { "label": "Mango Pulp", "description": "Tropical Colombian mango at its ideal point of sweetness and ripeness." },
-    "pulpa-guanabana": { "label": "Soursop Pulp", "description": "Creamy and aromatic, straight from the Colombian countryside." },
-    "pulpa-lulo": { "label": "Lulo Pulp", "description": "Sweet-tart and tropical, the most Colombian flavor in the catalog." },
-    "pulpa-guayaba": { "label": "Guava Pulp", "description": "Sweet and aromatic, perfect for juices, sauces, and desserts." },
-    "pulpa-frutos-rojos": { "label": "Mixed Berry Pulp", "description": "Antioxidant-rich berry blend, intense and all natural." },
-    "pulpa-tomate-arbol": { "label": "Tree Tomato Pulp", "description": "Ideal for natural juices and sauces, low in calories." },
-    "kumiss": { "label": "Dairy", "description": "Fermented dairy drink, tradition and flavor in every sip." }
+    "limon": {
+      "label": "Lemon Juice",
+      "description": "Pure, fresh and additive-free. The classic that never fails."
+    },
+    "limonada-cereza": {
+      "label": "Cherry Lemonade",
+      "description": "The acidity of lemon with the natural sweetness of cherry."
+    },
+    "limonada-coco": {
+      "label": "Coconut Lemonade",
+      "description": "Refreshing tropical combination with a creamy touch."
+    },
+    "maracuya": {
+      "label": "Passion Fruit Juice",
+      "description": "Exotic and vibrant flavor straight from the Colombian countryside."
+    },
+    "pulpa-maracuya": {
+      "label": "Passion Fruit Pulp",
+      "description": "Exotic and aromatic, frozen at its exact peak of ripeness."
+    },
+    "pulpa-mora": {
+      "label": "Blackberry Pulp",
+      "description": "Pure Colombian blackberry, ready for juices, desserts and ice cream."
+    },
+    "pulpa-fresa": {
+      "label": "Strawberry Pulp",
+      "description": "Fresh strawberries from the Colombian countryside, frozen to preserve their flavor."
+    },
+    "pulpa-mango": {
+      "label": "Mango Pulp",
+      "description": "Tropical Colombian mango at its ideal point of sweetness and ripeness."
+    },
+    "pulpa-guanabana": {
+      "label": "Soursop Pulp",
+      "description": "Creamy and aromatic, straight from the Colombian countryside."
+    },
+    "pulpa-lulo": {
+      "label": "Lulo Pulp",
+      "description": "Sweet-tart and tropical, the most Colombian flavor in the catalog."
+    },
+    "pulpa-guayaba": {
+      "label": "Guava Pulp",
+      "description": "Sweet and aromatic, perfect for juices, sauces, and desserts."
+    },
+    "pulpa-frutos-rojos": {
+      "label": "Mixed Berry Pulp",
+      "description": "Antioxidant-rich berry blend, intense and all natural."
+    },
+    "pulpa-tomate-arbol": {
+      "label": "Tree Tomato Pulp",
+      "description": "Ideal for natural juices and sauces, low in calories."
+    },
+    "kumiss": {
+      "label": "Dairy",
+      "description": "Fermented dairy drink, tradition and flavor in every sip."
+    }
   },
   "metadata": {
     "home": {

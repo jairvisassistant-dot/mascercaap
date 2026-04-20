@@ -60,7 +60,7 @@ export default async function LangLayout({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <DictionaryProvider dict={dict} lang={lang}>
-        <div className="min-h-screen flex flex-col overflow-x-hidden">
+        <div className="min-h-screen flex flex-col overflow-x-clip">
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer dict={dict} lang={lang} />

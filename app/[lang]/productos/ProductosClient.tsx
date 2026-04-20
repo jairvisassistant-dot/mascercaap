@@ -33,6 +33,15 @@ export default function ProductosClient({ products, productLines, initialCategor
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (initialCategory && CATEGORY_LINES[initialCategory]) {
+      setActiveLines(new Set(CATEGORY_LINES[initialCategory]));
+    } else {
+      setActiveLines(new Set());
+    }
+    setActiveSize("todos");
+  }, [initialCategory]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsSticky(!entry.isIntersecting),
       { threshold: 0 }

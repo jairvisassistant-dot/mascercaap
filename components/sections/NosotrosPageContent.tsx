@@ -134,7 +134,14 @@ export default function NosotrosPageContent() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <m.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-              <h2 className="text-3xl font-bold text-gray-800 mb-6">{t.history.title}</h2>
+              <span className="inline-block text-xs font-bold tracking-widest text-primary uppercase mb-4">
+                {t.history.title}
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-6">
+                {t.history.headline.prefix}{" "}
+                <em className="not-italic text-primary">{t.history.headline.highlight}</em>{" "}
+                {t.history.headline.suffix}
+              </h2>
               <p className="text-gray-600 leading-relaxed text-justify">{t.history.text}</p>
             </m.div>
             <m.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
@@ -186,6 +193,78 @@ export default function NosotrosPageContent() {
                 </div>
               </m.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trayectoria */}
+      <section className="py-20 bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 relative overflow-hidden">
+        {/* Decorative blobs */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          {/* Header */}
+          <m.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-14">
+            <span className="inline-block text-xs font-bold tracking-widest text-emerald-400 uppercase mb-3">
+              {t.trayectoria.label}
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">{t.trayectoria.title}</h2>
+          </m.div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-start">
+            {/* Timeline */}
+            <div className="relative">
+              <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-emerald-800" />
+              <div className="flex flex-col gap-10">
+                {t.trayectoria.milestones.map((milestone, i) => (
+                  <m.div
+                    key={milestone.year}
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.12 }}
+                    className="flex gap-6 items-start"
+                  >
+                    <div className="relative flex-shrink-0 mt-1">
+                      <div className="w-6 h-6 rounded-full bg-primary border-4 border-emerald-900 shadow-lg shadow-primary/40" />
+                    </div>
+                    <div>
+                      <span className="text-primary font-bold text-lg block mb-1">{milestone.year}</span>
+                      <p className="text-gray-300 text-sm leading-relaxed">{milestone.text}</p>
+                    </div>
+                  </m.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Stats card */}
+            <m.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl p-8"
+            >
+              <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase block mb-8">
+                {t.trayectoria.stats.label}
+              </span>
+              <div className="flex flex-col divide-y divide-white/10">
+                {t.trayectoria.stats.items.map((item, i) => (
+                  <m.div
+                    key={i}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                    className="flex items-center justify-between py-5"
+                  >
+                    <span className="text-4xl font-bold text-primary">{item.value}</span>
+                    <span className="text-gray-400 text-sm text-right max-w-[140px]">{item.description}</span>
+                  </m.div>
+                ))}
+              </div>
+            </m.div>
           </div>
         </div>
       </section>

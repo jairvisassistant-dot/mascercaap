@@ -11,7 +11,13 @@
   },
   "footer": {
     "description": "Jugos y cítricos 100% naturales, elaborados con frutas seleccionadas directamente del campo. Del campo al vaso en horas, sin conservantes.",
-    "quickLinks": "Enlaces Rápidos",
+    "quickLinks": "Navegación",
+    "productsTitle": "Productos",
+    "productLines": {
+      "jugos": "Zumos & Limonadas",
+      "pulpas": "Pulpas de Frutas",
+      "lacteos": "Lácteos"
+    },
     "contact": "Contacto",
     "location": "Chía, Colombia",
     "copyright": "© 2026 Mas Cerca Ap. Todos los derechos reservados.",
@@ -109,10 +115,22 @@
       "title": "Nuestra promesa",
       "subtitle": "Cada entrega lleva el compromiso de quienes trabajan con amor por lo natural.",
       "badges": [
-        { "top": "ATENCIÓN", "bottom": "PERSONALIZADA" },
-        { "top": "PRODUCTOS", "bottom": "FRESCOS" },
-        { "top": "CALIDAD", "bottom": "GARANTIZADA" },
-        { "top": "ENTREGA", "bottom": "RÁPIDA" }
+        {
+          "top": "ATENCIÓN",
+          "bottom": "PERSONALIZADA"
+        },
+        {
+          "top": "PRODUCTOS",
+          "bottom": "FRESCOS"
+        },
+        {
+          "top": "CALIDAD",
+          "bottom": "GARANTIZADA"
+        },
+        {
+          "top": "ENTREGA",
+          "bottom": "RÁPIDA"
+        }
       ]
     },
     "testimonials": {
@@ -172,18 +190,41 @@
     "history": {
       "title": "Nuestra Historia",
       "text": "Más Cerca AP no es solo un negocio: es un regalo de Dios, y la prueba viva de que los nuevos comienzos existen. Fue fundada por una pareja que creyó que servir a la gente era la mejor forma de emprender. Producimos y comercializamos zumos de frutas, pulpas de frutas y productos frescos de origen directo, comprando a los campesinos en la finca y siendo la plataforma que lleva sus productos a hogares, negocios y nuevos mercados. Nos mueve la fe en Dios, nos guía la honestidad y nos define el compromiso con el campo colombiano.",
-      "imageAlt": "Fundadoras de Más Cerca AP en su bodega de producción en Chía, Cundinamarca"
+      "imageAlt": "Fundadoras de Más Cerca AP en su bodega de producción en Chía, Cundinamarca",
+      "headline": {
+        "prefix": "Conectamos el",
+        "highlight": "campo colombiano",
+        "suffix": "con tu mesa"
+      }
     },
     "timeline": {
       "title": "Del Campo a Tu Mesa",
       "subtitle": "Nuestro proceso artesanal garantiza la máxima frescura y calidad en cada jugo que producimos.",
       "steps": [
-        { "title": "Cultivo", "description": "Seleccionamos las mejores frutas de proveedores locales en Cundinamarca." },
-        { "title": "Selección", "description": "Inspeccionamos cada fruta para garantizar solo la mejor calidad." },
-        { "title": "Lavado", "description": "Lavado profundo con agua purificada para máxima higiene." },
-        { "title": "Exprimido", "description": "Expresión en frío para preservar vitaminas y nutrientes." },
-        { "title": "Embotellado", "description": "Envasado esterilizado para mantener la frescura." },
-        { "title": "Entrega", "description": "Distribución en toda Bogotá en menos de 24 horas." }
+        {
+          "title": "Cultivo",
+          "description": "Seleccionamos las mejores frutas de proveedores locales en Cundinamarca."
+        },
+        {
+          "title": "Selección",
+          "description": "Inspeccionamos cada fruta para garantizar solo la mejor calidad."
+        },
+        {
+          "title": "Lavado",
+          "description": "Lavado profundo con agua purificada para máxima higiene."
+        },
+        {
+          "title": "Exprimido",
+          "description": "Expresión en frío para preservar vitaminas y nutrientes."
+        },
+        {
+          "title": "Embotellado",
+          "description": "Envasado esterilizado para mantener la frescura."
+        },
+        {
+          "title": "Entrega",
+          "description": "Distribución en toda Bogotá en menos de 24 horas."
+        }
       ]
     },
     "missionVision": {
@@ -204,10 +245,22 @@
       "subtitle": "Lo que nos guía",
       "title": "Nuestros Valores",
       "items": [
-        { "title": "Fe y Compromiso", "description": "Todo lo que somos nace del amor a Dios y a las personas." },
-        { "title": "Servicio Genuino", "description": "Servir a la gente no es lo que hacemos: es por lo qué existimos." },
-        { "title": "Calidad", "description": "La calidad en Más Cerca AP no viene de una certificación sino de la convicción de que la gente merece lo mejor." },
-        { "title": "Impacto Social", "description": "Crecer está bien. Crecer impulsando el crecimiento de otros es mejor." }
+        {
+          "title": "Fe y Compromiso",
+          "description": "Todo lo que somos nace del amor a Dios y a las personas."
+        },
+        {
+          "title": "Servicio Genuino",
+          "description": "Servir a la gente no es lo que hacemos: es por lo qué existimos."
+        },
+        {
+          "title": "Calidad",
+          "description": "La calidad en Más Cerca AP no viene de una certificación sino de la convicción de que la gente merece lo mejor."
+        },
+        {
+          "title": "Impacto Social",
+          "description": "Crecer está bien. Crecer impulsando el crecimiento de otros es mejor."
+        }
       ]
     },
     "gallery": {
@@ -217,18 +270,79 @@
       "pressMore": "Presioná para saber más",
       "pressBack": "Presioná para volver",
       "cards": [
-        { "title": "El origen lo es todo", "body": "Madrugamos junto al campesino para elegir solo la fruta en su punto exacto de madurez. No hay atajos en el campo — y nosotros tampoco los tomamos." },
-        { "title": "Compramos en finca", "body": "Sin intermediarios. El campesino colombiano merece un precio justo y vos merecés saber exactamente de dónde viene lo que tomás." },
-        { "title": "Cada fruta tiene un juez", "body": "Antes de entrar a producción, cada fruta pasa por manos que saben lo que buscan. Si no cumple, no entra. Así de simple, así de honesto." },
-        { "title": "Artesanal por convicción", "body": "No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sentís en el sabor." },
-        { "title": "La frescura no espera", "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el jugo llega a vos con todo lo que la fruta tenía cuando salió del campo." },
-        { "title": "Detrás de cada botella", "body": "Somos una pareja que apostó por lo natural cuando nadie lo pedía. Cada entrega lleva nuestro nombre — y eso nos obliga a dar siempre lo mejor." }
+        {
+          "title": "El origen lo es todo",
+          "body": "Madrugamos junto al campesino para elegir solo la fruta en su punto exacto de madurez. No hay atajos en el campo — y nosotros tampoco los tomamos."
+        },
+        {
+          "title": "Compramos en finca",
+          "body": "Sin intermediarios. El campesino colombiano merece un precio justo y vos merecés saber exactamente de dónde viene lo que tomás."
+        },
+        {
+          "title": "Cada fruta tiene un juez",
+          "body": "Antes de entrar a producción, cada fruta pasa por manos que saben lo que buscan. Si no cumple, no entra. Así de simple, así de honesto."
+        },
+        {
+          "title": "Artesanal por convicción",
+          "body": "No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sentís en el sabor."
+        },
+        {
+          "title": "La frescura no espera",
+          "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el jugo llega a vos con todo lo que la fruta tenía cuando salió del campo."
+        },
+        {
+          "title": "Detrás de cada botella",
+          "body": "Somos una pareja que apostó por lo natural cuando nadie lo pedía. Cada entrega lleva nuestro nombre — y eso nos obliga a dar siempre lo mejor."
+        }
       ]
     },
     "cta": {
       "title": "¿Quieres probar nuestros productos?",
       "text": "Contáctanos y descubre por qué somos la opción favorita de tantos bogotanos.",
       "button": "Contáctanos"
+    },
+    "trayectoria": {
+      "label": "Trayectoria",
+      "title": "El camino recorrido",
+      "milestones": [
+        {
+          "year": "2020",
+          "text": "Nace Más Cerca AP con la visión de acercar los productos del campo colombiano a las familias urbanas de Bogotá."
+        },
+        {
+          "year": "2021",
+          "text": "Ampliamos nuestro catálogo a pulpas de frutas congeladas, incorporando 9 variedades de frutas tropicales colombianas."
+        },
+        {
+          "year": "2023",
+          "text": "Sumamos la línea de lácteos artesanales con Kumis y Yogurt Del Hato, de tradición colombiana."
+        },
+        {
+          "year": "2026",
+          "text": "Hoy llegamos a toda Bogotá con más de 13 variedades de productos naturales y un equipo comprometido."
+        }
+      ],
+      "stats": {
+        "label": "En Números",
+        "items": [
+          {
+            "value": "13+",
+            "description": "Variedades de productos"
+          },
+          {
+            "value": "100%",
+            "description": "Natural y sin conservantes"
+          },
+          {
+            "value": "<24h",
+            "description": "Entrega en Bogotá"
+          },
+          {
+            "value": "3",
+            "description": "Líneas de producto"
+          }
+        ]
+      }
     }
   },
   "contact": {
@@ -237,9 +351,17 @@
       "subtitle": "Estamos listos para llevarte la frescura a tu puerta"
     },
     "cards": {
-      "location": { "title": "Ubicación", "value": "Chía, Colombia" },
-      "email": { "title": "Email" },
-      "phone": { "title": "Teléfono", "whatsapp": "WhatsApp disponible" }
+      "location": {
+        "title": "Ubicación",
+        "value": "Chía, Colombia"
+      },
+      "email": {
+        "title": "Email"
+      },
+      "phone": {
+        "title": "Teléfono",
+        "whatsapp": "WhatsApp disponible"
+      }
     },
     "map": {
       "title": "Dónde estamos",
@@ -301,20 +423,62 @@
     }
   },
   "productLines": {
-    "limon": { "label": "Zumo de Limón", "description": "Puro, fresco y sin aditivos. El clásico que nunca falla." },
-    "limonada-cereza": { "label": "Zumo de Limonada con Cereza", "description": "La acidez del limón con el dulzor natural de la cereza." },
-    "limonada-coco": { "label": "Zumo de Limonada con Coco", "description": "Refrescante combinación tropical con toque cremoso." },
-    "maracuya": { "label": "Zumo de Maracuyá", "description": "Sabor exótico y vibrante directo del campo colombiano." },
-    "pulpa-maracuya": { "label": "Pulpa de Maracuyá", "description": "Exótica y aromática, congelada en su punto exacto de madurez." },
-    "pulpa-mora": { "label": "Pulpa de Mora", "description": "Mora colombiana pura, lista para jugos, postres y helados." },
-    "pulpa-fresa": { "label": "Pulpa de Fresa", "description": "Fresa fresca del campo colombiano, congelada para preservar su sabor." },
-    "pulpa-mango": { "label": "Pulpa de Mango", "description": "Mango tropical colombiano en su punto ideal de dulzor y madurez." },
-    "pulpa-guanabana": { "label": "Pulpa de Guanábana", "description": "Cremosa y aromática, directa del campo colombiano." },
-    "pulpa-lulo": { "label": "Pulpa de Lulo", "description": "Agridulce y tropical, el sabor más colombiano del catálogo." },
-    "pulpa-guayaba": { "label": "Pulpa de Guayaba", "description": "Dulce y aromática, ideal para jugos, salsas y postres." },
-    "pulpa-frutos-rojos": { "label": "Pulpa de Frutos Rojos", "description": "Mix de berries antioxidantes, intenso y natural." },
-    "pulpa-tomate-arbol": { "label": "Pulpa de Tomate de Árbol", "description": "Ideal para jugos y salsas naturales, bajo en calorías." },
-    "kumiss": { "label": "Lácteos", "description": "Bebida láctea fermentada, tradición y sabor en cada sorbo." }
+    "limon": {
+      "label": "Zumo de Limón",
+      "description": "Puro, fresco y sin aditivos. El clásico que nunca falla."
+    },
+    "limonada-cereza": {
+      "label": "Zumo de Limonada con Cereza",
+      "description": "La acidez del limón con el dulzor natural de la cereza."
+    },
+    "limonada-coco": {
+      "label": "Zumo de Limonada con Coco",
+      "description": "Refrescante combinación tropical con toque cremoso."
+    },
+    "maracuya": {
+      "label": "Zumo de Maracuyá",
+      "description": "Sabor exótico y vibrante directo del campo colombiano."
+    },
+    "pulpa-maracuya": {
+      "label": "Pulpa de Maracuyá",
+      "description": "Exótica y aromática, congelada en su punto exacto de madurez."
+    },
+    "pulpa-mora": {
+      "label": "Pulpa de Mora",
+      "description": "Mora colombiana pura, lista para jugos, postres y helados."
+    },
+    "pulpa-fresa": {
+      "label": "Pulpa de Fresa",
+      "description": "Fresa fresca del campo colombiano, congelada para preservar su sabor."
+    },
+    "pulpa-mango": {
+      "label": "Pulpa de Mango",
+      "description": "Mango tropical colombiano en su punto ideal de dulzor y madurez."
+    },
+    "pulpa-guanabana": {
+      "label": "Pulpa de Guanábana",
+      "description": "Cremosa y aromática, directa del campo colombiano."
+    },
+    "pulpa-lulo": {
+      "label": "Pulpa de Lulo",
+      "description": "Agridulce y tropical, el sabor más colombiano del catálogo."
+    },
+    "pulpa-guayaba": {
+      "label": "Pulpa de Guayaba",
+      "description": "Dulce y aromática, ideal para jugos, salsas y postres."
+    },
+    "pulpa-frutos-rojos": {
+      "label": "Pulpa de Frutos Rojos",
+      "description": "Mix de berries antioxidantes, intenso y natural."
+    },
+    "pulpa-tomate-arbol": {
+      "label": "Pulpa de Tomate de Árbol",
+      "description": "Ideal para jugos y salsas naturales, bajo en calorías."
+    },
+    "kumiss": {
+      "label": "Lácteos",
+      "description": "Bebida láctea fermentada, tradición y sabor en cada sorbo."
+    }
   },
   "metadata": {
     "home": {

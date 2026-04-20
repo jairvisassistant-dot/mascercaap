@@ -49,7 +49,7 @@ export default function Footer({ dict, lang }: FooterProps) {
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid md:grid-cols-5 gap-8 mb-8">
           {/* Logo and description */}
           <div className="md:col-span-2">
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold mb-4">
@@ -82,7 +82,7 @@ export default function Footer({ dict, lang }: FooterProps) {
 
           {/* Quick links */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">{dict.footer.quickLinks}</h3>
+            <h3 className="font-semibold text-sm mb-4 uppercase tracking-wider">{dict.footer.quickLinks}</h3>
             <ul className="space-y-2">
               {footerLinks.map((link) => (
                 <li key={link.href}>
@@ -97,9 +97,28 @@ export default function Footer({ dict, lang }: FooterProps) {
             </ul>
           </div>
 
+          {/* Product lines */}
+          <div>
+            <h3 className="font-semibold text-sm mb-4 uppercase tracking-wider">
+              {dict.footer.productsTitle}
+            </h3>
+            <ul className="space-y-2">
+              {(["jugos", "pulpas", "lacteos"] as const).map((category) => (
+                <li key={category}>
+                  <Link
+                    href={`/${lang}/productos?categoria=${category}`}
+                    className="text-gray-400 hover:text-primary transition-colors"
+                  >
+                    {dict.footer.productLines[category]}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Contact info */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">{dict.footer.contact}</h3>
+            <h3 className="font-semibold text-sm mb-4 uppercase tracking-wider">{dict.footer.contact}</h3>
             <ul className="space-y-2 text-gray-400">
               <li className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
