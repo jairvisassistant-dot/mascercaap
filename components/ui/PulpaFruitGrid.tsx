@@ -15,7 +15,7 @@ function FruitImage({ slug, name }: { slug: string; name: string }) {
       alt={name}
       fill
       className="object-cover"
-      sizes="74px"
+      sizes="80px"
       onError={() => setSrc(`/imgs/pulpa-${slug}.webp`)}
     />
   );
@@ -107,7 +107,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
               <button
                 key={line.key}
                 onClick={() => handleSelect(line.key)}
-                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus:outline-none shrink-0 w-[88px] ${
+                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus:outline-none shrink-0 w-[96px] ${
                   isSelected
                     ? "bg-primary/8 ring-2 ring-primary ring-offset-1"
                     : "hover:bg-gray-100"
@@ -116,7 +116,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 aria-label={fruitName}
               >
                 <div
-                  className={`relative w-[74px] h-[74px] rounded-full overflow-hidden border-2 transition-all shadow-sm ${
+                  className={`relative w-[80px] h-[80px] rounded-full overflow-hidden border-2 transition-all shadow-sm ${
                     isSelected ? "border-primary shadow-md" : "border-gray-200"
                   }`}
                 >
