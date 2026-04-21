@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
-import HelpDrawer from "./HelpDrawer";
+
+const HelpDrawer = dynamic(() => import("./HelpDrawer"), { ssr: false });
 
 export default function HelpHub() {
   const [isOpen, setIsOpen] = useState(false);
