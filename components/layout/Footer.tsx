@@ -143,17 +143,20 @@ export default function Footer({ dict, lang }: FooterProps) {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-gray-400">
+        {/* Legal links */}
+        <div className="flex items-center justify-center gap-6 mb-6 text-sm">
+          <Link href={`/${lang}/politicas`} className="text-gray-500 hover:text-primary transition-colors">
+            {dict.helpHub.menu.privacy}
+          </Link>
+          <span className="text-gray-700">·</span>
+          <Link href={`/${lang}/terminos`} className="text-gray-500 hover:text-primary transition-colors">
+            {dict.helpHub.menu.terms}
+          </Link>
+        </div>
+
+        <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
           <p>{dict.footer.copyright}</p>
-          <div className="flex items-center gap-4 text-sm">
-            <Link href={`/${lang}/politicas`} className="hover:text-primary transition-colors">
-              {dict.helpHub.menu.privacy}
-            </Link>
-            <span className="text-gray-700">·</span>
-            <Link href={`/${lang}/terminos`} className="hover:text-primary transition-colors">
-              {dict.helpHub.menu.terms}
-            </Link>
-          </div>
+          <p className="mt-2 text-sm">{dict.footer.madeWith}</p>
         </div>
       </div>
     </footer>
