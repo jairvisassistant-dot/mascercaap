@@ -55,12 +55,19 @@ export default function ProductCategories() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="h-px w-10 bg-primary/40 rounded-full" />
+            <span className="text-xs font-bold tracking-[0.22em] text-primary uppercase">
+              Catálogo
+            </span>
+            <span className="h-px w-10 bg-primary/40 rounded-full" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {dict.home.categories.title}
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-500 max-w-2xl mx-auto">
             {dict.home.categories.subtitle}
           </p>
         </m.div>

@@ -12,19 +12,26 @@ interface FeaturedProductsProps {
 
 export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-24 bg-[#f8faf8]">
       <div className="max-w-7xl mx-auto px-4">
         <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="h-px w-10 bg-accent/50 rounded-full" />
+            <span className="text-xs font-bold tracking-[0.22em] text-accent uppercase">
+              Destacados
+            </span>
+            <span className="h-px w-10 bg-accent/50 rounded-full" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {dict.home.featured.title}
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-500 max-w-2xl mx-auto">
             {dict.home.featured.subtitle}
           </p>
         </m.div>

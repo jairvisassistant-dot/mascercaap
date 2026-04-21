@@ -20,7 +20,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const isBestSeller = product.isBestSeller === true;
 
   return (
-    <div className="relative shrink-0 w-[234px] rounded-2xl overflow-hidden shadow-md bg-white">
+    <div className="relative shrink-0 w-[234px] rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 transition-all duration-300 bg-white">
       {/* Imagen */}
       <div className={`relative h-60 ${product.line === "kumiss" ? "bg-white" : "bg-gray-100"}`}>
         {product.image && !isComingSoon && (

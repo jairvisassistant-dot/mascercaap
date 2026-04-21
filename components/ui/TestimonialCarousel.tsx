@@ -36,14 +36,17 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-2xl shadow-xl p-8 text-center"
+          className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-8 md:p-10 text-center"
         >
+          {/* Comilla decorativa */}
+          <div className="text-6xl text-white/20 font-serif leading-none mb-2 select-none">&ldquo;</div>
+
           {/* Stars */}
-          <div className="flex justify-center gap-1 mb-4">
+          <div className="flex justify-center gap-1 mb-5">
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
-                className={`w-6 h-6 ${i < testimonials[currentIndex].rating ? "text-accent" : "text-gray-300"}`}
+                className={`w-5 h-5 ${i < testimonials[currentIndex].rating ? "text-accent" : "text-white/20"}`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -53,16 +56,19 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
           </div>
 
           {/* Quote */}
-          <p className="text-gray-600 text-lg md:text-xl mb-6 italic">
-            &ldquo;{testimonials[currentIndex].text}&rdquo;
+          <p className="text-white/90 text-lg md:text-xl mb-6 italic leading-relaxed">
+            {testimonials[currentIndex].text}
           </p>
 
+          {/* Divider */}
+          <div className="w-10 h-px bg-accent/60 mx-auto mb-5" />
+
           {/* Author */}
-          <div className="mb-4">
-            <p className="font-bold text-primary text-lg">
+          <div>
+            <p className="font-bold text-white text-base">
               {testimonials[currentIndex].name}
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-white/50 text-sm mt-0.5">
               {testimonials[currentIndex].role}
             </p>
           </div>
@@ -75,8 +81,8 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === currentIndex ? "bg-primary w-6" : "bg-gray-300 hover:bg-gray-400"
+            className={`h-2 rounded-full transition-all ${
+              index === currentIndex ? "bg-accent w-6" : "bg-white/25 hover:bg-white/40 w-2"
             }`}
             aria-label={`${dict.home.testimonials.goTo} ${index + 1}`}
           />
