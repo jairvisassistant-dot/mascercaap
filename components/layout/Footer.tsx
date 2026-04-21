@@ -72,7 +72,7 @@ export default function Footer({ dict, lang }: FooterProps) {
                       ? "bg-accent hover:bg-accent/90"
                       : "bg-primary hover:bg-primary/90"
                   }`}
-                  aria-label={social.name}
+                  aria-label={lang === "es" ? `Síguenos en ${social.name}` : `Follow us on ${social.name}`}
                 >
                   {social.icon}
                 </a>
@@ -141,6 +141,17 @@ export default function Footer({ dict, lang }: FooterProps) {
               </li>
             </ul>
           </div>
+        </div>
+
+        {/* Legal links */}
+        <div className="flex items-center justify-center gap-6 mb-6 text-sm">
+          <Link href={`/${lang}/politicas`} className="text-gray-500 hover:text-primary transition-colors">
+            {dict.helpHub.menu.privacy}
+          </Link>
+          <span className="text-gray-700">·</span>
+          <Link href={`/${lang}/terminos`} className="text-gray-500 hover:text-primary transition-colors">
+            {dict.helpHub.menu.terms}
+          </Link>
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">

@@ -500,6 +500,22 @@
       "description": "Contact Mas Cerca AP to place an order, become a distributor or make an inquiry."
     }
   },
+  "helpHub": {
+    "trigger": "Need help?",
+    "title": "Help Center",
+    "close": "Close",
+    "back": "Back",
+    "menuSubtitle": "How can we help you today?",
+    "contactOptions": "How would you like to reach us?",
+    "whatsappMessage": "Hello, I need help with an order from Más Cerca AP",
+    "menu": {
+      "faq": "Frequently asked questions",
+      "privacy": "Privacy policy",
+      "terms": "Terms and conditions",
+      "contact": "Contact form",
+      "whatsapp": "Contact via WhatsApp"
+    }
+  },
   "chatbot": {
     "title": "Frequently Asked Questions",
     "welcome": "Hi! 👋 I'm the Más Cerca AP assistant. Select a category or type your question.",
