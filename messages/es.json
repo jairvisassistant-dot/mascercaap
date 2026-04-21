@@ -499,6 +499,22 @@
       "description": "Contactá a Más Cerca AP para hacer un pedido, ser distribuidor o hacer una consulta."
     }
   },
+  "helpHub": {
+    "trigger": "¿Necesita ayuda?",
+    "title": "Centro de ayuda",
+    "close": "Cerrar",
+    "back": "Volver",
+    "menuSubtitle": "¿En qué podemos ayudarte hoy?",
+    "contactOptions": "¿Cómo querés contactarnos?",
+    "whatsappMessage": "Hola, necesito ayuda con un pedido de Más Cerca AP",
+    "menu": {
+      "faq": "Preguntas frecuentes",
+      "privacy": "Políticas y privacidad",
+      "terms": "Términos y condiciones",
+      "contact": "Formulario de contacto",
+      "whatsapp": "Contactar por WhatsApp"
+    }
+  },
   "chatbot": {
     "title": "Preguntas Frecuentes",
     "welcome": "Hola! 👋 Soy el asistente de Más Cerca AP. Seleccioná una categoría o escribí tu pregunta.",
