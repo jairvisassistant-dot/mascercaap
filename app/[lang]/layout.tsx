@@ -25,7 +25,8 @@ function getJsonLd(lang: Locale) {
         : "Producers of 100% natural juices and citrus fruits in Colombia.",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Chia",
+      streetAddress: SITE_CONFIG.address,
+      addressLocality: "Chía",
       addressRegion: "Cundinamarca",
       addressCountry: "CO",
     },

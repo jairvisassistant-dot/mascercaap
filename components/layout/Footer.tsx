@@ -72,7 +72,7 @@ export default function Footer({ dict, lang }: FooterProps) {
                       ? "bg-accent hover:bg-accent/90"
                       : "bg-primary hover:bg-primary/90"
                   }`}
-                  aria-label={social.name}
+                  aria-label={lang === "es" ? `Síguenos en ${social.name}` : `Follow us on ${social.name}`}
                 >
                   {social.icon}
                 </a>

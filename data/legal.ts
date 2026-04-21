@@ -1,3 +1,5 @@
+import { SITE_CONFIG } from "@/lib/config";
+
 export type LegalSection = {
   title: { es: string; en: string };
   content: { es: string; en: string };
@@ -47,8 +49,8 @@ export const privacyPolicy: LegalDocument = {
     {
       title: { es: "5. Derechos del titular", en: "5. Data Subject Rights" },
       content: {
-        es: "El titular de los datos tiene derecho a conocer, actualizar, rectificar y suprimir sus datos, así como a revocar el consentimiento. Para ejercer estos derechos, puede escribirnos a apalejandraplata@gmail.com.",
-        en: "The data subject has the right to access, update, rectify, and delete their data, as well as to withdraw consent. To exercise these rights, you may write to us at apalejandraplata@gmail.com.",
+        es: `El titular de los datos tiene derecho a conocer, actualizar, rectificar y suprimir sus datos, así como a revocar el consentimiento. Para ejercer estos derechos, puede escribirnos a ${SITE_CONFIG.emailContact}.`,
+        en: `The data subject has the right to access, update, rectify, and delete their data, as well as to withdraw consent. To exercise these rights, you may write to us at ${SITE_CONFIG.emailContact}.`,
       },
     },
     {
@@ -134,8 +136,8 @@ export const termsAndConditions: LegalDocument = {
     {
       title: { es: "8. Contacto", en: "8. Contact" },
       content: {
-        es: "Para consultas sobre estos términos, puede contactarnos en: apalejandraplata@gmail.com | Calle 12a # 15-53, Chía, Cundinamarca.",
-        en: "For inquiries about these terms, you may contact us at: apalejandraplata@gmail.com | Calle 12a # 15-53, Chía, Cundinamarca.",
+        es: `Para consultas sobre estos términos, puede contactarnos en: ${SITE_CONFIG.emailContact} | ${SITE_CONFIG.address}, ${SITE_CONFIG.addressCity}.`,
+        en: `For inquiries about these terms, you may contact us at: ${SITE_CONFIG.emailContact} | ${SITE_CONFIG.address}, ${SITE_CONFIG.addressCity}.`,
       },
     },
   ],
