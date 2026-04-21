@@ -192,6 +192,10 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 ))}
               </div>
             </div>
+
+            <p className="mt-4 text-xs text-gray-400 text-center leading-relaxed">
+              📷 {dict.products.pulpaGrid.disclaimer}
+            </p>
           </m.div>
         )}
       </AnimatePresence>

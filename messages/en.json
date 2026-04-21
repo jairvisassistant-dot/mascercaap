@@ -167,7 +167,8 @@
       "available": "available",
       "availablePlural": "available",
       "scrollPrev": "View previous flavors",
-      "scrollNext": "View more flavors"
+      "scrollNext": "View more flavors",
+      "disclaimer": "Images shown are for catalog reference only. Packaging, presentation, and product format may vary without prior notice; we work with packaging and formats that may change based on availability, without affecting quality."
     },
     "card": {
       "soldOut": "Sold Out",
