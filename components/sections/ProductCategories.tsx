@@ -5,6 +5,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 56, scale: 0.94 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.65,
+      delay: i * 0.14,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+  hover: {
+    y: -10,
+    transition: { type: "spring" as const, stiffness: 320, damping: 22 },
+  },
+  tap: {
+    scale: 0.975,
+    transition: { type: "spring" as const, stiffness: 400, damping: 28 },
+  },
+};
+
 type CategoryStructure = {
   key: string;
   image: string;
@@ -76,10 +98,13 @@ export default function ProductCategories() {
           {CATEGORIES.map((category, index) => (
             <m.div
               key={category.key}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              whileHover={category.comingSoon ? undefined : "hover"}
+              whileTap={category.comingSoon ? undefined : "tap"}
+              custom={index}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
             >
               <CategoryCard
                 category={category}
