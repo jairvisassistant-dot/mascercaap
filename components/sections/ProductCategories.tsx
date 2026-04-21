@@ -12,21 +12,23 @@ type CategoryStructure = {
   gradient: string;
   glowColor: string;
   emoji: string;
+  imageContainerClass?: string;
   comingSoon?: boolean;
 };
 
 const CATEGORIES: CategoryStructure[] = [
   {
     key: "jugos",
-    image: "/imgs/SKU_LimonCereza1000.webp",
+    image: "/imgs/SKU_LimonCereza-Portada.png",
     href: "/productos?categoria=jugos",
     gradient: "from-emerald-950 via-green-900 to-emerald-800",
     glowColor: "bg-green-400/20",
     emoji: "🍋",
+    imageContainerClass: "w-56 h-80",
   },
   {
     key: "pulpas",
-    image: "/imgs/pulpa-maracuya.webp",
+    image: "/imgs/pulpas-portada-test.png",
     href: "/productos?categoria=pulpas",
     gradient: "from-orange-700 via-orange-600 to-amber-500",
     glowColor: "bg-orange-300/25",
@@ -34,7 +36,7 @@ const CATEGORIES: CategoryStructure[] = [
   },
   {
     key: "lacteos",
-    image: "/imgs/Kumis-Hato.webp",
+    image: "/imgs/lacteos_Portada.png",
     href: "/productos?categoria=lacteos",
     gradient: "from-teal-950 via-teal-900 to-emerald-800",
     glowColor: "bg-teal-400/20",
@@ -119,7 +121,7 @@ function CategoryCard({
       </div>
 
       {/* Imagen del producto — derecha inferior */}
-      <div className="absolute bottom-0 right-0 w-48 h-72 pointer-events-none">
+      <div className={`absolute ${category.imageContainerClass ? "bottom-4" : "bottom-0"} right-0 ${category.imageContainerClass ?? "w-48 h-72"} pointer-events-none`}>
         {/* Degradado lateral que absorbe el borde de la imagen */}
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-[inherit] via-transparent to-transparent" />
         <Image
