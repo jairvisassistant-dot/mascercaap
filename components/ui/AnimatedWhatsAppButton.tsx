@@ -9,10 +9,10 @@ interface Props {
   label: string;
 }
 
-const EXPAND_MS   = 500;
+const EXPAND_MS   = 800;
 const HOLD_MS     = 5000;
-const COLLAPSE_MS = 420;
-const PAUSE_MS    = 900;
+const COLLAPSE_MS = 650;
+const PAUSE_MS    = 700;
 
 export default function AnimatedWhatsAppButton({ href, label }: Props) {
   const ref        = useRef<HTMLDivElement>(null);
@@ -32,11 +32,11 @@ export default function AnimatedWhatsAppButton({ href, label }: Props) {
         await Promise.all([
           widthCtrl.start({
             width: 240,
-            transition: { duration: EXPAND_MS / 1000, ease: [0.22, 1, 0.36, 1] as [number,number,number,number] },
+            transition: { duration: EXPAND_MS / 1000, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] },
           }),
           textCtrl.start({
             opacity: 1,
-            transition: { duration: 0.25, delay: (EXPAND_MS / 1000) * 0.55 },
+            transition: { duration: 0.38, delay: (EXPAND_MS / 1000) * 0.42, ease: "easeOut" },
           }),
         ]);
 
@@ -48,11 +48,11 @@ export default function AnimatedWhatsAppButton({ href, label }: Props) {
         await Promise.all([
           textCtrl.start({
             opacity: 0,
-            transition: { duration: 0.18 },
+            transition: { duration: 0.28, ease: "easeIn" },
           }),
           widthCtrl.start({
             width: 0,
-            transition: { duration: COLLAPSE_MS / 1000, delay: 0.15, ease: [0.64, 0, 0.78, 0] as [number,number,number,number] },
+            transition: { duration: COLLAPSE_MS / 1000, delay: 0.18, ease: [0.7, 0, 0.84, 0] as [number,number,number,number] },
           }),
         ]);
 
