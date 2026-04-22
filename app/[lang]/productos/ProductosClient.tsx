@@ -34,6 +34,9 @@ export default function ProductosClient({ products, productLines, initialCategor
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
   const [activeSubLines, setActiveSubLines] = useState<Set<ProductLineKey>>(new Set());
 
+  // El nivel 2 solo aparece después de que el usuario interactúa con un botón de categoría
+  const [hasInteracted, setHasInteracted] = useState(false);
+
   const [activeSize, setActiveSize] = useState<string>("todos");
   const [isSticky, setIsSticky] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -70,10 +73,12 @@ export default function ProductosClient({ products, productLines, initialCategor
   }, [products, activeCategory, activeSubLines]);
 
   const selectCategory = (cat: string) => {
-    if (activeCategory === cat) return;
-    setActiveCategory(cat);
-    setActiveSubLines(new Set());
-    setActiveSize("todos");
+    if (activeCategory !== cat) {
+      setActiveCategory(cat);
+      setActiveSubLines(new Set());
+      setActiveSize("todos");
+    }
+    setHasInteracted(true);
   };
 
   const toggleSubLine = (key: ProductLineKey) => {
@@ -204,9 +209,9 @@ export default function ProductosClient({ products, productLines, initialCategor
           )}
         </div>
 
-        {/* Nivel 2 — sabores + tamaños de la categoría activa */}
+        {/* Nivel 2 — aparece solo cuando el usuario selecciona una categoría */}
         <AnimatePresence>
-          {(showSubFilter || availableSizes.length > 0) && (
+          {hasInteracted && (showSubFilter || availableSizes.length > 0) && (
             <m.div
               key={activeCategory}
               initial={{ height: 0, opacity: 0 }}
