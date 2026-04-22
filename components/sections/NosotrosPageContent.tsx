@@ -10,10 +10,10 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 const timelineIcons = ["🌱", "👀", "🚿", "🧃", "🫙", "📦"];
 
 const valuesMeta = [
-  { icon: "🙏", color: "from-amber-400 to-yellow-600" },
-  { icon: "🤝", color: "from-teal-400 to-emerald-600" },
-  { icon: "⭐", color: "from-green-400 to-green-600" },
-  { icon: "🌱", color: "from-orange-400 to-orange-600" },
+  { icon: "🙏", color: "from-primary to-primary-dark" },
+  { icon: "🤝", color: "from-accent to-accent-dark" },
+  { icon: "⭐", color: "from-primary-dark to-[#1B5E20]" },
+  { icon: "🌱", color: "from-accent-light to-accent-dark" },
 ];
 
 const flipCardsMeta = [
@@ -117,13 +117,39 @@ export default function NosotrosPageContent() {
   return (
     <div className="pt-20">
 
-      {/* Hero */}
-      <section className="relative py-20 bg-gradient-to-r from-primary to-accent">
-        <div className="max-w-7xl mx-auto px-4 text-center text-white">
-          <m.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-bold mb-4">
+      {/* Hero — el verde del campo colombiano, sin mezcla con naranja */}
+      <section className="relative py-20 bg-gradient-to-br from-primary-dark via-primary to-[#66BB6A] overflow-hidden">
+        {/* Luz solar filtrada — evoca amanecer sobre el campo */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-accent/10 blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+        {/* Forma orgánica — hoja */}
+        <div className="absolute right-0 inset-y-0 pointer-events-none overflow-hidden">
+          <svg viewBox="0 0 400 300" className="absolute right-0 top-0 h-full w-auto opacity-[0.07]" fill="white">
+            <path d="M380 0 C240 20 120 80 80 160 C40 240 120 300 220 280 C320 260 420 180 400 80 Z" />
+          </svg>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 text-center text-white relative z-10">
+          <m.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-xs font-bold tracking-widest text-white/60 uppercase mb-5"
+          >
+            Chía, Cundinamarca · Colombia
+          </m.p>
+          <m.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="text-4xl md:text-5xl font-bold mb-4 leading-tight"
+          >
             {t.hero.title}
           </m.h1>
-          <m.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-xl opacity-90 max-w-2xl mx-auto">
+          <m.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-xl opacity-85 max-w-2xl mx-auto"
+          >
             {t.hero.subtitle}
           </m.p>
         </div>
@@ -153,19 +179,36 @@ export default function NosotrosPageContent() {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="py-20 bg-gray-50">
+      {/* Timeline — "Del Campo a Tu Mesa": el campo es verde, la historia empieza aquí */}
+      <section className="py-20 bg-gradient-to-b from-white to-emerald-50/60">
         <div className="max-w-7xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t.timeline.title}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">{t.timeline.subtitle}</p>
+            <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
+              {lang === "es" ? "Proceso artesanal" : "Artisanal process"}
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{t.timeline.title}</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">{t.timeline.subtitle}</p>
           </m.div>
           <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
             {t.timeline.steps.map((step, index) => (
-              <m.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }} className="text-center">
-                <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg">{timelineIcons[index]}</div>
+              <m.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="relative mx-auto mb-4 w-20 h-20">
+                  <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-4xl shadow-lg shadow-primary/20">
+                    {timelineIcons[index]}
+                  </div>
+                  {index < t.timeline.steps.length - 1 && (
+                    <div className="hidden lg:block absolute top-1/2 -right-full w-full h-px bg-primary/20" />
+                  )}
+                </div>
                 <h3 className="font-bold text-gray-800 mb-2">{step.title}</h3>
-                <p className="text-sm text-gray-600">{step.description}</p>
+                <p className="text-sm text-gray-500 leading-relaxed">{step.description}</p>
               </m.div>
             ))}
           </div>
@@ -175,8 +218,8 @@ export default function NosotrosPageContent() {
       {/* Misión & Visión */}
       <MisionVisionTabs />
 
-      {/* Valores */}
-      <section className="py-20 bg-gray-50">
+      {/* Valores — lo que mueve a Más Cerca AP, expresado en verde y naranja de marca */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <span className="inline-block text-sm font-semibold tracking-widest text-accent uppercase mb-3">{t.values.subtitle}</span>
@@ -269,8 +312,8 @@ export default function NosotrosPageContent() {
         </div>
       </section>
 
-      {/* Galería de Proceso */}
-      <section className="py-20 bg-gray-50">
+      {/* Galería de Proceso — "Una mirada detrás de escenas", fondo neutro que no compite con las imágenes */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t.gallery.title}</h2>
