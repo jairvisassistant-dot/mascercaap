@@ -1,5 +1,3 @@
-"use client";
-
 import { m } from "framer-motion";
 import ProductCard from "@/components/ui/ProductCard";
 import type { Product } from "@/types";
@@ -47,7 +45,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="h-px w-10 bg-accent/50 rounded-full" />
             <span className="text-xs font-bold tracking-[0.22em] text-accent uppercase">
-              Destacados
+              {dict.home.featured.sectionLabel}
             </span>
             <span className="h-px w-10 bg-accent/50 rounded-full" />
           </div>

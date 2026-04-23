@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MisionVisionTabs from "@/components/sections/MisionVisionTabs";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { SITE_CONFIG } from "@/lib/config";
 
 const timelineIcons = ["🌱", "👀", "🚿", "🧃", "🫙", "📦"];
 
@@ -143,7 +144,7 @@ export default function NosotrosPageContent() {
             animate={{ opacity: 1, y: 0 }}
             className="text-xs font-bold tracking-widest text-white/60 uppercase mb-5"
           >
-            Chía, Cundinamarca · Colombia
+            {`Chía · ${SITE_CONFIG.addressCity}`}
           </m.p>
           <m.h1
             initial={{ opacity: 0, y: 20 }}
@@ -193,7 +194,7 @@ export default function NosotrosPageContent() {
         <div className="max-w-7xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
-              {lang === "es" ? "Proceso artesanal" : "Artisanal process"}
+              {t.timeline.sectionLabel}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{t.timeline.title}</h2>
             <p className="text-gray-500 max-w-2xl mx-auto">{t.timeline.subtitle}</p>
@@ -326,7 +327,7 @@ export default function NosotrosPageContent() {
         <div className="max-w-5xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
             <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
-              {lang === "es" ? "Del campo a tu mesa" : "From the field to your table"}
+              {t.gallery.sectionLabel}
             </span>
             <h2 className="font-dm-serif text-3xl md:text-4xl text-primary mb-4">{t.gallery.title}</h2>
             <p className="text-gray-500 max-w-xl mx-auto">{t.gallery.subtitle}</p>
@@ -379,7 +380,7 @@ export default function NosotrosPageContent() {
                     <div className={`md:px-8 ${isEven ? "md:order-3" : "md:order-1 md:text-right"}`}>
                       <span className="md:hidden text-3xl block mb-3">{step.icon}</span>
                       <span className="inline-block text-[10px] font-bold tracking-widest text-primary/60 uppercase mb-2">
-                        {lang === "es" ? `Paso ${index + 1} de ${processSteps.length}` : `Step ${index + 1} of ${processSteps.length}`}
+                        {`${t.gallery.stepLabel} ${index + 1} ${t.gallery.stepOf} ${processSteps.length}`}
                       </span>
                       <h3 className="font-dm-serif text-2xl md:text-[1.6rem] text-gray-800 mb-3 leading-snug">
                         {cardText.title}

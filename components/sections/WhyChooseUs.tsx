@@ -1,5 +1,3 @@
-"use client";
-
 import { m } from "framer-motion";
 import type { Dictionary } from "@/lib/i18n";
 
@@ -42,7 +40,7 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="h-px w-10 bg-primary/40 rounded-full" />
             <span className="text-xs font-bold tracking-[0.22em] text-primary uppercase">
-              Nuestra promesa
+              {dict.home.whyChooseUs.sectionLabel}
             </span>
             <span className="h-px w-10 bg-primary/40 rounded-full" />
           </div>

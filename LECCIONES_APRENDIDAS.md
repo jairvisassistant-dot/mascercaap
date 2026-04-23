@@ -227,11 +227,67 @@ export function createContactSchema(msgs: ContactValidationMessages) {
 
 ---
 
+## CAUSA RAÍZ #12 — Overlines/labels de sección hardcodeados fuera del diccionario i18n
+
+**Qué pasó:** Los textos pequeños de overline sobre los títulos de sección (`"Catálogo"`, `"Nuestra promesa"`, `"Destacados"`, `"Compromisos"`) estaban hardcodeados en español directamente en los componentes. En la versión `/en/` del sitio, el usuario veía español.
+
+**Por qué ocurrió:** Al construir componentes se priorizó la velocidad. El título principal y subtítulo se conectaron al diccionario, pero el overline decorativo — que visualmente parece secundario — se dejó hardcodeado. Es un texto "pequeño" que parece irrelevante hasta que el sitio es multilenguaje.
+
+**Cómo se arregló:** Se agregaron claves `sectionLabel` a las secciones `categories`, `featured`, `whyChooseUs`, `dailyOffer`, `timeline` y `gallery` en ambos JSONs. Los componentes ahora usan `dict.home.X.sectionLabel`.
+
+**Regla derivada:** TODO texto visible al usuario — sin importar su tamaño o rol decorativo — debe pasar por el diccionario i18n si el componente existe en múltiples idiomas. Esto incluye overlines, badges, chips, tooltips y cualquier string que no sea un nombre propio o marca.
+
+**Archivos afectados:** `messages/es.json`, `messages/en.json`, `ProductCategories.tsx`, `WhyChooseUs.tsx`, `FeaturedProducts.tsx`, `DailyOffer.tsx`, `NosotrosPageContent.tsx`
+
+---
+
+## CAUSA RAÍZ #13 — Voseo rioplatense en sitio colombiano
+
+**Qué pasó:** Los textos interactivos de la galería en `/nosotros` usaban voseo argentino: `"Presioná cada imagen"`, `"Presioná para saber más"`, `"Presioná para volver"`. El sitio es de una empresa colombiana (Chía, Cundinamarca) y el español neutro/colombiano usa tuteo: `"Toca cada imagen"`, etc.
+
+**Por qué ocurrió:** El agente de IA que redactó el copy del diccionario usa Rioplatense como variante de español por defecto. Al generar el texto de UX para la galería, usó la variante argentina sin considerar el contexto regional del cliente.
+
+**Cómo se arregló:** `"Presioná"` → `"Toca"` en las tres claves afectadas. El cambio a "Toca" también es más adecuado técnicamente (es la traducción exacta de "Tap" del inglés para contextos móviles).
+
+**Regla derivada:** Este proyecto es colombiano. El español del diccionario `es.json` debe usar tuteo neutro colombiano, no voseo. Formas prohibidas: `"presioná"`, `"hacé"`, `"podés"`, `"sabés"`, `"tené"`. Formas correctas: `"presiona"`, `"haz"`, `"puedes"`, `"sabes"`, `"ten"` / o imperativo con `"toca"`, `"revisa"`, `"accede"`.
+
+**Archivos afectados:** `messages/es.json` (claves `about.gallery.mobileHint`, `.pressMore`, `.pressBack`)
+
+---
+
+## CAUSA RAÍZ #14 — `@sanity/client` `.catch()` no captura SyntaxError de JSON malformado
+
+**Qué pasó:** Las páginas `/es/productos` y `/es` lanzaban `SyntaxError: Unexpected end of JSON input` durante la generación de rutas estáticas. El `client.fetch().catch(() => fallback)` no capturaba el error.
+
+**Por qué ocurrió:** Cuando `@sanity/client` recibe una respuesta HTTP con cuerpo vacío o malformado, en algunas versiones el `SyntaxError` de `JSON.parse` se lanza antes de que la cadena de promesas se resuelva. `.catch()` captura rechazos de promesas pero no errores síncronos que ocurren en el microtask queue antes del `.then()` interno del cliente.
+
+**Cómo se arregló:** Reemplazar `.catch()` por `try/catch` explícito que envuelve el `await client.fetch()`. El `try/catch` captura tanto promesas rechazadas como errores síncronos.
+
+```typescript
+// ❌ MAL — puede no capturar SyntaxError de JSON.parse en Sanity client
+const data = await client.fetch(QUERY).catch(() => fallback);
+
+// ✅ BIEN — captura todos los tipos de error
+let data = fallback;
+try {
+  data = await client.fetch(QUERY);
+} catch {
+  // fallback ya asignado
+}
+```
+
+**Regla derivada:** Nunca usar `.catch()` encadenado para manejar fallos de `@sanity/client`. Siempre usar `try/catch` explícito. Aplicar este patrón en TODAS las páginas que hacen fetches a Sanity.
+
+**Archivos afectados:** `app/[lang]/productos/page.tsx`, `app/[lang]/page.tsx`
+
+---
+
 ## HISTORIAL DE AUDITORÍAS
 
 | Fecha | Hallazgos | CRIT | HIGH | MED | LOW | INFO |
 |-------|-----------|------|------|-----|-----|------|
 | 2026-04-18 | 14 | 0 | 3 | 6 | 3 | 2 |
 | 2026-04-19 | 35 | 0 | 6 | 18 | 10 | 1 |
+| 2026-04-23 | 20 | 0 | 3 | 6 | 3 | 5 |
 
-> La auditoría de 2026-04-19 encontró más hallazgos porque fue más exhaustiva (44 archivos revisados, 8 categorías) y porque se agregaron componentes nuevos (chatbot, lácteos, segmento pulpas) desde la auditoría anterior.
+> La auditoría de 2026-04-23 revisó 36 archivos con 8 categorías. Todos los hallazgos fueron corregidos en la misma sesión. Se agregaron CAUSA RAÍZ #12, #13 y #14 a este documento.

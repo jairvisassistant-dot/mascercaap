@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ProductLineRow from "@/components/ui/ProductLineRow";
+import ProductGridCard from "@/components/ui/ProductGridCard";
 import PulpaFruitGrid from "@/components/ui/PulpaFruitGrid";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
@@ -118,6 +119,16 @@ export default function ProductosClient({ products, productLines, initialCategor
       .sort((a, b) => a.presentationOrder - b.presentationOrder);
 
   const hasActiveFilters = hasInteracted || activeCategory !== DEFAULT_CATEGORY || activeSubLines.size > 0 || activeSize !== "todos";
+
+  const sizeFilteredItems = useMemo(() => {
+    if (activeSize === "todos") return [];
+    return visibleLines.flatMap((line) =>
+      products
+        .filter((p) => p.line === line.key && p.presentation === activeSize)
+        .sort((a, b) => a.presentationOrder - b.presentationOrder)
+        .map((p) => ({ product: p, line }))
+    );
+  }, [activeSize, visibleLines, products]);
 
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const catLabels = dict.footer.productLines as Record<string, string>;
@@ -286,75 +297,85 @@ export default function ProductosClient({ products, productLines, initialCategor
 
       {/* Líneas de producto */}
       <section className="py-10 bg-white min-h-[50vh]">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col gap-12">
-          {nonPulpaLines.map((line, lineIndex) => {
-            const lineProducts = getLineProducts(line.key);
-            return (
-              <m.div
-                key={line.key}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: lineIndex * 0.08 }}
-              >
-                <div className="flex items-center gap-4 mb-5">
-                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
-                    {line.iconEmoji}
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-800">{pl[line.key]?.label ?? line.label}</h2>
-                    <p className="text-sm text-gray-500">{pl[line.key]?.description ?? line.description}</p>
-                  </div>
-                </div>
-                {lineProducts.length > 0 && (
-                  <ProductLineRow line={line} products={lineProducts} firstLine={lineIndex === 0} />
-                )}
-              </m.div>
-            );
-          })}
+        <div className="max-w-7xl mx-auto px-4">
 
-          {pulpaVisibleLines.length > 0 && (
-            activeSize !== "todos" ? (
-              <>
-                {pulpaVisibleLines.map((line, idx) => {
-                  const lineProducts = getLineProducts(line.key);
-                  if (lineProducts.length === 0) return null;
-                  return (
-                    <m.div
-                      key={line.key}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: (nonPulpaLines.length + idx) * 0.08 }}
-                    >
-                      <div className="flex items-center gap-4 mb-5">
-                        <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
-                          {line.iconEmoji}
-                        </div>
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-800">{pl[line.key]?.label ?? line.label}</h2>
-                          <p className="text-sm text-gray-500">{pl[line.key]?.description ?? line.description}</p>
-                        </div>
+          {/* Grid flat cuando hay filtro de tamaño activo */}
+          {activeSize !== "todos" ? (
+            <m.div
+              key={`grid-${activeSize}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              {sizeFilteredItems.length > 0 ? (
+                <>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">
+                    {sizeFilteredItems.length} {lang === "es" ? "productos en" : "products in"} {activeSize}
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+                    {sizeFilteredItems.map(({ product, line }, index) => (
+                      <ProductGridCard
+                        key={product.id}
+                        product={product}
+                        line={line}
+                        priority={index < 5}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <span className="text-5xl mb-4">🔍</span>
+                  <p className="text-gray-500 text-base font-medium">
+                    {lang === "es" ? "Sin productos en esta presentación" : "No products in this size"}
+                  </p>
+                </div>
+              )}
+            </m.div>
+          ) : (
+            <div className="flex flex-col gap-12">
+              {nonPulpaLines.map((line, lineIndex) => {
+                const lineProducts = getLineProducts(line.key);
+                return (
+                  <m.div
+                    key={line.key}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: lineIndex * 0.08 }}
+                  >
+                    <div className="flex items-center gap-4 mb-5">
+                      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
+                        {line.iconEmoji}
                       </div>
-                      <ProductLineRow line={line} products={lineProducts} firstLine={false} />
-                    </m.div>
-                  );
-                })}
-              </>
-            ) : (
-              <m.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: nonPulpaLines.length * 0.08 }}
-              >
-                <PulpaFruitGrid
-                  pulpaLines={pulpaVisibleLines}
-                  products={products.filter((p) => PULPA_KEYS.has(p.line))}
-                />
-              </m.div>
-            )
+                      <div>
+                        <h2 className="text-xl font-bold text-gray-800">{pl[line.key]?.label ?? line.label}</h2>
+                        <p className="text-sm text-gray-500">{pl[line.key]?.description ?? line.description}</p>
+                      </div>
+                    </div>
+                    {lineProducts.length > 0 && (
+                      <ProductLineRow line={line} products={lineProducts} firstLine={lineIndex === 0} />
+                    )}
+                  </m.div>
+                );
+              })}
+
+              {pulpaVisibleLines.length > 0 && (
+                <m.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: nonPulpaLines.length * 0.08 }}
+                >
+                  <PulpaFruitGrid
+                    pulpaLines={pulpaVisibleLines}
+                    products={products.filter((p) => PULPA_KEYS.has(p.line))}
+                  />
+                </m.div>
+              )}
+            </div>
           )}
+
         </div>
       </section>
 

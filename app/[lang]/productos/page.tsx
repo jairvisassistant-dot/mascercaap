@@ -47,11 +47,14 @@ export default async function ProductosPage({ params, searchParams }: Props) {
     !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
     process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
 
-  const rawProducts = sanityReady
-    ? await client
-        .fetch(ALL_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } })
-        .catch(() => staticProducts)
-    : staticProducts;
+  let rawProducts = staticProducts;
+  if (sanityReady) {
+    try {
+      rawProducts = await client.fetch(ALL_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } });
+    } catch {
+      rawProducts = staticProducts;
+    }
+  }
 
   const products = rawProducts.map((p: (typeof staticProducts)[0]) =>
     p.line === "kumiss" && !p.image

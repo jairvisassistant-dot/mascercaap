@@ -1,5 +1,3 @@
-"use client";
-
 import { m } from "framer-motion";
 import type { Dictionary } from "@/lib/i18n";
 
@@ -132,7 +130,7 @@ export default function DailyOffer({ dict }: { dict: Dictionary }) {
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="h-px w-10 bg-white/30 rounded-full" />
             <span className="text-xs font-bold tracking-[0.22em] text-white/70 uppercase">
-              Compromisos
+              {dict.home.dailyOffer.sectionLabel}
             </span>
             <span className="h-px w-10 bg-white/30 rounded-full" />
           </div>

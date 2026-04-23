@@ -51,22 +51,18 @@ export default async function HomePage({ params }: Props) {
     !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
     process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
 
-  const [sanityProducts, sanityTestimonials] = sanityReady
-    ? await Promise.all([
-        client
-          .fetch(FEATURED_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } })
-          .catch((err: unknown) => {
-            console.error("[Sanity] Failed to fetch featured products:", err instanceof Error ? err.message : "unknown");
-            return [];
-          }),
-        client
-          .fetch(ALL_TESTIMONIALS_QUERY, {}, { next: { revalidate: 3600 } })
-          .catch((err: unknown) => {
-            console.error("[Sanity] Failed to fetch testimonials:", err instanceof Error ? err.message : "unknown");
-            return [];
-          }),
-      ])
-    : [[], []];
+  let sanityProducts: typeof staticFeaturedProducts = [];
+  let sanityTestimonials: typeof staticTestimonials = [];
+  if (sanityReady) {
+    try {
+      [sanityProducts, sanityTestimonials] = await Promise.all([
+        client.fetch(FEATURED_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } }),
+        client.fetch(ALL_TESTIMONIALS_QUERY, {}, { next: { revalidate: 3600 } }),
+      ]);
+    } catch {
+      // Fallback a datos estáticos
+    }
+  }
 
   const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;
   const testimonials = sanityTestimonials.length > 0 ? sanityTestimonials : staticTestimonials;
