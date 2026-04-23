@@ -12,6 +12,7 @@ import { featuredProducts as staticFeaturedProducts } from "@/data/products";
 import { client } from "@/sanity/lib/client";
 import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import Link from "next/link";
+import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import { SITE_CONFIG } from "@/lib/config";
 
 export const revalidate = 60;
@@ -50,22 +51,18 @@ export default async function HomePage({ params }: Props) {
     !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
     process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
 
-  const [sanityProducts, sanityTestimonials] = sanityReady
-    ? await Promise.all([
-        client
-          .fetch(FEATURED_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } })
-          .catch((err: unknown) => {
-            console.error("[Sanity] Failed to fetch featured products:", err instanceof Error ? err.message : "unknown");
-            return [];
-          }),
-        client
-          .fetch(ALL_TESTIMONIALS_QUERY, {}, { next: { revalidate: 3600 } })
-          .catch((err: unknown) => {
-            console.error("[Sanity] Failed to fetch testimonials:", err instanceof Error ? err.message : "unknown");
-            return [];
-          }),
-      ])
-    : [[], []];
+  let sanityProducts: typeof staticFeaturedProducts = [];
+  let sanityTestimonials: typeof staticTestimonials = [];
+  if (sanityReady) {
+    try {
+      [sanityProducts, sanityTestimonials] = await Promise.all([
+        client.fetch(FEATURED_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } }),
+        client.fetch(ALL_TESTIMONIALS_QUERY, {}, { next: { revalidate: 3600 } }),
+      ]);
+    } catch {
+      // Fallback a datos estáticos
+    }
+  }
 
   const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;
   const testimonials = sanityTestimonials.length > 0 ? sanityTestimonials : staticTestimonials;
@@ -82,13 +79,22 @@ export default async function HomePage({ params }: Props) {
 
       <DailyOffer dict={dict} />
 
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+      <section className="py-24 bg-gray-900 relative overflow-hidden">
+        {/* Glow decorativo */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 blur-[80px] rounded-full pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 relative">
+          <div className="text-center mb-14">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <span className="h-px w-10 bg-white/20 rounded-full" />
+              <span className="text-xs font-bold tracking-[0.22em] text-white/40 uppercase">
+                Clientes
+              </span>
+              <span className="h-px w-10 bg-white/20 rounded-full" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               {dict.home.testimonials.title}
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-white/50 max-w-2xl mx-auto">
               {dict.home.testimonials.subtitle}
             </p>
           </div>
@@ -97,22 +103,23 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <section className="py-16 bg-primary">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+      <section className="py-20 bg-gradient-to-br from-primary via-primary to-primary-dark relative overflow-hidden">
+        {/* Textura de puntos */}
+        <div className="absolute inset-0 opacity-[0.07] pointer-events-none"
+          style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }}
+        />
+        <div className="max-w-3xl mx-auto px-4 text-center relative">
+          <div className="inline-flex items-center gap-2 bg-white/15 border border-white/25 text-white text-xs font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            Entregas en Bogotá
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 leading-tight">
             {dict.home.cta.title}
           </h2>
-          <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-white/80 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
             {dict.home.cta.text}
           </p>
-          <Link
-            href={whatsappCta}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-accent hover:bg-accent-dark text-white font-bold py-4 px-8 rounded-full transition-all hover:scale-105 text-lg"
-          >
-            {dict.home.cta.button}
-          </Link>
+          <AnimatedWhatsAppButton href={whatsappCta} label={dict.home.cta.button} />
         </div>
       </section>
     </>

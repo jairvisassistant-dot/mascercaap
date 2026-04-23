@@ -38,29 +38,29 @@ const slides: SlideStructure[] = [
       {
         image: "/imgs/Slide1.1.webp",
         kenBurns: {
-          initial: { scale: 1.05, x: "0%" },
-          animate: { scale: 1.18, x: "0%" },
+          initial: { scale: 1.0, x: "0%" },
+          animate: { scale: 1.04, x: "0%" },
         },
       },
       {
         image: "/imgs/Slide1.2.webp",
         kenBurns: {
-          initial: { scale: 1.1, x: "-4%" },
-          animate: { scale: 1.1, x: "4%" },
+          initial: { scale: 1.02, x: "-2%" },
+          animate: { scale: 1.02, x: "2%" },
         },
       },
       {
         image: "/imgs/Slide1.3.webp",
         kenBurns: {
-          initial: { scale: 1.08, x: "0%" },
-          animate: { scale: 1.18, x: "0%" },
+          initial: { scale: 1.0, x: "0%" },
+          animate: { scale: 1.04, x: "0%" },
         },
       },
       {
         image: "/imgs/pulpa-maracuya.webp",
         kenBurns: {
-          initial: { scale: 1.2, x: "0%" },
-          animate: { scale: 1.05, x: "0%" },
+          initial: { scale: 1.05, x: "0%" },
+          animate: { scale: 1.0, x: "0%" },
         },
       },
     ],
@@ -74,22 +74,22 @@ const slides: SlideStructure[] = [
       {
         image: "/imgs/Slide2.1.webp",
         kenBurns: {
-          initial: { scale: 1.05, x: "0%" },
-          animate: { scale: 1.18, x: "0%" },
+          initial: { scale: 1.0, x: "0%" },
+          animate: { scale: 1.04, x: "0%" },
         },
       },
       {
         image: "/imgs/Slide2.2.webp",
         kenBurns: {
-          initial: { scale: 1.1, x: "-4%" },
-          animate: { scale: 1.1, x: "4%" },
+          initial: { scale: 1.02, x: "-2%" },
+          animate: { scale: 1.02, x: "2%" },
         },
       },
       {
         image: "/imgs/Slide2.3.webp",
         kenBurns: {
-          initial: { scale: 1.2, x: "0%" },
-          animate: { scale: 1.05, x: "0%" },
+          initial: { scale: 1.05, x: "0%" },
+          animate: { scale: 1.0, x: "0%" },
         },
       },
     ],
@@ -103,15 +103,15 @@ const slides: SlideStructure[] = [
       {
         image: "/imgs/Slide3.1.webp",
         kenBurns: {
-          initial: { scale: 1.12, x: "-5%" },
-          animate: { scale: 1.12, x: "5%" },
+          initial: { scale: 1.02, x: "-2%" },
+          animate: { scale: 1.02, x: "2%" },
         },
       },
       {
         image: "/imgs/Slide3.2.webp",
         kenBurns: {
-          initial: { scale: 1.05, x: "0%" },
-          animate: { scale: 1.18, x: "0%" },
+          initial: { scale: 1.0, x: "0%" },
+          animate: { scale: 1.04, x: "0%" },
         },
       },
     ],
@@ -125,22 +125,22 @@ const slides: SlideStructure[] = [
       {
         image: "/imgs/Slide4.1.webp",
         kenBurns: {
-          initial: { scale: 1.05, x: "0%" },
-          animate: { scale: 1.18, x: "0%" },
+          initial: { scale: 1.0, x: "0%" },
+          animate: { scale: 1.04, x: "0%" },
         },
       },
       {
         image: "/imgs/Slide4.2.webp",
         kenBurns: {
-          initial: { scale: 1.1, x: "-4%" },
-          animate: { scale: 1.1, x: "4%" },
+          initial: { scale: 1.02, x: "-2%" },
+          animate: { scale: 1.02, x: "2%" },
         },
       },
       {
         image: "/imgs/Slide4.3.webp",
         kenBurns: {
-          initial: { scale: 1.2, x: "0%" },
-          animate: { scale: 1.05, x: "0%" },
+          initial: { scale: 1.05, x: "0%" },
+          animate: { scale: 1.0, x: "0%" },
         },
       },
     ],
@@ -154,15 +154,15 @@ const slides: SlideStructure[] = [
       {
         image: "/imgs/Slide5.1.webp",
         kenBurns: {
-          initial: { scale: 1.12, x: "-5%" },
-          animate: { scale: 1.12, x: "5%" },
+          initial: { scale: 1.02, x: "-2%" },
+          animate: { scale: 1.02, x: "2%" },
         },
       },
       {
         image: "/imgs/Slide5.2.webp",
         kenBurns: {
-          initial: { scale: 1.08, x: "0%" },
-          animate: { scale: 1.18, x: "0%" },
+          initial: { scale: 1.0, x: "0%" },
+          animate: { scale: 1.04, x: "0%" },
         },
       },
     ],

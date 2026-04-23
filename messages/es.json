@@ -66,6 +66,7 @@
       "goToSlide": "Ir al slide"
     },
     "categories": {
+      "sectionLabel": "Catálogo",
       "title": "Categorías de Productos",
       "subtitle": "Tres líneas de productos naturales para cada momento del día.",
       "items": [
@@ -86,10 +87,12 @@
       "viewProducts": "Ver productos"
     },
     "featured": {
+      "sectionLabel": "Destacados",
       "title": "Productos Destacados",
       "subtitle": "Descubre nuestra selección de los jugos más populares, elaborados con frutas frescas del campo."
     },
     "whyChooseUs": {
+      "sectionLabel": "Nuestra promesa",
       "title": "Por qué elegirnos",
       "subtitle": "Comprometidos con tu bienestar y el sabor auténtico de lo natural.",
       "pillars": [
@@ -112,6 +115,7 @@
       ]
     },
     "dailyOffer": {
+      "sectionLabel": "Compromisos",
       "title": "Nuestra promesa",
       "subtitle": "Cada entrega lleva el compromiso de quienes trabajan con amor por lo natural.",
       "badges": [
@@ -199,6 +203,7 @@
       }
     },
     "timeline": {
+      "sectionLabel": "Proceso artesanal",
       "title": "Del Campo a Tu Mesa",
       "subtitle": "Nuestro proceso artesanal garantiza la máxima frescura y calidad en cada jugo que producimos.",
       "steps": [
@@ -265,11 +270,14 @@
       ]
     },
     "gallery": {
+      "sectionLabel": "Del campo a tu mesa",
+      "stepLabel": "Paso",
+      "stepOf": "de",
       "title": "Nuestro Proceso en Imágenes",
       "subtitle": "Una mirada detrás de escenas a cómo preparamos cada jugo.",
-      "mobileHint": "Presioná cada imagen para conocer el proceso",
-      "pressMore": "Presioná para saber más",
-      "pressBack": "Presioná para volver",
+      "mobileHint": "Toca cada imagen para conocer el proceso",
+      "pressMore": "Toca para saber más",
+      "pressBack": "Toca para volver",
       "cards": [
         {
           "title": "El origen lo es todo",

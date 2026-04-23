@@ -6,6 +6,7 @@ import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
+import ScrollProgress from "@/components/ui/ScrollProgress";
 import { SITE_CONFIG } from "@/lib/config";
 
 export async function generateStaticParams() {
@@ -60,6 +61,7 @@ export default async function LangLayout({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <DictionaryProvider dict={dict} lang={lang}>
+        <ScrollProgress />
         <div className="min-h-screen flex flex-col overflow-x-clip">
           <Navbar />
           <main className="flex-1">{children}</main>

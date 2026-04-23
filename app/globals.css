@@ -12,7 +12,7 @@
   --foreground: #171717;
 }
 
-/* Configuración de tipografía Poppins */
+/* Configuración de tipografía */
 @theme inline {
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
@@ -21,6 +21,7 @@
   --color-accent-dark: var(--accent-dark);
   --color-accent-light: var(--accent-light);
   --font-poppins: 'Poppins', sans-serif;
+  --font-dm-serif: 'DM Serif Display', serif;
 }
 
 body {
@@ -40,7 +41,12 @@ body {
 }
 
 .hero-overlay {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.7) 0%, rgba(255, 152, 0, 0.7) 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.38) 50%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
 }
 
 .nav-link {
@@ -82,4 +88,33 @@ body {
 
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+/* Shimmer glare effect for product cards */
+.card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.card-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 70%
+  );
+  transform: skewX(-14deg);
+  pointer-events: none;
+}
+.card-shimmer:hover::after {
+  animation: card-shimmer-sweep 0.58s ease-in-out forwards;
+}
+@keyframes card-shimmer-sweep {
+  from { left: -80%; }
+  to   { left: 160%; }
 }

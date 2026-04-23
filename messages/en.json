@@ -66,6 +66,7 @@
       "goToSlide": "Go to slide"
     },
     "categories": {
+      "sectionLabel": "Catalog",
       "title": "Product Categories",
       "subtitle": "Three lines of natural products for every moment of the day.",
       "items": [
@@ -86,10 +87,12 @@
       "viewProducts": "View products"
     },
     "featured": {
+      "sectionLabel": "Featured",
       "title": "Featured Products",
       "subtitle": "Discover our selection of the most popular juices, made with fresh fruit from the farm."
     },
     "whyChooseUs": {
+      "sectionLabel": "Our promise",
       "title": "Why Choose Us",
       "subtitle": "Committed to your well-being and the authentic flavor of nature.",
       "pillars": [
@@ -112,6 +115,7 @@
       ]
     },
     "dailyOffer": {
+      "sectionLabel": "Commitments",
       "title": "Our Promise",
       "subtitle": "Every delivery carries the commitment of those who work with love for what's natural.",
       "badges": [
@@ -199,6 +203,7 @@
       }
     },
     "timeline": {
+      "sectionLabel": "Artisanal process",
       "title": "From Farm to Table",
       "subtitle": "Our artisanal process guarantees maximum freshness and quality in every juice we produce.",
       "steps": [
@@ -265,6 +270,9 @@
       ]
     },
     "gallery": {
+      "sectionLabel": "From field to table",
+      "stepLabel": "Step",
+      "stepOf": "of",
       "title": "Our Process in Images",
       "subtitle": "A behind-the-scenes look at how we prepare every juice.",
       "mobileHint": "Tap each image to learn about the process",

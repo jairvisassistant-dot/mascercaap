@@ -7,6 +7,7 @@ import { m, AnimatePresence } from "framer-motion";
 import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import Toast from "@/components/ui/Toast";
 
 export default function ContactForm() {
   const { dict } = useDictionary();
@@ -71,6 +72,18 @@ export default function ContactForm() {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-8">
+      <Toast
+        show={submitStatus === "success"}
+        type="success"
+        title={t.success.title}
+        message={t.success.text}
+      />
+      <Toast
+        show={submitStatus === "error"}
+        type="error"
+        title={t.error}
+        message=""
+      />
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
         {t.title}
       </h2>
