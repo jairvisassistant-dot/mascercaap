@@ -9,6 +9,15 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
 const timelineIcons = ["🌱", "👀", "🚿", "🧃", "🫙", "📦"];
 
+const processSteps = [
+  { src: "/imgs/Naranja-Seleccion.webp", alt: "Selección de naranjas al amanecer", icon: "🌅" },
+  { src: "/imgs/Naranja-Compra.webp", alt: "Compra directa al campesino colombiano", icon: "🤝" },
+  { src: "/imgs/Naranja-Tiene-Juez.webp", alt: "Control de calidad e inspección de fruta", icon: "🔍" },
+  { src: "/imgs/Naranja-Frio.webp", alt: "Proceso artesanal de exprimido en frío", icon: "🧃" },
+  { src: "/imgs/Naranja-Frescuras.webp", alt: "Embotellado fresco de jugo de naranja", icon: "✨" },
+  { src: "/imgs/Naranja-Detras-Cada-Botella.webp", alt: "Fundadoras de Más Cerca AP trabajando", icon: "💚" },
+];
+
 const valuesMeta = [
   { icon: "🙏", color: "from-primary to-primary-dark" },
   { icon: "🤝", color: "from-accent to-accent-dark" },
@@ -140,7 +149,7 @@ export default function NosotrosPageContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="text-4xl md:text-5xl font-bold mb-4 leading-tight"
+            className="font-dm-serif text-4xl md:text-6xl mb-4 leading-tight"
           >
             {t.hero.title}
           </m.h1>
@@ -312,21 +321,77 @@ export default function NosotrosPageContent() {
         </div>
       </section>
 
-      {/* Galería de Proceso — "Una mirada detrás de escenas", fondo neutro que no compite con las imágenes */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t.gallery.title}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">{t.gallery.subtitle}</p>
+      {/* Proceso en Imágenes — timeline vertical alternado */}
+      <section className="py-20 bg-white overflow-hidden">
+        <div className="max-w-5xl mx-auto px-4">
+          <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
+            <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
+              {lang === "es" ? "Del campo a tu mesa" : "From the field to your table"}
+            </span>
+            <h2 className="font-dm-serif text-3xl md:text-4xl text-primary mb-4">{t.gallery.title}</h2>
+            <p className="text-gray-500 max-w-xl mx-auto">{t.gallery.subtitle}</p>
           </m.div>
-          <p className="md:hidden flex items-center justify-center gap-2 text-sm text-gray-500 italic mb-6">
-            <span className="text-lg">👆</span>
-            {t.gallery.mobileHint}
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {flipCardsMeta.map((card, index) => (
-              <FlipCard key={index} card={card} cardText={t.gallery.cards[index]} pressMore={t.gallery.pressMore} pressBack={t.gallery.pressBack} index={index} />
-            ))}
+
+          {/* Timeline */}
+          <div className="relative">
+            {/* Línea vertical central — solo desktop */}
+            <div className="hidden md:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
+
+            <div className="flex flex-col gap-20">
+              {processSteps.map((step, index) => {
+                const isEven = index % 2 === 0;
+                const cardText = t.gallery.cards[index];
+                return (
+                  <m.div
+                    key={index}
+                    initial={{ opacity: 0, y: 48 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.55, ease: "easeOut" }}
+                    className="grid md:grid-cols-[1fr_80px_1fr] items-center gap-6 md:gap-0"
+                  >
+                    {/* Imagen */}
+                    <div className={`relative h-64 md:h-72 rounded-2xl overflow-hidden shadow-lg group ${isEven ? "md:order-1" : "md:order-3"}`}>
+                      <Image
+                        src={step.src}
+                        alt={step.alt}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 42vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                    </div>
+
+                    {/* Dot central */}
+                    <div className="hidden md:flex md:order-2 justify-center">
+                      <m.div
+                        initial={{ scale: 0, rotate: -20 }}
+                        whileInView={{ scale: 1, rotate: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.18 }}
+                        className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-2xl shadow-xl shadow-primary/25 z-10 relative"
+                      >
+                        {step.icon}
+                      </m.div>
+                    </div>
+
+                    {/* Contenido */}
+                    <div className={`md:px-8 ${isEven ? "md:order-3" : "md:order-1 md:text-right"}`}>
+                      <span className="md:hidden text-3xl block mb-3">{step.icon}</span>
+                      <span className="inline-block text-[10px] font-bold tracking-widest text-primary/60 uppercase mb-2">
+                        {lang === "es" ? `Paso ${index + 1} de ${processSteps.length}` : `Step ${index + 1} of ${processSteps.length}`}
+                      </span>
+                      <h3 className="font-dm-serif text-2xl md:text-[1.6rem] text-gray-800 mb-3 leading-snug">
+                        {cardText.title}
+                      </h3>
+                      <p className="text-gray-500 leading-relaxed text-sm md:text-base">
+                        {cardText.body}
+                      </p>
+                    </div>
+                  </m.div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>

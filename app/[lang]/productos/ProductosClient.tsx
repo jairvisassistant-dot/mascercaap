@@ -146,7 +146,7 @@ export default function ProductosClient({ products, productLines, initialCategor
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="text-4xl md:text-5xl font-bold mb-4 leading-tight"
+            className="font-dm-serif text-4xl md:text-6xl mb-4 leading-tight"
           >
             {dict.products.hero.title}
           </m.h1>
