@@ -8,15 +8,13 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey, ProductLineTranslation } from "@/types";
 
 function FruitImage({ slug, name }: { slug: string; name: string }) {
-  const [src, setSrc] = useState(`/imgs/fruta-${slug}.webp`);
   return (
     <Image
-      src={src}
+      src={`/imgs/pulpa-${slug}.webp`}
       alt={name}
       fill
       className="object-cover"
       sizes="80px"
-      onError={() => setSrc(`/imgs/pulpa-${slug}.webp`)}
     />
   );
 }
