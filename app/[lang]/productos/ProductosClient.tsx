@@ -117,7 +117,7 @@ export default function ProductosClient({ products, productLines, initialCategor
       .filter((p) => p.line === lineKey && (activeSize === "todos" || p.presentation === activeSize))
       .sort((a, b) => a.presentationOrder - b.presentationOrder);
 
-  const hasActiveFilters = activeCategory !== DEFAULT_CATEGORY || activeSubLines.size > 0 || activeSize !== "todos";
+  const hasActiveFilters = hasInteracted || activeCategory !== DEFAULT_CATEGORY || activeSubLines.size > 0 || activeSize !== "todos";
 
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const catLabels = dict.footer.productLines as Record<string, string>;
@@ -169,7 +169,7 @@ export default function ProductosClient({ products, productLines, initialCategor
       }`}>
 
         {/* Nivel 1 — solo categorías */}
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-2 flex-wrap">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-center gap-2 flex-wrap">
           <span className={`text-xs font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark" : "text-gray-400"}`}>
             {lang === "es" ? "Categoría:" : "Category:"}
           </span>
@@ -198,7 +198,7 @@ export default function ProductosClient({ products, productLines, initialCategor
           })}
           {hasActiveFilters && (
             <button
-              onClick={() => { setActiveCategory(DEFAULT_CATEGORY); setActiveSubLines(new Set()); setActiveSize("todos"); }}
+              onClick={() => { setActiveCategory(DEFAULT_CATEGORY); setActiveSubLines(new Set()); setActiveSize("todos"); setHasInteracted(false); }}
               aria-label={dict.products.filters.clear}
               className="w-7 h-7 rounded-full flex items-center justify-center bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all duration-200 hover:scale-110 ml-1 shrink-0"
             >
@@ -251,8 +251,8 @@ export default function ProductosClient({ products, productLines, initialCategor
                     </div>
                   )}
 
-                  {/* Tamaños — unidades propias de la categoría activa */}
-                  {availableSizes.length > 0 && (
+                  {/* Tamaños — solo cuando hay 0 o 2+ sub-líneas activas */}
+                  {availableSizes.length > 0 && activeSubLines.size !== 1 && (
                     <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
                         {dict.products.filters.size}
@@ -314,19 +314,46 @@ export default function ProductosClient({ products, productLines, initialCategor
           })}
 
           {pulpaVisibleLines.length > 0 && (
-            <m.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: nonPulpaLines.length * 0.08 }}
-            >
-              <PulpaFruitGrid
-                pulpaLines={pulpaVisibleLines}
-                products={products.filter(
-                  (p) => PULPA_KEYS.has(p.line) && (activeSize === "todos" || p.presentation === activeSize)
-                )}
-              />
-            </m.div>
+            activeSize !== "todos" ? (
+              <>
+                {pulpaVisibleLines.map((line, idx) => {
+                  const lineProducts = getLineProducts(line.key);
+                  if (lineProducts.length === 0) return null;
+                  return (
+                    <m.div
+                      key={line.key}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: (nonPulpaLines.length + idx) * 0.08 }}
+                    >
+                      <div className="flex items-center gap-4 mb-5">
+                        <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
+                          {line.iconEmoji}
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-bold text-gray-800">{pl[line.key]?.label ?? line.label}</h2>
+                          <p className="text-sm text-gray-500">{pl[line.key]?.description ?? line.description}</p>
+                        </div>
+                      </div>
+                      <ProductLineRow line={line} products={lineProducts} firstLine={false} />
+                    </m.div>
+                  );
+                })}
+              </>
+            ) : (
+              <m.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: nonPulpaLines.length * 0.08 }}
+              >
+                <PulpaFruitGrid
+                  pulpaLines={pulpaVisibleLines}
+                  products={products.filter((p) => PULPA_KEYS.has(p.line))}
+                />
+              </m.div>
+            )
           )}
         </div>
       </section>
