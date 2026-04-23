@@ -1,3 +1,5 @@
+"use client";
+
 import { m } from "framer-motion";
 import ProductCard from "@/components/ui/ProductCard";
 import type { Product } from "@/types";

@@ -1,3 +1,5 @@
+"use client";
+
 import { m } from "framer-motion";
 import type { Dictionary } from "@/lib/i18n";
 
