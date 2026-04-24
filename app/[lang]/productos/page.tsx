@@ -56,11 +56,17 @@ export default async function ProductosPage({ params, searchParams }: Props) {
     }
   }
 
-  const products = rawProducts.map((p: (typeof staticProducts)[0]) =>
-    p.line === "kumiss" && !p.image
-      ? { ...p, image: "/imgs/Kumis-Hato.webp", presentation: "1L" }
-      : p
-  );
+  const products = rawProducts.map((p: (typeof staticProducts)[0]) => {
+    // Si existe imagen local nueva (no la foto genérica fruta-*.webp), usarla sobre Sanity
+    const staticMatch = staticProducts.find((s) => s.id === p.id);
+    const hasNewLocalImage = staticMatch?.image && !staticMatch.image.includes("/imgs/fruta-");
+    const image = hasNewLocalImage ? staticMatch!.image : p.image;
+
+    if (p.line === "kumiss" && !image) {
+      return { ...p, image: "/imgs/Kumis-Hato.webp", presentation: "1L" };
+    }
+    return { ...p, image };
+  });
 
   return (
     <ProductosClient

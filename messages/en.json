@@ -14,6 +14,7 @@
     "quickLinks": "Navigation",
     "productsTitle": "Products",
     "productLines": {
+      "todas": "All",
       "jugos": "Juices & Lemonades",
       "pulpas": "Fruit Pulps",
       "lacteos": "Dairy"

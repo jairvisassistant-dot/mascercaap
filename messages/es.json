@@ -14,6 +14,7 @@
     "quickLinks": "Navegación",
     "productsTitle": "Productos",
     "productLines": {
+      "todas": "Todas",
       "jugos": "Zumos & Limonadas",
       "pulpas": "Pulpas de Frutas",
       "lacteos": "Lácteos"

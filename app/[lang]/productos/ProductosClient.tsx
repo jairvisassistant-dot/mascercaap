@@ -10,13 +10,14 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
 
 const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
+  todas: ["limon", "limonada-cereza", "limonada-coco", "maracuya", "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-tomate-arbol", "kumiss"],
   jugos: ["limon", "limonada-cereza", "limonada-coco", "maracuya"],
   pulpas: ["pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-tomate-arbol"],
   lacteos: ["kumiss"],
 };
 
-const CATEGORY_ORDER = ["jugos", "pulpas", "lacteos"] as const;
-const DEFAULT_CATEGORY = "jugos";
+const CATEGORY_ORDER = ["todas", "jugos", "pulpas", "lacteos"] as const;
+const DEFAULT_CATEGORY = "todas";
 
 interface ProductosClientProps {
   products: Product[];
@@ -79,7 +80,7 @@ export default function ProductosClient({ products, productLines, initialCategor
       setActiveSubLines(new Set());
       setActiveSize("todos");
     }
-    setHasInteracted(true);
+    setHasInteracted(cat !== "todas");
   };
 
   const toggleSubLine = (key: ProductLineKey) => {
@@ -103,7 +104,7 @@ export default function ProductosClient({ products, productLines, initialCategor
   const categorySubLines = productLines.filter(
     (l) => CATEGORY_LINES[activeCategory]?.includes(l.key)
   );
-  const showSubFilter = categorySubLines.length > 1;
+  const showSubFilter = activeCategory !== "todas" && categorySubLines.length > 1;
 
   const PULPA_KEYS = new Set<ProductLineKey>([
     "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
@@ -175,7 +176,7 @@ export default function ProductosClient({ products, productLines, initialCategor
       <div ref={sentinelRef} className="h-px" />
 
       {/* Filtros sticky — jerarquía de 2 niveles */}
-      <div className={`sticky top-[68px] z-40 border-b transition-all duration-500 ${
+      <div className={`sticky top-[92px] z-40 border-b transition-all duration-500 ${
         isSticky ? "bg-primary-light border-primary-light shadow-md" : "bg-white border-gray-100 shadow-sm"
       }`}>
 
@@ -194,7 +195,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                   isActive
                     ? "bg-accent text-white border-accent shadow-sm"
                     : isSticky
-                      ? "bg-white/60 text-primary-dark border-white/40 hover:bg-white hover:border-white"
+                      ? "bg-white/30 text-primary-dark border-white/25 hover:bg-white/50 hover:border-white/40"
                       : "bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary"
                 }`}
               >
@@ -250,7 +251,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                               isActive
                                 ? "bg-primary/15 text-primary-dark border-primary/40 shadow-sm"
                                 : isSticky
-                                  ? "bg-white/50 text-primary-dark border-white/30 hover:bg-white"
+                                  ? "bg-white/25 text-primary-dark border-white/20 hover:bg-white/40"
                                   : "bg-white text-gray-500 border-gray-200 hover:border-primary/30 hover:text-primary"
                             }`}
                           >
@@ -262,8 +263,8 @@ export default function ProductosClient({ products, productLines, initialCategor
                     </div>
                   )}
 
-                  {/* Tamaños — solo cuando hay 0 o 2+ sub-líneas activas */}
-                  {availableSizes.length > 0 && activeSubLines.size !== 1 && (
+                  {/* Tamaños — solo cuando hay 0 o 2+ sub-líneas activas y no es "todas" */}
+                  {availableSizes.length > 0 && activeSubLines.size !== 1 && activeCategory !== "todas" && (
                     <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
                         {dict.products.filters.size}
@@ -277,7 +278,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                               activeSize === size
                                 ? "bg-accent text-white border-accent shadow-sm"
                                 : isSticky
-                                  ? "bg-white/60 text-primary-dark border-white/40 hover:bg-white"
+                                  ? "bg-white/30 text-primary-dark border-white/25 hover:bg-white/50"
                                   : "bg-white text-gray-600 border-gray-200 hover:border-accent hover:text-accent"
                             }`}
                           >
