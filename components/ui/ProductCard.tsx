@@ -13,9 +13,12 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, accentGradient = "from-primary to-primary-dark", priority = false }: ProductCardProps) {
-  const { dict } = useDictionary();
+  const { dict, lang } = useDictionary();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const isComingSoon = product.presentation === "Próximamente";
+  const pl = dict.productLines as Record<string, { label: string; description: string }>;
+  const displayName = pl[product.line]?.label ?? product.name;
+  const displayDescription = lang !== "es" ? (pl[product.line]?.description ?? product.description) : product.description;
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
 
@@ -70,8 +73,8 @@ export default function ProductCard({ product, accentGradient = "from-primary to
 
       {/* Info base */}
       <div className="p-4">
-        <p className="text-sm font-semibold text-gray-800 line-clamp-1">{product.name}</p>
-        <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{product.description}</p>
+        <p className="text-sm font-semibold text-gray-800 line-clamp-1">{displayName}</p>
+        <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{displayDescription}</p>
         {product.price && (
           <p className="text-accent font-bold text-base mt-2">
             ${product.price.toLocaleString("es-CO")}
