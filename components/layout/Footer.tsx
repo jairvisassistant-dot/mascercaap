@@ -3,7 +3,7 @@ import { SITE_CONFIG } from "@/lib/config";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
-const ALL_SOCIAL_LINKS = [
+const socialLinks = [
   {
     name: "Facebook",
     href: SITE_CONFIG.socialFacebook,
@@ -33,8 +33,6 @@ const ALL_SOCIAL_LINKS = [
   },
 ];
 
-const socialLinks = ALL_SOCIAL_LINKS.filter((s) => s.href);
-
 interface FooterProps {
   dict: Dictionary;
   lang: Locale;
@@ -63,22 +61,21 @@ export default function Footer({ dict, lang }: FooterProps) {
               {dict.footer.description}
             </p>
             <div className="flex gap-4">
-              {socialLinks.map((social, index) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
-                    index === 1
-                      ? "bg-accent hover:bg-accent/90"
-                      : "bg-primary hover:bg-primary/90"
-                  }`}
-                  aria-label={lang === "es" ? `Síguenos en ${social.name}` : `Follow us on ${social.name}`}
-                >
-                  {social.icon}
-                </a>
-              ))}
+              {socialLinks.map((social, index) => {
+                const cls = `w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                  index === 1 ? "bg-accent hover:bg-accent/90" : "bg-primary hover:bg-primary/90"
+                }`;
+                const label = lang === "es" ? `Síguenos en ${social.name}` : `Follow us on ${social.name}`;
+                return social.href ? (
+                  <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className={cls} aria-label={label}>
+                    {social.icon}
+                  </a>
+                ) : (
+                  <span key={social.name} className={cls} aria-label={label}>
+                    {social.icon}
+                  </span>
+                );
+              })}
             </div>
           </div>
 
