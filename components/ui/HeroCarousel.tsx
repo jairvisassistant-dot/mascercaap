@@ -242,7 +242,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <section ref={sectionRef} className="relative h-[500px] md:h-[600px] overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[500px] md:min-h-[600px] overflow-hidden">
 
       <AnimatePresence mode="wait">
         <m.div
@@ -274,7 +274,6 @@ export default function HeroCarousel() {
                   fill
                   sizes="100vw"
                   className="object-cover"
-                  loading="eager"
                   priority={currentSlide === 0 && currentFrame === 0}
                 />
               </m.div>
