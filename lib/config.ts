@@ -12,6 +12,10 @@ export const SITE_CONFIG = {
   emailContact: "apalejandraplata@gmail.com",
   /** URL canónica del sitio */
   siteUrl: "https://mascercap.com",
+  /** Redes sociales — dejar vacío ("") para ocultar el ícono */
+  socialInstagram: "https://instagram.com/mas_cerca_ap",
+  socialFacebook: "",
+  socialTikTok: "",
   /** Dirección física de la bodega */
   address: "Calle 12a # 15-53, Chia",
   /** Localidad y ciudad */
