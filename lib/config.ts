@@ -5,9 +5,9 @@ export const SITE_CONFIG = {
   /** Número de WhatsApp para links wa.me — sin +, sin espacios */
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
   /** Teléfono formateado para mostrar en UI */
-  phoneDisplay: "+57 300 123 4567",
+  phoneDisplay: "+57 321 905 4984",
   /** Teléfono con guiones para JSON-LD y atributos tel: */
-  phoneTel: "+57-300-123-4567",
+  phoneTel: "+57-321-905-4984",
   /** Email de contacto general */
   emailContact: "apalejandraplata@gmail.com",
   /** URL canónica del sitio */
