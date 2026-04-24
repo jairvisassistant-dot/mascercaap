@@ -138,11 +138,13 @@
       ]
     },
     "testimonials": {
+      "label": "Clientes",
       "title": "Lo que dicen nuestros clientes",
       "subtitle": "Empresas y negocios que confían en Mas Cerca Ap para sus necesidades de jugos naturales.",
       "goTo": "Ir a testimonio"
     },
     "cta": {
+      "badge": "Entregas en Bogotá",
       "title": "¿Listo para probar la frescura?",
       "text": "Contáctanos por WhatsApp y haz tu pedido. Entregamos en toda Bogotá.",
       "button": "Hacer pedido por WhatsApp"

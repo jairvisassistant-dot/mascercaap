@@ -69,6 +69,8 @@ export type Testimonial = {
   name: string;
   role: string;
   text: string;
+  text_en?: string;
+  role_en?: string;
   rating: 1 | 2 | 3 | 4 | 5;
 };
 

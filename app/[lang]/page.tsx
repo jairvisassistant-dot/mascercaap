@@ -87,7 +87,7 @@ export default async function HomePage({ params }: Props) {
             <div className="flex items-center justify-center gap-3 mb-4">
               <span className="h-px w-10 bg-white/20 rounded-full" />
               <span className="text-xs font-bold tracking-[0.22em] text-white/40 uppercase">
-                Clientes
+                {dict.home.testimonials.label}
               </span>
               <span className="h-px w-10 bg-white/20 rounded-full" />
             </div>
@@ -111,7 +111,7 @@ export default async function HomePage({ params }: Props) {
         <div className="max-w-3xl mx-auto px-4 text-center relative">
           <div className="inline-flex items-center gap-2 bg-white/15 border border-white/25 text-white text-xs font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            Entregas en Bogotá
+            {dict.home.cta.badge}
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 leading-tight">
             {dict.home.cta.title}

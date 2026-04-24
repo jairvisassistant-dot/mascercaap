@@ -24,6 +24,19 @@ export const testimonialSchema = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "text_en",
+      title: "Texto del testimonio (English)",
+      type: "text",
+      rows: 4,
+      description: "Opcional. Si se completa, se muestra en la versión en inglés del sitio.",
+    }),
+    defineField({
+      name: "role_en",
+      title: "Cargo / Negocio (English)",
+      type: "string",
+      description: "Opcional. Versión en inglés del cargo.",
+    }),
+    defineField({
       name: "rating",
       title: "Calificación (1 a 5)",
       type: "number",

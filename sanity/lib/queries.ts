@@ -42,6 +42,8 @@ export const ALL_TESTIMONIALS_QUERY = defineQuery(`
     name,
     role,
     text,
+    text_en,
+    role_en,
     rating
   }
 `);

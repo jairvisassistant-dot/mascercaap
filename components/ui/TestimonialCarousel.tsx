@@ -10,7 +10,7 @@ interface TestimonialCarouselProps {
 }
 
 export default function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
-  const { dict } = useDictionary();
+  const { dict, lang } = useDictionary();
   const [currentIndex, setCurrentIndex] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
@@ -57,7 +57,7 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
 
           {/* Quote */}
           <p className="text-white/90 text-lg md:text-xl mb-6 italic leading-relaxed">
-            {testimonials[currentIndex].text}
+            {(lang !== "es" && testimonials[currentIndex].text_en) || testimonials[currentIndex].text}
           </p>
 
           {/* Divider */}
@@ -69,7 +69,7 @@ export default function TestimonialCarousel({ testimonials }: TestimonialCarouse
               {testimonials[currentIndex].name}
             </p>
             <p className="text-white/50 text-sm mt-0.5">
-              {testimonials[currentIndex].role}
+              {(lang !== "es" && testimonials[currentIndex].role_en) || testimonials[currentIndex].role}
             </p>
           </div>
         </m.div>

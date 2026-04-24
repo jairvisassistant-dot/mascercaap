@@ -138,11 +138,13 @@
       ]
     },
     "testimonials": {
+      "label": "Clients",
       "title": "What Our Clients Say",
       "subtitle": "Businesses that trust Mas Cerca Ap for their natural juice needs.",
       "goTo": "Go to testimonial"
     },
     "cta": {
+      "badge": "Deliveries in Bogotá",
       "title": "Ready to taste the freshness?",
       "text": "Contact us on WhatsApp and place your order. We deliver across Bogota.",
       "button": "Order via WhatsApp"
