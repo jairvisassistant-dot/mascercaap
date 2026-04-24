@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { m } from "framer-motion";
 // m solo se usa para el menú mobile animado — el header no usa animaciones
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
@@ -50,9 +51,10 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold text-primary">
-              <span className="text-3xl">🍋</span>
+              <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={96} height={96} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))" }} />
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
+              <span className="text-2xl" style={{ display: "inline-block", transform: "scaleX(-1)" }}>🍋</span>
             </Link>
 
             {/* Desktop Navigation */}
