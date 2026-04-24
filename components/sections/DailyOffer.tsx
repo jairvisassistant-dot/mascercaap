@@ -24,8 +24,10 @@ function SealBadge({
     <m.div
       initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
       whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+      whileHover={{ scale: 1.08, rotate: 3 }}
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay, type: "spring", bounce: 0.45 }}
+      style={{ cursor: "default" }}
     >
       <svg
         viewBox="0 0 200 200"
