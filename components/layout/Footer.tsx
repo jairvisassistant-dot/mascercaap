@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SITE_CONFIG } from "@/lib/config";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -53,9 +54,10 @@ export default function Footer({ dict, lang }: FooterProps) {
           {/* Logo and description */}
           <div className="md:col-span-2">
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold mb-4">
-              <span className="text-3xl">🍋</span>
+              <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={96} height={96} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))" }} />
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
+              <span className="text-2xl" style={{ display: "inline-block", transform: "scaleX(-1)" }}>🍋</span>
             </Link>
             <p className="text-gray-400 mb-4 max-w-md">
               {dict.footer.description}
