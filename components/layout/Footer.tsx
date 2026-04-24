@@ -54,7 +54,7 @@ export default function Footer({ dict, lang }: FooterProps) {
           {/* Logo and description */}
           <div className="md:col-span-2">
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold mb-4">
-              <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={96} height={96} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))" }} />
+              <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={97} height={60} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
               <span className="text-2xl" style={{ display: "inline-block", transform: "scaleX(-1)" }}>🍋</span>
