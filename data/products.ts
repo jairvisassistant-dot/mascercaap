@@ -324,7 +324,7 @@ export const products: Product[] = [
     line: "pulpa-mora",
     presentation: "1000g",
     presentationOrder: 3,
-    image: "/imgs/Mora1000.png",
+    image: "/imgs/Mora1000v2.png",
     description: "Presentación institucional para negocios y restaurantes. Mora colombiana 100% natural.",
     ingredients: ["Mora 100% natural"],
     benefits: ["Vitamina C", "Antioxidantes", "Sin conservantes"],
