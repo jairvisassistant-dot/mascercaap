@@ -64,7 +64,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
                   src={product.image}
                   alt={`${product.name} ${product.presentation}`}
                   fill
-                  className="object-contain drop-shadow-2xl"
+                  className="object-contain object-bottom drop-shadow-2xl"
                   sizes="208px"
                   priority={priority}
                 />
