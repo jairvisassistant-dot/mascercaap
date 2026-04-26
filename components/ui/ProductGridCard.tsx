@@ -18,6 +18,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
   const isComingSoon = product.presentation === "Próximamente";
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
+  const hasPackagingImage = product.line.startsWith("pulpa-") && !product.image.includes("/imgs/fruta-");
 
   return (
     <>
@@ -26,14 +27,18 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
         onClick={() => !isComingSoon && setLightboxOpen(true)}
       >
         {/* Imagen */}
-        <div className={`relative aspect-[4/5] ${product.line === "kumiss" ? "bg-white" : "bg-gray-50"}`}>
+        <div className={`relative aspect-[4/5] ${product.line === "kumiss" ? "bg-white" : hasPackagingImage ? `bg-gradient-to-b ${line.gradient}` : "bg-gray-50"}`}>
           {product.image ? (
             <Image
               src={product.image}
               alt={`${product.name} ${product.presentation}`}
               fill
               className={`transition-transform duration-500 group-hover:scale-105 ${
-                product.line === "kumiss" ? "object-contain object-center p-4" : "object-cover"
+                product.line === "kumiss"
+                  ? "object-contain object-center p-4"
+                  : hasPackagingImage
+                    ? "object-contain object-center drop-shadow-xl p-3"
+                    : "object-cover"
               }`}
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
               priority={priority}
