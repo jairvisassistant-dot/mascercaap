@@ -1,0 +1,71 @@
+Construir una Skill para OpenCode es básicamente crear un "manual de instrucciones especializado" que el agente puede cargar bajo demanda. Como quieres un Auditor de Software, no solo necesitas instrucciones, sino un framework de pensamiento crítico.
+
+Aquí tienes la guía completa basada en las mejores prácticas actuales de SKILL.md y la arquitectura de OpenCode.
+🏗️ 1. Anatomía de una Skill (El Estándar SKILL.md)
+
+Para que OpenCode reconozca tu skill, debe seguir esta estructura de archivos:
+workspace/skills/software-auditor/SKILL.md
+Estructura Recomendada del Archivo:
+
+    Nombre y Descripción: Claramente definidos al inicio.
+    Disparadores (Triggers): Frases o situaciones que activan la skill.
+    Objetivos (Goals): Qué debe lograr el agente al activar el rol.
+    Protocolo de Ejecución (Workflow): Pasos secuenciales (ej. Análisis $\to$ Hallazgo $\to$ Mitigación).
+    Criterios de Calidad (Definition of Done): Qué constituye una auditoría exitosa.
+    Restricciones y Red Lines: Qué NO debe hacer el auditor.
+
+🛠️ 2. Mejores Prácticas para un "Auditor de Software"
+
+Un auditor no puede simplemente "mirar el código"; debe seguir un método. Para tu skill, implementa estos patrones de Prompt Engineering:
+A. Pensamiento en Cadena (Chain-of-Thought)
+
+No permitas que el agente diga "el código está bien". Obligalo a:
+
+    Analizar la superficie: Leer la arquitectura.
+    Cuestionar la lógica: "Si el input es X, ¿qué pasa con Y?".
+    Verificar casos borde: Nulos, overflows, concurrencia.
+
+B. Framework de Severidad
+
+Define una escala para que los reportes sean profesionales:
+
+    🔴 CRITICAL: Vulnerabilidades explotables o bugs que rompen la app.
+    🟡 WARNING: Malas prácticas, deuda técnica o riesgos de performance.
+    🔵 INFO: Sugerencias de limpieza o estilo.
+
+C. Anti-Slop (Evitar respuestas genéricas)
+
+Instruye a la skill para que prohíba frases como "Este código sigue las mejores prácticas". Exige evidencia: "El código falla en la línea 42 porque no valida el token de sesión".
+📋 3. Plantilla Modelo para tu Skill
+
+Si quieres empezar ya, crea un archivo con este contenido:
+
+# Software Auditor Skill 🛡️
+
+**Description:** Activa un rol de auditor experto en seguridad, performance y mantenibilidad. Especializado en detectar bugs críticos, vulnerabilidades y deuda técnica.
+
+**Use when:** El usuario pida "auditar", "revisar seguridad", "buscar bugs" o "analizar la calidad del código".
+
+## 🎯 Objetivos
+1. Identificar vulnerabilidades de seguridad (OWASP Top 10).
+2. Detectar cuellos de botella en el rendimiento (Complexity O(n)).
+3. Evaluar la mantenibilidad y legibilidad del código.
+
+## ⚙️ Protocolo de Auditoría
+Para cada archivo analizado, sigue estrictamente este orden:
+1. **Análisis Estático:** Revisar tipos, sintaxis y dependencias.
+2. **Análisis de Flujo:** Rastrear el camino de los datos desde la entrada hasta la salida.
+3. **Prueba Hipotética:** Intentar "romper" la lógica mentalmente con inputs maliciosos.
+4. **Clasificación:** Asignar severidad (🔴 CRITICAL, 🟡 WARNING, 🔵 INFO).
+
+## ❌ Red Lines (Prohibiciones)
+- NO dar aprobaciones genéricas.
+- NO ignorar errores de tipos aunque el código "parezca funcionar".
+- NO sugerir cambios cosméticos sin antes resolver los bugs críticos.
+
+## ✅ Definición de Hecho (DoD)
+La auditoría termina cuando se entrega un reporte con:
+- **Resumen Ejecutivo:** Estado general del código.
+- **Tabla de Hallazgos:** [Severidad | Ubicación | Problema | Solución Sugerida].
+- **Checklist de Verificación:** Lista de puntos revisados.
+

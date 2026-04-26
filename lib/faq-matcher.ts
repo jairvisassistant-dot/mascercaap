@@ -1,6 +1,5 @@
 import { faqData } from "@/data/faq";
 import type { FAQQuestion, FAQCategory } from "@/types";
-import type { Locale } from "@/lib/i18n";
 
 export type FAQMatch = {
   question: FAQQuestion;
@@ -21,7 +20,7 @@ function tokenize(text: string): string[] {
   return normalize(text).split(/\s+/).filter(Boolean);
 }
 
-export function findAnswer(query: string, _lang: Locale): FAQMatch | null {
+export function findAnswer(query: string): FAQMatch | null {
   if (!query.trim()) return null;
 
   const queryTokens = tokenize(query);

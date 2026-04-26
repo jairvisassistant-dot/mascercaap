@@ -1,14 +1,12 @@
 "use client";
 
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { LegalDocument } from "@/data/legal";
 import type { Locale } from "@/lib/i18n";
 
-type Props = { document: LegalDocument };
+type Props = { document: LegalDocument; lang: Locale };
 
-export default function LegalView({ document: doc }: Props) {
-  const { lang } = useDictionary();
-  const locale = lang as Locale;
+export default function LegalView({ document: doc, lang }: Props) {
+  const locale = lang;
 
   return (
     <div className="flex-1 overflow-y-auto px-6 py-6">

@@ -104,10 +104,10 @@ export default function HelpDrawer({ onClose }: Props) {
                 <FaqView onContactClick={() => setView("contact")} />
               )}
               {view === "privacy" && (
-                <LegalView document={privacyPolicy} />
+                <LegalView document={privacyPolicy} lang={locale} />
               )}
               {view === "terms" && (
-                <LegalView document={termsAndConditions} />
+                <LegalView document={termsAndConditions} lang={locale} />
               )}
               {view === "contact" && (
                 <ContactView />

@@ -181,7 +181,7 @@ export async function POST(request: Request) {
     const toEmail  = process.env.RESEND_TO_EMAIL;
     const fromEmail = process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
 
-    if (!apiKey || apiKey === "re_REEMPLAZA_CON_TU_CLAVE") {
+    if (!apiKey) {
       console.warn("⚠️  RESEND_API_KEY no configurada. El email no fue enviado.");
       return NextResponse.json({ success: true, dev: true }, { status: 200 });
     }

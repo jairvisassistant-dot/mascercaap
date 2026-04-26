@@ -82,7 +82,7 @@ export default function ChatBotPanel({ onClose }: ChatBotPanelProps) {
     setInput("");
     addMessage("user", query);
 
-    const match = findAnswer(query, locale);
+    const match = findAnswer(query);
     if (match) {
       const botMsgId = `bot-search-${Date.now()}`;
       setMessages((prev) => [

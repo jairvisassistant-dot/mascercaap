@@ -62,7 +62,7 @@ export default function FaqView({ onContactClick }: Props) {
     setInput("");
     addMessage("user", query);
 
-    const match = findAnswer(query, locale);
+    const match = findAnswer(query);
     if (match) {
       addMessage("bot", match.question.answer[locale]);
       setShowFallbackActions(false);
