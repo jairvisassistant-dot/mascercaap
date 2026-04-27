@@ -6,7 +6,7 @@ import ContactForm from "@/components/sections/ContactForm";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
 export default function ContactoPageContent() {
-  const { dict, lang } = useDictionary();
+  const { dict } = useDictionary();
   const t = dict.contact;
 
   return (
@@ -58,7 +58,7 @@ export default function ContactoPageContent() {
             className="inline-flex items-center gap-2 mt-8 bg-white/15 border border-white/20 backdrop-blur-sm rounded-full px-5 py-2.5 text-sm font-medium text-white"
           >
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            {lang === "es" ? "Respondemos en menos de 24 horas" : "We respond in under 24 hours"}
+            {dict.contact.hero.responseTime}
           </m.div>
         </div>
       </section>
@@ -78,12 +78,10 @@ export default function ContactoPageContent() {
               {/* Mensaje humano — "detrás de cada mensaje hay una pareja" */}
               <div className="rounded-2xl bg-gradient-to-br from-primary/8 to-accent/5 border border-primary/10 p-6">
                 <p className="text-xs font-bold tracking-widest text-primary uppercase mb-3">
-                  {lang === "es" ? "Quiénes somos" : "Who we are"}
+                  {dict.contact.whoWeAre.label}
                 </p>
                 <p className="text-gray-700 leading-relaxed text-sm">
-                  {lang === "es"
-                    ? "Somos una pareja que atiende personalmente cada mensaje. No hay un call center — hay personas reales que se preocupan por darte lo mejor."
-                    : "We're a couple who personally handles every message. No call center — real people who care about giving you the best."}
+                  {dict.contact.whoWeAre.text}
                 </p>
               </div>
 

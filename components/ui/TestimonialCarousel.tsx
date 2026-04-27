@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import { m, AnimatePresence, useInView } from "framer-motion";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Testimonial } from "@/types";
 
 interface TestimonialCarouselProps {
   testimonials: Testimonial[];
+  dict: Dictionary;
+  lang: Locale;
 }
 
-export default function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
-  const { dict, lang } = useDictionary();
+export default function TestimonialCarousel({ testimonials, dict, lang }: TestimonialCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });

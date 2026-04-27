@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import HelpMenu from "./drawer-views/HelpMenu";
@@ -19,6 +19,36 @@ export default function HelpDrawer({ onClose }: Props) {
   const locale = lang as Locale;
   const t = dict.helpHub;
   const [view, setView] = useState<View>("menu");
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key !== "Tab" || !drawerRef.current) return;
+
+      const focusable = Array.from(
+        drawerRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        last.focus(); e.preventDefault();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        first.focus(); e.preventDefault();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   function getTitle(): string {
     if (view === "menu") return t.title;
@@ -43,6 +73,7 @@ export default function HelpDrawer({ onClose }: Props) {
 
       {/* Drawer */}
       <m.div
+        ref={drawerRef}
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
@@ -76,6 +107,7 @@ export default function HelpDrawer({ onClose }: Props) {
           </div>
 
           <button
+            ref={closeButtonRef}
             onClick={onClose}
             className="text-white/80 hover:text-white transition-colors shrink-0"
             aria-label={t.close}

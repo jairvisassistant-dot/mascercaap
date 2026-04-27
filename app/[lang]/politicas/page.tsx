@@ -8,9 +8,30 @@ import Link from "next/link";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
+  if (!hasLocale(lang)) return {};
+  const dict = await getDictionary(lang);
   return {
-    title: lang === "es" ? "Políticas y Privacidad — Mas Cerca AP" : "Privacy Policy — Mas Cerca AP",
+    title: dict.metadata.privacy.title,
+    description: dict.metadata.privacy.description,
     robots: { index: true, follow: true },
+    openGraph: {
+      title: dict.metadata.privacy.title,
+      description: dict.metadata.privacy.description,
+      type: "website",
+      locale: lang === "es" ? "es_CO" : "en_US",
+    },
+    twitter: {
+      card: "summary",
+      title: dict.metadata.privacy.title,
+      description: dict.metadata.privacy.description,
+    },
+    alternates: {
+      canonical: `${SITE_CONFIG.siteUrl}/${lang}/politicas`,
+      languages: {
+        es: `${SITE_CONFIG.siteUrl}/es/politicas`,
+        en: `${SITE_CONFIG.siteUrl}/en/politicas`,
+      },
+    },
   };
 }
 
@@ -82,10 +103,10 @@ export default async function PoliticasPage({ params }: { params: Promise<{ lang
           </div>
           <div className="flex-1">
             <p className="font-semibold text-gray-800 text-sm mb-0.5">
-              {locale === "es" ? "¿Tenés preguntas sobre esta política?" : "Questions about this policy?"}
+              {dict.legal.policy.ctaTitle}
             </p>
             <p className="text-gray-500 text-sm">
-              {locale === "es" ? "Escribinos directamente." : "Write to us directly."}{" "}
+              {dict.legal.ctaText}{" "}
               <a href={`mailto:${SITE_CONFIG.emailContact}`} className="text-primary hover:underline">
                 {SITE_CONFIG.emailContact}
               </a>
@@ -95,7 +116,7 @@ export default async function PoliticasPage({ params }: { params: Promise<{ lang
             href={`/${lang}/contacto`}
             className="shrink-0 bg-primary hover:bg-primary-dark text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all hover:scale-105"
           >
-            {locale === "es" ? "Contactar" : "Contact us"}
+            {dict.legal.ctaButton}
           </Link>
         </div>
       </main>

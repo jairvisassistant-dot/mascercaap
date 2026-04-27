@@ -76,7 +76,7 @@ export default function Navbar() {
 
             {/* CTA + Language Switcher */}
             <div className="hidden md:flex items-center gap-3">
-              <LanguageSwitcher />
+              <LanguageSwitcher dict={dict} lang={lang} />
               <Link
                 href={`/${lang}/contacto`}
                 className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
@@ -90,6 +90,8 @@ export default function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-primary p-2"
               aria-label={dict.nav.menuAriaLabel}
+              aria-expanded={isOpen}
+              aria-controls="mobile-nav"
             >
               <svg
                 className="w-6 h-6"
@@ -119,6 +121,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         <m.div
+          id="mobile-nav"
           initial={false}
           animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
           className="md:hidden overflow-hidden bg-white border-t"
@@ -140,7 +143,7 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="flex items-center gap-3 pt-2">
-              <LanguageSwitcher />
+              <LanguageSwitcher dict={dict} lang={lang} />
               <Link
                 href={`/${lang}/contacto`}
                 onClick={() => setIsOpen(false)}

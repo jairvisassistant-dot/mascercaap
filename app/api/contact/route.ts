@@ -168,7 +168,7 @@ export async function POST(request: Request) {
 
   if (!checkRateLimit(ip)) {
     return NextResponse.json(
-      { success: false, error: "Demasiadas solicitudes. Intentá de nuevo en un minuto." },
+      { success: false, error: "Demasiadas solicitudes. Intenta de nuevo en un minuto." },
       { status: 429, headers: { "Retry-After": "60" } }
     );
   }

@@ -54,7 +54,7 @@ export default function HelpMenu({ onNavigate }: Props) {
 
   const whatsappUrl = SITE_CONFIG.whatsappNumber
     ? `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(t.whatsappMessage)}`
-    : "#";
+    : null;
 
   return (
     <div className="flex flex-col h-full">
@@ -83,8 +83,8 @@ export default function HelpMenu({ onNavigate }: Props) {
           </button>
         ))}
 
-        {/* WhatsApp — link directo */}
-        <a
+        {/* WhatsApp — link directo, solo si está configurado */}
+        {whatsappUrl && <a
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
@@ -107,7 +107,7 @@ export default function HelpMenu({ onNavigate }: Props) {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
           </svg>
-        </a>
+        </a>}
       </nav>
     </div>
   );

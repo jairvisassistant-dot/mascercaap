@@ -13,8 +13,11 @@ interface ProductLightboxProps {
 }
 
 export default function ProductLightbox({ product, isOpen, onClose }: ProductLightboxProps) {
-  const { dict } = useDictionary();
+  const { dict, lang } = useDictionary();
   const t = dict.products.lightbox;
+  const pl = dict.productLines as Record<string, { label: string; description: string }>;
+  const displayName = pl[product.line]?.label ?? product.name;
+  const displayDescription = lang !== "es" ? (pl[product.line]?.description ?? product.description) : product.description;
 
   if (!product.image || !isOpen) return null;
 
@@ -25,7 +28,7 @@ export default function ProductLightbox({ product, isOpen, onClose }: ProductLig
       slides={[
         {
           src: product.image,
-          alt: `${product.name} ${product.presentation}`,
+          alt: `${displayName} ${product.presentation}`,
           width: 800,
           height: 800,
         },
@@ -46,19 +49,19 @@ export default function ProductLightbox({ product, isOpen, onClose }: ProductLig
         slideFooter: () => (
           <div className="px-6 py-4 bg-black/70 text-white text-center max-w-xl mx-auto rounded-xl mb-4">
             <p className="font-bold text-lg">
-              {product.name}{" "}
+              {displayName}{" "}
               <span className="text-sm font-normal opacity-70">
                 {product.presentation}
               </span>
             </p>
-            <p className="text-sm opacity-80 mt-1">{product.description}</p>
-            {product.ingredients && product.ingredients.length > 0 && (
+            <p className="text-sm opacity-80 mt-1">{displayDescription}</p>
+            {lang === "es" && product.ingredients && product.ingredients.length > 0 && (
               <p className="text-xs opacity-60 mt-1">
                 <span className="font-semibold">{t.ingredients}:</span>{" "}
                 {product.ingredients.join(", ")}
               </p>
             )}
-            {product.benefits && product.benefits.length > 0 && (
+            {lang === "es" && product.benefits && product.benefits.length > 0 && (
               <p className="text-xs opacity-60 mt-0.5">
                 <span className="font-semibold">{t.benefits}:</span>{" "}
                 {product.benefits.join(" · ")}

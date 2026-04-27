@@ -1,3 +1,4 @@
+import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
@@ -8,6 +9,19 @@ import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import { SITE_CONFIG } from "@/lib/config";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-dm-serif",
+});
 
 export async function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -55,23 +69,25 @@ export default async function LangLayout({
   const jsonLd = getJsonLd(lang);
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <DictionaryProvider dict={dict} lang={lang}>
-        <ScrollProgress />
-        <div className="min-h-screen flex flex-col overflow-x-clip">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer dict={dict} lang={lang} />
-          <HelpHub />
-        </div>
-      </DictionaryProvider>
-      {process.env.NEXT_PUBLIC_GA_ID && (
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-      )}
-    </>
+    <html lang={lang} suppressHydrationWarning>
+      <body className={`${poppins.variable} ${dmSerif.variable} font-poppins antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <DictionaryProvider dict={dict} lang={lang}>
+          <ScrollProgress />
+          <div className="min-h-screen flex flex-col overflow-x-clip">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer dict={dict} lang={lang} />
+            <HelpHub />
+          </div>
+        </DictionaryProvider>
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
+      </body>
+    </html>
   );
 }

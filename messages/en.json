@@ -22,7 +22,8 @@
     "contact": "Contact",
     "location": "Chia, Colombia",
     "copyright": "© 2026 Mas Cerca Ap. All rights reserved.",
-    "madeWith": "Made with 🍋 and 🍊 in Colombia"
+    "madeWith": "Made with 🍋 and 🍊 in Colombia",
+    "socialLabel": "Follow us on"
   },
   "whatsapp": {
     "message": "Hi! I'd like information about your products.",
@@ -153,18 +154,30 @@
   },
   "products": {
     "hero": {
+      "eyebrow": "From the field to your business",
       "title": "Our Products",
       "subtitle": "Juices, pulps and quality beverages, straight from the Colombian countryside to your table."
     },
     "filters": {
+      "category": "Category:",
+      "flavor": "Flavor:",
       "size": "Size:",
       "all": "All",
-      "clear": "Clear"
+      "clear": "Clear",
+      "countLabel": "products in",
+      "empty": "No products in this size"
     },
     "cta": {
+      "badge": "Custom orders",
       "title": "Can't find what you're looking for?",
       "text": "Contact us directly. We have more varieties and can build custom orders for your business.",
-      "button": "Talk to us"
+      "button": "Talk to us",
+      "stats": [
+        { "value": "13+", "label": "Product varieties" },
+        { "value": "<24h", "label": "Delivery in Bogotá" },
+        { "value": "100%", "label": "Natural, no preservatives" },
+        { "value": "3", "label": "Product lines" }
+      ]
     },
     "pulpaGrid": {
       "title": "Our Flavors",
@@ -360,7 +373,12 @@
   "contact": {
     "hero": {
       "title": "Contact Us",
-      "subtitle": "We're ready to bring freshness to your door"
+      "subtitle": "We're ready to bring freshness to your door",
+      "responseTime": "We respond in under 24 hours"
+    },
+    "whoWeAre": {
+      "label": "Who we are",
+      "text": "We're a couple who personally handles every message. No call center — real people who care about giving you the best."
     },
     "cards": {
       "location": {
@@ -509,6 +527,14 @@
     "contact": {
       "title": "Contact — Mas Cerca Ap",
       "description": "Contact Mas Cerca AP to place an order, become a distributor or make an inquiry."
+    },
+    "privacy": {
+      "title": "Privacy Policy — Mas Cerca AP",
+      "description": "Read the privacy policy and personal data processing practices of Mas Cerca AP."
+    },
+    "terms": {
+      "title": "Terms and Conditions — Mas Cerca AP",
+      "description": "Read the terms and conditions of use for Mas Cerca AP services and products."
     }
   },
   "helpHub": {
@@ -544,5 +570,15 @@
     "ariaClose": "Close assistant",
     "sendAriaLabel": "Send message",
     "inputLabel": "Type your question"
+  },
+  "legal": {
+    "ctaButton": "Contact us",
+    "ctaText": "Write to us directly.",
+    "policy": {
+      "ctaTitle": "Questions about this policy?"
+    },
+    "terms": {
+      "ctaTitle": "Questions about these terms?"
+    }
   }
 }

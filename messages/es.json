@@ -22,7 +22,8 @@
     "contact": "Contacto",
     "location": "Chía, Colombia",
     "copyright": "© 2026 Mas Cerca Ap. Todos los derechos reservados.",
-    "madeWith": "Hecho con 🍋 y 🍊 en Colombia"
+    "madeWith": "Hecho con 🍋 y 🍊 en Colombia",
+    "socialLabel": "Síguenos en"
   },
   "whatsapp": {
     "message": "Hola! Quiero información sobre sus productos.",
@@ -44,9 +45,9 @@
           "cta": "Ver zumos"
         },
         {
-          "title": "Ahorrá 3 horas en cocina.\nSin sacrificar sabor.",
+          "title": "Ahorra 3 horas en cocina.\nSin sacrificar sabor.",
           "subtitle": "PULPAS PREPROCESADAS",
-          "description": "Nuestras pulpas llegan listas. Vos solo servís.",
+          "description": "Nuestras pulpas llegan listas. Solo sirves.",
           "cta": "Ver pulpas"
         },
         {
@@ -56,7 +57,7 @@
           "cta": "Conocer nuestra historia"
         },
         {
-          "title": "Pedís hoy.\nLo tenés mañana en tu negocio.",
+          "title": "Pide hoy.\nLo tienes mañana en tu negocio.",
           "subtitle": "ENTREGA EN BOGOTÁ",
           "description": "Desde Puente Aranda a toda la ciudad en menos de 24 horas.",
           "cta": "Hacer pedido ahora"
@@ -153,22 +154,34 @@
   },
   "products": {
     "hero": {
+      "eyebrow": "Del campo a tu negocio",
       "title": "Nuestros Productos",
       "subtitle": "Zumos, pulpas y bebidas de calidad, directamente del campo colombiano a tu mesa."
     },
     "filters": {
+      "category": "Categoría:",
+      "flavor": "Sabor:",
       "size": "Tamaño:",
       "all": "Todos",
-      "clear": "Limpiar"
+      "clear": "Limpiar",
+      "countLabel": "productos en",
+      "empty": "Sin productos en esta presentación"
     },
     "cta": {
-      "title": "¿No encontrás lo que buscás?",
+      "badge": "Pedidos personalizados",
+      "title": "¿No encuentras lo que buscas?",
       "text": "Contáctanos directamente. Tenemos más variedades y podemos armar pedidos a la medida de tu negocio.",
-      "button": "Hablar con nosotros"
+      "button": "Hablar con nosotros",
+      "stats": [
+        { "value": "13+", "label": "Variedades de productos" },
+        { "value": "<24h", "label": "Entrega en Bogotá" },
+        { "value": "100%", "label": "Natural, sin conservantes" },
+        { "value": "3", "label": "Líneas de producto" }
+      ]
     },
     "pulpaGrid": {
       "title": "Nuestros Sabores",
-      "subtitle": "Tocá una fruta para ver sus presentaciones disponibles",
+      "subtitle": "Toca una fruta para ver sus presentaciones disponibles",
       "presentation": "presentación",
       "presentations": "presentaciones",
       "available": "disponible",
@@ -360,7 +373,12 @@
   "contact": {
     "hero": {
       "title": "Contáctanos",
-      "subtitle": "Estamos listos para llevarte la frescura a tu puerta"
+      "subtitle": "Estamos listos para llevarte la frescura a tu puerta",
+      "responseTime": "Respondemos en menos de 24 horas"
+    },
+    "whoWeAre": {
+      "label": "Quiénes somos",
+      "text": "Somos una pareja que atiende personalmente cada mensaje. No hay un call center — hay personas reales que se preocupan por darte lo mejor."
     },
     "cards": {
       "location": {
@@ -377,7 +395,7 @@
     },
     "map": {
       "title": "Dónde estamos",
-      "subtitle": "Podés pasar a buscar tu pedido directamente en nuestra bodega.",
+      "subtitle": "Puedes pasar a buscar tu pedido directamente en nuestra bodega.",
       "iframeTitle": "Ubicación bodega Mas Cerca Ap"
     },
     "form": {
@@ -407,11 +425,11 @@
       "submitting": "Enviando...",
       "success": {
         "title": "¡Mensaje enviado!",
-        "text": "Te respondemos pronto. También podés escribirnos directo por WhatsApp.",
-        "quickResponse": "¿Querés una respuesta más rápida?",
+        "text": "Te respondemos pronto. También puedes escribirnos directo por WhatsApp.",
+        "quickResponse": "¿Quieres una respuesta más rápida?",
         "whatsappButton": "Continuar por WhatsApp"
       },
-      "error": "Hubo un error al enviar. Por favor intentá de nuevo.",
+      "error": "Hubo un error al enviar. Por favor intenta de nuevo.",
       "whatsappMsg": {
         "greeting": "Hola Más Cerca AP! 👋",
         "intro": "Mi nombre es *{name}* y me contacté por el formulario web para {reason}.",
@@ -504,11 +522,19 @@
     },
     "about": {
       "title": "Nosotros — Mas Cerca Ap",
-      "description": "Conocé la historia de Más Cerca AP: una empresa colombiana que produce y comercializa jugos, pulpas y productos frescos comprando directamente al campesino."
+      "description": "Conoce la historia de Más Cerca AP: una empresa colombiana que produce y comercializa jugos, pulpas y productos frescos comprando directamente al campesino."
     },
     "contact": {
       "title": "Contacto — Mas Cerca Ap",
-      "description": "Contactá a Más Cerca AP para hacer un pedido, ser distribuidor o hacer una consulta."
+      "description": "Contacta a Más Cerca AP para hacer un pedido, ser distribuidor o hacer una consulta."
+    },
+    "privacy": {
+      "title": "Políticas y Privacidad — Mas Cerca AP",
+      "description": "Conoce las políticas de privacidad y tratamiento de datos personales de Más Cerca AP."
+    },
+    "terms": {
+      "title": "Términos y Condiciones — Mas Cerca AP",
+      "description": "Lee los términos y condiciones de uso de los servicios y productos de Más Cerca AP."
     }
   },
   "helpHub": {
@@ -517,7 +543,7 @@
     "close": "Cerrar",
     "back": "Volver",
     "menuSubtitle": "¿En qué podemos ayudarte hoy?",
-    "contactOptions": "¿Cómo querés contactarnos?",
+    "contactOptions": "¿Cómo quieres contactarnos?",
     "whatsappMessage": "Hola, necesito ayuda con un pedido de Más Cerca AP",
     "menu": {
       "faq": "Preguntas frecuentes",
@@ -529,20 +555,30 @@
   },
   "chatbot": {
     "title": "Preguntas Frecuentes",
-    "welcome": "Hola! 👋 Soy el asistente de Más Cerca AP. Seleccioná una categoría o escribí tu pregunta.",
-    "placeholder": "Escribí tu pregunta...",
+    "welcome": "Hola! 👋 Soy el asistente de Más Cerca AP. Selecciona una categoría o escribe tu pregunta.",
+    "placeholder": "Escribe tu pregunta...",
     "fallback": "No tengo información sobre eso. ¿Te gustaría hablar con nuestro equipo?",
     "talkToHuman": "Hablar con una persona",
     "helpful": "¿Te fue útil esta respuesta?",
     "yes": "Sí, gracias",
     "no": "No del todo",
     "thankYou": "¡Gracias por tu feedback!",
-    "notHelpful": "Entendido, gracias por decírnoslo. Podés contactarnos directamente por WhatsApp para más ayuda.",
+    "notHelpful": "Entendido, gracias por decírnoslo. Puedes contactarnos directamente por WhatsApp para más ayuda.",
     "backToCategories": "← Volver a categorías",
-    "categories": "¿Sobre qué querés consultar?",
+    "categories": "¿Sobre qué quieres consultar?",
     "ariaOpen": "Abrir asistente de preguntas frecuentes",
     "ariaClose": "Cerrar asistente",
     "sendAriaLabel": "Enviar mensaje",
-    "inputLabel": "Escribí tu pregunta"
+    "inputLabel": "Escribe tu pregunta"
+  },
+  "legal": {
+    "ctaButton": "Contactar",
+    "ctaText": "Escríbenos directamente.",
+    "policy": {
+      "ctaTitle": "¿Tienes preguntas sobre esta política?"
+    },
+    "terms": {
+      "ctaTitle": "¿Tienes preguntas sobre estos términos?"
+    }
   }
 }

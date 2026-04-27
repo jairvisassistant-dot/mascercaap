@@ -170,7 +170,7 @@ export const faqData: FAQData = {
             en: "How do I place an order?",
           },
           answer: {
-            es: `Podés hacer tu pedido por WhatsApp al ${SITE_CONFIG.phoneDisplay}, por email a ${SITE_CONFIG.emailContact} o a través del formulario de contacto en nuestro sitio web. Te responderemos en menos de 2 horas en horario de atención.`,
+            es: `Puedes hacer tu pedido por WhatsApp al ${SITE_CONFIG.phoneDisplay}, por email a ${SITE_CONFIG.emailContact} o a través del formulario de contacto en nuestro sitio web. Te responderemos en menos de 2 horas en horario de atención.`,
             en: `You can place your order via WhatsApp at ${SITE_CONFIG.phoneDisplay}, by email at ${SITE_CONFIG.emailContact}, or through the contact form on our website. We'll respond within 2 hours during business hours.`,
           },
           keywords: [
@@ -296,7 +296,7 @@ export const faqData: FAQData = {
             en: "Can I become a distributor?",
           },
           answer: {
-            es: "¡Sí! Estamos buscando aliados comerciales en toda Colombia. Si tenés un negocio de alimentos, restaurante, cafetería o tienda naturista, podemos ofrecerte condiciones especiales. Contáctanos por WhatsApp para conocer el programa.",
+            es: "¡Sí! Estamos buscando aliados comerciales en toda Colombia. Si tienes un negocio de alimentos, restaurante, cafetería o tienda naturista, podemos ofrecerte condiciones especiales. Contáctanos por WhatsApp para conocer el programa.",
             en: "Yes! We're looking for commercial partners throughout Colombia. If you have a food business, restaurant, café, or health store, we can offer you special conditions. Contact us via WhatsApp to learn about the program.",
           },
           keywords: [
@@ -320,7 +320,7 @@ export const faqData: FAQData = {
             en: "Do you have wholesale prices?",
           },
           answer: {
-            es: "Sí, manejamos precios especiales para compras por mayor. A partir de ciertos volúmenes obtenés descuentos progresivos. Escribinos por WhatsApp para recibir nuestra lista de precios mayoristas.",
+            es: "Sí, manejamos precios especiales para compras por mayor. A partir de ciertos volúmenes obtienes descuentos progresivos. Escríbenos por WhatsApp para recibir nuestra lista de precios mayoristas.",
             en: "Yes, we have special prices for bulk purchases. From certain volumes you get progressive discounts. Write us on WhatsApp to receive our wholesale price list.",
           },
           keywords: [
@@ -393,7 +393,7 @@ export const faqData: FAQData = {
             en: "Where are you located?",
           },
           answer: {
-            es: "Estamos ubicados en Calle 12a # 15-53, Chía, Cundinamarca, Colombia. Podés venir a recoger tu pedido directamente en nuestra bodega.",
+            es: "Estamos ubicados en Calle 12a # 15-53, Chía, Cundinamarca, Colombia. Puedes venir a recoger tu pedido directamente en nuestra bodega.",
             en: "We are located at Calle 12a # 15-53, Chía, Cundinamarca, Colombia. You can come pick up your order directly at our warehouse.",
           },
           keywords: [
@@ -441,7 +441,7 @@ export const faqData: FAQData = {
             en: "Can I visit the warehouse?",
           },
           answer: {
-            es: "Sí, podés visitar nuestra bodega en horario de atención (lunes a sábado 7AM-5PM). Te recomendamos agendar tu visita por WhatsApp para asegurarnos de atenderte bien.",
+            es: "Sí, puedes visitar nuestra bodega en horario de atención (lunes a sábado 7AM-5PM). Te recomendamos agendar tu visita por WhatsApp para asegurarnos de atenderte bien.",
             en: "Yes, you can visit our warehouse during business hours (Monday to Saturday 7AM-5PM). We recommend scheduling your visit via WhatsApp to ensure we can attend you properly.",
           },
           keywords: [

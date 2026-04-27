@@ -302,7 +302,7 @@ export const products: Product[] = [
     line: "pulpa-mora",
     presentation: "120g",
     presentationOrder: 1,
-    image: "/imgs/Mora120.png",
+    image: "/imgs/Mora120V2.png",
     description: "Porción individual lista para preparar. Mora colombiana congelada en su punto exacto.",
     ingredients: ["Mora 100% natural"],
     benefits: ["Vitamina C", "Antioxidantes", "Sin conservantes"],

@@ -44,4 +44,7 @@ sanity-cors.json
 *.tsbuildinfo
 next-env.d.ts
 
+# agent registry
+.atl/
+
 #Otros/

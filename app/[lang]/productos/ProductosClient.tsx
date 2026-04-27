@@ -152,7 +152,7 @@ export default function ProductosClient({ products, productLines, initialCategor
             animate={{ opacity: 1, y: 0 }}
             className="text-xs font-bold tracking-widest text-white/60 uppercase mb-4"
           >
-            {lang === "es" ? "Del campo a tu negocio" : "From the field to your business"}
+            {dict.products.hero.eyebrow}
           </m.p>
           <m.h1
             initial={{ opacity: 0, y: 20 }}
@@ -183,7 +183,7 @@ export default function ProductosClient({ products, productLines, initialCategor
         {/* Nivel 1 — solo categorías */}
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-center gap-2 flex-wrap">
           <span className={`text-xs font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark" : "text-gray-400"}`}>
-            {lang === "es" ? "Categoría:" : "Category:"}
+            {dict.products.filters.category}
           </span>
           {CATEGORY_ORDER.map((cat) => {
             const isActive = activeCategory === cat;
@@ -239,7 +239,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                   {showSubFilter && (
                     <div className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
-                        {lang === "es" ? "Sabor:" : "Flavor:"}
+                        {dict.products.filters.flavor}
                       </span>
                       {categorySubLines.map((line) => {
                         const isActive = activeSubLines.has(line.key);
@@ -311,7 +311,7 @@ export default function ProductosClient({ products, productLines, initialCategor
               {sizeFilteredItems.length > 0 ? (
                 <>
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5">
-                    {sizeFilteredItems.length} {lang === "es" ? "productos en" : "products in"} {activeSize}
+                    {sizeFilteredItems.length} {dict.products.filters.countLabel} {activeSize}
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
                     {sizeFilteredItems.map(({ product, line }, index) => (
@@ -328,7 +328,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                 <div className="flex flex-col items-center justify-center py-24 text-center">
                   <span className="text-5xl mb-4">🔍</span>
                   <p className="text-gray-500 text-base font-medium">
-                    {lang === "es" ? "Sin productos en esta presentación" : "No products in this size"}
+                    {dict.products.filters.empty}
                   </p>
                 </div>
               )}
@@ -389,7 +389,7 @@ export default function ProductosClient({ products, productLines, initialCategor
 
             <div>
               <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase block mb-4">
-                {lang === "es" ? "Pedidos personalizados" : "Custom orders"}
+                {dict.products.cta.badge}
               </span>
               <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
                 {dict.products.cta.title}
@@ -409,12 +409,7 @@ export default function ProductosClient({ products, productLines, initialCategor
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              {[
-                { value: "13+", label: lang === "es" ? "Variedades de productos" : "Product varieties" },
-                { value: "<24h", label: lang === "es" ? "Entrega en Bogotá" : "Delivery in Bogotá" },
-                { value: "100%", label: lang === "es" ? "Natural, sin conservantes" : "Natural, no preservatives" },
-                { value: "3", label: lang === "es" ? "Líneas de producto" : "Product lines" },
-              ].map((stat, i) => (
+              {dict.products.cta.stats.map((stat, i) => (
                 <m.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}

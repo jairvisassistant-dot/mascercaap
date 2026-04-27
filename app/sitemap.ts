@@ -13,6 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/productos", priority: 0.9, changefreq: "weekly" as const },
     { path: "/nosotros", priority: 0.8, changefreq: "monthly" as const },
     { path: "/contacto", priority: 0.8, changefreq: "monthly" as const },
+    { path: "/politicas", priority: 0.3, changefreq: "yearly" as const },
+    { path: "/terminos", priority: 0.3, changefreq: "yearly" as const },
   ];
 
   return locales.flatMap((lang) =>

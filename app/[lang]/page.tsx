@@ -9,8 +9,8 @@ import DailyOffer from "@/components/sections/DailyOffer";
 import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
 import { testimonials as staticTestimonials } from "@/data/testimonials";
 import { featuredProducts as staticFeaturedProducts } from "@/data/products";
-import { client } from "@/sanity/lib/client";
 import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
+import { safeFetch } from "@/lib/sanity/safeFetch";
 import Link from "next/link";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import { SITE_CONFIG } from "@/lib/config";
@@ -27,6 +27,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: dict.metadata.home.title,
     description: dict.metadata.home.description,
     keywords: dict.metadata.home.keywords,
+    openGraph: {
+      title: dict.metadata.home.title,
+      description: dict.metadata.home.description,
+      type: "website",
+      locale: lang === "es" ? "es_CO" : "en_US",
+      images: [{ url: `${SITE_CONFIG.siteUrl}/imgs/Logo.png`, width: 97, height: 60, alt: "Mas Cerca AP" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.metadata.home.title,
+      description: dict.metadata.home.description,
+    },
     alternates: {
       canonical: `${SITE_CONFIG.siteUrl}/${lang}`,
       languages: {
@@ -45,24 +57,10 @@ export default async function HomePage({ params }: Props) {
 
   const whatsappCta = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`;
 
-  // Evitar llamadas a Sanity cuando no está configurado — el placeholder genera
-  // requests fallidas que tardan ~900ms antes de caer al fallback estático.
-  const sanityReady =
-    !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
-    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
-
-  let sanityProducts: typeof staticFeaturedProducts = [];
-  let sanityTestimonials: typeof staticTestimonials = [];
-  if (sanityReady) {
-    try {
-      [sanityProducts, sanityTestimonials] = await Promise.all([
-        client.fetch(FEATURED_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } }),
-        client.fetch(ALL_TESTIMONIALS_QUERY, {}, { next: { revalidate: 3600 } }),
-      ]);
-    } catch {
-      // Fallback a datos estáticos
-    }
-  }
+  const [sanityProducts, sanityTestimonials] = await Promise.all([
+    safeFetch(FEATURED_PRODUCTS_QUERY, {}, [] as typeof staticFeaturedProducts),
+    safeFetch(ALL_TESTIMONIALS_QUERY, {}, [] as typeof staticTestimonials),
+  ]);
 
   const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;
   const testimonials = sanityTestimonials.length > 0 ? sanityTestimonials : staticTestimonials;
@@ -99,7 +97,7 @@ export default async function HomePage({ params }: Props) {
             </p>
           </div>
 
-          <TestimonialCarousel testimonials={testimonials} />
+          <TestimonialCarousel testimonials={testimonials} dict={dict} lang={lang} />
         </div>
       </section>
 

@@ -18,6 +18,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: dict.metadata.about.description,
       type: "website",
       locale: lang === "es" ? "es_CO" : "en_US",
+      images: [{ url: `${SITE_CONFIG.siteUrl}/imgs/Logo.png`, width: 97, height: 60, alt: "Mas Cerca AP" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.metadata.about.title,
+      description: dict.metadata.about.description,
     },
     alternates: {
       canonical: `${SITE_CONFIG.siteUrl}/${lang}/nosotros`,

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
 
 const misionVisionConfig = {
   mision: {
@@ -31,8 +31,7 @@ const misionVisionConfig = {
   },
 };
 
-export default function MisionVisionTabs() {
-  const { dict } = useDictionary();
+export default function MisionVisionTabs({ dict }: { dict: Dictionary }) {
   const [activeTab, setActiveTab] = useState<"mision" | "vision">("mision");
   const config = misionVisionConfig[activeTab];
   const mv = dict.about.missionVision;

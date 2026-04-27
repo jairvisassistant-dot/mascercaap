@@ -1,19 +1,20 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary, Locale } from "@/lib/i18n";
 
-export default function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  dict: Dictionary;
+  lang: Locale;
+}
+
+export default function LanguageSwitcher({ dict, lang }: LanguageSwitcherProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { lang, dict } = useDictionary();
 
   const switchLocale = () => {
     const targetLang = lang === "es" ? "en" : "es";
-    // Replace the current locale prefix in the path
     const newPath = pathname.replace(`/${lang}`, `/${targetLang}`);
-
-    // Set cookie so proxy remembers preference
     document.cookie = `NEXT_LOCALE=${targetLang};path=/;max-age=31536000`;
     router.push(newPath);
   };

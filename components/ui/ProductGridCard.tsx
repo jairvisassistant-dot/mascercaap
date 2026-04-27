@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import type { Product, ProductLineConfig } from "@/types";
-import ProductLightbox from "./ProductLightbox";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+
+const ProductLightbox = dynamic(() => import("./ProductLightbox"), { ssr: false });
 
 interface ProductGridCardProps {
   product: Product;
@@ -13,25 +15,29 @@ interface ProductGridCardProps {
 }
 
 export default function ProductGridCard({ product, line, priority = false }: ProductGridCardProps) {
-  const { dict } = useDictionary();
+  const { dict, lang } = useDictionary();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const isComingSoon = product.presentation === "Próximamente";
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
   const hasPackagingImage = product.line.startsWith("pulpa-") && !product.image.includes("/imgs/fruta-");
+  const pl = dict.productLines as Record<string, { label: string; description: string }>;
+  const displayName = pl[product.line]?.label ?? product.name;
 
   return (
     <>
-      <div
-        className="group relative rounded-2xl overflow-hidden border border-gray-100 bg-white shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
-        onClick={() => !isComingSoon && setLightboxOpen(true)}
+      <button
+        type="button"
+        disabled={isComingSoon}
+        className="group relative rounded-2xl overflow-hidden border border-gray-100 bg-white shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 w-full text-left disabled:pointer-events-none"
+        onClick={() => setLightboxOpen(true)}
       >
         {/* Imagen */}
         <div className={`relative aspect-[4/5] ${product.line === "kumiss" ? "bg-white" : hasPackagingImage ? `bg-gradient-to-b ${line.gradient}` : "bg-gray-50"}`}>
           {product.image ? (
             <Image
               src={product.image}
-              alt={`${product.name} ${product.presentation}`}
+              alt={`${displayName} ${product.presentation}`}
               fill
               className={`transition-transform duration-500 group-hover:scale-105 ${
                 product.line === "kumiss"
@@ -87,15 +93,15 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
 
         {/* Info */}
         <div className="p-3">
-          <p className="text-sm font-semibold text-gray-800 line-clamp-1 mb-2">{product.name}</p>
+          <p className="text-sm font-semibold text-gray-800 line-clamp-1 mb-2">{displayName}</p>
 
           {/* Category pill */}
           <div className="inline-flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200">
             <span className="text-[11px] leading-none">{line.iconEmoji}</span>
-            <span className="text-[10px] font-semibold text-gray-600">{line.label}</span>
+            <span className="text-[10px] font-semibold text-gray-600">{displayName}</span>
           </div>
         </div>
-      </div>
+      </button>
 
       <ProductLightbox
         product={product}

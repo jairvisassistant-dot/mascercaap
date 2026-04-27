@@ -11,7 +11,7 @@ export default function LegalView({ document: doc, lang }: Props) {
   return (
     <div className="flex-1 overflow-y-auto px-6 py-6">
       <p className="text-xs text-gray-400 mb-6">
-        Última actualización: {new Date(doc.lastUpdated).toLocaleDateString(locale === "es" ? "es-CO" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
+        {locale === "es" ? "Última actualización" : "Last updated"}: {new Date(doc.lastUpdated).toLocaleDateString(locale === "es" ? "es-CO" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
       </p>
 
       <div className="space-y-6">

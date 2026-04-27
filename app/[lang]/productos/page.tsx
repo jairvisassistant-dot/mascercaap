@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { client } from "@/sanity/lib/client";
 import { ALL_PRODUCTS_QUERY } from "@/sanity/lib/queries";
 import { products as staticProducts, productLines } from "@/data/products";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
+import { safeFetch } from "@/lib/sanity/safeFetch";
 
 export const revalidate = 60;
 
@@ -26,6 +26,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: dict.metadata.products.description,
       type: "website",
       locale: lang === "es" ? "es_CO" : "en_US",
+      images: [{ url: `${SITE_CONFIG.siteUrl}/imgs/Logo.png`, width: 97, height: 60, alt: "Mas Cerca AP" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.metadata.products.title,
+      description: dict.metadata.products.description,
     },
     alternates: {
       canonical: `${SITE_CONFIG.siteUrl}/${lang}/productos`,
@@ -43,18 +49,7 @@ export default async function ProductosPage({ params, searchParams }: Props) {
 
   const { categoria } = await searchParams;
 
-  const sanityReady =
-    !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
-    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
-
-  let rawProducts = staticProducts;
-  if (sanityReady) {
-    try {
-      rawProducts = await client.fetch(ALL_PRODUCTS_QUERY, {}, { next: { revalidate: 3600 } });
-    } catch {
-      rawProducts = staticProducts;
-    }
-  }
+  const rawProducts = await safeFetch(ALL_PRODUCTS_QUERY, {}, staticProducts);
 
   const products = rawProducts.map((p: (typeof staticProducts)[0]) => {
     // Si existe imagen local nueva (no la foto genérica fruta-*.webp), usarla sobre Sanity
