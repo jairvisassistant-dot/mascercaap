@@ -94,7 +94,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
         <div
           ref={scrollRef}
           onScroll={checkScroll}
-          className="flex gap-2 overflow-x-auto scrollbar-none flex-1 py-1"
+          className="flex gap-2 overflow-x-auto scrollbar-none flex-1 py-1 px-1"
         >
           {pulpaLines.map((line) => {
             const isSelected = selectedKey === line.key;
@@ -179,7 +179,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
               </div>
             </div>
 
-            <div className="overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+            <div className="overflow-x-auto pb-2 px-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
               <div className="flex gap-5 w-fit mx-auto">
                 {selectedProducts.map((product) => (
                   <ProductCard

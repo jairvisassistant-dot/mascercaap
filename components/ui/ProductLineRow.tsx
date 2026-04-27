@@ -77,7 +77,7 @@ export default function ProductLineRow({ line, products, firstLine = false }: Pr
       {/* Scroll container */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent"
+        className="overflow-x-auto pb-3 px-2 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent"
       >
         <div className="flex gap-5 w-fit mx-auto">
           {products.map((product, index) => (

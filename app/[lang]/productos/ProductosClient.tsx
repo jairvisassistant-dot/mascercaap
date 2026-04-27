@@ -233,11 +233,11 @@ export default function ProductosClient({ products, productLines, initialCategor
               className="overflow-hidden"
             >
               <div className={`border-t transition-colors duration-500 ${isSticky ? "border-white/30" : "border-gray-100"}`}>
-                <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+                <div className="max-w-7xl mx-auto px-4 py-2 flex items-start gap-4">
 
-                  {/* Sub-líneas / sabores */}
+                  {/* Sub-líneas / sabores — ocupa el espacio disponible, wrappea en hasta 2 filas */}
                   {showSubFilter && (
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
                         {lang === "es" ? "Sabor:" : "Flavor:"}
                       </span>
@@ -263,13 +263,13 @@ export default function ProductosClient({ products, productLines, initialCategor
                     </div>
                   )}
 
-                  {/* Tamaños — solo cuando hay 0 o 2+ sub-líneas activas y no es "todas" */}
+                  {/* Tamaños — anclado a la derecha, nunca baja */}
                   {availableSizes.length > 0 && activeSubLines.size !== 1 && activeCategory !== "todas" && (
-                    <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
+                    <div className="flex items-center gap-2 shrink-0 self-start">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
                         {dict.products.filters.size}
                       </span>
-                      <div className="flex gap-1.5 shrink-0">
+                      <div className="flex gap-1.5">
                         {["todos", ...availableSizes].map((size) => (
                           <button
                             key={size}

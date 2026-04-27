@@ -27,11 +27,11 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   // Degradados ricos para fondo de card — más dramáticos que los de badges/iconos
   const CARD_GRADIENTS: Record<string, string> = {
     "pulpa-mora":          "from-purple-300 via-purple-500 to-violet-800",
-    "pulpa-maracuya":      "from-amber-200 via-orange-400 to-orange-700",
+    "pulpa-maracuya":      "from-yellow-200 via-amber-400 to-amber-700",
     "pulpa-fresa":         "from-rose-200 via-rose-500 to-red-700",
-    "pulpa-mango":         "from-amber-200 via-amber-400 to-orange-700",
+    "pulpa-mango":         "from-yellow-300 via-amber-400 to-orange-500",
     "pulpa-guanabana":     "from-emerald-200 via-green-400 to-green-700",
-    "pulpa-lulo":          "from-yellow-200 via-yellow-400 to-orange-600",
+    "pulpa-lulo":          "from-yellow-300 via-lime-400 to-orange-500",
     "pulpa-guayaba":       "from-pink-200 via-pink-400 to-rose-700",
     "pulpa-frutos-rojos":  "from-rose-300 via-red-500 to-red-800",
     "pulpa-tomate-arbol":  "from-orange-200 via-orange-500 to-red-700",
@@ -39,7 +39,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const cardGradient = CARD_GRADIENTS[product.line] ?? accentGradient;
 
   return (
-    <div className="card-shimmer relative shrink-0 w-[234px] rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 transition-all duration-300 bg-white">
+    <div className="card-shimmer relative shrink-0 w-[234px] rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 transition-all duration-300 bg-white">
       {/* Imagen */}
       <div className={`relative h-60 ${
         product.line === "kumiss"
