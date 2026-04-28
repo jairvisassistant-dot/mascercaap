@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { LazyMotion, domAnimation } from "framer-motion";
 import type { Dictionary } from "./index";
 import type { Locale } from "./index";
 
@@ -22,11 +21,9 @@ export function DictionaryProvider({
   children: React.ReactNode;
 }) {
   return (
-    <LazyMotion features={domAnimation} strict>
-      <I18nContext.Provider value={{ dict, lang }}>
-        {children}
-      </I18nContext.Provider>
-    </LazyMotion>
+    <I18nContext.Provider value={{ dict, lang }}>
+      {children}
+    </I18nContext.Provider>
   );
 }
 
