@@ -65,6 +65,7 @@ export default async function ProductosPage({ params, searchParams }: Props) {
 
   return (
     <ProductosClient
+      key={categoria ?? "todas"}
       products={products}
       productLines={productLines}
       initialCategory={categoria}

@@ -27,13 +27,15 @@ export default function FaqView({ onContactClick }: Props) {
   const [input, setInput] = useState("");
   const [showFallbackActions, setShowFallbackActions] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const nextMessageIdRef = useRef(0);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   function addMessage(role: "bot" | "user", text: string) {
-    const id = `msg-${Date.now()}-${Math.random()}`;
+    nextMessageIdRef.current += 1;
+    const id = `msg-${nextMessageIdRef.current}`;
     setMessages((prev) => [...prev, { id, role, text }]);
   }
 

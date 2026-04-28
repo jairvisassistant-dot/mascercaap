@@ -11,7 +11,6 @@ import { testimonials as staticTestimonials } from "@/data/testimonials";
 import { featuredProducts as staticFeaturedProducts } from "@/data/products";
 import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { safeFetch } from "@/lib/sanity/safeFetch";
-import Link from "next/link";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import { SITE_CONFIG } from "@/lib/config";
 

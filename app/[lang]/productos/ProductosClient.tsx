@@ -19,6 +19,12 @@ const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
 const CATEGORY_ORDER = ["todas", "jugos", "pulpas", "lacteos"] as const;
 const DEFAULT_CATEGORY = "todas";
 
+const PULPA_KEYS = new Set<ProductLineKey>([
+  "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
+  "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba",
+  "pulpa-frutos-rojos", "pulpa-tomate-arbol",
+]);
+
 interface ProductosClientProps {
   products: Product[];
   productLines: ProductLineConfig[];
@@ -34,7 +40,7 @@ export default function ProductosClient({ products, productLines, initialCategor
   );
 
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
-  const [activeSubLines, setActiveSubLines] = useState<Set<ProductLineKey>>(new Set());
+  const [activeSubLines, setActiveSubLines] = useState<ProductLineKey[]>([]);
 
   // El nivel 2 solo aparece después de que el usuario interactúa con un botón de categoría
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -42,12 +48,6 @@ export default function ProductosClient({ products, productLines, initialCategor
   const [activeSize, setActiveSize] = useState<string>("todos");
   const [isSticky, setIsSticky] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setActiveCategory(initialCategory && CATEGORY_LINES[initialCategory] ? initialCategory : DEFAULT_CATEGORY);
-    setActiveSubLines(new Set());
-    setActiveSize("todos");
-  }, [initialCategory]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -60,8 +60,8 @@ export default function ProductosClient({ products, productLines, initialCategor
 
   // Tamaños indexados: si hay sub-líneas activas → solo sus tamaños; si no → todos los de la categoría
   const availableSizes = useMemo(() => {
-    const relevantLines: ProductLineKey[] = activeSubLines.size > 0
-      ? Array.from(activeSubLines)
+    const relevantLines: ProductLineKey[] = activeSubLines.length > 0
+      ? activeSubLines
       : (CATEGORY_LINES[activeCategory] ?? []);
 
     const sizes = products
@@ -77,7 +77,7 @@ export default function ProductosClient({ products, productLines, initialCategor
   const selectCategory = (cat: string) => {
     if (activeCategory !== cat) {
       setActiveCategory(cat);
-      setActiveSubLines(new Set());
+      setActiveSubLines([]);
       setActiveSize("todos");
     }
     setHasInteracted(cat !== "todas");
@@ -85,32 +85,25 @@ export default function ProductosClient({ products, productLines, initialCategor
 
   const toggleSubLine = (key: ProductLineKey) => {
     setActiveSubLines((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
+      if (prev.includes(key)) return prev.filter((item) => item !== key);
+      return [...prev, key];
     });
     setActiveSize("todos"); // resetear tamaño porque el índice cambia
   };
 
   // Líneas visibles: categoría siempre activa, sub-línea opcional
-  const visibleLines = productLines.filter((line) => {
+  const visibleLines = useMemo(() => productLines.filter((line) => {
     if (!CATEGORY_LINES[activeCategory]?.includes(line.key)) return false;
-    if (activeSubLines.size > 0) return activeSubLines.has(line.key);
+    if (activeSubLines.length > 0) return activeSubLines.includes(line.key);
     return true;
-  });
+  }), [productLines, activeCategory, activeSubLines]);
 
   // Sub-líneas del nivel 2
-  const categorySubLines = productLines.filter(
+  const categorySubLines = useMemo(() => productLines.filter(
     (l) => CATEGORY_LINES[activeCategory]?.includes(l.key)
-  );
+  ), [productLines, activeCategory]);
   const showSubFilter = activeCategory !== "todas" && categorySubLines.length > 1;
 
-  const PULPA_KEYS = new Set<ProductLineKey>([
-    "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
-    "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba",
-    "pulpa-frutos-rojos", "pulpa-tomate-arbol",
-  ]);
   const nonPulpaLines = visibleLines.filter((l) => !PULPA_KEYS.has(l.key));
   const pulpaVisibleLines = visibleLines.filter((l) => PULPA_KEYS.has(l.key));
 
@@ -119,7 +112,7 @@ export default function ProductosClient({ products, productLines, initialCategor
       .filter((p) => p.line === lineKey && (activeSize === "todos" || p.presentation === activeSize))
       .sort((a, b) => a.presentationOrder - b.presentationOrder);
 
-  const hasActiveFilters = hasInteracted || activeCategory !== DEFAULT_CATEGORY || activeSubLines.size > 0 || activeSize !== "todos";
+  const hasActiveFilters = hasInteracted || activeCategory !== DEFAULT_CATEGORY || activeSubLines.length > 0 || activeSize !== "todos";
 
   const sizeFilteredItems = useMemo(() => {
     if (activeSize === "todos") return [];
@@ -210,7 +203,7 @@ export default function ProductosClient({ products, productLines, initialCategor
           })}
           {hasActiveFilters && (
             <button
-              onClick={() => { setActiveCategory(DEFAULT_CATEGORY); setActiveSubLines(new Set()); setActiveSize("todos"); setHasInteracted(false); }}
+              onClick={() => { setActiveCategory(DEFAULT_CATEGORY); setActiveSubLines([]); setActiveSize("todos"); setHasInteracted(false); }}
               aria-label={dict.products.filters.clear}
               className="w-7 h-7 rounded-full flex items-center justify-center bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all duration-200 hover:scale-110 ml-1 shrink-0"
             >
@@ -242,7 +235,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                         {dict.products.filters.flavor}
                       </span>
                       {categorySubLines.map((line) => {
-                        const isActive = activeSubLines.has(line.key);
+                        const isActive = activeSubLines.includes(line.key);
                         return (
                           <button
                             key={line.key}
@@ -264,7 +257,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                   )}
 
                   {/* Tamaños — anclado a la derecha, nunca baja */}
-                  {availableSizes.length > 0 && activeSubLines.size !== 1 && activeCategory !== "todas" && (
+                  {availableSizes.length > 0 && activeSubLines.length !== 1 && activeCategory !== "todas" && (
                     <div className="flex items-center gap-2 shrink-0 self-start">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
                         {dict.products.filters.size}

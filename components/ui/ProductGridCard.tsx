@@ -15,7 +15,7 @@ interface ProductGridCardProps {
 }
 
 export default function ProductGridCard({ product, line, priority = false }: ProductGridCardProps) {
-  const { dict, lang } = useDictionary();
+  const { dict } = useDictionary();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const isComingSoon = product.presentation === "Próximamente";
   const isSoldOut = product.isSoldOut === true;

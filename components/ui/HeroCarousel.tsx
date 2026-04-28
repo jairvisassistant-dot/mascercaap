@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useReducer, useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { m, AnimatePresence, useInView } from "framer-motion";
 import Link from "next/link";
@@ -27,6 +27,30 @@ type SlideStructure = {
 
 const FRAME_CROSSFADE_S = 0.8;
 const RESUME_AFTER_INTERACTION_MS = 10_000;
+
+type CarouselState = {
+  currentSlide: number;
+  currentFrame: number;
+};
+
+type CarouselAction =
+  | { type: "setSlide"; index: number }
+  | { type: "nextSlide" }
+  | { type: "prevSlide" }
+  | { type: "nextFrame"; frameCount: number };
+
+function carouselReducer(state: CarouselState, action: CarouselAction): CarouselState {
+  switch (action.type) {
+    case "setSlide":
+      return { currentSlide: action.index, currentFrame: 0 };
+    case "nextSlide":
+      return { currentSlide: (state.currentSlide + 1) % slides.length, currentFrame: 0 };
+    case "prevSlide":
+      return { currentSlide: (state.currentSlide - 1 + slides.length) % slides.length, currentFrame: 0 };
+    case "nextFrame":
+      return { ...state, currentFrame: (state.currentFrame + 1) % action.frameCount };
+  }
+}
 
 const slides: SlideStructure[] = [
   {
@@ -171,8 +195,10 @@ const slides: SlideStructure[] = [
 
 export default function HeroCarousel() {
   const { dict, lang } = useDictionary();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentFrame, setCurrentFrame] = useState(0);
+  const [{ currentSlide, currentFrame }, dispatch] = useReducer(carouselReducer, {
+    currentSlide: 0,
+    currentFrame: 0,
+  });
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -192,13 +218,9 @@ export default function HeroCarousel() {
   };
 
   useEffect(() => {
-    setCurrentFrame(0);
-  }, [currentSlide]);
-
-  useEffect(() => {
     if (!isAutoPlaying || !isVisible) return;
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      dispatch({ type: "nextSlide" });
     }, slide.duration);
     return () => clearInterval(interval);
   }, [isAutoPlaying, isVisible, currentSlide, slide.duration]);
@@ -206,7 +228,7 @@ export default function HeroCarousel() {
   useEffect(() => {
     if (frameCount <= 1 || !isVisible) return;
     const interval = setInterval(() => {
-      setCurrentFrame((prev) => (prev + 1) % frameCount);
+      dispatch({ type: "nextFrame", frameCount });
     }, frameDurationMs);
     return () => clearInterval(interval);
   }, [currentSlide, frameCount, frameDurationMs, isVisible]);
@@ -227,17 +249,17 @@ export default function HeroCarousel() {
   };
 
   const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+    dispatch({ type: "setSlide", index });
     pauseAndResume();
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    dispatch({ type: "nextSlide" });
     pauseAndResume();
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    dispatch({ type: "prevSlide" });
     pauseAndResume();
   };
 

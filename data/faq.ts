@@ -1,4 +1,4 @@
-import type { FAQQuestion, FAQCategory, FAQData } from "@/types";
+import type { FAQData } from "@/types";
 import { SITE_CONFIG } from "@/lib/config";
 
 export const faqData: FAQData = {
