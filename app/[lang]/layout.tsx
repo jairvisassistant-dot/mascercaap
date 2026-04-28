@@ -4,6 +4,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
+import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
@@ -75,15 +76,17 @@ export default async function LangLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <DictionaryProvider dict={dict} lang={lang}>
-          <ScrollProgress />
-          <div className="min-h-screen flex flex-col overflow-x-clip">
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer dict={dict} lang={lang} />
-            <HelpHub />
-          </div>
-        </DictionaryProvider>
+        <MotionProvider>
+          <DictionaryProvider dict={dict} lang={lang}>
+            <ScrollProgress />
+            <div className="min-h-screen flex flex-col overflow-x-clip">
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer dict={dict} lang={lang} />
+              <HelpHub />
+            </div>
+          </DictionaryProvider>
+        </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         )}

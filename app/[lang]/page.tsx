@@ -60,13 +60,10 @@ export default async function HomePage({ params }: Props) {
     ? `https://wa.me/${waNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`
     : "#";
 
-  const [sanityProducts, sanityTestimonials] = await Promise.all([
-    safeFetch(FEATURED_PRODUCTS_QUERY, {}, [] as typeof staticFeaturedProducts),
-    safeFetch(ALL_TESTIMONIALS_QUERY, {}, [] as typeof staticTestimonials),
+  const [featuredProducts, testimonials] = await Promise.all([
+    safeFetch(FEATURED_PRODUCTS_QUERY, {}, staticFeaturedProducts),
+    safeFetch(ALL_TESTIMONIALS_QUERY, {}, staticTestimonials),
   ]);
-
-  const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;
-  const testimonials = sanityTestimonials.length > 0 ? sanityTestimonials : staticTestimonials;
 
   return (
     <>

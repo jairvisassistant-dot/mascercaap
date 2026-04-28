@@ -1,8 +1,6 @@
-"use client";
-
-import { m } from "framer-motion";
 import { SITE_CONFIG } from "@/lib/config";
 import ContactForm from "@/components/sections/ContactForm";
+import { AnimateInView } from "@/components/ui/motion/AnimateInView";
 import type { Dictionary } from "@/lib/i18n";
 
 export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
@@ -11,13 +9,11 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
   return (
     <div className="pt-20">
 
-      {/* Hero — "Estamos listos para llevarte la frescura a tu puerta" */}
+      {/* Hero */}
       <section className="relative bg-gradient-to-br from-primary-dark via-primary to-[#66BB6A] py-16 overflow-hidden">
-        {/* Luz solar sobre el campo — radial desde arriba derecha */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-accent/10 blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
-        {/* Forma orgánica — hoja */}
         <div className="absolute right-0 inset-y-0 pointer-events-none overflow-hidden">
           <svg viewBox="0 0 400 300" className="absolute right-0 top-0 h-full w-auto opacity-[0.07]" fill="white">
             <path d="M380 0 C240 20 120 80 80 160 C40 240 120 300 220 280 C320 260 420 180 400 80 Z" />
@@ -25,40 +21,24 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 relative z-10 text-center text-white">
-          <m.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-xs font-bold tracking-widest text-white/60 uppercase mb-4"
-          >
+          <p className="text-xs font-bold tracking-widest text-white/60 uppercase mb-4 fade-in-up">
             Más Cerca AP · Chía, Colombia
-          </m.p>
-          <m.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="text-4xl md:text-5xl font-bold mb-4 leading-tight"
+          </p>
+          <h1
+            className="text-4xl md:text-5xl font-bold mb-4 leading-tight fade-in-up [animation-delay:50ms]"
           >
             {t.hero.title}
-          </m.h1>
-          <m.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl opacity-85 max-w-2xl mx-auto"
+          </h1>
+          <p
+            className="text-xl opacity-85 max-w-2xl mx-auto fade-in-up [animation-delay:100ms]"
           >
             {t.hero.subtitle}
-          </m.p>
+          </p>
 
-          {/* Promesa de respuesta — conectada con la promesa de entrega <24h */}
-          <m.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18 }}
-            className="inline-flex items-center gap-2 mt-8 bg-white/15 border border-white/20 backdrop-blur-sm rounded-full px-5 py-2.5 text-sm font-medium text-white"
-          >
+          <div className="inline-flex items-center gap-2 mt-8 bg-white/15 border border-white/20 backdrop-blur-sm rounded-full px-5 py-2.5 text-sm font-medium text-white fade-in-up [animation-delay:180ms]">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             {dict.contact.hero.responseTime}
-          </m.div>
+          </div>
         </div>
       </section>
 
@@ -68,13 +48,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
           <div className="grid lg:grid-cols-[1fr_1.4fr] gap-12 items-start">
 
             {/* Columna izquierda — identidad + datos de contacto */}
-            <m.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="space-y-8"
-            >
-              {/* Mensaje humano — "detrás de cada mensaje hay una pareja" */}
+            <AnimateInView direction="left" className="space-y-8">
               <div className="rounded-2xl bg-gradient-to-br from-primary/8 to-accent/5 border border-primary/10 p-6">
                 <p className="text-xs font-bold tracking-widest text-primary uppercase mb-3">
                   {dict.contact.whoWeAre.label}
@@ -84,7 +58,6 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                 </p>
               </div>
 
-              {/* Datos de contacto — editorial rows, no cards */}
               <div className="space-y-0 divide-y divide-gray-100">
 
                 {/* Ubicación */}
@@ -136,29 +109,20 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                   </div>
                 </div>
               </div>
-            </m.div>
+            </AnimateInView>
 
             {/* Columna derecha — formulario */}
-            <m.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
+            <AnimateInView direction="right">
               <ContactForm />
-            </m.div>
+            </AnimateInView>
           </div>
         </div>
       </section>
 
-      {/* Mapa — "Podés pasar a buscar tu pedido" */}
+      {/* Mapa */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <m.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100"
-          >
+          <AnimateInView className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
               <div>
                 <h2 className="font-bold text-gray-800">{t.map.title}</h2>
@@ -183,7 +147,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
               sandbox="allow-scripts allow-same-origin allow-popups"
               title={t.map.iframeTitle}
             />
-          </m.div>
+          </AnimateInView>
         </div>
       </section>
     </div>
