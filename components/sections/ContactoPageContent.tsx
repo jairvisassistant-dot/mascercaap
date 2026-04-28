@@ -3,10 +3,9 @@
 import { m } from "framer-motion";
 import { SITE_CONFIG } from "@/lib/config";
 import ContactForm from "@/components/sections/ContactForm";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
 
-export default function ContactoPageContent() {
-  const { dict } = useDictionary();
+export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
   const t = dict.contact;
 
   return (

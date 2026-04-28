@@ -1,6 +1,6 @@
 "use client";
 
-import type { LegalDocument } from "@/data/legal";
+import type { LegalDocument } from "@/types";
 import type { Locale } from "@/lib/i18n";
 
 type Props = { document: LegalDocument; lang: Locale };

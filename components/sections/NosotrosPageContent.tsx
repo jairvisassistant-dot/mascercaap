@@ -5,7 +5,7 @@ import { m, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import MisionVisionTabs from "@/components/sections/MisionVisionTabs";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
 import { SITE_CONFIG } from "@/lib/config";
 
 const timelineIcons = ["🌱", "👀", "🚿", "🧃", "🫙", "📦"];
@@ -90,7 +90,7 @@ function FlipCard({ card, cardText, pressMore, pressBack, index }: {
       >
         {/* FRONT */}
         <div className="absolute inset-0 [backface-visibility:hidden] rounded-xl overflow-hidden shadow-lg">
-          <Image src={card.src} alt={card.alt} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+          <Image src={card.src} alt={cardText.title} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <p className="text-white font-bold text-sm md:text-base leading-tight drop-shadow-md">{cardText.title}</p>
@@ -120,8 +120,7 @@ function FlipCard({ card, cardText, pressMore, pressBack, index }: {
   );
 }
 
-export default function NosotrosPageContent() {
-  const { dict, lang } = useDictionary();
+export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; lang: string }) {
   const t = dict.about;
 
   return (
@@ -355,7 +354,7 @@ export default function NosotrosPageContent() {
                     <div className={`relative h-64 md:h-72 rounded-2xl overflow-hidden shadow-lg group ${isEven ? "md:order-1" : "md:order-3"}`}>
                       <Image
                         src={step.src}
-                        alt={step.alt}
+                        alt={cardText.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 42vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"

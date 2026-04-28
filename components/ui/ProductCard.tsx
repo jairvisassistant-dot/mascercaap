@@ -54,7 +54,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
           <button
             onClick={() => setLightboxOpen(true)}
             className="absolute inset-0 z-[5] w-full h-full cursor-zoom-in"
-            aria-label={`${dict.products.card.viewImage} ${product.name} ${product.presentation}`}
+            aria-label={`${dict.products.card.viewImage} ${displayName} ${product.presentation}`}
           />
         )}
 
@@ -64,7 +64,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
               <div className="relative w-full h-full">
                 <Image
                   src={product.image}
-                  alt={`${product.name} ${product.presentation}`}
+                  alt={`${displayName} ${product.presentation}`}
                   fill
                   className="object-contain object-center drop-shadow-2xl"
                   sizes="208px"
@@ -75,7 +75,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
           ) : (
             <Image
               src={product.image}
-              alt={`${product.name} ${product.presentation}`}
+              alt={`${displayName} ${product.presentation}`}
               fill
               className={product.line === "kumiss" ? "object-contain object-center p-3" : "object-cover"}
               sizes="208px"

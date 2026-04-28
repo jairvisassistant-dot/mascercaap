@@ -182,8 +182,14 @@ export async function POST(request: Request) {
     const fromEmail = process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
 
     if (!apiKey) {
-      console.warn("⚠️  RESEND_API_KEY no configurada. El email no fue enviado.");
-      return NextResponse.json({ success: true, dev: true }, { status: 200 });
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("⚠️  RESEND_API_KEY no configurada. Email omitido (dev mode).");
+        return NextResponse.json({ success: true, dev: true }, { status: 200 });
+      }
+      return NextResponse.json(
+        { success: false, error: "Servicio de email temporalmente no disponible" },
+        { status: 503 }
+      );
     }
 
     if (!toEmail) {

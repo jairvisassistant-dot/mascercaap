@@ -38,5 +38,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function NosotrosPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  return <NosotrosPageContent />;
+  const dict = await getDictionary(lang);
+  return <NosotrosPageContent dict={dict} lang={lang} />;
 }

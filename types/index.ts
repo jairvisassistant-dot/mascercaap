@@ -78,3 +78,15 @@ export type Testimonial = {
 // ContactFormData: inferida desde Zod (fuente de verdad), re-exportada aquí para
 // que types/index.ts siga siendo el punto de importación único del proyecto.
 export type { ContactFormData } from "@/lib/schemas/contact";
+
+// ── Legal documents ────────────────────────────────────────────────────────
+export type LegalSection = {
+  title: { es: string; en: string };
+  content: { es: string; en: string };
+};
+
+export type LegalDocument = {
+  title: { es: string; en: string };
+  lastUpdated: string;
+  sections: LegalSection[];
+};

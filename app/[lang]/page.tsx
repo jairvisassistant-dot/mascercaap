@@ -15,7 +15,7 @@ import Link from "next/link";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import { SITE_CONFIG } from "@/lib/config";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -55,7 +55,10 @@ export default async function HomePage({ params }: Props) {
 
   const dict = await getDictionary(lang);
 
-  const whatsappCta = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`;
+  const waNumber = SITE_CONFIG.whatsappNumber;
+  const whatsappCta = waNumber
+    ? `https://wa.me/${waNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`
+    : "#";
 
   const [sanityProducts, sanityTestimonials] = await Promise.all([
     safeFetch(FEATURED_PRODUCTS_QUERY, {}, [] as typeof staticFeaturedProducts),
@@ -69,7 +72,7 @@ export default async function HomePage({ params }: Props) {
     <>
       <HeroCarousel />
 
-      <ProductCategories />
+      <ProductCategories dict={dict} lang={lang} />
 
       <FeaturedProducts products={featuredProducts} dict={dict} />
 

@@ -10,7 +10,7 @@ import type { Product, ProductLineConfig, ProductLineKey, ProductLineTranslation
 function FruitImage({ slug, name }: { slug: string; name: string }) {
   return (
     <Image
-      src={`/imgs/pulpa-${slug}.webp`}
+      src={`/imgs/pulpaPortada-${slug}.webp`}
       alt={name}
       fill
       className="object-cover"

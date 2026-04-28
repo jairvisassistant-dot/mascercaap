@@ -15,6 +15,8 @@ const SCROLL_AMOUNT = 254; // card width (234) + gap (20)
 
 export default function ProductLineRow({ line, products, firstLine = false }: ProductLineRowProps) {
   const { dict } = useDictionary();
+  const pl = dict.productLines as Record<string, { label: string }>;
+  const displayLineLabel = pl[line.key]?.label ?? line.label;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -53,7 +55,7 @@ export default function ProductLineRow({ line, products, firstLine = false }: Pr
         <button
           onClick={scrollLeft}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white border border-gray-200 rounded-full shadow-md flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all -translate-x-1/2"
-          aria-label={`${dict.products.scrollPrev} ${line.label}`}
+          aria-label={`${dict.products.scrollPrev} ${displayLineLabel}`}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -66,7 +68,7 @@ export default function ProductLineRow({ line, products, firstLine = false }: Pr
         <button
           onClick={scrollRight}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white border border-gray-200 rounded-full shadow-md flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all translate-x-1/2"
-          aria-label={`${dict.products.scrollNext} ${line.label}`}
+          aria-label={`${dict.products.scrollNext} ${displayLineLabel}`}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />

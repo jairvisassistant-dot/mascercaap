@@ -57,7 +57,7 @@ const slides: SlideStructure[] = [
         },
       },
       {
-        image: "/imgs/pulpa-maracuya.webp",
+        image: "/imgs/pulpaPortada-maracuya.webp",
         kenBurns: {
           initial: { scale: 1.05, x: "0%" },
           animate: { scale: 1.0, x: "0%" },

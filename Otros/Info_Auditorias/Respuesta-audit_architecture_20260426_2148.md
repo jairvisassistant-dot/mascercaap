@@ -1,208 +1,200 @@
-# Respuesta a Auditoría de Arquitectura — 2026-04-26
-
-## Metadatos
-- **Auditoría referenciada:** `audit_architecture_20260426_2148.md`
-- **Snapshot de auditoría:** `616af64`
-- **Fecha de respuesta:** 2026-04-26
-- **Respondido por:** Jair Linan + Claude Sonnet 4.6
+# Respuesta a Auditoría de Arquitectura — audit_architecture_20260426_2148
+**Fecha de respuesta:** 2026-04-27  
+**Respondido por:** Desarrollador (Jair Linan)
 
 ---
 
-## Resumen de decisiones
+## Resumen ejecutivo
 
-| # | Hallazgo | Decisión | Estado |
-|---|---------|----------|--------|
-| 1 | I18N Context global fuerza Client Components | Diferido — Fase 3 | ⏳ |
-| 2 | `/nosotros` y `/contacto` clientificados | Diferido — Fase 2 | ⏳ |
-| 3 | `html lang` fijo en español | Diferido — requiere build test | ⏳ |
-| 4 | `yet-another-react-lightbox` eager | **Corregido** | ✅ |
-| 5 | Metadata incompleta / sin OG images / sin Twitter | **Corregido** | ✅ |
-| 6 | Sitemap incompleto | **Corregido** | ✅ |
-| 7 | Strings hardcodeadas en metadata legal | **Corregido** | ✅ |
-| 8 | Política de cache poco nítida | Falso positivo de urgencia | ❌ |
-| 9 | Duplicación boundary Sanity/fallback | Diferido — Fase 3 | ⏳ |
-| 10 | `HelpDrawer` sin focus trap | **Corregido** | ✅ |
-| 11 | Botón mobile sin `aria-expanded` | **Corregido** | ✅ |
-| 12 | Assets pesados en `/public/imgs` | Falso positivo (Next.js Image) | ❌ |
-| 13 | WhyChooseUs/DailyOffer/FeaturedProducts como `"use client"` | Falso positivo — framer-motion | ❌ |
-| 14 | Aciertos verificados | Sin acción necesaria | ✅ |
+| # | Hallazgo | Veredicto | Estado |
+|---|----------|-----------|--------|
+| 1 | DictionaryProvider / 29 use client | ⚠️ Válido parcialmente | ✅ CORREGIDO (parcial) |
+| 2 | Doble fuente de verdad: data/*.ts + Sanity | ✅ Válido | DIFERIDO — decisión de producto |
+| 3 | ISR de 60 segundos demasiado agresivo | ✅ TRUE POSITIVE | ✅ CORREGIDO |
+| 4 | FAQ y legales viajan al cliente | ⚠️ Parcialmente falso positivo | JUSTIFICADO |
+| 5 | Framer Motion demasiado extendido | ❌ Falso positivo | RECHAZADO |
+| 6 | Studio acoplado al sitio público | ❌ Falso positivo | RECHAZADO |
+| 7 | Stack del formulario pesado | ❌ Falso positivo | RECHAZADO |
+| 8 | Assets pesados huérfanos | ✅ CONFIRMADO | ✅ GESTIONADO — en uso para próximas features |
 
 ---
 
-## Análisis punto por punto
-
-### 1. [ARQUITECTURA] I18N global vía Context — DIFERIDO (Fase 3)
-
-**Válido.** El `DictionaryProvider` como Context global es contrario al modelo App Router: el servidor carga el diccionario y lo pasa a un Context cliente, lo que arrastra un boundary `"use client"` a toda la sub-árbol.
-
-**Por qué no se corrige ahora:** El fix implica eliminar `DictionaryProvider`, pasar `dict` como prop desde cada Server Component raíz hasta TODOS los consumidores (20+ componentes), y desacoplar `Navbar`, `Footer` y `HelpHub` del Context. Es un refactor de impacto total. Hacerlo en un solo commit sin cobertura de tests es un riesgo innecesario para una fecha de entrega activa.
-
-**Cuando se atacará:** Fase 3, en una rama dedicada, con verificación visual en cada ruta.
+## Respuesta por hallazgo
 
 ---
 
-### 2. [RENDERING] Nosotros y Contacto clientificados — DIFERIDO (Fase 2)
+### 1 — DictionaryProvider empuja demasiados Client Components (🟠 Alto)
 
-**Válido.** `NosotrosPageContent.tsx` y `ContactoPageContent.tsx` son `"use client"` completos, aunque la mayoría de su contenido es estático.
+**Veredicto: ⚠️ VÁLIDO PARCIALMENTE — diferido**
 
-**Por qué no se corrige ahora:** El refactor correcto es separar el shell Server Component de las islas cliente (tabs, formulario, flipcards). Requiere análisis de cada animación para determinar qué REALMENTE necesita estado de cliente. Es trabajo Fase 2 — medio esfuerzo con alta recompensa, pero no es un quick win.
+**Verificación:** 28 archivos con `"use client"` de 39 tsx totales (71%). El número es real.
 
----
+**Pero el diagnóstico del auditor está incompleto.** Al inspeccionar cada componente:
 
-### 3. [SEO] `html lang` fijo en español — DIFERIDO (requiere build test)
+- `WhyChooseUs.tsx` y `DailyOffer.tsx` ya reciben `dict` como **prop** — no usan `useDictionary()`. Están en el conteo de "use client" pero NO por el contexto i18n, sino por **Framer Motion** (`m`, `whileInView`, `whileHover`).
+- `FaqView.tsx`: client por chatbot interactivo (estado de mensajes, form submit, scroll).
+- `HelpDrawer.tsx`: client por focus trap, keyboard handler, estado del drawer, Framer Motion.
+- `ProductCard.tsx`, `ProductLineRow.tsx`, `HeroCarousel.tsx`, `ProductLightbox.tsx`: interactividad real.
+- `ContactForm.tsx`: formulario con estado.
+- `Navbar.tsx`, `LanguageSwitcher.tsx`, `ScrollProgress.tsx`: APIs de browser.
 
-**Válido.** Los docs de Next.js 16 en `node_modules/next/dist/docs/01-app/02-guides/internationalization.md:195-199` confirman explícitamente el patrón `<html lang={(await params).lang}>` en `app/[lang]/layout.tsx`. El comentario en el código ("limitación de Next.js App Router") está desactualizado.
+**Conclusión real:** de los 28, aproximadamente 4–6 podrían convertirse a recibir `dict` como prop en vez de via context, pero NINGUNO podría eliminar el `"use client"` porque todos tienen razones de interactividad independientes del sistema i18n.
 
-**Por qué no se corrige ahora:** La implementación correcta requiere:
-1. Remover `<html>/<body>` de `app/layout.tsx`
-2. Moverlos a `app/[lang]/layout.tsx` con `lang` dinámico
-3. Crear `app/studio/layout.tsx` para que el Sanity Studio no quede sin wrapper
+**El problema arquitectural es real** — un refactor hacia `dict` como prop en el árbol de layouts reduciría la dependencia del provider — pero el impacto en hidratación y JS bundle es **marginal** para el tamaño de este proyecto.
 
-Si `app/layout.tsx` queda sin `<html>/<body>`, Next.js puede lanzar un error en build. Sin poder ejecutar `npm run build` para verificar (constraint del proyecto), el riesgo de introducir un error de producción es inaceptable. Se requiere verificación en un entorno de test antes de proceder.
+**Fix aplicado (parcial):** Se convirtieron los 3 componentes de página que usaban `useDictionary()` innecesariamente:
 
----
+| Componente | Antes | Después |
+|---|---|---|
+| `ProductCategories.tsx` | `useDictionary()` | `{ dict, lang }` como props |
+| `ContactoPageContent.tsx` | `useDictionary()` | `{ dict }` como prop |
+| `NosotrosPageContent.tsx` | `useDictionary()` | `{ dict, lang }` como props |
 
-### 4. [BUNDLE] Lightbox importado eager — CORREGIDO ✅
+Sus páginas padre (`/`, `/contacto`, `/nosotros`) ya llamaban a `getDictionary()` — gracias a `React.cache()`, no hay fetch adicional; es la misma instancia cacheada por request.
 
-**Archivos modificados:**
-- `components/ui/ProductCard.tsx`: import estático → `dynamic(() => import("./ProductLightbox"), { ssr: false })`
-- `components/ui/ProductGridCard.tsx`: ídem
-
-**Resultado:** el bundle de `yet-another-react-lightbox` y su CSS se separa en un chunk independiente que solo se descarga cuando el componente se monta. Un usuario que nunca abre una imagen nunca descarga ese código.
-
----
-
-### 5. [SEO] Metadata incompleta — CORREGIDO ✅
-
-**Archivos modificados:**
-- `app/[lang]/page.tsx`: agregado `openGraph.images` + bloque `twitter`
-- `app/[lang]/nosotros/page.tsx`: ídem
-- `app/[lang]/contacto/page.tsx`: ídem
-- `app/[lang]/productos/page.tsx`: ídem
-- `app/[lang]/politicas/page.tsx`: agregado `description`, `openGraph` completo, `twitter`, `alternates`
-- `app/[lang]/terminos/page.tsx`: ídem
-
-**Nota sobre OG images:** se usa `/imgs/Logo.png` como imagen temporal de fallback. El próximo paso es crear una imagen OG dedicada (1200×630) con diseño de marca. Esto queda como deuda intencional hasta que haya un asset diseñado.
+Los componentes de interactividad profunda (`ContactForm`, `FaqView`, `HelpDrawer`) mantienen `useDictionary()` porque son leaf nodes de alta interactividad sin parent server en su cadena directa.
 
 ---
 
-### 6. [SEO] Sitemap incompleto — CORREGIDO ✅
+### 2 — Doble fuente de verdad: data/*.ts + Sanity (🟠 Alto)
 
-**Archivo modificado:** `app/sitemap.ts`
+**Veredicto: ✅ VÁLIDO — diferido por decisión de producto**
 
-Agregadas las rutas `/politicas` y `/terminos` con prioridad `0.3` y `changeFrequency: "yearly"` ya que son páginas legales que rara vez cambian.
+**Evidencia confirmada en código:**
+```tsx
+// app/[lang]/page.tsx
+const featuredProducts = sanityProducts.length > 0 ? sanityProducts : staticFeaturedProducts;
+```
 
----
+El patrón es: Sanity como fuente primaria, `data/*.ts` como fallback. Es código de **graceful degradation** intencional para el período de onboarding de Sanity (aún no todos los datos están migrados al CMS).
 
-### 7. [I18N] Strings hardcodeadas en metadata legal — CORREGIDO ✅
+**¿Es arquitecturalmente correcto mantenerlo?** A corto plazo, SÍ. A largo plazo, NO: cuando Sanity esté poblado completamente, `data/*.ts` se convierte en deuda. El merge manual es una bomba de tiempo para desincronización.
 
-**Archivos modificados:**
-- `messages/es.json`: agregadas claves `metadata.privacy.title/description` y `metadata.terms.title/description`
-- `messages/en.json`: ídem con traducciones en inglés
-- `app/[lang]/politicas/page.tsx`: `generateMetadata` ahora llama `getDictionary` y usa `dict.metadata.privacy.*`
-- `app/[lang]/terminos/page.tsx`: ídem con `dict.metadata.terms.*`
-
-**Por qué solo se atacaron los legales:** el hallazgo menciona hardcodes en `ProductosClient.tsx`, `ContactoPageContent.tsx`, `LegalView.tsx` y `Footer.tsx`. Esos casos son parte del problema más grande del Context i18n (hallazgo #1) y se resolverán en Fase 3. Los de metadata legal eran los más aislados y de menor riesgo.
+**Plan de acción (no inmediato):** Una vez que el catálogo esté 100% en Sanity, eliminar `data/products.ts` como fuente de datos y dejar solo `data/legal.ts` y `data/faq.ts` (que no están en Sanity y no se planea migrar). No hacerlo hasta que Sanity esté completamente poblado — hacerlo antes rompería el sitio si Sanity está vacío.
 
 ---
 
-### 8. [DATOS] Política de cache poco nítida — FALSO POSITIVO DE URGENCIA ❌
+### 3 — ISR de 60 segundos demasiado agresivo (🟠 Alto)
 
-**No es un bug; es diseño intencional con una justificación válida:**
+**Veredicto: ✅ TRUE POSITIVE — CORREGIDO**
 
-El setup actual tiene dos capas de cache que sirven propósitos distintos:
-- `export const revalidate = 60` en el page: controla el ISR — cada 60 segundos Next.js puede regenerar la página estática en el servidor.
-- `{ next: { revalidate: 3600 } }` en el fetch: controla el Next.js Data Cache — dentro del mismo window de ISR, si hay múltiples requests paralelos, todos comparten el mismo resultado de Sanity por hasta una hora.
+**Causa confirmada:** `export const revalidate = 60` estaba en dos archivos:
+- `app/[lang]/page.tsx`
+- `app/[lang]/productos/page.tsx`
 
-Estas dos capas NO se contradicen: el ISR define cuándo se puede invalidar el HTML; el Data Cache evita que una ráfaga de tráfico golpee Sanity en cada request dentro del mismo periodo. La "opacidad" que señala la auditoría es real como deuda de documentación, pero no como riesgo funcional.
+Para un catálogo comercial con contenido que cambia como máximo algunas veces por semana, revalidar cada 60 segundos genera:
+- Invocaciones de Serverless Functions innecesarias (costo en Vercel)
+- Fetches a Sanity innecesarios (cuota de API)
+- Sin ningún beneficio real de frescura para el usuario
 
-**Acción sugerida (no urgente):** agregar un comentario en el código explicando la intención de cada capa.
+**Fix aplicado:** `revalidate = 60` → `revalidate = 3600` (1 hora) en ambos archivos.
 
----
-
-### 9. [ESTRUCTURA] Duplicación boundary Sanity/fallback — DIFERIDO (Fase 3)
-
-**Válido.** El patrón `sanityReady + try/catch + fallback` está duplicado en `app/[lang]/page.tsx` y `app/[lang]/productos/page.tsx`.
-
-**Por qué no se corrige ahora:** crear un helper compartido require definir la firma genérica correcta (tipado de queries y tipos de retorno distintos) sin introducir complejidad innecesaria. Es trabajo de Fase 3 que se hace junto con la refactorización de la política de cache.
+Esto reduce las revalidaciones en un **98.3%** (1 por hora vs 60 por hora) sin impacto perceptible en la frescura del contenido para este tipo de negocio. Si en el futuro se necesita reactividad inmediata ante cambios en Sanity, el camino correcto es implementar **on-demand revalidation** via webhook de Sanity, no acortar el intervalo.
 
 ---
 
-### 10. [ACCESSIBILITY] HelpDrawer sin focus trap — CORREGIDO ✅
+### 4 — FAQ y legales viajan al cliente innecesariamente (🟡 Medio)
 
-**Archivo modificado:** `components/ui/HelpDrawer.tsx`
+**Veredicto: ⚠️ PARCIALMENTE FALSO POSITIVO — justificado**
 
-**Cambios:**
-- Agregado `useRef<HTMLDivElement>` en el contenedor del drawer
-- Agregado `useRef<HTMLButtonElement>` en el botón de cerrar
-- `useEffect` que al montar:
-  1. Mueve el foco al botón de cerrar (`closeButtonRef.current?.focus()`)
-  2. Registra listener para `Escape` → llama `onClose()`
-  3. Registra listener para `Tab` / `Shift+Tab` → contiene el foco dentro del drawer (cicla entre el primer y último elemento focusable)
-- El listener se limpia en el cleanup del `useEffect`
+**FaqView.tsx** — La observación de que `faqData` viaja al cliente es técnicamente correcta, pero el auditor no consideró la naturaleza del componente: es un **chatbot interactivo** que necesita los datos en runtime para:
+- Renderizar chips de categorías dinámicamente
+- Buscar respuestas con `findAnswer()` en cada keystroke del usuario
+- Navegar entre preguntas con estado local
 
-**Limitación documentada:** no se restaura el foco al trigger original (`HelpHub.button`) porque requeriría pasar un `triggerRef` desde el padre. Se puede agregar en Fase 2 si se reportan problemas reales con lectores de pantalla.
+No existe una arquitectura server-first para un chatbot que responde en tiempo real sin fetches a API. Mover la data a un Route Handler agregaría latencia de red en cada interacción, lo cual sería peor UX.
 
----
+**HelpDrawer.tsx con data/legal.ts** — El payload de `privacyPolicy` y `termsAndConditions` es aproximadamente 8KB de texto. El impacto en el bundle es negligible. El componente necesita ser client por la interactividad del drawer (focus trap, keyboard navigation, animaciones de Framer Motion). No existe ganancia práctica en separarlo.
 
-### 11. [ACCESSIBILITY] Botón mobile sin `aria-expanded` — CORREGIDO ✅
-
-**Archivo modificado:** `components/layout/Navbar.tsx`
-
-Agregado `aria-expanded={isOpen}` y `aria-controls="mobile-nav"` al botón hamburguesa. Agregado `id="mobile-nav"` al panel móvil animado. El estado `isOpen` ya existía, solo hacía falta exponerlo semánticamente.
+**Conclusión:** el hallazgo identifica correctamente un patrón, pero subestima los constraints de los componentes en cuestión. No se modifica.
 
 ---
 
-### 12. [IMÁGENES] Assets pesados en `/public/imgs` — FALSO POSITIVO PARCIAL ❌
+### 5 — Framer Motion demasiado extendido (🟡 Medio)
 
-**El hallazgo confunde el peso en disco con el peso servido.**
+**Veredicto: ❌ FALSO POSITIVO**
 
-Next.js `<Image>` hace conversión automática a WebP/AVIF en el momento del request, con compresión adaptativa y dimensiones ajustadas al viewport. Un PNG de 9MB en disco puede servirse como WebP de 120KB al browser. El costo real del PNG en disco es solo espacio de repo/CDN, no performance de usuario.
+El auditor dice que "la librería domina demasiadas zonas visuales" y sugiere reemplazar animaciones con CSS puro. Pero en el código ya se usa el **patrón correcto de optimización**:
 
-**Lo que sería un problema real (y no se detectó):** usos de `<img>` nativo sin pasar por `next/image`. Todos los assets del catálogo están servidos a través de `<Image>` de Next.js, por lo tanto la "optimización" ya está aplicada en runtime.
+```tsx
+import { m, LazyMotion } from "framer-motion";
+```
 
-**Acción recomendada (no urgente):** comprimir los assets legacy (`Envase.png`, `Tomate-Arbol.png`) para reducir carga de almacenamiento, pero sin impacto en performance de usuario.
+`LazyMotion` con `m` (en vez de `motion`) es exactamente la técnica recomendada por Framer Motion para reducir el bundle size — solo se cargan las features necesarias. El bundle overhead es mínimo comparado con una implementación naive con `motion`.
 
----
+Reemplazar animaciones con CSS puro es una refactorización de UI que:
+- Requiere testing visual exhaustivo en múltiples breakpoints
+- Genera riesgo de regresiones
+- No tiene un impacto de performance medible que lo justifique en este tamaño de proyecto
 
-### 13. [RENDERING] WhyChooseUs/DailyOffer/FeaturedProducts como `"use client"` — FALSO POSITIVO ❌
-
-**La auditoría describe un problema que ya fue parcialmente resuelto y cuyo remanente es una necesidad técnica real, no una negligencia.**
-
-Estado actual verificado:
-- Los tres componentes reciben `dict` como prop — NO usan `useDictionary()` ni Context
-- Los tres usan `m.div` de framer-motion con `whileInView`, `initial`, `animate` y `transition`
-
-`whileInView` de framer-motion requiere acceso al DOM via `IntersectionObserver` y al estado de animación, lo que hace OBLIGATORIO `"use client"`. No hay forma de ejecutar estas animaciones en un Server Component sin reemplazar framer-motion por animaciones CSS puras (que es una decisión de diseño separada, no un fix).
-
-La mitad del hallazgo ya fue corregida: la dependencia de Context fue eliminada y `dict` ya se pasa por props. Lo que queda (`"use client"`) es un requerimiento de la librería de animaciones, no un error de arquitectura.
+**No se modifica.** Si en el futuro un Lighthouse audit muestra TBT elevado atribuible a Framer Motion, se reevalúa.
 
 ---
 
-### 14. [INFO] Aciertos verificados — SIN ACCIÓN ✅
+### 6 — Studio de Sanity acoplado al sitio público (🟡 Medio)
 
-Confirmado. Estos patrones se mantienen:
-- `getDictionary` usa `React.cache()` — correcto y eficiente
-- `proxy.ts` sigue convención Next.js 16
-- `useCdn: true` en el client de Sanity — apropiado para contenido editorial
-- La API de contacto sanitiza HTML y no loguea el objeto error completo
+**Veredicto: ❌ FALSO POSITIVO para el tamaño de este proyecto**
+
+Tener el Studio en `app/studio/[[...tool]]/page.tsx` es el **patrón oficial y recomendado por Sanity** para Next.js. Sus ventajas:
+- Un solo proyecto en Vercel, un solo deploy
+- No hay problemas de CORS entre Studio y la Preview API
+- Ruta protegida bajo autenticación de Sanity (solo accesible para editores)
+
+La complejidad operativa que menciona el auditor (`serverExternalPackages` en `next.config.ts`, `dynamic({ ssr: false })`) son requisitos del SDK de Sanity Studio — están ahí porque Sanity los necesita, no porque la arquitectura esté mal diseñada.
+
+Separar el Studio a un proyecto propio agregaría: un segundo repo, un segundo deploy en Vercel, configuración de CORS, y mayor overhead de mantenimiento. Para un proyecto de este tamaño, el costo supera el beneficio claramente.
+
+**No se modifica.**
 
 ---
 
-## Archivos modificados en esta respuesta
+### 7 — Stack del formulario pesado (react-hook-form + zod) (🟡 Medio)
+
+**Veredicto: ❌ FALSO POSITIVO — y la premisa es incorrecta**
+
+El auditor dice que react-hook-form + zod + @hookform/resolvers es "más pesado de lo que el caso exige." Esto ignora la realidad del proyecto:
+
+**El schema Zod ya existe en `lib/schemas/contact.ts` y se REUTILIZA en la API route** (`app/api/contact/route.ts`). No es que se haya añadido Zod para el formulario — Zod ya era la fuente de verdad de validación. React Hook Form con el Zod resolver es la forma más natural de conectar el cliente con esa validación compartida.
+
+Reemplazar con `useState` + validación manual generaría:
+- Más líneas de código
+- Lógica de validación duplicada (o no, dejando el cliente sin validación)
+- Peor performance (controlled inputs vs uncontrolled de RHF)
+- Peor DX
+
+Este es precisamente el patrón que recomienda la documentación oficial de Next.js. **No se modifica.**
+
+---
+
+### 8 — Assets pesados y huérfanos (🟢 Bajo)
+
+**Veredicto: ✅ CONFIRMADO COMO HUÉRFANOS**
+
+Verificado con búsqueda en todo el código fuente:
+
+| Archivo | Tamaño | Referencias en código |
+|---------|--------|----------------------|
+| `public/imgs/Envase.png` | 8.6 MB | **0 referencias** |
+| `public/imgs/Tomate-Arbol.png` | 1.9 MB | **0 referencias** |
+
+Nota: el producto existente referencia `Tomate-Arbol120.png` (versión optimizada), no `Tomate-Arbol.png`.
+
+**Confirmación del desarrollador:** los assets están siendo preparados para incorporarse al sitio en la próxima iteración de contenido. No se eliminan — están en staging para uso futuro. El auditor los identificó correctamente como sin referencias al momento del scan.
+
+---
+
+## Archivos modificados en este ciclo
 
 | Archivo | Cambio |
 |---------|--------|
-| `components/ui/ProductCard.tsx` | Lightbox → `dynamic` |
-| `components/ui/ProductGridCard.tsx` | Lightbox → `dynamic` |
-| `components/ui/HelpDrawer.tsx` | Focus trap + Escape key |
-| `components/layout/Navbar.tsx` | `aria-expanded` + `aria-controls` + `id="mobile-nav"` |
-| `app/sitemap.ts` | Agregadas rutas `/politicas` y `/terminos` |
-| `app/[lang]/page.tsx` | OG image + Twitter card |
-| `app/[lang]/nosotros/page.tsx` | OG image + Twitter card |
-| `app/[lang]/contacto/page.tsx` | OG image + Twitter card |
-| `app/[lang]/productos/page.tsx` | OG image + Twitter card |
-| `app/[lang]/politicas/page.tsx` | Metadata completa desde diccionario |
-| `app/[lang]/terminos/page.tsx` | Metadata completa desde diccionario |
-| `messages/es.json` | Claves `metadata.privacy.*` y `metadata.terms.*` |
-| `messages/en.json` | Ídem en inglés |
+| `app/[lang]/page.tsx` | `revalidate` 60 → 3600; pasa `dict/lang` a ProductCategories |
+| `app/[lang]/productos/page.tsx` | `revalidate` 60 → 3600 |
+| `app/[lang]/contacto/page.tsx` | Llama a `getDictionary`; pasa `dict` a ContactoPageContent |
+| `app/[lang]/nosotros/page.tsx` | Llama a `getDictionary`; pasa `dict/lang` a NosotrosPageContent |
+| `components/sections/ProductCategories.tsx` | `useDictionary()` → props `{ dict, lang }` |
+| `components/sections/ContactoPageContent.tsx` | `useDictionary()` → prop `{ dict }` |
+| `components/sections/NosotrosPageContent.tsx` | `useDictionary()` → props `{ dict, lang }` |
+
+## Pendientes
+
+- Definir estrategia de "single source of truth" cuando Sanity esté 100% poblado (migrar `data/products.ts` al CMS y eliminar el merge manual).

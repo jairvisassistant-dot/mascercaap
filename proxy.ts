@@ -9,10 +9,18 @@ function getLocale(request: NextRequest): string {
   const cookie = request.cookies.get("NEXT_LOCALE");
   if (cookie && locales.includes(cookie.value)) return cookie.value;
 
-  // 2. Check Accept-Language header
+  // 2. Check Accept-Language header — parse by quality value, not naive substring
   const acceptLang = request.headers.get("accept-language") ?? "";
-  for (const locale of locales) {
-    if (acceptLang.includes(locale)) return locale;
+  const preferred = acceptLang
+    .split(",")
+    .map((entry) => {
+      const [tag, q] = entry.trim().split(";q=");
+      return { lang: tag.trim().split("-")[0].toLowerCase(), q: q ? parseFloat(q) : 1 };
+    })
+    .sort((a, b) => b.q - a.q);
+
+  for (const { lang } of preferred) {
+    if ((locales as readonly string[]).includes(lang)) return lang;
   }
 
   return defaultLocale;

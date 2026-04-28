@@ -3,7 +3,7 @@
 import { m } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 56, scale: 0.94 },
@@ -66,8 +66,7 @@ const CATEGORIES: CategoryStructure[] = [
   },
 ];
 
-export default function ProductCategories() {
-  const { dict, lang } = useDictionary();
+export default function ProductCategories({ dict, lang }: { dict: Dictionary; lang: string }) {
 
   return (
     <section className="py-20 bg-white">

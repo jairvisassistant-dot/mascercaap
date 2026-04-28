@@ -7,7 +7,7 @@ import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
 import { safeFetch } from "@/lib/sanity/safeFetch";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ lang: string }>;
