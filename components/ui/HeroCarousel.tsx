@@ -275,6 +275,7 @@ export default function HeroCarousel() {
                   sizes="100vw"
                   className="object-cover"
                   priority={currentSlide === 0 && currentFrame === 0}
+                  loading={currentSlide === 0 && currentFrame > 0 ? "eager" : undefined}
                 />
               </m.div>
             </m.div>
