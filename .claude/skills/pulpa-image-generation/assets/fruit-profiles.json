@@ -1,0 +1,65 @@
+{
+  "mora": {
+    "spanishName": "Mora",
+    "labelText": "MORA",
+    "pulpColor": "deep blackberry purple, dark violet with natural berry texture",
+    "fruitGarnish": "fresh blackberries, one sliced blackberry only if natural and clean",
+    "avoid": ["magenta candy color", "blueberry substitution", "black fruit blobs", "recolored strawberry pulp"]
+  },
+  "fresa": {
+    "spanishName": "Fresa",
+    "labelText": "FRESA",
+    "pulpColor": "natural strawberry red with fine seed texture",
+    "fruitGarnish": "fresh whole and sliced strawberries",
+    "avoid": ["tomato red", "plastic red", "jam jar look"]
+  },
+  "maracuya": {
+    "spanishName": "Maracuyá",
+    "labelText": "MARACUYÁ",
+    "pulpColor": "golden yellow passion fruit pulp with visible seeds",
+    "fruitGarnish": "whole and halved passion fruit with glossy pulp",
+    "avoid": ["mango color", "flat yellow block", "seedless generic juice"]
+  },
+  "mango": {
+    "spanishName": "Mango",
+    "labelText": "MANGO",
+    "pulpColor": "rich mango orange-yellow, smooth dense pulp",
+    "fruitGarnish": "fresh mango and diced mango cheek",
+    "avoid": ["neon orange", "thin juice look", "papaya substitution"]
+  },
+  "guanabana": {
+    "spanishName": "Guanábana",
+    "labelText": "GUANÁBANA",
+    "pulpColor": "creamy off-white soursop pulp",
+    "fruitGarnish": "whole and sliced soursop with green skin",
+    "avoid": ["banana look", "milk carton look", "overly yellow pulp"]
+  },
+  "lulo": {
+    "spanishName": "Lulo",
+    "labelText": "LULO",
+    "pulpColor": "muted orange-green tropical lulo pulp",
+    "fruitGarnish": "whole and halved lulo fruit",
+    "avoid": ["orange fruit substitution", "mango color", "dirty brown pulp"]
+  },
+  "guayaba": {
+    "spanishName": "Guayaba",
+    "labelText": "GUAYABA",
+    "pulpColor": "pink guava pulp with natural warm tone",
+    "fruitGarnish": "whole and sliced guava",
+    "avoid": ["strawberry substitution", "bubblegum pink", "watermelon look"]
+  },
+  "frutos-rojos": {
+    "spanishName": "Frutos Rojos",
+    "labelText": "FRUTOS ROJOS",
+    "pulpColor": "deep red mixed berry pulp",
+    "fruitGarnish": "strawberries, raspberries, blackberries, blueberries in a controlled premium cluster",
+    "avoid": ["fruit salad chaos", "too many fruits", "dominant garnish over pouch"]
+  },
+  "tomate-arbol": {
+    "spanishName": "Tomate de Árbol",
+    "labelText": "TOMATE DE ÁRBOL",
+    "pulpColor": "warm orange-red tree tomato pulp",
+    "fruitGarnish": "whole and sliced tree tomato/tamarillo",
+    "avoid": ["regular tomato look", "pumpkin color", "generic orange juice"]
+  }
+}
