@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { SITE_CONFIG } from "@/lib/config";
+import BrandFruitMark from "@/components/ui/BrandFruitMark";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
@@ -57,7 +58,7 @@ export default function Footer({ dict, lang }: FooterProps) {
               <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={97} height={60} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
-              <span className="text-2xl" style={{ display: "inline-block", transform: "scaleX(-1)" }}>🍋</span>
+              <BrandFruitMark />
             </Link>
             <p className="text-gray-400 mb-4 max-w-md">
               {dict.footer.description}

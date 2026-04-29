@@ -8,6 +8,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import BrandFruitMark from "@/components/ui/BrandFruitMark";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +55,7 @@ export default function Navbar() {
               <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={97} height={60} priority className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
-              <span className="text-2xl" style={{ display: "inline-block", transform: "scaleX(-1)" }}>🍋</span>
+              <BrandFruitMark />
             </Link>
 
             {/* Desktop Navigation */}

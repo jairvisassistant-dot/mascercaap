@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Product, ProductLineConfig } from "@/types";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
@@ -51,7 +52,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${line.gradient} flex flex-col items-center justify-center gap-2`}>
-              <span className="text-4xl">🔜</span>
+              <EmojiIcon emoji="🔜" label={dict.products.card.comingSoon} size="lg" tone="fruit" decorative={false} />
               <span className="text-white text-xs font-semibold">{dict.products.card.comingSoon}</span>
             </div>
           )}

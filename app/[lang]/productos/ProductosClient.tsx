@@ -6,6 +6,7 @@ import Link from "next/link";
 import ProductLineRow from "@/components/ui/ProductLineRow";
 import ProductGridCard from "@/components/ui/ProductGridCard";
 import PulpaFruitGrid from "@/components/ui/PulpaFruitGrid";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
 
@@ -319,7 +320,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center py-24 text-center">
-                  <span className="text-5xl mb-4">🔍</span>
+                  <EmojiIcon emoji="🔍" label={dict.products.filters.empty} size="xl" tone="neutral" decorative={false} className="mb-4" />
                   <p className="text-gray-500 text-base font-medium">
                     {dict.products.filters.empty}
                   </p>

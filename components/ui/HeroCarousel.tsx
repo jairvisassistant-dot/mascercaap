@@ -264,7 +264,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[500px] md:min-h-[600px] overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[540px] md:min-h-[640px] overflow-hidden bg-emerald-950">
 
       <AnimatePresence mode="wait">
         <m.div
@@ -305,14 +305,15 @@ export default function HeroCarousel() {
 
           <div className="hero-overlay absolute inset-0" />
 
-          <div className="relative h-full flex items-center justify-center">
-            <div className="text-center text-white px-14 sm:px-8 md:px-4 max-w-3xl">
+          <div className="relative h-full min-h-[540px] md:min-h-[640px]">
+            <div className="mx-auto grid h-full min-h-[540px] max-w-7xl items-center px-6 py-28 sm:px-8 md:min-h-[640px] md:grid-cols-[minmax(0,0.92fr)_minmax(260px,0.58fr)] md:px-12 lg:px-16">
+              <div className="max-w-2xl text-left text-white">
 
               <m.p
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="inline-block text-xs md:text-sm font-bold tracking-[0.25em] mb-3 text-cyan-200 uppercase bg-black/30 backdrop-blur-sm px-4 py-1.5 rounded-full border border-cyan-300/50"
+                className="mb-5 inline-flex max-w-full items-center rounded-none border-l-2 border-accent bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm md:text-xs"
               >
                 {slideText.subtitle}
               </m.p>
@@ -321,7 +322,7 @@ export default function HeroCarousel() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="text-2xl sm:text-3xl md:text-5xl font-bold mb-4 whitespace-pre-line leading-tight"
+                className="mb-5 max-w-[13ch] whitespace-pre-line text-balance text-4xl font-bold leading-[0.96] tracking-[-0.045em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-5xl md:text-6xl lg:text-7xl"
               >
                 {slideText.title}
               </m.h1>
@@ -330,7 +331,7 @@ export default function HeroCarousel() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
-                className="text-xs sm:text-base md:text-lg mb-6 md:mb-8 opacity-90 mt-1 sm:mt-0"
+                className="mb-8 max-w-[58ch] text-pretty text-sm leading-relaxed text-white/82 drop-shadow-[0_8px_22px_rgba(0,0,0,0.35)] sm:text-base md:text-lg"
               >
                 {slideText.description}
               </m.p>
@@ -339,16 +340,46 @@ export default function HeroCarousel() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
+                className="flex flex-col items-start gap-4 sm:flex-row sm:items-center"
               >
                 <Link
                   href={resolveHref(slide.ctaHref)}
                   {...(slide.ctaHref === "__whatsapp__"
                     ? { target: "_blank", rel: "noopener noreferrer" }
                     : {})}
-                  className={`inline-block ${slide.ctaColor} text-white font-bold py-3 px-8 rounded-full transition-all hover:scale-105`}
+                  className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] md:text-base`}
                 >
                   {slideText.cta}
                 </Link>
+                <Link
+                  href={`/${lang}/productos`}
+                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/28 bg-white/10 px-7 py-3 text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/18 active:translate-y-0 active:scale-[0.98] md:text-base"
+                >
+                  {lang === "es" ? "Ver catálogo" : "View catalog"}
+                </Link>
+              </m.div>
+
+              </div>
+
+              <m.div
+                initial={{ opacity: 0, y: 26 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.62, duration: 0.55 }}
+                className="pointer-events-none mt-10 hidden self-end justify-self-end md:block"
+              >
+                <div className="max-w-[310px] border border-white/16 bg-emerald-950/34 p-5 text-white shadow-[0_24px_80px_rgba(0,0,0,0.26),inset_0_1px_0_rgba(255,255,255,0.10)] backdrop-blur-md">
+                  <div className="mb-4 flex items-center gap-3">
+                    <span className="h-px w-10 bg-accent" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/58">
+                      Más Cerca AP
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold leading-relaxed text-white/86">
+                    {lang === "es"
+                      ? "Del campo colombiano a tu mesa con frescura, cuidado y entrega cercana."
+                      : "From Colombian farms to your table with freshness, care and close delivery."}
+                  </p>
+                </div>
               </m.div>
 
             </div>
@@ -358,32 +389,32 @@ export default function HeroCarousel() {
 
       <button
         onClick={prevSlide}
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
         aria-label={dict.home.hero.prevSlide}
       >
-        <svg className="w-4 h-4 sm:w-6 sm:h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-4 w-4 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
         aria-label={dict.home.hero.nextSlide}
       >
-        <svg className="w-4 h-4 sm:w-6 sm:h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-4 w-4 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+      <div className="absolute bottom-7 left-6 z-10 flex gap-2.5 sm:left-8 md:left-12 lg:left-[calc((100vw-80rem)/2+4rem)]">
         {slides.map((s, index) => (
           <button
             key={s.id}
             onClick={() => goToSlide(index)}
-            className={`h-3 rounded-full transition-all ${
+            className={`h-2.5 rounded-full border border-white/20 transition-all duration-300 ${
               index === currentSlide
-                ? "bg-white w-6"
-                : "bg-white/60 hover:bg-white/80 w-3"
+                ? "bg-white w-8"
+                : "bg-white/35 hover:bg-white/70 w-2.5"
             }`}
             aria-label={`${dict.home.hero.goToSlide} ${index + 1}`}
           />

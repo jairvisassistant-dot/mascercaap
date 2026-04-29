@@ -6,6 +6,7 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { faqData } from "@/data/faq";
 import { findAnswer } from "@/lib/faq-matcher";
 import { SITE_CONFIG } from "@/lib/config";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Locale } from "@/lib/i18n";
 
 type Message = { id: string; role: "bot" | "user"; text: string };
@@ -166,7 +167,7 @@ export default function FaqView({ onContactClick }: Props) {
                     onClick={() => handleCategoryClick(cat.id)}
                     className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-primary hover:text-primary transition-colors"
                   >
-                    <span>{cat.icon}</span>
+                    <EmojiIcon emoji={cat.icon} label={cat.label[locale]} size="sm" tone="neutral" />
                     <span>{cat.label[locale]}</span>
                   </button>
                 ))}

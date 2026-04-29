@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import MisionVisionTabs from "@/components/sections/MisionVisionTabs";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
 import { SITE_CONFIG } from "@/lib/config";
 
@@ -115,7 +116,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
               >
                 <div className="relative mx-auto mb-4 w-20 h-20">
                   <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-4xl shadow-lg shadow-primary/20">
-                    {timelineIcons[index]}
+                    <EmojiIcon emoji={timelineIcons[index]} label={step.title} size="xl" tone="plain" />
                   </div>
                   {index < t.timeline.steps.length - 1 && (
                     <div className="hidden lg:block absolute top-1/2 -right-full w-full h-px bg-primary/20" />
@@ -144,7 +145,9 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
               <m.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.12 }} whileHover={{ y: -6 }} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
                 <div className={`h-1.5 w-full bg-gradient-to-r ${valuesMeta[index].color}`} />
                 <div className="p-8">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center text-2xl shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>{valuesMeta[index].icon}</div>
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                    <EmojiIcon emoji={valuesMeta[index].icon} label={value.title} size="md" tone="plain" />
+                  </div>
                   <h3 className="text-xl font-bold text-gray-800 mb-3">{value.title}</h3>
                   <p className="text-gray-500 leading-relaxed">{value.description}</p>
                 </div>
@@ -276,13 +279,13 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                         transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.18 }}
                         className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-2xl shadow-xl shadow-primary/25 z-10 relative"
                       >
-                        {step.icon}
+                        <EmojiIcon emoji={step.icon} label={cardText.title} size="md" tone="plain" />
                       </m.div>
                     </div>
 
                     {/* Contenido */}
                     <div className={`md:px-8 ${isEven ? "md:order-3" : "md:order-1 md:text-right"}`}>
-                      <span className="md:hidden text-3xl block mb-3">{step.icon}</span>
+                      <EmojiIcon emoji={step.icon} label={cardText.title} size="lg" tone="service" className="mb-3 md:hidden" />
                       <span className="inline-block text-[10px] font-bold tracking-widest text-primary/60 uppercase mb-2">
                         {`${t.gallery.stepLabel} ${index + 1} ${t.gallery.stepOf} ${processSteps.length}`}
                       </span>
