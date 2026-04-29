@@ -66,7 +66,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
 
           {/* Best seller badge */}
           {isBestSeller && !isSoldOut && (
-            <span className="absolute top-2.5 left-2.5 bg-[var(--color-accent,#FF9800)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow z-10 uppercase tracking-wide">
+            <span className="absolute top-2.5 left-2.5 bg-[var(--color-accent,#e58a22)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow z-10 uppercase tracking-wide">
               {dict.products.card.bestSeller}
             </span>
           )}

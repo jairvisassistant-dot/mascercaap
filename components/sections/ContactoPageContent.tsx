@@ -10,7 +10,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
     <div className="pt-20">
 
       {/* Hero */}
-      <section className="relative bg-gradient-to-br from-primary-dark via-primary to-[#66BB6A] py-16 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-dark via-primary to-[#5f9f63] py-16 overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-accent/10 blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 

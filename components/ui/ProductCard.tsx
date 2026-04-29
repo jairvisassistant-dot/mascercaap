@@ -114,7 +114,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
         )}
 
         {isBestSeller && !isSoldOut && (
-          <span className="absolute top-3 left-3 bg-[var(--color-accent,#FF9800)] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow z-10 uppercase tracking-wide">
+          <span className="absolute top-3 left-3 bg-[var(--color-accent,#e58a22)] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow z-10 uppercase tracking-wide">
             {dict.products.card.bestSeller}
           </span>
         )}

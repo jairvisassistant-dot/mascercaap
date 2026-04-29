@@ -2,12 +2,12 @@
 
 /* Variables de identidad visual del cliente */
 :root {
-  --primary: #4CAF50;
-  --primary-dark: #388E3C;
-  --primary-light: #A5D6A7;
-  --accent: #FF9800;
-  --accent-dark: #F57C00;
-  --accent-light: #FFCC80;
+  --primary: #3f8f46;
+  --primary-dark: #2f6f36;
+  --primary-light: #b8d4b5;
+  --accent: #e58a22;
+  --accent-dark: #c97016;
+  --accent-light: #f1c78f;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -85,7 +85,7 @@ body {
   left: 0;
   width: 0;
   height: 2px;
-  background: #FF9800;
+  background: var(--accent);
   transition: width 0.3s ease;
 }
 

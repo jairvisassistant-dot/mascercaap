@@ -33,7 +33,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
     <div className="pt-20">
 
       {/* Hero — el verde del campo colombiano, sin mezcla con naranja */}
-      <section className="relative py-20 bg-gradient-to-br from-primary-dark via-primary to-[#66BB6A] overflow-hidden">
+      <section className="relative py-20 bg-gradient-to-br from-primary-dark via-primary to-[#5f9f63] overflow-hidden">
         {/* Luz solar filtrada — evoca amanecer sobre el campo */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-accent/10 blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
