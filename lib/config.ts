@@ -12,6 +12,8 @@ export const SITE_CONFIG = {
   emailContact: "apalejandraplata@gmail.com",
   /** URL canónica del sitio */
   siteUrl: "https://mascercap.com",
+  /** Logo público usado para metadata y datos estructurados */
+  logoPath: "/imgs/Logo.png",
   /** Redes sociales — dejar vacío ("") para ocultar el ícono */
   socialInstagram: "https://instagram.com/mas_cerca_ap",
   socialFacebook: "https://web.facebook.com/profile.php?id=61568005678877&mibextid=wwXIfr&rdid=VAKmdaUWKREJLS9X&share_url=https%3A%2F%2Fweb.facebook.com%2Fshare%2F18KW5ddkJ9%2F%3Fmibextid%3DwwXIfr%26_rdc%3D1%26_rdr",
@@ -20,4 +22,6 @@ export const SITE_CONFIG = {
   address: "Calle 12a # 15-53, Chia",
   /** Localidad y ciudad */
   addressCity: "Cundinamarca, Colombia",
+  /** Link directo a la ubicación para acciones desde mobile */
+  mapUrl: "https://www.google.com/maps/search/?api=1&query=Calle%2012a%20%23%2015-53%2C%20Chia%2C%20Cundinamarca%2C%20Colombia",
 } as const;

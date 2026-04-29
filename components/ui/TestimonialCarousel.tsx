@@ -13,18 +13,19 @@ interface TestimonialCarouselProps {
 
 export default function TestimonialCarousel({ testimonials, dict, lang }: TestimonialCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
 
   // Pausa el autoplay cuando el carrusel no está en el viewport (PERF-04)
   useEffect(() => {
-    if (testimonials.length === 0 || !isVisible) return;
+    if (testimonials.length === 0 || !isVisible || isPaused) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 6000);
 
     return () => clearInterval(interval);
-  }, [testimonials.length, isVisible]);
+  }, [testimonials.length, isVisible, isPaused]);
 
   if (testimonials.length === 0) return null;
 
@@ -81,13 +82,27 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
         {testimonials.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => {
+              setCurrentIndex(index);
+              setIsPaused(true);
+            }}
             className={`h-2 rounded-full transition-all ${
               index === currentIndex ? "bg-accent w-6" : "bg-white/25 hover:bg-white/40 w-2"
             }`}
             aria-label={`${dict.home.testimonials.goTo} ${index + 1}`}
           />
         ))}
+      </div>
+
+      <div className="mt-5 flex justify-center">
+        <button
+          type="button"
+          onClick={() => setIsPaused((paused) => !paused)}
+          className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white/75 transition-colors hover:border-white/30 hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+          aria-pressed={isPaused}
+        >
+          {isPaused ? dict.home.testimonials.resume : dict.home.testimonials.pause}
+        </button>
       </div>
     </div>
   );

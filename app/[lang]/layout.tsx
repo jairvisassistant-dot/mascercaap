@@ -34,7 +34,7 @@ function getJsonLd(lang: Locale) {
     "@type": "Organization",
     name: "Mas Cerca Ap",
     url: SITE_CONFIG.siteUrl,
-    logo: `${SITE_CONFIG.siteUrl}/logo.png`,
+    logo: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`,
     description:
       lang === "es"
         ? "Productores de jugos y cítricos 100% naturales en Colombia."

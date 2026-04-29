@@ -78,6 +78,9 @@ export default function ContactForm() {
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
         {t.title}
       </h2>
+      <p className="-mt-3 mb-6 text-sm leading-relaxed text-gray-600">
+        {t.helper}
+      </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Nombre */}

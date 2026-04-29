@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
+import { SITE_CONFIG } from "@/lib/config";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +23,10 @@ export default function Navbar() {
     { href: `/${lang}/nosotros`, label: dict.nav.about },
     { href: `/${lang}/contacto`, label: dict.nav.contact },
   ];
+
+  const navbarCtaHref = SITE_CONFIG.whatsappNumber
+    ? `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`
+    : `/${lang}/contacto`;
 
   useEffect(() => {
     const handleResize = () => {
@@ -79,7 +84,8 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               <LanguageSwitcher dict={dict} lang={lang} />
               <Link
-                href={`/${lang}/contacto`}
+                href={navbarCtaHref}
+                {...(SITE_CONFIG.whatsappNumber ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
               >
                 {dict.nav.cta}
@@ -146,7 +152,8 @@ export default function Navbar() {
             <div className="flex items-center gap-3 pt-2">
               <LanguageSwitcher dict={dict} lang={lang} />
               <Link
-                href={`/${lang}/contacto`}
+                href={navbarCtaHref}
+                {...(SITE_CONFIG.whatsappNumber ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => setIsOpen(false)}
                 className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center"
               >
