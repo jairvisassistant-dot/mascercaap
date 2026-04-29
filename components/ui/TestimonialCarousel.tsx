@@ -39,10 +39,10 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
           animate={{ opacity: 1, x: 0 }}
           exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -50 }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
-          className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-8 md:p-10 text-center"
+          className="bg-white/[0.07] backdrop-blur-sm border border-white/13 rounded-2xl p-8 md:p-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
         >
           {/* Comilla decorativa */}
-          <div className="text-6xl text-white/20 font-serif leading-none mb-2 select-none">&ldquo;</div>
+          <div className="text-6xl text-white/16 font-serif leading-none mb-2 select-none">&ldquo;</div>
 
           {/* Stars */}
           <div className="flex justify-center gap-1 mb-5">
@@ -59,7 +59,7 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
           </div>
 
           {/* Quote */}
-          <p className="text-white/90 text-lg md:text-xl mb-6 italic leading-relaxed">
+          <p className="text-white/86 text-lg md:text-xl mb-6 italic leading-relaxed">
             {(lang !== "es" && testimonials[currentIndex].text_en) || testimonials[currentIndex].text}
           </p>
 
@@ -71,7 +71,7 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
             <p className="font-bold text-white text-base">
               {testimonials[currentIndex].name}
             </p>
-            <p className="text-white/50 text-sm mt-0.5">
+            <p className="text-white/56 text-sm mt-0.5">
               {(lang !== "es" && testimonials[currentIndex].role_en) || testimonials[currentIndex].role}
             </p>
           </div>
@@ -88,7 +88,7 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
               setIsPaused(true);
             }}
             className={`h-2 rounded-full transition-all ${
-              index === currentIndex ? "bg-accent w-6" : "bg-white/25 hover:bg-white/40 w-2"
+              index === currentIndex ? "bg-accent/90 w-6" : "bg-white/22 hover:bg-white/34 w-2"
             }`}
             aria-label={`${dict.home.testimonials.goTo} ${index + 1}`}
           />
@@ -99,7 +99,7 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
         <button
           type="button"
           onClick={() => setIsPaused((paused) => !paused)}
-          className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white/75 transition-colors hover:border-white/30 hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+          className="rounded-full border border-white/12 bg-white/[0.075] px-4 py-2 text-sm font-medium text-white/72 transition-colors hover:border-white/24 hover:bg-white/12 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#233746]"
           aria-pressed={isPaused}
         >
           {isPaused ? dict.home.testimonials.resume : dict.home.testimonials.pause}

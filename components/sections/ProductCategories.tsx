@@ -42,10 +42,10 @@ type CategoryStructure = {
 const CATEGORIES: CategoryStructure[] = [
   {
     key: "jugos",
-    image: "/imgs/SKU_LimonCereza-Portada.png",
+    image: "/imgs/SKU_Limon-Portada.png",
     href: "/productos?categoria=jugos",
-    gradient: "from-emerald-950 via-green-900 to-emerald-800",
-    glowColor: "bg-green-400/20",
+    gradient: "from-[#dcefc5] via-[#8fbd68] to-[#3f7f4a]",
+    glowColor: "bg-lime-100/24",
     emoji: "🍋",
     imageContainerClass: "w-56 h-80",
   },
@@ -53,16 +53,16 @@ const CATEGORIES: CategoryStructure[] = [
     key: "pulpas",
     image: "/imgs/pulpas-portada-test.png",
     href: "/productos?categoria=pulpas",
-    gradient: "from-orange-700 via-orange-600 to-amber-500",
-    glowColor: "bg-orange-300/25",
+    gradient: "from-[#f47f22] via-[#f59a24] to-[#f2bd54]",
+    glowColor: "bg-orange-100/24",
     emoji: "🍓",
   },
   {
     key: "lacteos",
     image: "/imgs/lacteos_Portada.png",
     href: "/productos?categoria=lacteos",
-    gradient: "from-teal-950 via-teal-900 to-emerald-800",
-    glowColor: "bg-teal-400/20",
+    gradient: "from-[#153f3a] via-[#276357] to-[#6f967f]",
+    glowColor: "bg-stone-100/20",
     emoji: "🥛",
   },
 ];
@@ -138,7 +138,8 @@ function CategoryCard({
   priority?: boolean;
 }) {
   const inner = (
-    <div className={`relative h-96 rounded-2xl overflow-hidden group bg-gradient-to-br ${category.gradient}`}>
+    <div className="rounded-[1.35rem] bg-[#f7f1e6] p-1.5 ring-1 ring-black/5">
+    <div className={`relative h-96 rounded-[1.1rem] overflow-hidden group bg-gradient-to-br ${category.gradient} shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]`}>
 
       {/* Glow decorativo detrás de la imagen */}
       <div className={`absolute -bottom-8 -right-8 w-64 h-64 rounded-full blur-3xl ${category.glowColor} pointer-events-none`} />
@@ -170,7 +171,7 @@ function CategoryCard({
       </div>
 
       {/* Degradado desde la izquierda para legibilidad del texto */}
-      <div className={`absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent pointer-events-none`} />
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/30 via-emerald-950/8 to-transparent pointer-events-none" />
 
       {/* Blur si comingSoon */}
       {category.comingSoon && (
@@ -222,6 +223,7 @@ function CategoryCard({
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 

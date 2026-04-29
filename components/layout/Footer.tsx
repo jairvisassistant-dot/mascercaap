@@ -49,7 +49,7 @@ export default function Footer({ dict, lang }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white py-12">
+    <footer className="bg-[#233746] text-white py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid md:grid-cols-5 gap-8 mb-8">
           {/* Logo and description */}
@@ -60,7 +60,7 @@ export default function Footer({ dict, lang }: FooterProps) {
               <span className="text-accent">AP</span>
               <BrandFruitMark />
             </Link>
-            <p className="text-gray-400 mb-4 max-w-md">
+            <p className="text-white/62 mb-4 max-w-md">
               {dict.footer.description}
             </p>
             <div className="flex gap-4">
@@ -69,8 +69,10 @@ export default function Footer({ dict, lang }: FooterProps) {
                   index === 1 ? "bg-accent hover:bg-accent/90" : "bg-primary hover:bg-primary/90"
                 }`;
                 const label = `${dict.footer.socialLabel} ${social.name}`;
-                return social.href ? (
-                  <a key={social.name} href={social.href} target="_blank" rel="noopener noreferrer" className={cls} aria-label={label}>
+                const internalSocialHref = social.name === "Facebook" ? `/${lang}/facebook` : social.name === "Instagram" ? `/${lang}/instagram` : undefined;
+                const href = internalSocialHref ?? social.href;
+                return href ? (
+                  <a key={social.name} href={href} target={internalSocialHref ? undefined : "_blank"} rel={internalSocialHref ? undefined : "noopener noreferrer"} className={cls} aria-label={label}>
                     {social.icon}
                   </a>
                 ) : (
@@ -90,7 +92,7 @@ export default function Footer({ dict, lang }: FooterProps) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-primary transition-colors"
+                    className="text-white/62 hover:text-primary transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -109,7 +111,7 @@ export default function Footer({ dict, lang }: FooterProps) {
                 <li key={category}>
                   <Link
                     href={`/${lang}/productos?categoria=${category}`}
-                    className="text-gray-400 hover:text-primary transition-colors"
+                    className="text-white/62 hover:text-primary transition-colors"
                   >
                     {dict.footer.productLines[category]}
                   </Link>
@@ -121,13 +123,13 @@ export default function Footer({ dict, lang }: FooterProps) {
           {/* Contact info */}
           <div>
             <h3 className="font-semibold text-sm mb-4 uppercase tracking-wider">{dict.footer.contact}</h3>
-            <ul className="space-y-2 text-gray-400">
+            <ul className="space-y-2 text-white/62">
               <li>
                 <a
                   href={SITE_CONFIG.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-sm"
+                  className="flex items-center gap-2 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#233746] rounded-sm"
                 >
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -139,7 +141,7 @@ export default function Footer({ dict, lang }: FooterProps) {
               <li>
                 <a
                   href={`mailto:${SITE_CONFIG.emailContact}`}
-                  className="flex items-center gap-2 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-sm"
+                  className="flex items-center gap-2 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#233746] rounded-sm"
                 >
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -150,7 +152,7 @@ export default function Footer({ dict, lang }: FooterProps) {
               <li>
                 <a
                   href={`tel:${SITE_CONFIG.phoneTel}`}
-                  className="flex items-center gap-2 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-sm"
+                  className="flex items-center gap-2 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#233746] rounded-sm"
                 >
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
@@ -164,16 +166,16 @@ export default function Footer({ dict, lang }: FooterProps) {
 
         {/* Legal links */}
         <div className="flex items-center justify-center gap-6 mb-6 text-sm">
-          <Link href={`/${lang}/politicas`} className="text-gray-500 hover:text-primary transition-colors">
+          <Link href={`/${lang}/politicas`} className="text-white/45 hover:text-primary transition-colors">
             {dict.helpHub.menu.privacy}
           </Link>
-          <span className="text-gray-700">·</span>
-          <Link href={`/${lang}/terminos`} className="text-gray-500 hover:text-primary transition-colors">
+          <span className="text-white/22">·</span>
+          <Link href={`/${lang}/terminos`} className="text-white/45 hover:text-primary transition-colors">
             {dict.helpHub.menu.terms}
           </Link>
         </div>
 
-        <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+        <div className="border-t border-white/10 pt-8 text-center text-white/58">
           <p>{dict.footer.copyright}</p>
           <p className="mt-2 text-sm">{dict.footer.madeWith}</p>
         </div>

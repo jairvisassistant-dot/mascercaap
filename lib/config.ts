@@ -18,7 +18,7 @@ export const SITE_CONFIG = {
   ogImagePath: "/imgs/Slide1.1.webp",
   /** Redes sociales — dejar vacío ("") para ocultar el ícono */
   socialInstagram: "https://instagram.com/mas_cerca_ap",
-  socialFacebook: "https://web.facebook.com/profile.php?id=61568005678877&mibextid=wwXIfr&rdid=VAKmdaUWKREJLS9X&share_url=https%3A%2F%2Fweb.facebook.com%2Fshare%2F18KW5ddkJ9%2F%3Fmibextid%3DwwXIfr%26_rdc%3D1%26_rdr",
+  socialFacebook: "https://www.facebook.com/p/M%C3%A1s-cerca-AP-61568005678877/",
   socialTikTok: "",
   /** Dirección física de la bodega */
   address: "Calle 12a # 15-53, Chia",

@@ -45,13 +45,13 @@
           "cta": "See juices"
         },
         {
-          "title": "Save 3 hours in the kitchen.\nWithout sacrificing flavor.",
+          "title": "Save\n3 hours in the kitchen.\nWithout sacrificing flavor.",
           "subtitle": "PRE-PROCESSED PULPS",
           "description": "Our pulps arrive ready. You just serve.",
           "cta": "See pulps"
         },
         {
-          "title": "We serve with love, honesty\nand faith in every delivery.",
+          "title": "We serve with love,\nhonesty and faith\nin every delivery.",
           "subtitle": "MAS CERCA AP — YOUR BUSINESS PARTNER",
           "description": "More than distributors, we are the bridge that brings the best Colombian products to your business.",
           "cta": "Learn our story"
@@ -89,9 +89,29 @@
       "viewProducts": "View products"
     },
     "featured": {
-      "sectionLabel": "Featured",
-      "title": "Featured Products",
-      "subtitle": "Discover our selection of the most popular juices, made with fresh fruit from the farm."
+      "sectionLabel": "High rotation",
+      "title": "What people are ordering most",
+      "subtitle": "These are the products moving most across homes, cafés, and restaurants. Try our quality and you will see why others keep choosing them. Order here.",
+      "productHooks": [
+        {
+          "badge": "#1 in orders",
+          "kicker": "Family favorite",
+          "text": "The staple customers repeat for the fridge, meals, and quick juices at home.",
+          "cta": "Order this product"
+        },
+        {
+          "badge": "Top for business",
+          "kicker": "High rotation",
+          "text": "Often requested by cafés and restaurants for its yield and consistent flavor.",
+          "cta": "Quote via WhatsApp"
+        },
+        {
+          "badge": "Most asked about",
+          "kicker": "Everyday use",
+          "text": "A fresh option for breakfast, snacks, and recurring orders.",
+          "cta": "Check availability"
+        }
+      ]
     },
     "whyChooseUs": {
       "sectionLabel": "Our promise",

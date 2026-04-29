@@ -45,13 +45,13 @@
           "cta": "Ver zumos"
         },
         {
-          "title": "Ahorra 3 horas en cocina.\nSin sacrificar sabor.",
+          "title": "Ahorra\n3 horas en cocina.\nSin sacrificar sabor.",
           "subtitle": "PULPAS PREPROCESADAS",
           "description": "Nuestras pulpas llegan listas. Solo sirves.",
           "cta": "Ver pulpas"
         },
         {
-          "title": "Servimos con amor, honestidad\ny fe en cada entrega.",
+          "title": "Servimos con amor,\nhonestidad y fe\nen cada entrega.",
           "subtitle": "MÁS CERCA AP — TU ALIADO COMERCIAL",
           "description": "Más que distribuidores, somos el puente que acerca los mejores productos colombianos a tu negocio.",
           "cta": "Conocer nuestra historia"
@@ -89,9 +89,29 @@
       "viewProducts": "Ver productos"
     },
     "featured": {
-      "sectionLabel": "Destacados",
-      "title": "Productos Destacados",
-      "subtitle": "Descubre nuestra selección de los jugos más populares, elaborados con frutas frescas del campo."
+      "sectionLabel": "Alta rotación",
+      "title": "Lo que más están pidiendo",
+      "subtitle": "Estos son los productos que más se han movido entre hogares, cafeterías y restaurantes. Prueba la calidad de nuestros productos y sabrás por qué los demás también lo están llevando. Pídelo aquí.",
+      "productHooks": [
+        {
+          "badge": "#1 en pedidos",
+          "kicker": "Favorito familiar",
+          "text": "El básico que más se repite para nevera, comidas y jugos rápidos en casa.",
+          "cta": "Pedir este producto"
+        },
+        {
+          "badge": "Top negocios",
+          "kicker": "Alta rotación",
+          "text": "Muy solicitado por cafeterías y restaurantes por su rendimiento y sabor constante.",
+          "cta": "Cotizar por WhatsApp"
+        },
+        {
+          "badge": "Muy consultado",
+          "kicker": "Consumo diario",
+          "text": "Una opción fresca que acompaña desayunos, meriendas y pedidos recurrentes.",
+          "cta": "Consultar disponibilidad"
+        }
+      ]
     },
     "whyChooseUs": {
       "sectionLabel": "Nuestra promesa",

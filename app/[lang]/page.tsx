@@ -76,29 +76,30 @@ export default async function HomePage({ params }: Props) {
 
       <DailyOffer dict={dict} />
 
-      <section className="py-24 bg-gray-900 relative overflow-hidden">
+      <section className="py-24 bg-[#233746] relative overflow-hidden">
         {/* Glow decorativo */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/7 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[460px] h-[220px] bg-[#7fb07a]/12 blur-[80px] rounded-full pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 relative">
           <div className="text-center mb-14">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="h-px w-10 bg-white/20 rounded-full" />
-              <span className="text-xs font-bold tracking-[0.22em] text-white/40 uppercase">
+              <span className="h-px w-10 bg-white/16 rounded-full" />
+              <span className="text-xs font-bold tracking-[0.22em] text-white/50 uppercase">
                 {dict.home.testimonials.label}
               </span>
-              <span className="h-px w-10 bg-white/20 rounded-full" />
+              <span className="h-px w-10 bg-white/16 rounded-full" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               {dict.home.testimonials.title}
             </h2>
-            <p className="text-white/50 max-w-2xl mx-auto">
+            <p className="text-white/62 max-w-2xl mx-auto">
               {dict.home.testimonials.subtitle}
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               {dict.home.testimonials.highlights.map((item) => (
                 <span
                   key={item}
-                  className="inline-flex items-center rounded-full border border-white/12 bg-white/6 px-4 py-2 text-[11px] font-semibold text-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
+                  className="inline-flex items-center rounded-full border border-white/12 bg-white/6 px-4 py-2 text-[11px] font-semibold text-white/76 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm"
                 >
                   {item}
                 </span>
@@ -110,9 +111,9 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-br from-primary via-primary to-primary-dark relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-[#3a7f45] via-[#438b4d] to-[#347640] relative overflow-hidden">
         {/* Textura de puntos */}
-        <div className="absolute inset-0 opacity-[0.07] pointer-events-none"
+        <div className="absolute inset-0 opacity-[0.055] pointer-events-none"
           style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }}
         />
         <div className="max-w-3xl mx-auto px-4 text-center relative">
