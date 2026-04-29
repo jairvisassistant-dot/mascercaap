@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useEffect, useRef } from "react";
-import { m, useAnimation } from "framer-motion";
+import { m, useAnimation, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 
 interface Props {
@@ -19,10 +19,17 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ href, labe
   const widthCtrl  = useAnimation();
   const textCtrl   = useAnimation();
   const aliveRef   = useRef(false);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
+
+    if (shouldReduceMotion) {
+      widthCtrl.set({ width: 240 });
+      textCtrl.set({ opacity: 1 });
+      return;
+    }
 
     const runLoop = async () => {
       widthCtrl.set({ width: 0 });
@@ -94,7 +101,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ href, labe
       aliveRef.current = false;
       observer.disconnect();
     };
-  }, [widthCtrl, textCtrl]);
+  }, [widthCtrl, textCtrl, shouldReduceMotion]);
 
   return (
     <div ref={sectionRef} className="flex justify-center">

@@ -91,6 +91,7 @@ export default function ContactForm() {
           <input
             id="nombre"
             type="text"
+            autoComplete="name"
             {...register("nombre")}
             className={`w-full px-4 py-3 rounded-lg border ${
               errors.nombre ? "border-red-500" : "border-gray-300"
@@ -110,6 +111,7 @@ export default function ContactForm() {
           <input
             id="empresa"
             type="text"
+            autoComplete="organization"
             {...register("empresa")}
             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             placeholder={t.placeholders.company}
@@ -125,6 +127,7 @@ export default function ContactForm() {
             <input
               id="email"
               type="email"
+              autoComplete="email"
               {...register("email")}
               className={`w-full px-4 py-3 rounded-lg border ${
                 errors.email ? "border-red-500" : "border-gray-300"
@@ -142,6 +145,7 @@ export default function ContactForm() {
             <input
               id="telefono"
               type="tel"
+              autoComplete="tel"
               {...register("telefono")}
               className={`w-full px-4 py-3 rounded-lg border ${
                 errors.telefono ? "border-red-500" : "border-gray-300"

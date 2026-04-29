@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { m, AnimatePresence, useInView } from "framer-motion";
+import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Testimonial } from "@/types";
 
@@ -16,16 +16,17 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
   const [isPaused, setIsPaused] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
+  const shouldReduceMotion = useReducedMotion();
 
   // Pausa el autoplay cuando el carrusel no está en el viewport (PERF-04)
   useEffect(() => {
-    if (testimonials.length === 0 || !isVisible || isPaused) return;
+    if (testimonials.length === 0 || !isVisible || isPaused || shouldReduceMotion) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 6000);
 
     return () => clearInterval(interval);
-  }, [testimonials.length, isVisible, isPaused]);
+  }, [testimonials.length, isVisible, isPaused, shouldReduceMotion]);
 
   if (testimonials.length === 0) return null;
 
@@ -34,10 +35,10 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
       <AnimatePresence mode="wait">
         <m.div
           key={currentIndex}
-          initial={{ opacity: 0, x: 50 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.5 }}
+          exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -50 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
           className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-8 md:p-10 text-center"
         >
           {/* Comilla decorativa */}

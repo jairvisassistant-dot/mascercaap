@@ -2,7 +2,7 @@
 
 import { useReducer, useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { m, AnimatePresence, useInView } from "framer-motion";
+import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
@@ -203,6 +203,7 @@ export default function HeroCarousel() {
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
+  const shouldReduceMotion = useReducedMotion();
 
   const slide = slides[currentSlide];
   const slideText = dict.home.hero.slides[currentSlide];
@@ -218,20 +219,20 @@ export default function HeroCarousel() {
   };
 
   useEffect(() => {
-    if (!isAutoPlaying || !isVisible) return;
+    if (!isAutoPlaying || !isVisible || shouldReduceMotion) return;
     const interval = setInterval(() => {
       dispatch({ type: "nextSlide" });
     }, slide.duration);
     return () => clearInterval(interval);
-  }, [isAutoPlaying, isVisible, currentSlide, slide.duration]);
+  }, [isAutoPlaying, isVisible, shouldReduceMotion, currentSlide, slide.duration]);
 
   useEffect(() => {
-    if (frameCount <= 1 || !isVisible) return;
+    if (frameCount <= 1 || !isVisible || shouldReduceMotion) return;
     const interval = setInterval(() => {
       dispatch({ type: "nextFrame", frameCount });
     }, frameDurationMs);
     return () => clearInterval(interval);
-  }, [currentSlide, frameCount, frameDurationMs, isVisible]);
+  }, [currentSlide, frameCount, frameDurationMs, isVisible, shouldReduceMotion]);
 
   useEffect(() => {
     return () => {
@@ -269,25 +270,25 @@ export default function HeroCarousel() {
       <AnimatePresence mode="wait">
         <m.div
           key={currentSlide}
-          initial={{ opacity: 0, x: 100 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -100 }}
-          transition={{ duration: 0.5 }}
+          exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -100 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
           className="absolute inset-0"
         >
           <AnimatePresence mode="sync">
             <m.div
               key={`${currentSlide}-${currentFrame}`}
-              initial={{ opacity: 0 }}
+              initial={shouldReduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: FRAME_CROSSFADE_S, ease: "easeInOut" }}
+              transition={{ duration: shouldReduceMotion ? 0 : FRAME_CROSSFADE_S, ease: "easeInOut" }}
               className="absolute inset-0"
             >
               <m.div
-                initial={frame.kenBurns.initial}
-                animate={frame.kenBurns.animate}
-                transition={{ duration: frameDurationMs / 1000, ease: "linear" }}
+                initial={shouldReduceMotion ? false : frame.kenBurns.initial}
+                animate={shouldReduceMotion ? { scale: 1, x: "0%" } : frame.kenBurns.animate}
+                transition={{ duration: shouldReduceMotion ? 0 : frameDurationMs / 1000, ease: "linear" }}
                 className="absolute inset-0"
               >
                 <Image
@@ -310,36 +311,36 @@ export default function HeroCarousel() {
               <div className="max-w-2xl text-left text-white">
 
               <m.p
-                initial={{ y: 20, opacity: 0 }}
+                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 0.2, duration: shouldReduceMotion ? 0 : 0.5 }}
                 className="mb-5 inline-flex max-w-full items-center rounded-none border-l-2 border-accent bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm md:text-xs"
               >
                 {slideText.subtitle}
               </m.p>
 
               <m.h1
-                initial={{ y: 20, opacity: 0 }}
+                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 0.3, duration: shouldReduceMotion ? 0 : 0.5 }}
                 className="mb-5 max-w-[13ch] whitespace-pre-line text-balance text-4xl font-bold leading-[0.96] tracking-[-0.045em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-5xl md:text-6xl lg:text-7xl"
               >
                 {slideText.title}
               </m.h1>
 
               <m.p
-                initial={{ y: 20, opacity: 0 }}
+                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 0.4, duration: shouldReduceMotion ? 0 : 0.5 }}
                 className="mb-8 max-w-[58ch] text-pretty text-sm leading-relaxed text-white/82 drop-shadow-[0_8px_22px_rgba(0,0,0,0.35)] sm:text-base md:text-lg"
               >
                 {slideText.description}
               </m.p>
 
               <m.div
-                initial={{ y: 20, opacity: 0 }}
+                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 0.5, duration: shouldReduceMotion ? 0 : 0.5 }}
                 className="flex flex-col items-start gap-4 sm:flex-row sm:items-center"
               >
                 <Link
@@ -364,9 +365,9 @@ export default function HeroCarousel() {
               </div>
 
               <m.div
-                initial={{ opacity: 0, y: 26 }}
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 26 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.62, duration: 0.55 }}
+                transition={{ delay: shouldReduceMotion ? 0 : 0.62, duration: shouldReduceMotion ? 0 : 0.55 }}
                 className="pointer-events-none mt-10 hidden self-end justify-self-end md:block"
               >
                 <div className="max-w-[310px] border border-white/16 bg-emerald-950/34 p-5 text-white shadow-[0_24px_80px_rgba(0,0,0,0.26),inset_0_1px_0_rgba(255,255,255,0.10)] backdrop-blur-md">

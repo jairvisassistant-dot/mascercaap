@@ -14,6 +14,8 @@ export const SITE_CONFIG = {
   siteUrl: "https://mascercap.com",
   /** Logo público usado para metadata y datos estructurados */
   logoPath: "/imgs/Logo.png",
+  /** Imagen social temporal hasta tener pieza OG final de marca */
+  ogImagePath: "/imgs/Slide1.1.webp",
   /** Redes sociales — dejar vacío ("") para ocultar el ícono */
   socialInstagram: "https://instagram.com/mas_cerca_ap",
   socialFacebook: "https://web.facebook.com/profile.php?id=61568005678877&mibextid=wwXIfr&rdid=VAKmdaUWKREJLS9X&share_url=https%3A%2F%2Fweb.facebook.com%2Fshare%2F18KW5ddkJ9%2F%3Fmibextid%3DwwXIfr%26_rdc%3D1%26_rdr",

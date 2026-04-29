@@ -18,7 +18,7 @@ const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
 };
 
 const CATEGORY_ORDER = ["todas", "jugos", "pulpas", "lacteos"] as const;
-const DEFAULT_CATEGORY = "todas";
+const DEFAULT_CATEGORY = "jugos";
 
 const PULPA_KEYS = new Set<ProductLineKey>([
   "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
@@ -227,11 +227,11 @@ export default function ProductosClient({ products, productLines, initialCategor
               className="overflow-hidden"
             >
               <div className={`border-t transition-colors duration-500 ${isSticky ? "border-white/30" : "border-gray-100"}`}>
-                <div className="max-w-7xl mx-auto px-4 py-2 flex items-start gap-4">
+                <div className="max-w-7xl mx-auto px-4 py-2 flex flex-col gap-3 md:flex-row md:items-start md:gap-4">
 
                   {/* Sub-líneas / sabores — ocupa el espacio disponible, wrappea en hasta 2 filas */}
                   {showSubFilter && (
-                    <div className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
+                    <div className="flex flex-1 items-center gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible md:pb-0 min-w-0">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
                         {dict.products.filters.flavor}
                       </span>
@@ -241,7 +241,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                           <button
                             key={line.key}
                             onClick={() => toggleSubLine(line.key)}
-                            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
+                            className={`flex shrink-0 items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
                               isActive
                                 ? "bg-primary/15 text-primary-dark border-primary/40 shadow-sm"
                                 : isSticky
@@ -259,7 +259,7 @@ export default function ProductosClient({ products, productLines, initialCategor
 
                   {/* Tamaños — anclado a la derecha, nunca baja */}
                   {availableSizes.length > 0 && activeSubLines.length !== 1 && activeCategory !== "todas" && (
-                    <div className="flex items-center gap-2 shrink-0 self-start">
+                    <div className="flex max-w-full items-center gap-2 overflow-x-auto pb-1 md:shrink-0 md:self-start md:overflow-visible md:pb-0">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-gray-400"}`}>
                         {dict.products.filters.size}
                       </span>
@@ -268,7 +268,7 @@ export default function ProductosClient({ products, productLines, initialCategor
                           <button
                             key={size}
                             onClick={() => setActiveSize(size)}
-                            className={`px-3 py-1 rounded-full text-xs font-semibold transition-all border ${
+                              className={`shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all border ${
                               activeSize === size
                                 ? "bg-accent text-white border-accent shadow-sm"
                                 : isSticky

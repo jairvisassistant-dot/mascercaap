@@ -131,6 +131,8 @@ export default function Navbar() {
           id="mobile-nav"
           initial={false}
           animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+          aria-hidden={!isOpen}
+          {...(!isOpen ? { inert: true } : {})}
           className="md:hidden overflow-hidden bg-white border-t"
           style={{ pointerEvents: isOpen ? "auto" : "none" }}
         >

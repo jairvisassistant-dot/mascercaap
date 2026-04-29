@@ -34,8 +34,6 @@ const cardVariants = {
 };
 
 export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
-  const [leadProduct, ...secondaryProducts] = products;
-
   return (
     <section className="py-24 bg-[#f8faf8]">
       <div className="max-w-7xl mx-auto px-4">
@@ -61,43 +59,23 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
           </p>
         </m.div>
 
-        {leadProduct ? (
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-start">
+        {products.length > 0 ? (
+          <div className="grid gap-8 justify-items-center sm:grid-cols-2 lg:grid-cols-3 lg:items-start">
+            {products.map((product, index) => (
             <m.div
+              key={product.id}
               variants={cardVariants}
               initial="hidden"
               whileInView="visible"
               whileHover="hover"
               whileTap="tap"
-              custom={0}
+              custom={index}
               viewport={{ once: true }}
-              className="flex justify-center lg:justify-start lg:pl-6"
+              className="flex justify-center"
             >
-              <div className="relative pt-8 lg:pt-14">
-                <span className="absolute left-0 top-0 h-px w-14 bg-primary/40 rounded-full" />
-                <ProductCard product={leadProduct} priority />
-              </div>
+              <ProductCard product={product} priority={index === 0} />
             </m.div>
-
-            {secondaryProducts.length > 0 && (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1 lg:pt-10">
-                {secondaryProducts.map((product, index) => (
-                  <m.div
-                    key={product.id}
-                    variants={cardVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    whileHover="hover"
-                    whileTap="tap"
-                    custom={index + 1}
-                    viewport={{ once: true }}
-                    className="flex justify-center lg:justify-start"
-                  >
-                    <ProductCard product={product} />
-                  </m.div>
-                ))}
-              </div>
-            )}
+            ))}
           </div>
         ) : null}
       </div>
