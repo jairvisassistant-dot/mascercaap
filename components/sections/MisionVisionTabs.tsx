@@ -13,9 +13,9 @@ const misionVisionConfig = {
         <circle cx="32" cy="32" r="5" fill="currentColor" />
       </svg>
     ),
-    bgFrom: "#4CAF50",
-    bgTo: "#2E7D32",
-    accentColor: "#A5D6A7",
+    bgFrom: "#3f8f46",
+    bgTo: "#2f6f36",
+    accentColor: "#b8d4b5",
   },
   vision: {
     icon: (
@@ -25,9 +25,9 @@ const misionVisionConfig = {
         <circle cx="32" cy="32" r="3" fill="currentColor" />
       </svg>
     ),
-    bgFrom: "#FF9800",
-    bgTo: "#E65100",
-    accentColor: "#FFCC80",
+    bgFrom: "#e58a22",
+    bgTo: "#c97016",
+    accentColor: "#f1c78f",
   },
 };
 

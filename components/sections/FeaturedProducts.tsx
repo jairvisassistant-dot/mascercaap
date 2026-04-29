@@ -34,6 +34,8 @@ const cardVariants = {
 };
 
 export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
+  const [leadProduct, ...secondaryProducts] = products;
+
   return (
     <section className="py-24 bg-[#f8faf8]">
       <div className="max-w-7xl mx-auto px-4">
@@ -59,22 +61,45 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
           </p>
         </m.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-          {products.map((product, index) => (
+        {leadProduct ? (
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-start">
             <m.div
-              key={product.id}
               variants={cardVariants}
               initial="hidden"
               whileInView="visible"
               whileHover="hover"
               whileTap="tap"
-              custom={index}
+              custom={0}
               viewport={{ once: true }}
+              className="flex justify-center lg:justify-start lg:pl-6"
             >
-              <ProductCard product={product} />
+              <div className="relative pt-8 lg:pt-14">
+                <span className="absolute left-0 top-0 h-px w-14 bg-primary/40 rounded-full" />
+                <ProductCard product={leadProduct} priority />
+              </div>
             </m.div>
-          ))}
-        </div>
+
+            {secondaryProducts.length > 0 && (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1 lg:pt-10">
+                {secondaryProducts.map((product, index) => (
+                  <m.div
+                    key={product.id}
+                    variants={cardVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    whileHover="hover"
+                    whileTap="tap"
+                    custom={index + 1}
+                    viewport={{ once: true }}
+                    className="flex justify-center lg:justify-start"
+                  >
+                    <ProductCard product={product} />
+                  </m.div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </section>
   );

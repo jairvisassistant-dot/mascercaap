@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/config";
 
-const baseUrl = "https://mascercap.com";
+const baseUrl = SITE_CONFIG.siteUrl;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Fecha fija intencional — evita NEXT-06: new Date() sin args genera checksums distintos en cada build.

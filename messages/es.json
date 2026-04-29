@@ -117,9 +117,9 @@
       ]
     },
     "dailyOffer": {
-      "sectionLabel": "Compromisos",
-      "title": "Nuestra promesa",
-      "subtitle": "Cada entrega lleva el compromiso de quienes trabajan con amor por lo natural.",
+      "sectionLabel": "Cómo trabajamos",
+      "title": "Estándares que cuidamos en cada entrega",
+      "subtitle": "Servicio cercano, producto fresco y una operación pensada para darte calidad constante.",
       "badges": [
         {
           "top": "ATENCIÓN",
@@ -143,13 +143,25 @@
       "label": "Clientes",
       "title": "Lo que dicen nuestros clientes",
       "subtitle": "Empresas y negocios que confían en Mas Cerca Ap para sus necesidades de jugos naturales.",
-      "goTo": "Ir a testimonio"
+      "goTo": "Ir a testimonio",
+      "pause": "Pausar testimonios",
+      "resume": "Reanudar testimonios",
+      "highlights": [
+        "Restaurantes y cafeterías",
+        "Aliados comerciales en Bogotá",
+        "Clientes que vuelven a pedir"
+      ]
     },
     "cta": {
       "badge": "Entregas en Bogotá",
       "title": "¿Listo para probar la frescura?",
-      "text": "Contáctanos por WhatsApp y haz tu pedido. Entregamos en toda Bogotá.",
-      "button": "Hacer pedido por WhatsApp"
+      "text": "Escríbenos por WhatsApp para pedidos de hogares, cafeterías y restaurantes. Entregamos en Bogotá y coordinamos cada pedido según zona y disponibilidad.",
+      "button": "Hacer pedido por WhatsApp",
+      "highlights": [
+        "Hogares, cafeterías y restaurantes",
+        "Entregas en Bogotá",
+        "Coordinación por zona y disponibilidad"
+      ]
     }
   },
   "products": {
@@ -400,6 +412,7 @@
     },
     "form": {
       "title": "Envíanos un mensaje",
+      "helper": "Usa este formulario para pedidos, distribución o consultas comerciales. Te respondemos por correo o WhatsApp según tu solicitud.",
       "labels": {
         "name": "Nombre completo *",
         "company": "Empresa / Negocio (opcional)",

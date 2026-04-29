@@ -1,6 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
 
 const emojis = ["🤝", "🌿", "🏆", "🚚"];
@@ -76,15 +77,11 @@ function SealBadge({
 
         <circle cx="100" cy="100" r="43" fill="rgba(146, 64, 14, 0.18)" />
 
-        <text
-          x="100"
-          y="100"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontSize="40"
-        >
-          {emoji}
-        </text>
+        <foreignObject x="76" y="76" width="48" height="48">
+          <div className="flex h-full w-full items-center justify-center">
+            <EmojiIcon emoji={emoji} label={`${top} ${bottom}`} size="xl" tone="plain" />
+          </div>
+        </foreignObject>
 
         <text
           fill="white"

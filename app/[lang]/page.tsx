@@ -11,7 +11,6 @@ import { testimonials as staticTestimonials } from "@/data/testimonials";
 import { featuredProducts as staticFeaturedProducts } from "@/data/products";
 import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
 import { safeFetch } from "@/lib/sanity/safeFetch";
-import Link from "next/link";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import { SITE_CONFIG } from "@/lib/config";
 
@@ -32,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: dict.metadata.home.description,
       type: "website",
       locale: lang === "es" ? "es_CO" : "en_US",
-      images: [{ url: `${SITE_CONFIG.siteUrl}/imgs/Logo.png`, width: 97, height: 60, alt: "Mas Cerca AP" }],
+      images: [{ url: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`, width: 346, height: 214, alt: "Mas Cerca AP" }],
     },
     twitter: {
       card: "summary_large_image",
@@ -95,6 +94,16 @@ export default async function HomePage({ params }: Props) {
             <p className="text-white/50 max-w-2xl mx-auto">
               {dict.home.testimonials.subtitle}
             </p>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              {dict.home.testimonials.highlights.map((item) => (
+                <span
+                  key={item}
+                  className="inline-flex items-center rounded-full border border-white/12 bg-white/6 px-4 py-2 text-[11px] font-semibold text-white/78 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
           <TestimonialCarousel testimonials={testimonials} dict={dict} lang={lang} />
@@ -117,6 +126,16 @@ export default async function HomePage({ params }: Props) {
           <p className="text-white/80 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
             {dict.home.cta.text}
           </p>
+          <div className="mb-10 flex flex-wrap justify-center gap-3">
+            {dict.home.cta.highlights.map((item) => (
+              <span
+                key={item}
+                className="inline-flex items-center rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold text-white/88 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
           <AnimatedWhatsAppButton href={whatsappCta} label={dict.home.cta.button} />
         </div>
       </section>

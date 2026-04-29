@@ -7,6 +7,7 @@ import { m, AnimatePresence } from "framer-motion";
 import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 
 export default function ContactForm() {
   const { dict } = useDictionary();
@@ -77,6 +78,9 @@ export default function ContactForm() {
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
         {t.title}
       </h2>
+      <p className="-mt-3 mb-6 text-sm leading-relaxed text-gray-600">
+        {t.helper}
+      </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Nombre */}
@@ -210,7 +214,7 @@ export default function ContactForm() {
             className="mt-5 rounded-2xl overflow-hidden border border-green-200"
           >
             <div className="bg-green-50 px-5 py-4 flex items-start gap-3">
-              <span className="text-2xl">✅</span>
+              <EmojiIcon emoji="✅" label={t.success.title} size="md" tone="success" decorative={false} />
               <div>
                 <p className="font-semibold text-green-800">{t.success.title}</p>
                 <p className="text-sm text-green-700 mt-0.5">
@@ -245,7 +249,7 @@ export default function ContactForm() {
             exit={{ opacity: 0, y: -16 }}
             className="mt-5 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3"
           >
-            <span className="text-xl">❌</span>
+            <EmojiIcon emoji="❌" label={t.error} size="sm" tone="danger" decorative={false} />
             <p className="text-sm">{t.error}</p>
           </m.div>
         )}

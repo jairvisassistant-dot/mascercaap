@@ -32,45 +32,48 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <m.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="h-px w-10 bg-primary/40 rounded-full" />
-            <span className="text-xs font-bold tracking-[0.22em] text-primary uppercase">
-              {dict.home.whyChooseUs.sectionLabel}
-            </span>
-            <span className="h-px w-10 bg-primary/40 rounded-full" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {dict.home.whyChooseUs.title}
-          </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
-            {dict.home.whyChooseUs.subtitle}
-          </p>
-        </m.div>
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+          <m.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-xl"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <span className="h-px w-10 bg-primary/40 rounded-full" />
+              <span className="text-xs font-bold tracking-[0.22em] text-primary uppercase">
+                {dict.home.whyChooseUs.sectionLabel}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance">
+              {dict.home.whyChooseUs.title}
+            </h2>
+            <p className="text-gray-500 max-w-[58ch] leading-relaxed">
+              {dict.home.whyChooseUs.subtitle}
+            </p>
+          </m.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pillars.map((pillar, index) => (
-            <m.div
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group p-8 rounded-2xl border border-gray-100 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/8 transition-all duration-300 bg-white"
-            >
-              <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${accentColors[index]} text-white mb-5 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                {icons[index]}
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{pillar.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{pillar.description}</p>
-            </m.div>
-          ))}
+          <div className="border-y border-gray-200/80 divide-y divide-gray-200/80 bg-white/60">
+            {pillars.map((pillar, index) => (
+              <m.div
+                key={index}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="group grid gap-5 py-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start"
+              >
+                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${accentColors[index]} text-white shadow-sm transition-transform duration-300 group-hover:scale-105`}>
+                  {icons[index]}
+                </div>
+                <div className="max-w-[56ch]">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{pillar.title}</h3>
+                  <p className="text-sm leading-relaxed text-gray-500">{pillar.description}</p>
+                </div>
+              </m.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

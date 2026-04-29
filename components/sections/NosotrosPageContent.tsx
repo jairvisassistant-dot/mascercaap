@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { m, useInView } from "framer-motion";
+import { m } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import MisionVisionTabs from "@/components/sections/MisionVisionTabs";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
 import { SITE_CONFIG } from "@/lib/config";
 
@@ -26,100 +26,6 @@ const valuesMeta = [
   { icon: "🌱", color: "from-accent-light to-accent-dark" },
 ];
 
-const flipCardsMeta = [
-  { src: "/imgs/Naranja-Seleccion.webp", alt: "Selección de naranjas al amanecer", icon: "🌅" },
-  { src: "/imgs/Naranja-Compra.webp", alt: "Compra directa al campesino colombiano", icon: "🤝" },
-  { src: "/imgs/Naranja-Tiene-Juez.webp", alt: "Control de calidad e inspección de fruta", icon: "🔍" },
-  { src: "/imgs/Naranja-Frio.webp", alt: "Proceso artesanal de exprimido en frío", icon: "🧃" },
-  { src: "/imgs/Naranja-Frescuras.webp", alt: "Embotellado fresco de jugo de naranja", icon: "✨" },
-  { src: "/imgs/Naranja-Detras-Cada-Botella.webp", alt: "Fundadoras de Más Cerca AP trabajando", icon: "💚" },
-];
-
-function FlipCard({ card, cardText, pressMore, pressBack, index }: {
-  card: typeof flipCardsMeta[0];
-  cardText: { title: string; body: string };
-  pressMore: string;
-  pressBack: string;
-  index: number;
-}) {
-  const [flipped, setFlipped] = useState(false);
-  const [hinted, setHinted] = useState(false);
-  const ref = useRef<HTMLButtonElement>(null);
-  const returnRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isInView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    if (!isInView || hinted) return;
-    const peekDelay = setTimeout(() => {
-      setFlipped(true);
-      returnRef.current = setTimeout(() => {
-        setFlipped(false);
-        setHinted(true);
-      }, 1100);
-    }, 800 + index * 280);
-    return () => {
-      clearTimeout(peekDelay);
-      if (returnRef.current) clearTimeout(returnRef.current);
-    };
-  }, [isInView, hinted, index]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setFlipped((f) => !f);
-    }
-  };
-
-  return (
-    <m.button
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.08 }}
-      className="relative h-48 md:h-64 w-full [perspective:1000px] cursor-pointer group text-left"
-      onClick={() => setFlipped((f) => !f)}
-      onKeyDown={handleKeyDown}
-      aria-label={cardText.title}
-      aria-pressed={flipped}
-    >
-      <div
-        className={`relative w-full h-full [transform-style:preserve-3d] transition-transform duration-700 ${
-          flipped ? "[transform:rotateY(180deg)]" : ""
-        }`}
-      >
-        {/* FRONT */}
-        <div className="absolute inset-0 [backface-visibility:hidden] rounded-xl overflow-hidden shadow-lg">
-          <Image src={card.src} alt={cardText.title} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-            <p className="text-white font-bold text-sm md:text-base leading-tight drop-shadow-md">{cardText.title}</p>
-            <p className="text-white/70 text-[10px] md:text-xs mt-0.5 flex items-center gap-1">
-              <svg className="w-3 h-3 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              {pressMore}
-            </p>
-          </div>
-        </div>
-
-        {/* BACK */}
-        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-primary to-primary-dark flex flex-col items-center justify-center p-5 text-center gap-3">
-          <span className="text-4xl">{card.icon}</span>
-          <h3 className="text-white font-bold text-base md:text-lg leading-tight">{cardText.title}</h3>
-          <p className="text-white/85 text-xs md:text-sm leading-relaxed">{cardText.body}</p>
-          <span className="text-white/50 text-[10px] mt-1 flex items-center gap-1">
-            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            {pressBack}
-          </span>
-        </div>
-      </div>
-    </m.button>
-  );
-}
-
 export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; lang: string }) {
   const t = dict.about;
 
@@ -127,7 +33,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
     <div className="pt-20">
 
       {/* Hero — el verde del campo colombiano, sin mezcla con naranja */}
-      <section className="relative py-20 bg-gradient-to-br from-primary-dark via-primary to-[#66BB6A] overflow-hidden">
+      <section className="relative py-20 bg-gradient-to-br from-primary-dark via-primary to-[#5f9f63] overflow-hidden">
         {/* Luz solar filtrada — evoca amanecer sobre el campo */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-accent/10 blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
@@ -210,7 +116,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
               >
                 <div className="relative mx-auto mb-4 w-20 h-20">
                   <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-4xl shadow-lg shadow-primary/20">
-                    {timelineIcons[index]}
+                    <EmojiIcon emoji={timelineIcons[index]} label={step.title} size="xl" tone="plain" />
                   </div>
                   {index < t.timeline.steps.length - 1 && (
                     <div className="hidden lg:block absolute top-1/2 -right-full w-full h-px bg-primary/20" />
@@ -239,7 +145,9 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
               <m.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.12 }} whileHover={{ y: -6 }} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
                 <div className={`h-1.5 w-full bg-gradient-to-r ${valuesMeta[index].color}`} />
                 <div className="p-8">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center text-2xl shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>{valuesMeta[index].icon}</div>
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                    <EmojiIcon emoji={valuesMeta[index].icon} label={value.title} size="md" tone="plain" />
+                  </div>
                   <h3 className="text-xl font-bold text-gray-800 mb-3">{value.title}</h3>
                   <p className="text-gray-500 leading-relaxed">{value.description}</p>
                 </div>
@@ -371,13 +279,13 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                         transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.18 }}
                         className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-2xl shadow-xl shadow-primary/25 z-10 relative"
                       >
-                        {step.icon}
+                        <EmojiIcon emoji={step.icon} label={cardText.title} size="md" tone="plain" />
                       </m.div>
                     </div>
 
                     {/* Contenido */}
                     <div className={`md:px-8 ${isEven ? "md:order-3" : "md:order-1 md:text-right"}`}>
-                      <span className="md:hidden text-3xl block mb-3">{step.icon}</span>
+                      <EmojiIcon emoji={step.icon} label={cardText.title} size="lg" tone="service" className="mb-3 md:hidden" />
                       <span className="inline-block text-[10px] font-bold tracking-widest text-primary/60 uppercase mb-2">
                         {`${t.gallery.stepLabel} ${index + 1} ${t.gallery.stepOf} ${processSteps.length}`}
                       </span>

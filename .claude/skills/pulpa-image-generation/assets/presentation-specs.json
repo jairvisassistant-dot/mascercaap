@@ -1,0 +1,145 @@
+{
+  "global": {
+    "outputCanvas": {
+      "width": 1000,
+      "height": 1000,
+      "background": "transparent",
+      "masterFormat": "png-rgba",
+      "webExport": ["webp", "avif"]
+    },
+    "visualStyle": {
+      "rendering": "photorealistic premium product catalog image",
+      "lighting": "soft commercial studio lighting with controlled highlights",
+      "camera": "mostly front-facing packshot with an extremely subtle 1 degree rotation toward the viewer's left; the package's right side must be slightly more visible to create depth and avoid a perfectly frontal view while keeping the label fully readable; this angle must remain identical for all flavors within the same presentation",
+      "material": "clear flexible plastic pouch filled with real frozen fruit pulp",
+      "packageType": "vertical flat pillow-style frozen pulp sachet family for all presentations, not a stand-up zipper pouch, jar, bottle, carton, horizontal pillow pack, or retail doypack",
+      "label": "integrated into pouch perspective and material, never floating or pasted",
+      "fruitRole": "supporting garnish, clean, realistic, not dominating the pouch"
+    },
+    "shapeDiscipline": {
+      "rule": "Pouches must look like real flexible frozen pulp sachets, not exaggerated swollen pillows or oversized inflated cushions.",
+      "frontSurface": "softly full with mild natural pressure, flatter center plane for label readability",
+      "cornerBehavior": "slightly rounded heat-sealed corners, not bulky block corners",
+      "depth": "minimal depth only; the package is rotated about 1 degree toward the viewer's left so the right side edge is slightly more visible; not dramatic perspective and not a strong 3/4 turn"
+    },
+    "labelTextPolicy": {
+      "allowedText": "Only the phrases Pulpa de Fruta Natural and the flavor name may appear on the generated label.",
+      "weightText": "Do not generate weight text such as 120g, 300g, 1000g, grams, net weight, or any numeric size on the label; weight is handled outside the image or in a later controlled design step if required.",
+      "reason": "Image models frequently hallucinate or swap weights across presentations, which damages catalog trust and consistency."
+    },
+    "canonicalReferencePolicy": {
+      "rule": "Use one approved canonical reference image per presentation as a structural reference before generating flavor variants.",
+      "allowedUse": "Reference image may guide pouch silhouette, vertical orientation, camera angle, seal placement, label position, label scale, fruit footprint, canvas occupancy, and optical centering only.",
+      "forbiddenUse": "Do not copy reference pixels, fruit, pulp color, texture, label text, lighting artifacts, background, shadows, or defects.",
+      "crossFlavorInvariant": "For the same presentation, pouch geometry must remain identical across flavors. Only pulp color, fruit garnish type, and flavor text may change."
+    },
+    "proportionDiscipline": {
+      "rule": "Presentation proportions must be enforced with measurable bounding boxes on a normalized 1000x1000 canvas, not with vague words like small, medium, or large.",
+      "criticalLimitation": "Text prompts alone cannot guarantee exact relative scale when 120g, 300g, and 1000g are generated independently. Use canonical references, a proportion lineup, and post-generation measurement/audit.",
+      "lineupPolicy": "Before batch generation, create or approve a single three-pack proportion lineup showing 120g, 300g, and 1000g together. Use that lineup only to calibrate relative scale; final assets are still generated one presentation at a time.",
+      "auditPolicy": "If the output bounding box falls outside the target pouch or full-group pixel ranges, reject/regenerate instead of normalizing. Scaling cannot fix wrong presentation architecture."
+    },
+    "opticalCenter": {
+      "xRange": [0.48, 0.52],
+      "rule": "The full visible product group must feel balanced, not necessarily mathematically centered."
+    },
+      "forbiddenOperations": [
+        "recoloring another fruit package to simulate a new flavor",
+        "using source pixels from a different fruit as final material",
+        "accepting a flat procedural/vector-looking pouch as final output",
+        "normalizing before structural approval",
+        "accepting stand-up zipper pouches or doypacks when the pattern requires flat frozen pulp sachets"
+      ]
+  },
+  "presentations": {
+    "120g": {
+      "patternStatus": "must-be-approved-before-batch-generation",
+      "pouchOrientation": "vertical",
+      "pouchCharacter": "slim individual vertical pouch, noticeably narrower than the 300g and 1000g presentations, full but not inflated, smallest member of the vertical presentation family",
+      "composition": "narrow vertical flat frozen pulp sachet centered with compact fruit clusters at the lower base; no gusseted bottom, no resealable zipper top, no horizontal pouch",
+      "cameraAngle": "extremely subtle 1 degree turn toward the viewer's left; the right side edge of the pouch must be slightly more visible to create depth; label still readable; angle must match the approved 120g reference exactly",
+      "targetGroupFillMax": [0.60, 0.64],
+      "safeMarginsPercent": [14, 18],
+      "expectedGroupAspect": [0.42, 0.52],
+      "normalizedPixelBoundingBox": {
+        "canvas": "1000x1000",
+        "pouchOnlyWidthPx": [260, 310],
+        "pouchOnlyHeightPx": [540, 600],
+        "fullGroupWidthPx": [380, 450],
+        "fullGroupHeightPx": [600, 650],
+        "rule": "120g must read as a compact individual sachet. It must be clearly smaller and narrower than 300g; never scale it up to fill the canvas."
+      },
+      "label": {
+        "orientation": "vertical label on vertical pouch",
+        "position": "center front of pouch",
+        "scaleRelativeToPouchWidth": [0.44, 0.50],
+        "mustBeLegible": true
+      },
+      "seals": {
+        "topSeal": "clean thin translucent heat-sealed edge, lightly visible only, not ribbed, not striped, not cloudy, not dirty, not a zipper, not a dominant white cap or hard rib",
+        "sideSeals": "present but soft, clean, translucent, and subordinate; no thick cloudy plastic borders"
+      },
+      "fruitPlacement": "compact fruit garnish limited to the lower 12 to 15 percent of the canvas, lower left and lower right, balancing the pouch without covering the label or increasing the perceived package width"
+    },
+    "300g": {
+      "patternStatus": "must-be-approved-before-batch-generation",
+      "pouchOrientation": "vertical",
+      "pouchCharacter": "medium vertical pouch, visibly fuller and wider than 120g but still part of the same vertical family",
+      "composition": "vertical flat frozen pulp sachet with fruit at lower sides; no stand-up base, no zipper closure, no horizontal pillow pack",
+      "cameraAngle": "extremely subtle 1 degree turn toward the viewer's left; the right side edge of the pouch must be slightly more visible to create depth; not perfectly flat frontal; angle must match the approved 300g reference exactly",
+      "targetGroupFillMax": [0.78, 0.82],
+      "safeMarginsPercent": [5, 7],
+      "expectedGroupAspect": [0.72, 0.88],
+      "normalizedPixelBoundingBox": {
+        "canvas": "1000x1000",
+        "pouchOnlyWidthPx": [390, 450],
+        "pouchOnlyHeightPx": [660, 730],
+        "fullGroupWidthPx": [560, 640],
+        "fullGroupHeightPx": [730, 800],
+        "rule": "300g must be visibly wider and fuller than 120g, but not as wide or institutional as 1000g."
+      },
+      "label": {
+        "orientation": "vertical label on vertical pouch",
+        "position": "center front of pouch",
+        "scaleRelativeToPouchWidth": [0.42, 0.48],
+        "mustBeLegible": true
+      },
+      "seals": {
+        "topSeal": "subtle heat-sealed edge, not a zipper, not a dominant white cap or hard rib",
+        "sideSeals": "visible, softened, physical, not dominant or corrugated-looking",
+        "wrinkles": "controlled realism, no empty-bag sagging"
+      },
+      "fruitPlacement": "supporting fruit groups limited to the lower 18 to 22 percent of the canvas; total fruit height should not overpower pouch"
+    },
+    "1000g": {
+      "patternStatus": "must-be-approved-before-batch-generation",
+      "pouchOrientation": "vertical-wide",
+      "pouchCharacter": "large institutional vertical pouch, wider and more robust than 300g, premium, full, stable, but not oversized on canvas",
+      "composition": "wide vertical flat frozen pulp sachet with controlled fruit garnish; no stand-up base, no zipper closure, no horizontal pillow pack",
+      "cameraAngle": "extremely subtle 1 degree turn toward the viewer's left; the right side edge of the pouch must be slightly more visible to create depth while maintaining institutional label readability; angle must match the approved 1000g reference exactly",
+      "targetGroupFillMax": [0.82, 0.86],
+      "safeMarginsPercent": [4, 6],
+      "expectedGroupAspect": [0.82, 0.98],
+      "normalizedPixelBoundingBox": {
+        "canvas": "1000x1000",
+        "pouchOnlyWidthPx": [510, 590],
+        "pouchOnlyHeightPx": [740, 820],
+        "fullGroupWidthPx": [680, 780],
+        "fullGroupHeightPx": [820, 880],
+        "rule": "1000g must be the largest and widest vertical pack in the family, clearly larger than 300g and never smaller than the 300g output."
+      },
+      "label": {
+        "orientation": "vertical label on vertical pouch",
+        "position": "center front of pouch",
+        "scaleRelativeToPouchWidth": [0.40, 0.46],
+        "mustBeLegible": true
+      },
+      "seals": {
+        "topSeal": "subtle heat-sealed edge, not a zipper, not a dominant white cap or hard rib",
+        "sideSeals": "visible but more refined than 300g",
+        "wrinkles": "less wrinkled than 300g; institutional and clean"
+      },
+      "fruitPlacement": "minimal, premium, lower corners, limited to the lower 16 to 20 percent of the canvas; pouch remains dominant"
+    }
+  }
+}

@@ -71,7 +71,7 @@ function buildEmailHtml(data: ContactFormData): string {
 
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(135deg,#4CAF50,#2E7D32);padding:32px 40px;text-align:center;">
+            <td style="background:linear-gradient(135deg,#3f8f46,#2f6f36);padding:32px 40px;text-align:center;">
               <p style="margin:0;font-size:28px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">
                 🍋 MÁS CERCA AP
               </p>
@@ -84,7 +84,7 @@ function buildEmailHtml(data: ContactFormData): string {
           <!-- Badge tipo -->
           <tr>
             <td style="padding:24px 40px 0;text-align:center;">
-              <span style="display:inline-block;background:#FFF3E0;color:#E65100;font-size:13px;font-weight:600;padding:6px 16px;border-radius:20px;border:1px solid #FFCC80;">
+              <span style="display:inline-block;background:#fdf2e2;color:#c97016;font-size:13px;font-weight:600;padding:6px 16px;border-radius:20px;border:1px solid #f1c78f;">
                 ${tipo}
               </span>
             </td>
@@ -114,7 +114,7 @@ function buildEmailHtml(data: ContactFormData): string {
                   <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
                     <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Email</p>
                     <p style="margin:4px 0 0;font-size:16px;color:#111827;">
-                      <a href="mailto:${email}" style="color:#4CAF50;text-decoration:none;">${email}</a>
+                      <a href="mailto:${email}" style="color:#3f8f46;text-decoration:none;">${email}</a>
                     </p>
                   </td>
                 </tr>
@@ -123,7 +123,7 @@ function buildEmailHtml(data: ContactFormData): string {
                   <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
                     <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Teléfono</p>
                     <p style="margin:4px 0 0;font-size:16px;color:#111827;">
-                      <a href="tel:${telefono}" style="color:#4CAF50;text-decoration:none;">${telefono}</a>
+                      <a href="tel:${telefono}" style="color:#3f8f46;text-decoration:none;">${telefono}</a>
                     </p>
                   </td>
                 </tr>
@@ -131,7 +131,7 @@ function buildEmailHtml(data: ContactFormData): string {
                 <tr>
                   <td style="padding:10px 0;">
                     <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Mensaje</p>
-                    <p style="margin:8px 0 0;font-size:15px;color:#374151;line-height:1.6;background:#f9fafb;padding:16px;border-radius:8px;border-left:3px solid #4CAF50;">
+                    <p style="margin:8px 0 0;font-size:15px;color:#374151;line-height:1.6;background:#f9fafb;padding:16px;border-radius:8px;border-left:3px solid #3f8f46;">
                       ${mensaje}
                     </p>
                   </td>
@@ -146,7 +146,7 @@ function buildEmailHtml(data: ContactFormData): string {
             <td style="background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #f0f0f0;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
                 Este mensaje fue enviado desde el formulario de contacto de
-                <strong style="color:#4CAF50;">mascercap.com</strong>
+                <strong style="color:#3f8f46;">mascercap.com</strong>
               </p>
             </td>
           </tr>

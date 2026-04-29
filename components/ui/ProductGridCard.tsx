@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Product, ProductLineConfig } from "@/types";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
@@ -15,7 +16,7 @@ interface ProductGridCardProps {
 }
 
 export default function ProductGridCard({ product, line, priority = false }: ProductGridCardProps) {
-  const { dict, lang } = useDictionary();
+  const { dict } = useDictionary();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const isComingSoon = product.presentation === "Próximamente";
   const isSoldOut = product.isSoldOut === true;
@@ -51,7 +52,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${line.gradient} flex flex-col items-center justify-center gap-2`}>
-              <span className="text-4xl">🔜</span>
+              <EmojiIcon emoji="🔜" label={dict.products.card.comingSoon} size="lg" tone="fruit" decorative={false} />
               <span className="text-white text-xs font-semibold">{dict.products.card.comingSoon}</span>
             </div>
           )}
@@ -65,7 +66,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
 
           {/* Best seller badge */}
           {isBestSeller && !isSoldOut && (
-            <span className="absolute top-2.5 left-2.5 bg-[var(--color-accent,#FF9800)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow z-10 uppercase tracking-wide">
+            <span className="absolute top-2.5 left-2.5 bg-[var(--color-accent,#e58a22)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow z-10 uppercase tracking-wide">
               {dict.products.card.bestSeller}
             </span>
           )}

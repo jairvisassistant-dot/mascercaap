@@ -34,7 +34,7 @@ function getJsonLd(lang: Locale) {
     "@type": "Organization",
     name: "Mas Cerca Ap",
     url: SITE_CONFIG.siteUrl,
-    logo: `${SITE_CONFIG.siteUrl}/logo.png`,
+    logo: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`,
     description:
       lang === "es"
         ? "Productores de jugos y cítricos 100% naturales en Colombia."
@@ -78,10 +78,16 @@ export default async function LangLayout({
         />
         <MotionProvider>
           <DictionaryProvider dict={dict} lang={lang}>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              {lang === "es" ? "Saltar al contenido" : "Skip to content"}
+            </a>
             <ScrollProgress />
             <div className="min-h-screen flex flex-col overflow-x-clip">
               <Navbar />
-              <main className="flex-1">{children}</main>
+              <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
               <Footer dict={dict} lang={lang} />
               <HelpHub />
             </div>

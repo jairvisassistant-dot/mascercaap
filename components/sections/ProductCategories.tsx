@@ -3,6 +3,7 @@
 import { m } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
 
 const cardVariants = {
@@ -187,7 +188,7 @@ function CategoryCard({
       <div className="absolute inset-0 flex flex-col justify-between p-6 z-10">
         {/* Emoji + label tag arriba */}
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{category.emoji}</span>
+          <EmojiIcon emoji={category.emoji} label={text.label} size="sm" tone="fruit" />
           <span className="text-white/70 text-xs font-bold tracking-widest uppercase">
             {text.label}
           </span>

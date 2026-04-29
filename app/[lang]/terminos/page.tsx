@@ -80,7 +80,7 @@ export default async function TerminosPage({ params }: { params: Promise<{ lang:
       </div>
 
       {/* Contenido */}
-      <main className="max-w-3xl mx-auto px-4 py-12">
+      <section className="max-w-3xl mx-auto px-4 py-12">
         <div className="space-y-10">
           {termsAndConditions.sections.map((section, i) => (
             <div key={i} className="border-l-2 border-primary/30 pl-6">
@@ -119,7 +119,7 @@ export default async function TerminosPage({ params }: { params: Promise<{ lang:
             {dict.legal.ctaButton}
           </Link>
         </div>
-      </main>
+      </section>
     </div>
   );
 }

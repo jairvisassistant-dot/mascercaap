@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: dict.metadata.products.description,
       type: "website",
       locale: lang === "es" ? "es_CO" : "en_US",
-      images: [{ url: `${SITE_CONFIG.siteUrl}/imgs/Logo.png`, width: 97, height: 60, alt: "Mas Cerca AP" }],
+      images: [{ url: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`, width: 346, height: 214, alt: "Mas Cerca AP" }],
     },
     twitter: {
       card: "summary_large_image",
@@ -65,6 +65,7 @@ export default async function ProductosPage({ params, searchParams }: Props) {
 
   return (
     <ProductosClient
+      key={categoria ?? "todas"}
       products={products}
       productLines={productLines}
       initialCategory={categoria}

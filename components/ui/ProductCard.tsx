@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Product } from "@/types";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 
@@ -84,7 +85,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
           )
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${accentGradient} flex flex-col items-center justify-center gap-2`}>
-            <span className="text-5xl">🔜</span>
+            <EmojiIcon emoji="🔜" label={dict.products.card.comingSoon} size="xl" tone="fruit" decorative={false} />
             <span className="text-white text-sm font-semibold">{dict.products.card.comingSoon}</span>
           </div>
         )}
@@ -113,7 +114,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
         )}
 
         {isBestSeller && !isSoldOut && (
-          <span className="absolute top-3 left-3 bg-[var(--color-accent,#FF9800)] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow z-10 uppercase tracking-wide">
+          <span className="absolute top-3 left-3 bg-[var(--color-accent,#e58a22)] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow z-10 uppercase tracking-wide">
             {dict.products.card.bestSeller}
           </span>
         )}

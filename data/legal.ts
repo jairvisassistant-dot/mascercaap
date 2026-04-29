@@ -1,5 +1,5 @@
 import { SITE_CONFIG } from "@/lib/config";
-import type { LegalSection, LegalDocument } from "@/types";
+import type { LegalDocument } from "@/types";
 
 export const privacyPolicy: LegalDocument = {
   title: {

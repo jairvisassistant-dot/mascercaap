@@ -2,12 +2,12 @@
 
 /* Variables de identidad visual del cliente */
 :root {
-  --primary: #4CAF50;
-  --primary-dark: #388E3C;
-  --primary-light: #A5D6A7;
-  --accent: #FF9800;
-  --accent-dark: #F57C00;
-  --accent-light: #FFCC80;
+  --primary: #3f8f46;
+  --primary-dark: #2f6f36;
+  --primary-light: #b8d4b5;
+  --accent: #e58a22;
+  --accent-dark: #c97016;
+  --accent-light: #f1c78f;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -41,12 +41,37 @@ body {
 }
 
 .hero-overlay {
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.72) 0%,
-    rgba(0, 0, 0, 0.38) 50%,
-    rgba(0, 0, 0, 0.12) 100%
-  );
+  background:
+    radial-gradient(circle at 78% 28%, rgba(76, 175, 80, 0.13) 0%, transparent 34%),
+    linear-gradient(
+      90deg,
+      rgba(11, 31, 18, 0.9) 0%,
+      rgba(11, 31, 18, 0.7) 42%,
+      rgba(11, 31, 18, 0.18) 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.14) 58%,
+      rgba(0, 0, 0, 0.08) 100%
+    );
+}
+
+@media (max-width: 767px) {
+  .hero-overlay {
+    background:
+      linear-gradient(
+        to top,
+        rgba(8, 24, 14, 0.86) 0%,
+        rgba(8, 24, 14, 0.58) 52%,
+        rgba(8, 24, 14, 0.2) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(8, 24, 14, 0.64) 0%,
+        rgba(8, 24, 14, 0.2) 100%
+      );
+  }
 }
 
 .nav-link {
@@ -60,7 +85,7 @@ body {
   left: 0;
   width: 0;
   height: 2px;
-  background: #FF9800;
+  background: var(--accent);
   transition: width 0.3s ease;
 }
 
