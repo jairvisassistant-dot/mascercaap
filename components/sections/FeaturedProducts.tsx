@@ -64,7 +64,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#fff8eb] py-24">
+    <section className="relative overflow-hidden bg-surface-soft py-24">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_18%,rgba(229,138,34,0.16)_0%,transparent_32%),radial-gradient(circle_at_84%_12%,rgba(63,143,70,0.14)_0%,transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.56)_0%,rgba(255,248,235,0)_48%)]" />
       <div className="absolute left-0 top-12 h-px w-28 bg-primary/35 pointer-events-none" />
 
@@ -83,10 +83,10 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
             </span>
             <span className="h-px w-10 bg-accent/50 rounded-full" />
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.04em] text-gray-950 mb-5 text-balance">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.04em] text-text-main mb-5 text-balance">
             {dict.home.featured.title}
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed text-pretty">
+          <p className="text-text-muted max-w-2xl mx-auto leading-relaxed text-pretty">
             {dict.home.featured.subtitle}
           </p>
         </m.div>
@@ -132,13 +132,13 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                     </div>
 
                     <div className="relative z-10 mt-auto">
-                      <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
+                      <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
                         {hook.kicker}
                       </p>
-                      <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-950">
+                      <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-text-main">
                         {product.name}
                       </h3>
-                      <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-gray-600">
+                      <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-text-muted">
                         {hook.text}
                       </p>
                       <a

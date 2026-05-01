@@ -1,32 +1,82 @@
 @import "tailwindcss";
 
+/* dark: activa cuando <html data-theme="dark"> */
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /* Variables de identidad visual del cliente */
 :root {
+  color-scheme: light;
+
+  /* Colores de marca */
   --primary: #3f8f46;
   --primary-dark: #2f6f36;
   --primary-light: #b8d4b5;
   --accent: #e58a22;
   --accent-dark: #c97016;
   --accent-light: #f1c78f;
-  --background: #ffffff;
-  --foreground: #171717;
+
+  /* Tokens semánticos — tema claro */
+  --surface-page: #ffffff;
+  --surface-soft: #fff8eb;
+  --surface-card: #ffffff;
+  --surface-warm: #f7f1e6;
+  --text-main: #171717;
+  --text-sub: #374151;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --border-soft: rgba(23, 23, 23, 0.08);
+  --border-mid: rgba(23, 23, 23, 0.15);
 }
 
-/* Configuración de tipografía */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Tokens semánticos — tema oscuro (charcoal verde-oscuro, no negro puro) */
+  --surface-page: #0f1a12;
+  --surface-soft: #121e15;
+  --surface-card: #172019;
+  --surface-warm: #1b2b1e;
+  --text-main: #f0f4ee;
+  --text-sub: #c8d5c6;
+  --text-muted: #8fa88d;
+  --text-faint: #5a7058;
+  --border-soft: rgba(240, 244, 238, 0.08);
+  --border-mid: rgba(240, 244, 238, 0.14);
+}
+
+/* Configuración de tipografía y tokens de diseño */
 @theme inline {
+  /* Marca */
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
   --color-accent: var(--accent);
   --color-accent-dark: var(--accent-dark);
   --color-accent-light: var(--accent-light);
+
+  /* Superficies — bg-surface-page, bg-surface-soft, etc. */
+  --color-surface-page: var(--surface-page);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-card: var(--surface-card);
+  --color-surface-warm: var(--surface-warm);
+
+  /* Textos — text-text-main, text-text-muted, etc. */
+  --color-text-main: var(--text-main);
+  --color-text-sub: var(--text-sub);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+
+  /* Bordes — border-border-soft, border-border-mid */
+  --color-border-soft: var(--border-soft);
+  --color-border-mid: var(--border-mid);
+
   --font-poppins: 'Poppins', sans-serif;
   --font-dm-serif: 'DM Serif Display', serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-page);
+  color: var(--text-main);
   font-family: var(--font-poppins);
 }
 

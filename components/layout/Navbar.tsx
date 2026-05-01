@@ -50,8 +50,8 @@ export default function Navbar() {
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100/80"
-          : "bg-white shadow-md"
+          ? "bg-surface-page/90 backdrop-blur-md shadow-sm border-b border-border-soft"
+          : "bg-surface-page shadow-md"
       }`}>
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -72,7 +72,7 @@ export default function Navbar() {
                   className={`nav-link font-medium transition-colors ${
                     isActive(link.href)
                       ? "text-primary nav-link-active"
-                      : "text-gray-600 hover:text-primary"
+                      : "text-text-muted hover:text-primary"
                   }`}
                 >
                   {link.label}
@@ -133,7 +133,7 @@ export default function Navbar() {
           animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
           aria-hidden={!isOpen}
           {...(!isOpen ? { inert: true } : {})}
-          className="md:hidden overflow-hidden bg-white border-t"
+          className="md:hidden overflow-hidden bg-surface-page border-t border-border-soft"
           style={{ pointerEvents: isOpen ? "auto" : "none" }}
         >
           <div className="px-4 py-4 space-y-4">
@@ -145,7 +145,7 @@ export default function Navbar() {
                 className={`block font-medium py-2 border-l-2 pl-3 transition-colors ${
                   isActive(link.href)
                     ? "text-primary border-accent"
-                    : "text-gray-600 border-transparent hover:text-primary hover:border-accent"
+                    : "text-text-muted border-transparent hover:text-primary hover:border-accent"
                 }`}
               >
                 {link.label}

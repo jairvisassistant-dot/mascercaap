@@ -70,7 +70,7 @@ const CATEGORIES: CategoryStructure[] = [
 export default function ProductCategories({ dict, lang }: { dict: Dictionary; lang: string }) {
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-surface-page">
       <div className="max-w-7xl mx-auto px-4">
         <m.div
           initial={{ opacity: 0, y: 30 }}
@@ -86,10 +86,10 @@ export default function ProductCategories({ dict, lang }: { dict: Dictionary; la
             </span>
             <span className="h-px w-10 bg-primary/40 rounded-full" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-4">
             {dict.home.categories.title}
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">
+          <p className="text-text-muted max-w-2xl mx-auto">
             {dict.home.categories.subtitle}
           </p>
         </m.div>
@@ -138,7 +138,7 @@ function CategoryCard({
   priority?: boolean;
 }) {
   const inner = (
-    <div className="rounded-[1.35rem] bg-[#f7f1e6] p-1.5 ring-1 ring-black/5">
+    <div className="rounded-[1.35rem] bg-surface-warm p-1.5 ring-1 ring-border-soft">
     <div className={`relative h-96 rounded-[1.1rem] overflow-hidden group bg-gradient-to-br ${category.gradient} shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]`}>
 
       {/* Glow decorativo detrás de la imagen */}

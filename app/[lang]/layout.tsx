@@ -71,6 +71,14 @@ export default async function LangLayout({
 
   return (
     <html lang={lang} suppressHydrationWarning>
+      <head>
+        {/* Detección de tema antes del primer paint — evita FOUC */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches,s=t==='light'||t==='dark'?t:d?'dark':'light';document.documentElement.setAttribute('data-theme',s);document.documentElement.style.colorScheme=s;}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className={`${poppins.variable} ${dmSerif.variable} font-poppins antialiased`}>
         <script
           type="application/ld+json"
