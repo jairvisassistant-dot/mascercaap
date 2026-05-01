@@ -70,8 +70,8 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
           🫐
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-800">{dict.products.pulpaGrid.title}</h2>
-          <p className="text-sm text-gray-500">{dict.products.pulpaGrid.subtitle}</p>
+          <h2 className="text-xl font-bold text-text-main">{dict.products.pulpaGrid.title}</h2>
+          <p className="text-sm text-text-muted">{dict.products.pulpaGrid.subtitle}</p>
         </div>
       </div>
 
@@ -81,7 +81,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
         <button
           onClick={() => scroll("left")}
           aria-label={dict.products.pulpaGrid.scrollPrev}
-          className={`shrink-0 w-8 h-8 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary transition-all ${
+          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all ${
             canScrollLeft ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >
@@ -109,7 +109,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus:outline-none shrink-0 ${
                   isSelected
                     ? "bg-primary/8 ring-2 ring-primary ring-offset-1"
-                    : "hover:bg-gray-100"
+                    : "hover:bg-surface-page"
                 }`}
                 aria-pressed={isSelected}
                 aria-label={fruitName}
@@ -117,14 +117,14 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 <div
                   style={{ width: 80, height: 80 }}
                   className={`relative rounded-full overflow-hidden border-2 transition-all shadow-sm ${
-                    isSelected ? "border-primary shadow-md" : "border-gray-200"
+                    isSelected ? "border-primary shadow-md" : "border-border-soft"
                   }`}
                 >
                   <FruitImage slug={fruitSlug} name={fruitName} />
                 </div>
                 <span
                   className={`text-xs font-medium text-center leading-tight transition-colors ${
-                    isSelected ? "text-primary" : "text-gray-600"
+                    isSelected ? "text-primary" : "text-text-muted"
                   }`}
                 >
                   {fruitName}
@@ -138,7 +138,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
         <button
           onClick={() => scroll("right")}
           aria-label={dict.products.pulpaGrid.scrollNext}
-          className={`shrink-0 w-8 h-8 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary transition-all ${
+          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all ${
             canScrollRight ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >
@@ -157,7 +157,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="mt-5 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
+            className="mt-5 bg-surface-card rounded-2xl p-4 border border-border-soft shadow-sm"
           >
             <div className="flex items-center gap-3 mb-4">
               <div
@@ -166,8 +166,8 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 {selectedLine.iconEmoji}
               </div>
               <div>
-                <h3 className="font-bold text-gray-800">{pl[selectedLine.key]?.label ?? selectedLine.label}</h3>
-                <p className="text-xs text-gray-500">
+                <h3 className="font-bold text-text-main">{pl[selectedLine.key]?.label ?? selectedLine.label}</h3>
+                <p className="text-xs text-text-muted">
                   {selectedProducts.length}{" "}
                   {selectedProducts.length !== 1
                     ? dict.products.pulpaGrid.presentations
@@ -191,7 +191,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
               </div>
             </div>
 
-            <p className="mt-4 text-xs text-gray-400 text-center leading-relaxed">
+            <p className="mt-4 text-xs text-text-faint text-center leading-relaxed">
               📷 {dict.products.pulpaGrid.disclaimer}
             </p>
           </m.div>
