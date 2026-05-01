@@ -87,7 +87,7 @@ export default async function TerminosPage({ params }: { params: Promise<{ lang:
               <h2 className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">
                 {section.title[locale]}
               </h2>
-              <p className="text-sm text-gray-600 leading-relaxed">
+              <p className="text-sm text-text-muted leading-relaxed">
                 {section.content[locale]}
               </p>
             </div>
@@ -102,10 +102,10 @@ export default async function TerminosPage({ params }: { params: Promise<{ lang:
             </svg>
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-gray-800 text-sm mb-0.5">
+            <p className="font-semibold text-text-sub text-sm mb-0.5">
               {dict.legal.terms.ctaTitle}
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-text-muted text-sm">
               {dict.legal.ctaText}{" "}
               <a href={`mailto:${SITE_CONFIG.emailContact}`} className="text-primary hover:underline">
                 {SITE_CONFIG.emailContact}

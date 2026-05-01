@@ -18,8 +18,8 @@ export default async function FacebookPage({
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=16&data=${encodeURIComponent(SITE_CONFIG.socialFacebook)}`;
 
   return (
-    <div className="grid min-h-[calc(100svh-88px)] place-items-center bg-[#f7f3eb] px-4 py-24 sm:py-28">
-      <section className="mx-auto grid w-full max-w-4xl overflow-hidden rounded-[1.75rem] bg-white shadow-[0_22px_70px_rgba(15,23,42,0.12)] ring-1 ring-black/5 lg:grid-cols-[0.92fr_1.08fr]">
+    <div className="grid min-h-[calc(100svh-88px)] place-items-center bg-surface-warm px-4 py-24 sm:py-28">
+      <section className="mx-auto grid w-full max-w-4xl overflow-hidden rounded-[1.75rem] bg-surface-card shadow-[0_22px_70px_rgba(15,23,42,0.12)] ring-1 ring-border-soft lg:grid-cols-[0.92fr_1.08fr]">
         <div className="bg-[#233746] px-6 py-9 text-white sm:px-9 lg:py-12">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.24em] text-white/52">
             {t.eyebrow}
@@ -60,10 +60,10 @@ export default async function FacebookPage({
               className="h-64 w-64 rounded-2xl sm:h-72 sm:w-72"
             />
           </div>
-          <p className="mt-6 max-w-sm text-sm leading-relaxed text-gray-600">
+          <p className="mt-6 max-w-sm text-sm leading-relaxed text-text-muted">
             {t.scanHint}
           </p>
-          <p className="mt-3 break-all rounded-xl bg-gray-50 px-4 py-3 text-xs text-gray-500 ring-1 ring-gray-100">
+          <p className="mt-3 break-all rounded-xl bg-surface-soft px-4 py-3 text-xs text-text-muted ring-1 ring-border-soft">
             {SITE_CONFIG.socialFacebook}
           </p>
         </div>
