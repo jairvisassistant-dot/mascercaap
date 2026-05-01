@@ -38,7 +38,7 @@ export default function MisionVisionTabs({ dict }: { dict: Dictionary }) {
   const activeText = activeTab === "mision" ? mv.mission : mv.vision;
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-24 bg-surface-page overflow-hidden">
       <div className="max-w-5xl mx-auto px-4">
 
         {/* Header */}
@@ -51,7 +51,7 @@ export default function MisionVisionTabs({ dict }: { dict: Dictionary }) {
           <span className="inline-block text-sm font-semibold tracking-widest text-primary uppercase mb-3">
             {mv.sectionSubtitle}
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-main">
             {mv.sectionTitle}
           </h2>
         </m.div>
@@ -64,7 +64,7 @@ export default function MisionVisionTabs({ dict }: { dict: Dictionary }) {
           transition={{ delay: 0.1 }}
           className="flex justify-center mb-10"
         >
-          <div className="inline-flex bg-gray-100 rounded-full p-1 shadow-inner">
+          <div className="inline-flex bg-surface-page rounded-full p-1 shadow-inner">
             {(["mision", "vision"] as const).map((tab) => {
               const isActive = activeTab === tab;
               const cfg = misionVisionConfig[tab];
@@ -74,7 +74,7 @@ export default function MisionVisionTabs({ dict }: { dict: Dictionary }) {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`relative px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
-                    isActive ? "text-white shadow-md" : "text-gray-500 hover:text-gray-700"
+                    isActive ? "text-white shadow-md" : "text-text-muted hover:text-text-sub"
                   }`}
                   style={isActive ? { background: `linear-gradient(135deg, ${cfg.bgFrom}, ${cfg.bgTo})` } : {}}
                 >

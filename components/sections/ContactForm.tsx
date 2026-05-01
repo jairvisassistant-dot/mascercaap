@@ -74,18 +74,18 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-8">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
+    <div className="bg-surface-card rounded-2xl shadow-lg p-8">
+      <h2 className="text-2xl font-bold text-text-main mb-6">
         {t.title}
       </h2>
-      <p className="-mt-3 mb-6 text-sm leading-relaxed text-gray-600">
+      <p className="-mt-3 mb-6 text-sm leading-relaxed text-text-muted">
         {t.helper}
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Nombre */}
         <div>
-          <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="nombre" className="block text-sm font-medium text-text-sub mb-1">
             {t.labels.name}
           </label>
           <input
@@ -94,8 +94,8 @@ export default function ContactForm() {
             autoComplete="name"
             {...register("nombre")}
             className={`w-full px-4 py-3 rounded-lg border ${
-              errors.nombre ? "border-red-500" : "border-gray-300"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all`}
+              errors.nombre ? "border-red-500" : "border-border-mid"
+            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
             placeholder={t.placeholders.name}
           />
           {errors.nombre && (
@@ -105,7 +105,7 @@ export default function ContactForm() {
 
         {/* Empresa */}
         <div>
-          <label htmlFor="empresa" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="empresa" className="block text-sm font-medium text-text-sub mb-1">
             {t.labels.company}
           </label>
           <input
@@ -113,7 +113,7 @@ export default function ContactForm() {
             type="text"
             autoComplete="organization"
             {...register("empresa")}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 rounded-lg border border-border-mid focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main"
             placeholder={t.placeholders.company}
           />
         </div>
@@ -121,7 +121,7 @@ export default function ContactForm() {
         {/* Email + Teléfono */}
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-text-sub mb-1">
               {t.labels.email}
             </label>
             <input
@@ -130,8 +130,8 @@ export default function ContactForm() {
               autoComplete="email"
               {...register("email")}
               className={`w-full px-4 py-3 rounded-lg border ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all`}
+                errors.email ? "border-red-500" : "border-border-mid"
+              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
               placeholder={t.placeholders.email}
             />
             {errors.email && (
@@ -139,7 +139,7 @@ export default function ContactForm() {
             )}
           </div>
           <div>
-            <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="telefono" className="block text-sm font-medium text-text-sub mb-1">
               {t.labels.phone}
             </label>
             <input
@@ -148,8 +148,8 @@ export default function ContactForm() {
               autoComplete="tel"
               {...register("telefono")}
               className={`w-full px-4 py-3 rounded-lg border ${
-                errors.telefono ? "border-red-500" : "border-gray-300"
-              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all`}
+                errors.telefono ? "border-red-500" : "border-border-mid"
+              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
               placeholder={t.placeholders.phone}
             />
             {errors.telefono && (
@@ -160,15 +160,15 @@ export default function ContactForm() {
 
         {/* Tipo */}
         <div>
-          <label htmlFor="tipo" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="tipo" className="block text-sm font-medium text-text-sub mb-1">
             {t.labels.type}
           </label>
           <select
             id="tipo"
             {...register("tipo")}
             className={`w-full px-4 py-3 rounded-lg border ${
-              errors.tipo ? "border-red-500" : "border-gray-300"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all`}
+              errors.tipo ? "border-red-500" : "border-border-mid"
+            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
           >
             <option value="">{t.options.default}</option>
             <option value="pedido">{t.options.order}</option>
@@ -182,7 +182,7 @@ export default function ContactForm() {
 
         {/* Mensaje */}
         <div>
-          <label htmlFor="mensaje" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="mensaje" className="block text-sm font-medium text-text-sub mb-1">
             {t.labels.message}
           </label>
           <textarea
@@ -190,8 +190,8 @@ export default function ContactForm() {
             {...register("mensaje")}
             rows={4}
             className={`w-full px-4 py-3 rounded-lg border ${
-              errors.mensaje ? "border-red-500" : "border-gray-300"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all`}
+              errors.mensaje ? "border-red-500" : "border-border-mid"
+            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
             placeholder={t.placeholders.message}
           />
           {errors.mensaje && (
@@ -227,8 +227,8 @@ export default function ContactForm() {
               </div>
             </div>
             {whatsappUrl && (
-              <div className="bg-white px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
-                <p className="text-sm text-gray-600">
+              <div className="bg-surface-card px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
+                <p className="text-sm text-text-muted">
                   {t.success.quickResponse}
                 </p>
                 <a

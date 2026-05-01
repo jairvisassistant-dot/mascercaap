@@ -78,13 +78,13 @@ export default function HelpDrawer({ onClose }: Props) {
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 28, stiffness: 280 }}
-        className="fixed top-0 right-0 h-full z-50 flex flex-col bg-white shadow-2xl w-[90vw] sm:w-[45vw] max-w-[560px]"
+        className="fixed top-0 right-0 h-full z-50 flex flex-col bg-surface-card shadow-2xl w-[90vw] sm:w-[45vw] max-w-[560px]"
         role="dialog"
         aria-modal="true"
         aria-label={t.title}
       >
         {/* Header */}
-        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 shrink-0 bg-primary">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-border-soft shrink-0 bg-primary">
           {view !== "menu" && (
             <button
               onClick={() => setView("menu")}
@@ -136,10 +136,10 @@ export default function HelpDrawer({ onClose }: Props) {
                 <FaqView onContactClick={() => setView("contact")} />
               )}
               {view === "privacy" && (
-                <LegalView document={privacyPolicy} lang={locale} />
+                <LegalView document={privacyPolicy} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
               )}
               {view === "terms" && (
-                <LegalView document={termsAndConditions} lang={locale} />
+                <LegalView document={termsAndConditions} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
               )}
               {view === "contact" && (
                 <ContactView />

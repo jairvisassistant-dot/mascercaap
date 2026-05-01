@@ -71,19 +71,19 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       </section>
 
       {/* Historia */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-surface-page">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <m.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <span className="inline-block text-xs font-bold tracking-widest text-primary uppercase mb-4">
                 {t.history.title}
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-text-main leading-tight mb-6">
                 {t.history.headline.prefix}{" "}
                 <em className="not-italic text-primary">{t.history.headline.highlight}</em>{" "}
                 {t.history.headline.suffix}
               </h2>
-              <p className="text-gray-600 leading-relaxed text-justify">{t.history.text}</p>
+              <p className="text-text-muted leading-relaxed text-justify">{t.history.text}</p>
             </m.div>
             <m.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
               <div className="relative h-80 md:h-96 rounded-2xl overflow-hidden shadow-2xl">
@@ -95,14 +95,14 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       </section>
 
       {/* Timeline — "Del Campo a Tu Mesa": el campo es verde, la historia empieza aquí */}
-      <section className="py-20 bg-gradient-to-b from-white to-emerald-50/60">
+      <section className="py-20 bg-gradient-to-b from-surface-page to-emerald-50/60">
         <div className="max-w-7xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
             <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
               {t.timeline.sectionLabel}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{t.timeline.title}</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">{t.timeline.subtitle}</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-4">{t.timeline.title}</h2>
+            <p className="text-text-muted max-w-2xl mx-auto">{t.timeline.subtitle}</p>
           </m.div>
           <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
             {t.timeline.steps.map((step, index) => (
@@ -122,8 +122,8 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                     <div className="hidden lg:block absolute top-1/2 -right-full w-full h-px bg-primary/20" />
                   )}
                 </div>
-                <h3 className="font-bold text-gray-800 mb-2">{step.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{step.description}</p>
+                <h3 className="font-bold text-text-main mb-2">{step.title}</h3>
+                <p className="text-sm text-text-muted leading-relaxed">{step.description}</p>
               </m.div>
             ))}
           </div>
@@ -134,22 +134,22 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       <MisionVisionTabs dict={dict} />
 
       {/* Valores — lo que mueve a Más Cerca AP, expresado en verde y naranja de marca */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-surface-page">
         <div className="max-w-7xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <span className="inline-block text-sm font-semibold tracking-widest text-accent uppercase mb-3">{t.values.subtitle}</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">{t.values.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-text-main">{t.values.title}</h2>
           </m.div>
           <div className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {t.values.items.map((value, index) => (
-              <m.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.12 }} whileHover={{ y: -6 }} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+              <m.div key={index} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.12 }} whileHover={{ y: -6 }} className="group bg-surface-card rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
                 <div className={`h-1.5 w-full bg-gradient-to-r ${valuesMeta[index].color}`} />
                 <div className="p-8">
                   <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>
                     <EmojiIcon emoji={valuesMeta[index].icon} label={value.title} size="md" tone="plain" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-3">{value.title}</h3>
-                  <p className="text-gray-500 leading-relaxed">{value.description}</p>
+                  <h3 className="text-xl font-bold text-text-main mb-3">{value.title}</h3>
+                  <p className="text-text-muted leading-relaxed">{value.description}</p>
                 </div>
               </m.div>
             ))}
@@ -230,14 +230,14 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       </section>
 
       {/* Proceso en Imágenes — timeline vertical alternado */}
-      <section className="py-20 bg-white overflow-hidden">
+      <section className="py-20 bg-surface-page overflow-hidden">
         <div className="max-w-5xl mx-auto px-4">
           <m.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
             <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
               {t.gallery.sectionLabel}
             </span>
             <h2 className="font-dm-serif text-3xl md:text-4xl text-primary mb-4">{t.gallery.title}</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">{t.gallery.subtitle}</p>
+            <p className="text-text-muted max-w-xl mx-auto">{t.gallery.subtitle}</p>
           </m.div>
 
           {/* Timeline */}
@@ -289,10 +289,10 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                       <span className="inline-block text-[10px] font-bold tracking-widest text-primary/60 uppercase mb-2">
                         {`${t.gallery.stepLabel} ${index + 1} ${t.gallery.stepOf} ${processSteps.length}`}
                       </span>
-                      <h3 className="font-dm-serif text-2xl md:text-[1.6rem] text-gray-800 mb-3 leading-snug">
+                      <h3 className="font-dm-serif text-2xl md:text-[1.6rem] text-text-main mb-3 leading-snug">
                         {cardText.title}
                       </h3>
-                      <p className="text-gray-500 leading-relaxed text-sm md:text-base">
+                      <p className="text-text-muted leading-relaxed text-sm md:text-base">
                         {cardText.body}
                       </p>
                     </div>

@@ -30,11 +30,11 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
       <button
         type="button"
         disabled={isComingSoon}
-        className="group relative rounded-2xl overflow-hidden border border-gray-100 bg-white shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 w-full text-left disabled:pointer-events-none"
+        className="group relative rounded-2xl overflow-hidden border border-border-soft bg-surface-card shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 w-full text-left disabled:pointer-events-none"
         onClick={() => setLightboxOpen(true)}
       >
         {/* Imagen */}
-        <div className={`relative aspect-[4/5] ${product.line === "kumiss" ? "bg-white" : hasPackagingImage ? `bg-gradient-to-b ${line.gradient}` : "bg-gray-50"}`}>
+        <div className={`relative aspect-[4/5] ${product.line === "kumiss" ? "bg-surface-card" : hasPackagingImage ? `bg-gradient-to-b ${line.gradient}` : "bg-surface-page"}`}>
           {product.image ? (
             <Image
               src={product.image}
@@ -83,8 +83,8 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
           {/* Gradient overlay en hover para el zoom icon */}
           {!isComingSoon && !isSoldOut && (
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center">
-              <div className="bg-white/90 rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
-                <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-surface-card/90 rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
+                <svg className="w-4 h-4 text-text-sub" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                 </svg>
               </div>
@@ -94,12 +94,12 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
 
         {/* Info */}
         <div className="p-3">
-          <p className="text-sm font-semibold text-gray-800 line-clamp-1 mb-2">{displayName}</p>
+          <p className="text-sm font-semibold text-text-sub line-clamp-1 mb-2">{displayName}</p>
 
           {/* Category pill */}
-          <div className="inline-flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200">
+          <div className="inline-flex items-center gap-1 bg-surface-page px-2 py-0.5 rounded-full border border-border-soft">
             <span className="text-[11px] leading-none">{line.iconEmoji}</span>
-            <span className="text-[10px] font-semibold text-gray-600">{displayName}</span>
+            <span className="text-[10px] font-semibold text-text-muted">{displayName}</span>
           </div>
         </div>
       </button>

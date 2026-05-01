@@ -42,14 +42,14 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const cardGradient = CARD_GRADIENTS[product.line] ?? accentGradient;
 
   return (
-    <div className="card-shimmer relative shrink-0 w-[234px] rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 transition-all duration-300 bg-white">
+    <div className="card-shimmer relative shrink-0 w-[234px] rounded-2xl overflow-hidden border border-border-soft shadow-md hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 transition-all duration-300 bg-surface-card">
       {/* Imagen */}
       <div className={`relative h-60 ${
         product.line === "kumiss"
           ? "bg-white"
           : hasPackagingImage
             ? `bg-gradient-to-b ${cardGradient}`
-            : "bg-gray-100"
+            : "bg-surface-page"
       }`}>
         {product.image && !isComingSoon && (
           <button
@@ -127,8 +127,8 @@ export default function ProductCard({ product, accentGradient = "from-primary to
 
       {/* Info base */}
       <div className="p-4">
-        <p className="text-sm font-semibold text-gray-800 line-clamp-1">{displayName}</p>
-        <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{displayDescription}</p>
+        <p className="text-sm font-semibold text-text-sub line-clamp-1">{displayName}</p>
+        <p className="text-xs text-text-muted mt-1 line-clamp-2 leading-relaxed">{displayDescription}</p>
         {product.price && (
           <p className="text-accent font-bold text-base mt-2">
             ${product.price.toLocaleString("es-CO")}

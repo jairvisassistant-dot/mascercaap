@@ -30,7 +30,7 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
   const pillars = dict.home.whyChooseUs.pillars;
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-surface-page">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid gap-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
           <m.div
@@ -46,15 +46,15 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
                 {dict.home.whyChooseUs.sectionLabel}
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-4 text-balance">
               {dict.home.whyChooseUs.title}
             </h2>
-            <p className="text-gray-500 max-w-[58ch] leading-relaxed">
+            <p className="text-text-muted max-w-[58ch] leading-relaxed">
               {dict.home.whyChooseUs.subtitle}
             </p>
           </m.div>
 
-          <div className="border-y border-gray-200/80 divide-y divide-gray-200/80 bg-white/60">
+          <div className="border-y border-border-mid divide-y divide-border-mid bg-surface-page/60">
             {pillars.map((pillar, index) => (
               <m.div
                 key={index}
@@ -68,8 +68,8 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
                   {icons[index]}
                 </div>
                 <div className="max-w-[56ch]">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{pillar.title}</h3>
-                  <p className="text-sm leading-relaxed text-gray-500">{pillar.description}</p>
+                  <h3 className="text-lg font-bold text-text-main mb-2">{pillar.title}</h3>
+                  <p className="text-sm leading-relaxed text-text-muted">{pillar.description}</p>
                 </div>
               </m.div>
             ))}
