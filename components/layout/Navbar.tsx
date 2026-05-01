@@ -26,6 +26,13 @@ export default function Navbar() {
     { href: `/${lang}/contacto`, label: dict.nav.contact },
   ];
 
+  const themeLabels = {
+    dark: dict.nav.themeDark,
+    light: dict.nav.themeLight,
+    activateDark: dict.nav.themeActivateDark,
+    activateLight: dict.nav.themeActivateLight,
+  };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) setIsOpen(false);
@@ -80,7 +87,7 @@ export default function Navbar() {
 
             {/* CTA + Language Switcher + Theme Toggle */}
             <div className="hidden md:flex items-center gap-3">
-              <ThemeToggle />
+              <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
                 onClick={() => openDrawer("faq")}
@@ -150,7 +157,7 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="flex items-center gap-3 pt-2">
-              <ThemeToggle />
+              <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
                 onClick={() => { setIsOpen(false); openDrawer("faq"); }}

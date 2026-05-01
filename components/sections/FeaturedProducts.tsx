@@ -128,13 +128,13 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                     </div>
 
                     <div className="relative z-10 mt-auto">
-                      <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-text-muted">
+                      <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
                         {hook.kicker}
                       </p>
-                      <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-text-main">
+                      <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
                         {product.name}
                       </h3>
-                      <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-text-muted">
+                      <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-gray-500">
                         {hook.text}
                       </p>
                       <button

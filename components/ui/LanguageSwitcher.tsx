@@ -22,7 +22,7 @@ export default function LanguageSwitcher({ dict, lang }: LanguageSwitcherProps) 
   return (
     <button
       onClick={switchLocale}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-sm font-medium text-gray-600 hover:border-primary hover:text-primary transition-all"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-mid text-sm font-medium text-text-muted hover:border-primary hover:text-primary transition-all"
       aria-label={lang === "es" ? dict.nav.switchToEnglish : dict.nav.switchToSpanish}
     >
       <span className="text-base">{lang === "es" ? "🇺🇸" : "🇨🇴"}</span>

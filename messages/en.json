@@ -7,7 +7,11 @@
     "cta": "Order now",
     "menuAriaLabel": "Open or close menu",
     "switchToEnglish": "Switch to English",
-    "switchToSpanish": "Switch to Spanish"
+    "switchToSpanish": "Switch to Spanish",
+    "themeDark": "Dark",
+    "themeLight": "Light",
+    "themeActivateDark": "Activate dark mode",
+    "themeActivateLight": "Activate light mode"
   },
   "footer": {
     "description": "100% natural juices and citrus fruits, made with hand-picked fruit straight from the farm. From farm to glass in hours, no preservatives.",
