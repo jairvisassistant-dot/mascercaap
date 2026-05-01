@@ -104,12 +104,30 @@ export default function FaqView({ onContactClick }: Props) {
     setShowAdvisorButton(true);
   }
 
+  function isAdvisorIntent(query: string): boolean {
+    const q = query.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const patterns = [
+      /asesor/, /hablar con/, /hablar a /, /persona real/, /humano/, /agente/,
+      /whatsapp/, /llamar/, /contactar/, /necesito ayuda/, /ayuda directa/,
+      /talk to/, /speak with/, /human agent/, /advisor/,
+    ];
+    return patterns.some((p) => p.test(q));
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const query = input.trim();
     if (!query) return;
     setInput("");
     addMessage("user", query);
+
+    if (isAdvisorIntent(query)) {
+      handleAdvisorClick();
+      setChatView("categories");
+      setSelectedCategoryId(null);
+      return;
+    }
+
     const match = findAnswer(query);
     if (match) {
       addMessage("bot", match.question.answer[locale]);
