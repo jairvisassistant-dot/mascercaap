@@ -8,6 +8,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
 import { SITE_CONFIG } from "@/lib/config";
 
@@ -80,8 +81,9 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* CTA + Language Switcher */}
+            {/* CTA + Language Switcher + Theme Toggle */}
             <div className="hidden md:flex items-center gap-3">
+              <ThemeToggle />
               <LanguageSwitcher dict={dict} lang={lang} />
               <Link
                 href={navbarCtaHref}
@@ -152,6 +154,7 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="flex items-center gap-3 pt-2">
+              <ThemeToggle />
               <LanguageSwitcher dict={dict} lang={lang} />
               <Link
                 href={navbarCtaHref}
