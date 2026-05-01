@@ -602,4 +602,10 @@ export const products: Product[] = [
   },
 ];
 
-export const featuredProducts = products.filter((p) => p.image !== "").slice(0, 3);
+const featuredProductIds = new Set([
+  "limon-600",
+  "pulpa-maracuya-300",
+  "kumiss-del-hato-250ml",
+]);
+
+export const featuredProducts = products.filter((p) => featuredProductIds.has(p.id));

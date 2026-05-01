@@ -2,7 +2,7 @@
 
 import { m } from "framer-motion";
 import Image from "next/image";
-import { SITE_CONFIG } from "@/lib/config";
+import { useHelpHub } from "@/lib/help-hub-context";
 import type { Product } from "@/types";
 import type { Dictionary } from "@/lib/i18n";
 
@@ -57,11 +57,7 @@ const cardStyles = [
 
 export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
   const hooks = dict.home.featured.productHooks;
-
-  const getWhatsappHref = (product: Product, cta: string) => {
-    const message = `${dict.whatsapp.message}\n\n${cta}: ${product.name} ${product.presentation}`;
-    return `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
-  };
+  const { openDrawer } = useHelpHub();
 
   return (
     <section className="relative overflow-hidden bg-surface-soft py-24">
@@ -141,17 +137,15 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                       <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-text-muted">
                         {hook.text}
                       </p>
-                      <a
-                        href={getWhatsappHref(product, hook.cta)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => openDrawer("faq", { product: product.name })}
                         className="group mt-6 inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98]"
                       >
                         <span>{hook.cta}</span>
                         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-gray-950 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                           ↗
                         </span>
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </m.article>

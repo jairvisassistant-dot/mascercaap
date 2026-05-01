@@ -2,10 +2,9 @@
 
 import { memo, useEffect, useRef } from "react";
 import { m, useAnimation, useReducedMotion } from "framer-motion";
-import Link from "next/link";
+import { useHelpHub } from "@/lib/help-hub-context";
 
 interface Props {
-  href: string;
   label: string;
 }
 
@@ -14,12 +13,13 @@ const HOLD_MS     = 5000;
 const COLLAPSE_MS = 750;
 const PAUSE_MS    = 700;
 
-const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ href, label }: Props) {
+const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: Props) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const widthCtrl  = useAnimation();
   const textCtrl   = useAnimation();
   const aliveRef   = useRef(false);
   const shouldReduceMotion = useReducedMotion();
+  const { openDrawer } = useHelpHub();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -80,7 +80,6 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ href, labe
       }
     };
 
-    // IntersectionObserver imperativo — no toca estado React, cero re-renders
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !aliveRef.current) {
@@ -105,7 +104,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ href, labe
 
   return (
     <div ref={sectionRef} className="flex justify-center">
-      <Link href={href} target="_blank" rel="noopener noreferrer">
+      <button onClick={() => openDrawer("faq")}>
         <div className="inline-flex items-center bg-accent hover:bg-accent-dark rounded-full h-14 shadow-lg shadow-black/20 overflow-hidden cursor-pointer transition-colors duration-200">
           {/* Ícono — siempre visible */}
           <div className="shrink-0 w-14 h-14 flex items-center justify-center">
@@ -129,7 +128,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ href, labe
             </m.span>
           </m.div>
         </div>
-      </Link>
+      </button>
     </div>
   );
 });

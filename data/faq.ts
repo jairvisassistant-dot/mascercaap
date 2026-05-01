@@ -15,8 +15,8 @@ export const faqData: FAQData = {
             en: "What products do you offer?",
           },
           answer: {
-            es: "Ofrecemos zumos naturales de limón, limonada con cereza, limonada con coco y maracuyá, además de pulpas congeladas de maracuyá, mora, fresa, mango, guanábana, lulo, guayaba, frutos rojos, tomate de árbol y kumiss. Todo 100% natural, sin conservantes ni colorantes.",
-            en: "We offer natural juices of lemon, lemonade with cherry, lemonade with coconut and passion fruit, plus frozen pulps of passion fruit, blackberry, strawberry, mango, soursop, lulo, guava, mixed berries, tree tomato, and kumiss. 100% natural, no preservatives or colorings.",
+            es: "Ofrecemos zumos naturales de limón, limonada con cereza, limonada con coco y maracuyá; pulpas congeladas de maracuyá, mora, fresa, mango, guanábana, lulo, guayaba, frutos rojos y tomate de árbol; y lácteos Del Hato como kumis y yogurt en presentación de 250ml.",
+            en: "We offer natural lemon juice, cherry lemonade, coconut lemonade and passion fruit juice; frozen pulps of passion fruit, blackberry, strawberry, mango, soursop, lulo, guava, mixed berries and tree tomato; and Del Hato dairy products such as kumis and yogurt in a 250ml presentation.",
           },
           keywords: [
             "productos",
@@ -42,8 +42,8 @@ export const faqData: FAQData = {
             en: "Do the juices have preservatives or colorings?",
           },
           answer: {
-            es: "No. Todos nuestros productos son 100% naturales, sin conservantes, sin colorantes y sin azúcar añadida. Solo fruta colombiana pura.",
-            en: "No. All our products are 100% natural, with no preservatives, no colorings, and no added sugar. Just pure Colombian fruit.",
+            es: "Nuestros zumos y pulpas se elaboran sin conservantes ni colorantes. Los lácteos Del Hato tienen su propia formulación y pueden incluir azúcar o saborizantes según la referencia; revisa la ficha de cada producto antes de pedir.",
+            en: "Our juices and pulps are made without preservatives or colorings. Del Hato dairy products have their own formulation and may include sugar or flavorings depending on the item; check each product detail before ordering.",
           },
           keywords: [
             "conservantes",
@@ -115,8 +115,8 @@ export const faqData: FAQData = {
             en: "Do you have sugar-free products?",
           },
           answer: {
-            es: "Sí. Todos nuestros productos están libres de azúcar añadida. El dulzor natural proviene exclusivamente de la fruta. Son aptos para personas con dietas bajas en azúcar.",
-            en: "Yes. All our products are free of added sugar. The natural sweetness comes exclusively from the fruit. They are suitable for people on low-sugar diets.",
+            es: "Tenemos zumos y pulpas sin azúcar añadida, donde el dulzor proviene de la fruta. Los lácteos Del Hato sí pueden contener azúcar, así que si necesitas una dieta baja en azúcar te recomendamos confirmar la referencia antes de pedir.",
+            en: "We have juices and pulps with no added sugar, where sweetness comes from the fruit. Del Hato dairy products may contain sugar, so if you need a low-sugar diet we recommend confirming the specific item before ordering.",
           },
           keywords: [
             "azucar",
@@ -140,8 +140,8 @@ export const faqData: FAQData = {
             en: "What sizes are available?",
           },
           answer: {
-            es: "El zumo de limón viene en 600ml, 1L, 2L y 5L. Los zumos de cereza, coco y maracuyá están disponibles en 350ml, 1L y 2L. Las pulpas congeladas vienen en 120g, 300g y 1000g. Para pedidos al por mayor hay presentaciones especiales.",
-            en: "Lemon juice comes in 600ml, 1L, 2L, and 5L. Cherry, coconut, and passion fruit juices are available in 350ml, 1L, and 2L. Frozen pulps come in 120g, 300g, and 1000g packs. For wholesale orders, special sizes are available.",
+            es: "El zumo de limón viene en 600ml, 1L, 2L y 5L. Los zumos de cereza, coco y maracuyá están disponibles en 350ml, 1L y 2L. Las pulpas congeladas vienen en 120g, 300g y 1000g. Los lácteos Del Hato vienen en 250ml. Para pedidos al por mayor hay presentaciones especiales.",
+            en: "Lemon juice comes in 600ml, 1L, 2L, and 5L. Cherry, coconut, and passion fruit juices are available in 350ml, 1L, and 2L. Frozen pulps come in 120g, 300g, and 1000g packs. Del Hato dairy products come in 250ml. For wholesale orders, special sizes are available.",
           },
           keywords: [
             "tamaños",
@@ -213,7 +213,7 @@ export const faqData: FAQData = {
             en: "What areas do you deliver to?",
           },
           answer: {
-            es: "Hacemos entregas en Chía, Cajicá, Sopó, La Calera, Tocancipá y norte de Bogotá. Para otras zonas del país, coordinamos envíos por transportadora. Consultanos por tu zona específica.",
+            es: "Hacemos entregas en Chía, Cajicá, Sopó, La Calera, Tocancipá y norte de Bogotá. Para otras zonas del país, coordinamos envíos por transportadora. Consúltanos por tu zona específica.",
             en: "We deliver in Chía, Cajicá, Sopó, La Calera, Tocancipá, and northern Bogotá. For other regions, we coordinate shipments via courier. Ask us about your specific area.",
           },
           keywords: [

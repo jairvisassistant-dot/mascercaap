@@ -31,14 +31,15 @@ mas-cerca-ap/
 │   ├── nosotros/page.tsx  # Nosotros
 │   ├── contacto/page.tsx   # Contacto
 │   ├── api/contact/       # API de formulario
-│   └── sitemap.ts         # SEO
+│   ├── robots.ts          # SEO robots.txt
+│   └── sitemap.ts         # SEO sitemap.xml
 ├── components/
 │   ├── layout/            # Navbar, Footer, WhatsAppButton
 │   ├── ui/                # ProductCard, HeroCarousel, etc.
 │   └── sections/          # FeaturedProducts, WhyChooseUs, etc.
 ├── data/                  # Products, testimonials, salesPoints
 ├── types/                 # TypeScript types
-└── public/               # robots.txt
+└── public/               # Assets estáticos
 ```
 
 ## 🛠️ Instalación
@@ -64,7 +65,7 @@ El sitio estará disponible en: http://localhost:3000
 Crear archivo `.env.local` basado en `.env.local.example`:
 
 ```env
-NEXT_PUBLIC_WHATSAPP_NUMBER=573001234567
+NEXT_PUBLIC_WHATSAPP_NUMBER=57XXXXXXXXXX
 NEXT_PUBLIC_GOOGLE_MAPS_KEY=YOUR_KEY
 RESEND_API_KEY=re_XXXXXXXXXX
 ```

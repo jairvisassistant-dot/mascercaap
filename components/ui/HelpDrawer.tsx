@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { useHelpHub } from "@/lib/help-hub-context";
 import HelpMenu from "./drawer-views/HelpMenu";
 import FaqView from "./drawer-views/FaqView";
 import LegalView from "./drawer-views/LegalView";
@@ -18,7 +19,8 @@ export default function HelpDrawer({ onClose }: Props) {
   const { dict, lang } = useDictionary();
   const locale = lang as Locale;
   const t = dict.helpHub;
-  const [view, setView] = useState<View>("menu");
+  const { initialView } = useHelpHub();
+  const [view, setView] = useState<View>(initialView);
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 

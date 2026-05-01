@@ -29,6 +29,26 @@
     "message": "Hi! I'd like information about your products.",
     "ariaLabel": "Contact via WhatsApp"
   },
+  "socialQr": {
+    "facebook": {
+      "eyebrow": "Facebook · Mas Cerca AP",
+      "title": "Connect with our official profile",
+      "description": "This QR opens the public Mas Cerca AP profile. It is not a code to sign in to Facebook on another device.",
+      "openProfile": "Open profile",
+      "backHome": "Back home",
+      "qrAlt": "Mas Cerca AP Facebook profile QR",
+      "scanHint": "Scan the code with your phone camera to open the profile in the Facebook app or browser."
+    },
+    "instagram": {
+      "eyebrow": "Instagram · Mas Cerca AP",
+      "title": "Connect with our official Instagram",
+      "description": "This QR opens the public Mas Cerca AP Instagram profile. It is not a code to sign in on another device.",
+      "openProfile": "Open profile",
+      "backHome": "Back home",
+      "qrAlt": "Mas Cerca AP Instagram profile QR",
+      "scanHint": "Scan the code with your phone camera to open the profile in the Instagram app or browser."
+    }
+  },
   "home": {
     "hero": {
       "slides": [
@@ -63,6 +83,7 @@
           "cta": "Place your order now"
         }
       ],
+      "tagline": "From Colombian farms to your table with freshness, care and close delivery.",
       "prevSlide": "Previous slide",
       "nextSlide": "Next slide",
       "goToSlide": "Go to slide"
@@ -70,7 +91,7 @@
     "categories": {
       "sectionLabel": "Catalog",
       "title": "Product Categories",
-      "subtitle": "Three lines of natural products for every moment of the day.",
+      "subtitle": "Three lines of fresh products for every moment of the day.",
       "items": [
         {
           "label": "Juices & Lemonades",
@@ -82,7 +103,7 @@
         },
         {
           "label": "Dairy",
-          "description": "Artisanal kumis from Colombian farms. Tradition and flavor in every sip."
+          "description": "Kumis and yogurt with Colombian tradition. Freshness and flavor in every sip."
         }
       ],
       "comingSoon": "Coming Soon",
@@ -119,8 +140,8 @@
       "subtitle": "Committed to your well-being and the authentic flavor of nature.",
       "pillars": [
         {
-          "title": "100% Natural",
-          "description": "No preservatives or artificial additives. Just fresh fruit and purified water."
+          "title": "Clear Ingredients",
+          "description": "We tell you what each product contains so you can choose with confidence."
         },
         {
           "title": "No Preservatives",
@@ -207,7 +228,7 @@
       "stats": [
         { "value": "13+", "label": "Product varieties" },
         { "value": "<24h", "label": "Delivery in Bogotá" },
-        { "value": "100%", "label": "Natural, no preservatives" },
+        { "value": "250ml", "label": "Del Hato dairy" },
         { "value": "3", "label": "Product lines" }
       ]
     },
@@ -287,7 +308,7 @@
       "mission": {
         "label": "Mission",
         "title": "Our Mission",
-        "text": "We are Mas Cerca AP, a company driven by our love for service and the conviction that every person deserves access to fresh, natural, high-quality products. We directly connect Colombian farmers with homes, businesses and new markets, serving as the bridge that brings the countryside to the table and small producers to great opportunities. We act with honesty, commitment, and a vocation for service as the foundation of every decision we make."
+        "text": "We are Mas Cerca AP, a company driven by our love for service and the conviction that every person deserves access to fresh, high-quality products. We directly connect Colombian farmers with homes, businesses and new markets, serving as the bridge that brings the countryside to the table and small producers to great opportunities. We act with honesty, commitment, and a vocation for service as the foundation of every decision we make."
       },
       "vision": {
         "label": "Vision",
@@ -376,7 +397,7 @@
         },
         {
           "year": "2026",
-          "text": "Today we reach all of Bogotá with over 13 varieties of natural products and a committed team."
+          "text": "Today we reach all of Bogotá with over 13 varieties of fresh products and a committed team."
         }
       ],
       "stats": {
@@ -387,8 +408,8 @@
             "description": "Product varieties"
           },
           {
-            "value": "100%",
-            "description": "Natural, no preservatives"
+            "value": "250ml",
+            "description": "Del Hato dairy"
           },
           {
             "value": "<24h",
@@ -479,10 +500,16 @@
     },
     "validation": {
       "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name cannot exceed 80 characters",
+      "companyMax": "Company cannot exceed 120 characters",
       "emailInvalid": "Enter a valid email",
+      "emailMax": "Email cannot exceed 254 characters",
       "phoneMin": "Phone must be at least 7 digits",
+      "phoneMax": "Phone cannot exceed 30 characters",
       "typeRequired": "Select an inquiry type",
-      "messageMin": "Message must be at least 10 characters"
+      "messageMin": "Message must be at least 10 characters",
+      "messageMax": "Message cannot exceed 1200 characters",
+      "controlChars": "This field contains unsupported characters"
     }
   },
   "productLines": {
@@ -577,6 +604,7 @@
     "back": "Back",
     "menuSubtitle": "How can we help you today?",
     "contactOptions": "How would you like to reach us?",
+    "contextGreeting": "Hi 👋 I see you're interested in \"{product}\". How can I help you?",
     "whatsappMessage": "Hello, I need help with an order from Más Cerca AP",
     "menu": {
       "faq": "Frequently asked questions",
@@ -592,6 +620,21 @@
     "placeholder": "Type your question...",
     "fallback": "I don't have information about that. Would you like to talk to our team?",
     "talkToHuman": "Talk to a person",
+    "advisorOffer": "Would you still like to speak with an advisor?",
+    "talkToAdvisor": "Connect with advisor",
+    "leadFormIntro": "To connect you with an advisor, I need a few quick details:",
+    "leadName": "Your name",
+    "leadNamePlaceholder": "Maria González",
+    "leadEmail": "Email (optional)",
+    "leadEmailPlaceholder": "you@email.com",
+    "leadTipo": "What's your inquiry about?",
+    "leadTipoPedido": "I want to place an order",
+    "leadTipoNegocio": "I have a business (wholesale / distribution)",
+    "leadTipoConsulta": "General question",
+    "leadConsent": "I agree to the processing of my personal data.",
+    "leadConsentLink": "View privacy policy",
+    "leadSubmit": "Connect with advisor",
+    "leadSkip": "Skip",
     "helpful": "Was this answer helpful?",
     "yes": "Yes, thanks",
     "no": "Not really",
@@ -605,6 +648,7 @@
     "inputLabel": "Type your question"
   },
   "legal": {
+    "lastUpdated": "Last updated",
     "ctaButton": "Contact us",
     "ctaText": "Write to us directly.",
     "policy": {

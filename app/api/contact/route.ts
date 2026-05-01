@@ -47,6 +47,10 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
+function sanitizeSubject(str: string): string {
+  return str.replace(/[\r\n\u0000-\u001f\u007f]+/g, " ").slice(0, 80).trim();
+}
+
 function buildEmailHtml(data: ContactFormData): string {
   // Escapar todos los datos de usuario antes de interpolar en HTML
   const nombre   = escapeHtml(data.nombre);
@@ -203,7 +207,7 @@ export async function POST(request: Request) {
       from: `Más Cerca AP <${fromEmail}>`,
       to: [toEmail],
       replyTo: data.email,
-      subject: `📩 Nuevo mensaje: ${tipoLabel[data.tipo]} — ${data.nombre}`,
+      subject: `📩 Nuevo mensaje: ${tipoLabel[data.tipo]} — ${sanitizeSubject(data.nombre)}`,
       html: buildEmailHtml(data),
     });
 

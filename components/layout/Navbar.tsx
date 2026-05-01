@@ -7,16 +7,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { useHelpHub } from "@/lib/help-hub-context";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
-import { SITE_CONFIG } from "@/lib/config";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { dict, lang } = useDictionary();
+  const { openDrawer } = useHelpHub();
 
   const navLinks = [
     { href: `/${lang}`, label: dict.nav.home },
@@ -24,10 +25,6 @@ export default function Navbar() {
     { href: `/${lang}/nosotros`, label: dict.nav.about },
     { href: `/${lang}/contacto`, label: dict.nav.contact },
   ];
-
-  const navbarCtaHref = SITE_CONFIG.whatsappNumber
-    ? `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`
-    : `/${lang}/contacto`;
 
   useEffect(() => {
     const handleResize = () => {
@@ -85,13 +82,12 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               <ThemeToggle />
               <LanguageSwitcher dict={dict} lang={lang} />
-              <Link
-                href={navbarCtaHref}
-                {...(SITE_CONFIG.whatsappNumber ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              <button
+                onClick={() => openDrawer("faq")}
                 className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
               >
                 {dict.nav.cta}
-              </Link>
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -156,14 +152,12 @@ export default function Navbar() {
             <div className="flex items-center gap-3 pt-2">
               <ThemeToggle />
               <LanguageSwitcher dict={dict} lang={lang} />
-              <Link
-                href={navbarCtaHref}
-                {...(SITE_CONFIG.whatsappNumber ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                onClick={() => setIsOpen(false)}
+              <button
+                onClick={() => { setIsOpen(false); openDrawer("faq"); }}
                 className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center"
               >
                 {dict.nav.cta}
-              </Link>
+              </button>
             </div>
           </div>
         </m.div>

@@ -4,8 +4,8 @@ import { useReducer, useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { useHelpHub } from "@/lib/help-hub-context";
 
 type KenBurns = {
   initial: { scale: number; x: string };
@@ -195,6 +195,7 @@ const slides: SlideStructure[] = [
 
 export default function HeroCarousel() {
   const { dict, lang } = useDictionary();
+  const { openDrawer } = useHelpHub();
   const [{ currentSlide, currentFrame }, dispatch] = useReducer(carouselReducer, {
     currentSlide: 0,
     currentFrame: 0,
@@ -211,10 +212,8 @@ export default function HeroCarousel() {
   const frameDurationMs = Math.floor(slide.duration / frameCount);
   const frame = slide.frames[Math.min(currentFrame, frameCount - 1)];
 
-  const whatsappUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`;
-
   const resolveHref = (href: string) => {
-    if (href === "__whatsapp__") return whatsappUrl;
+    if (href === "__whatsapp__") return null;
     return `/${lang}${href}`;
   };
 
@@ -343,23 +342,27 @@ export default function HeroCarousel() {
                 transition={{ delay: shouldReduceMotion ? 0 : 0.5, duration: shouldReduceMotion ? 0 : 0.5 }}
                 className="flex flex-col items-start gap-4 sm:flex-row sm:items-center"
               >
-                <Link
-                  href={resolveHref(slide.ctaHref)}
-                  {...(slide.ctaHref === "__whatsapp__"
-                    ? { target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
-                  className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] md:text-base`}
-                >
-                  {slideText.cta}
-                </Link>
-                <Link
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                {slide.ctaHref === "__whatsapp__" ? (
+                  <button
+                    onClick={() => openDrawer("faq")}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] md:text-base`}
+                  >
+                    {slideText.cta}
+                  </button>
+                ) : (
+                  <Link
+                    href={resolveHref(slide.ctaHref)!}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] md:text-base`}
+                  >
+                    {slideText.cta}
+                  </Link>
+                )}
+                <button
+                  onClick={() => openDrawer("faq")}
                   className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/28 bg-white/10 px-7 py-3 text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/18 active:translate-y-0 active:scale-[0.98] md:text-base"
                 >
                   {dict.nav.cta}
-                </Link>
+                </button>
               </m.div>
 
               </div>
@@ -378,9 +381,7 @@ export default function HeroCarousel() {
                     </span>
                   </div>
                   <p className="text-sm font-semibold leading-relaxed text-white/86">
-                    {lang === "es"
-                      ? "Del campo colombiano a tu mesa con frescura, cuidado y entrega cercana."
-                      : "From Colombian farms to your table with freshness, care and close delivery."}
+                    {dict.home.hero.tagline}
                   </p>
                 </div>
               </m.div>

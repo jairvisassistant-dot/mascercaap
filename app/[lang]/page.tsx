@@ -54,11 +54,6 @@ export default async function HomePage({ params }: Props) {
 
   const dict = await getDictionary(lang);
 
-  const waNumber = SITE_CONFIG.whatsappNumber;
-  const whatsappCta = waNumber
-    ? `https://wa.me/${waNumber}?text=${encodeURIComponent(dict.whatsapp.message)}`
-    : "#";
-
   const [featuredProducts, testimonials] = await Promise.all([
     safeFetch(FEATURED_PRODUCTS_QUERY, {}, staticFeaturedProducts),
     safeFetch(ALL_TESTIMONIALS_QUERY, {}, staticTestimonials),
@@ -137,7 +132,7 @@ export default async function HomePage({ params }: Props) {
               </span>
             ))}
           </div>
-          <AnimatedWhatsAppButton href={whatsappCta} label={dict.home.cta.button} />
+          <AnimatedWhatsAppButton label={dict.home.cta.button} />
         </div>
       </section>
     </>

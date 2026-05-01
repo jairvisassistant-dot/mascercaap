@@ -5,6 +5,7 @@ import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import { MotionProvider } from "@/lib/i18n/MotionProvider";
+import { HelpHubProvider } from "@/lib/help-hub-context";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
@@ -86,19 +87,21 @@ export default async function LangLayout({
         />
         <MotionProvider>
           <DictionaryProvider dict={dict} lang={lang}>
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent"
-            >
-              {lang === "es" ? "Saltar al contenido" : "Skip to content"}
-            </a>
-            <ScrollProgress />
-            <div className="min-h-screen flex flex-col overflow-x-clip">
-              <Navbar />
-              <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
-              <Footer dict={dict} lang={lang} />
-              <HelpHub />
-            </div>
+            <HelpHubProvider>
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent"
+              >
+                {lang === "es" ? "Saltar al contenido" : "Skip to content"}
+              </a>
+              <ScrollProgress />
+              <div className="min-h-screen flex flex-col overflow-x-clip">
+                <Navbar />
+                <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
+                <Footer dict={dict} lang={lang} />
+                <HelpHub />
+              </div>
+            </HelpHubProvider>
           </DictionaryProvider>
         </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_ID && (

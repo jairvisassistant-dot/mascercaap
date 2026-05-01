@@ -29,6 +29,26 @@
     "message": "Hola! Quiero información sobre sus productos.",
     "ariaLabel": "Contactar por WhatsApp"
   },
+  "socialQr": {
+    "facebook": {
+      "eyebrow": "Facebook · Mas Cerca AP",
+      "title": "Conecta con nuestro perfil oficial",
+      "description": "Este QR abre el perfil público de Mas Cerca AP. No es un código para iniciar sesión en Facebook en otro dispositivo.",
+      "openProfile": "Abrir perfil",
+      "backHome": "Volver al inicio",
+      "qrAlt": "QR del perfil de Facebook de Mas Cerca AP",
+      "scanHint": "Escanea el código con la cámara del celular para abrir el perfil en la app o navegador de Facebook."
+    },
+    "instagram": {
+      "eyebrow": "Instagram · Mas Cerca AP",
+      "title": "Conecta con nuestro Instagram oficial",
+      "description": "Este QR abre el perfil público de Instagram de Mas Cerca AP. No es un código para iniciar sesión en otro dispositivo.",
+      "openProfile": "Abrir perfil",
+      "backHome": "Volver al inicio",
+      "qrAlt": "QR del perfil de Instagram de Mas Cerca AP",
+      "scanHint": "Escanea el código con la cámara del celular para abrir el perfil en la app o navegador de Instagram."
+    }
+  },
   "home": {
     "hero": {
       "slides": [
@@ -63,6 +83,7 @@
           "cta": "Hacer pedido ahora"
         }
       ],
+      "tagline": "Del campo colombiano a tu mesa con frescura, cuidado y entrega cercana.",
       "prevSlide": "Slide anterior",
       "nextSlide": "Slide siguiente",
       "goToSlide": "Ir al slide"
@@ -70,7 +91,7 @@
     "categories": {
       "sectionLabel": "Catálogo",
       "title": "Categorías de Productos",
-      "subtitle": "Tres líneas de productos naturales para cada momento del día.",
+      "subtitle": "Tres líneas de productos frescos para cada momento del día.",
       "items": [
         {
           "label": "Zumos y Limonadas",
@@ -82,7 +103,7 @@
         },
         {
           "label": "Lácteos",
-          "description": "Kumis artesanal de hacienda colombiana. Tradición y sabor en cada sorbo."
+          "description": "Kumis y yogurt de tradición colombiana. Frescura y sabor en cada sorbo."
         }
       ],
       "comingSoon": "Próximamente",
@@ -119,8 +140,8 @@
       "subtitle": "Comprometidos con tu bienestar y el sabor auténtico de lo natural.",
       "pillars": [
         {
-          "title": "100% Natural",
-          "description": "Sin conservantes ni aditivos artificiales. Solo fruta fresca y agua purificada."
+          "title": "Ingredientes Claros",
+          "description": "Te contamos qué contiene cada producto para que puedas elegir con confianza."
         },
         {
           "title": "Sin Conservantes",
@@ -207,7 +228,7 @@
       "stats": [
         { "value": "13+", "label": "Variedades de productos" },
         { "value": "<24h", "label": "Entrega en Bogotá" },
-        { "value": "100%", "label": "Natural, sin conservantes" },
+        { "value": "250ml", "label": "Lácteos Del Hato" },
         { "value": "3", "label": "Líneas de producto" }
       ]
     },
@@ -287,7 +308,7 @@
       "mission": {
         "label": "Misión",
         "title": "Nuestra Misión",
-        "text": "Somos Más Cerca AP, una empresa impulsada por el amor al servicio y la convicción de que cada persona merece acceso a productos frescos, naturales y de alta calidad. Conectamos directamente a agricultores colombianos con hogares, negocios y nuevos mercados, siendo el puente que acerca el campo a la mesa y los pequeños productores a grandes oportunidades. Actuamos con honestidad, compromiso, y vocación de servicio como fundamento de cada decisión que tomamos."
+        "text": "Somos Más Cerca AP, una empresa impulsada por el amor al servicio y la convicción de que cada persona merece acceso a productos frescos y de alta calidad. Conectamos directamente a agricultores colombianos con hogares, negocios y nuevos mercados, siendo el puente que acerca el campo a la mesa y los pequeños productores a grandes oportunidades. Actuamos con honestidad, compromiso, y vocación de servicio como fundamento de cada decisión que tomamos."
       },
       "vision": {
         "label": "Visión",
@@ -333,7 +354,7 @@
         },
         {
           "title": "Compramos en finca",
-          "body": "Sin intermediarios. El campesino colombiano merece un precio justo y vos merecés saber exactamente de dónde viene lo que tomás."
+          "body": "Sin intermediarios. El campesino colombiano merece un precio justo y tú mereces saber exactamente de dónde viene lo que tomas."
         },
         {
           "title": "Cada fruta tiene un juez",
@@ -341,11 +362,11 @@
         },
         {
           "title": "Artesanal por convicción",
-          "body": "No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sentís en el sabor."
+          "body": "No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sientes en el sabor."
         },
         {
           "title": "La frescura no espera",
-          "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el jugo llega a vos con todo lo que la fruta tenía cuando salió del campo."
+          "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el jugo llega a ti con todo lo que la fruta tenía cuando salió del campo."
         },
         {
           "title": "Detrás de cada botella",
@@ -376,7 +397,7 @@
         },
         {
           "year": "2026",
-          "text": "Hoy llegamos a toda Bogotá con más de 13 variedades de productos naturales y un equipo comprometido."
+          "text": "Hoy llegamos a toda Bogotá con más de 13 variedades de productos frescos y un equipo comprometido."
         }
       ],
       "stats": {
@@ -387,8 +408,8 @@
             "description": "Variedades de productos"
           },
           {
-            "value": "100%",
-            "description": "Natural y sin conservantes"
+            "value": "250ml",
+            "description": "Lácteos Del Hato"
           },
           {
             "value": "<24h",
@@ -479,10 +500,16 @@
     },
     "validation": {
       "nameMin": "El nombre debe tener al menos 2 caracteres",
+      "nameMax": "El nombre no puede superar 80 caracteres",
+      "companyMax": "La empresa no puede superar 120 caracteres",
       "emailInvalid": "Ingresa un email válido",
+      "emailMax": "El email no puede superar 254 caracteres",
       "phoneMin": "El teléfono debe tener al menos 7 dígitos",
+      "phoneMax": "El teléfono no puede superar 30 caracteres",
       "typeRequired": "Selecciona un tipo de consulta",
-      "messageMin": "El mensaje debe tener al menos 10 caracteres"
+      "messageMin": "El mensaje debe tener al menos 10 caracteres",
+      "messageMax": "El mensaje no puede superar 1200 caracteres",
+      "controlChars": "El campo contiene caracteres no permitidos"
     }
   },
   "productLines": {
@@ -577,6 +604,7 @@
     "back": "Volver",
     "menuSubtitle": "¿En qué podemos ayudarte hoy?",
     "contactOptions": "¿Cómo quieres contactarnos?",
+    "contextGreeting": "Hola 👋 Vi que te interesa \"{product}\". ¿En qué te puedo ayudar?",
     "whatsappMessage": "Hola, necesito ayuda con un pedido de Más Cerca AP",
     "menu": {
       "faq": "Preguntas frecuentes",
@@ -592,6 +620,21 @@
     "placeholder": "Escribe tu pregunta...",
     "fallback": "No tengo información sobre eso. ¿Te gustaría hablar con nuestro equipo?",
     "talkToHuman": "Hablar con una persona",
+    "advisorOffer": "¿Querés hablar igual con un asesor?",
+    "talkToAdvisor": "Conectar con asesor",
+    "leadFormIntro": "Para conectarte con un asesor, necesito algunos datos rápidos:",
+    "leadName": "Tu nombre",
+    "leadNamePlaceholder": "María González",
+    "leadEmail": "Email (opcional)",
+    "leadEmailPlaceholder": "tu@email.com",
+    "leadTipo": "¿Cuál es tu consulta?",
+    "leadTipoPedido": "Quiero hacer un pedido",
+    "leadTipoNegocio": "Tengo un negocio (mayoreo / distribución)",
+    "leadTipoConsulta": "Consulta general",
+    "leadConsent": "Acepto el tratamiento de mis datos personales.",
+    "leadConsentLink": "Ver política de privacidad",
+    "leadSubmit": "Conectar con asesor",
+    "leadSkip": "Omitir",
     "helpful": "¿Te fue útil esta respuesta?",
     "yes": "Sí, gracias",
     "no": "No del todo",
@@ -605,6 +648,7 @@
     "inputLabel": "Escribe tu pregunta"
   },
   "legal": {
+    "lastUpdated": "Última actualización",
     "ctaButton": "Contactar",
     "ctaText": "Escríbenos directamente.",
     "policy": {

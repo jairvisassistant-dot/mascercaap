@@ -74,7 +74,7 @@ export default async function PoliticasPage({ params }: { params: Promise<{ lang
             {privacyPolicy.title[locale]}
           </h1>
           <p className="text-white/60 text-sm">
-            {locale === "es" ? "Última actualización" : "Last updated"}: {lastUpdated}
+            {dict.legal.lastUpdated}: {lastUpdated}
           </p>
         </div>
       </div>
