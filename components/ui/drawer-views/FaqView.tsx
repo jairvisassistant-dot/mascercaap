@@ -88,7 +88,7 @@ export default function FaqView({ onContactClick }: Props) {
   return (
     <div className="flex flex-col h-full">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-surface-soft">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <m.div
@@ -102,7 +102,7 @@ export default function FaqView({ onContactClick }: Props) {
                 className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                   msg.role === "user"
                     ? "bg-primary text-white rounded-br-sm"
-                    : "bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm"
+                    : "bg-surface-card text-text-sub shadow-sm border border-border-soft rounded-bl-sm"
                 }`}
               >
                 {msg.text}
@@ -120,7 +120,7 @@ export default function FaqView({ onContactClick }: Props) {
               exit={{ opacity: 0 }}
               className="flex flex-col gap-2 pl-1"
             >
-              <p className="text-xs text-gray-500 font-medium">{th.contactOptions}</p>
+              <p className="text-xs text-text-muted font-medium">{th.contactOptions}</p>
               {whatsappUrl && <a
                 href={whatsappUrl}
                 target="_blank"
@@ -149,7 +149,7 @@ export default function FaqView({ onContactClick }: Props) {
       </div>
 
       {/* Category / Question chips */}
-      <div className="px-4 py-3 bg-white border-t border-gray-100">
+      <div className="px-4 py-3 bg-surface-card border-t border-border-soft">
         <AnimatePresence mode="wait">
           {chatView === "categories" ? (
             <m.div
@@ -159,13 +159,13 @@ export default function FaqView({ onContactClick }: Props) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
             >
-              <p className="text-xs text-gray-400 mb-2">{t.categories}</p>
+              <p className="text-xs text-text-faint mb-2">{t.categories}</p>
               <div className="flex flex-wrap gap-2">
                 {faqData.categories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => handleCategoryClick(cat.id)}
-                    className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:border-primary hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-border-mid bg-surface-card text-text-sub hover:border-primary hover:text-primary transition-colors"
                   >
                     <EmojiIcon emoji={cat.icon} label={cat.label[locale]} size="sm" tone="neutral" />
                     <span>{cat.label[locale]}</span>
@@ -192,7 +192,7 @@ export default function FaqView({ onContactClick }: Props) {
                   <button
                     key={q.id}
                     onClick={() => handleQuestionClick(q.id)}
-                    className="text-left text-xs px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-700 hover:border-primary hover:text-primary transition-colors"
+                    className="text-left text-xs px-3 py-2 rounded-xl border border-border-mid bg-surface-card text-text-sub hover:border-primary hover:text-primary transition-colors"
                   >
                     {q.question[locale]}
                   </button>
@@ -204,7 +204,7 @@ export default function FaqView({ onContactClick }: Props) {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="px-4 py-3 bg-white border-t border-gray-100">
+      <form onSubmit={handleSubmit} className="px-4 py-3 bg-surface-card border-t border-border-soft">
         <div className="flex items-center gap-2">
           <label htmlFor="faq-input" className="sr-only">{t.inputLabel}</label>
           <input
@@ -213,12 +213,12 @@ export default function FaqView({ onContactClick }: Props) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t.placeholder}
-            className="flex-1 text-sm px-4 py-2.5 rounded-full border border-gray-200 outline-none focus:border-primary transition-colors bg-gray-50"
+            className="flex-1 text-sm px-4 py-2.5 rounded-full border border-border-mid outline-none focus:border-primary transition-colors bg-surface-page text-text-main"
           />
           <button
             type="submit"
             disabled={!input.trim()}
-            className="w-9 h-9 rounded-full bg-primary disabled:bg-gray-200 flex items-center justify-center transition-colors shrink-0"
+            className="w-9 h-9 rounded-full bg-primary disabled:bg-border-mid flex items-center justify-center transition-colors shrink-0"
             aria-label={t.sendAriaLabel}
           >
             <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

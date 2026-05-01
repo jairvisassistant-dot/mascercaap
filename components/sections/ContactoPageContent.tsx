@@ -43,7 +43,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
       </section>
 
       {/* Sección principal — info editorial + formulario */}
-      <section className="py-14 bg-white">
+      <section className="py-14 bg-surface-page">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-[1fr_1.4fr] gap-12 items-start">
 
@@ -53,12 +53,12 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                 <p className="text-xs font-bold tracking-widest text-primary uppercase mb-3">
                   {dict.contact.whoWeAre.label}
                 </p>
-                <p className="text-gray-700 leading-relaxed text-sm">
+                <p className="text-text-sub leading-relaxed text-sm">
                   {dict.contact.whoWeAre.text}
                 </p>
               </div>
 
-              <div className="space-y-0 divide-y divide-gray-100">
+              <div className="space-y-0 divide-y divide-border-soft">
 
                 {/* Ubicación */}
                 <div className="flex items-start gap-4 py-5">
@@ -69,16 +69,16 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">{t.cards.location.title}</p>
+                    <p className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.location.title}</p>
                     <a
                       href={SITE_CONFIG.mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-gray-800 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
+                      className="font-semibold text-text-sub transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
                     >
                       {SITE_CONFIG.address}
                     </a>
-                    <p className="text-sm text-gray-500">{SITE_CONFIG.addressCity}</p>
+                    <p className="text-sm text-text-muted">{SITE_CONFIG.addressCity}</p>
                   </div>
                 </div>
 
@@ -90,8 +90,8 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">{t.cards.email.title}</p>
-                    <a href={`mailto:${SITE_CONFIG.emailContact}`} className="font-semibold text-gray-800 hover:text-primary transition-colors">
+                    <p className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.email.title}</p>
+                    <a href={`mailto:${SITE_CONFIG.emailContact}`} className="font-semibold text-text-sub hover:text-primary transition-colors">
                       {SITE_CONFIG.emailContact}
                     </a>
                   </div>
@@ -105,10 +105,10 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">{t.cards.phone.title}</p>
+                    <p className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.phone.title}</p>
                     <a
                       href={`tel:${SITE_CONFIG.phoneTel}`}
-                      className="font-semibold text-gray-800 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
+                      className="font-semibold text-text-sub transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
                     >
                       {SITE_CONFIG.phoneDisplay}
                     </a>
@@ -132,15 +132,15 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
       </section>
 
       {/* Mapa */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-surface-soft">
         <div className="max-w-7xl mx-auto px-4">
-          <AnimateInView className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+          <AnimateInView className="bg-surface-card rounded-2xl overflow-hidden shadow-sm border border-border-soft">
+            <div className="px-6 py-5 border-b border-border-soft flex items-center justify-between">
               <div>
-                <h2 className="font-bold text-gray-800">{t.map.title}</h2>
-                <p className="text-sm text-gray-500 mt-0.5">{t.map.subtitle}</p>
+                <h2 className="font-bold text-text-main">{t.map.title}</h2>
+                <p className="text-sm text-text-muted mt-0.5">{t.map.subtitle}</p>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div className="flex items-center gap-2 text-sm text-text-muted">
                 <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 </svg>
