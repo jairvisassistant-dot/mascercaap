@@ -42,7 +42,9 @@ export default function FaqView({ onContactClick }: Props) {
   const [showFallbackActions, setShowFallbackActions] = useState(false);
   const [showAdvisorButton, setShowAdvisorButton] = useState(false);
   const [showLeadForm, setShowLeadForm] = useState(false);
-  const [showQrCode, setShowQrCode] = useState(false);
+  const [showConnectOptions, setShowConnectOptions] = useState(false);
+  const [connectAppUrl, setConnectAppUrl] = useState<string | null>(null);
+  const [connectWebUrl, setConnectWebUrl] = useState<string | null>(null);
   const [leadData, setLeadData] = useState<LeadData>({ nombre: "", email: "", tipo: "" });
   const [leadConsent, setLeadConsent] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -155,11 +157,14 @@ export default function FaqView({ onContactClick }: Props) {
     e.preventDefault();
     if (!leadConsent || !leadData.nombre.trim() || !leadData.tipo) return;
 
-    // Abre WA en el mismo tick del evento — evita el bloqueador de popups de iOS
-    const url = buildWhatsAppUrl(messages, leadData);
-    if (url) window.open(url, "_blank");
+    const appUrl = buildWhatsAppUrl(messages, leadData);
+    const webUrl = appUrl && SITE_CONFIG.whatsappNumber
+      ? `https://web.whatsapp.com/send?phone=${SITE_CONFIG.whatsappNumber}&text=${appUrl.split("?text=")[1] ?? ""}`
+      : null;
 
-    // Guarda el lead en background sin bloquear
+    setConnectAppUrl(appUrl);
+    setConnectWebUrl(webUrl);
+
     void fetch("/api/leads", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -173,30 +178,15 @@ export default function FaqView({ onContactClick }: Props) {
           .map((m) => m.text),
       }),
     });
+
+    setShowLeadForm(false);
+    setShowConnectOptions(true);
   }
 
   function handleLeadSkip() {
     const url = buildWhatsAppUrl(messages);
     if (url) window.open(url, "_blank");
     setShowLeadForm(false);
-  }
-
-  function handleQRClick() {
-    void fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nombre: leadData.nombre.trim(),
-        email: leadData.email.trim() || null,
-        tipo: leadData.tipo,
-        producto_interes: drawerContext?.product ?? null,
-        preguntas_bot: messages
-          .filter((m) => m.role === "user" && m.id !== "welcome")
-          .map((m) => m.text),
-      }),
-    });
-    setShowLeadForm(false);
-    setShowQrCode(true);
   }
 
   const selectedCategory = selectedCategoryId
@@ -334,36 +324,21 @@ export default function FaqView({ onContactClick }: Props) {
                 </label>
 
                 {/* Acciones */}
-                <div className="flex flex-col gap-2 pt-1">
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="submit"
-                      disabled={!leadConsent || !leadData.nombre.trim() || !leadData.tipo}
-                      className="flex-1 inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                        {WA_ICON}
-                      </svg>
-                      {t.leadSubmit}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleQRClick}
-                      disabled={!leadConsent || !leadData.nombre.trim() || !leadData.tipo}
-                      title={t.leadQrButton}
-                      className="inline-flex items-center justify-center gap-1.5 text-sm py-2.5 px-3 rounded-xl border border-border-mid text-text-sub hover:border-primary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75V16.5zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 18.75h.75v.75h-.75v-.75zM18.75 13.5h.75v.75h-.75v-.75zM18.75 18.75h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75V16.5z" />
-                      </svg>
-                      <span className="text-xs">{t.leadQrButton}</span>
-                    </button>
-                  </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="submit"
+                    disabled={!leadConsent || !leadData.nombre.trim() || !leadData.tipo}
+                    className="flex-1 inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      {WA_ICON}
+                    </svg>
+                    {t.leadSubmit}
+                  </button>
                   <button
                     type="button"
                     onClick={handleLeadSkip}
-                    className="text-xs text-text-faint hover:text-text-muted transition-colors px-2 self-start"
+                    className="text-xs text-text-faint hover:text-text-muted transition-colors px-2 shrink-0"
                   >
                     {t.leadSkip}
                   </button>
@@ -373,28 +348,55 @@ export default function FaqView({ onContactClick }: Props) {
           )}
         </AnimatePresence>
 
-        {/* QR de WhatsApp — para conectar desde el celular */}
+        {/* Opciones de conexión — aparece después de enviar el formulario */}
         <AnimatePresence>
-          {showQrCode && SITE_CONFIG.whatsappNumber && (
+          {showConnectOptions && (
             <m.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="rounded-2xl border border-border-mid bg-surface-card shadow-sm p-5 mx-1 flex flex-col items-center gap-3"
+              className="rounded-2xl border border-border-mid bg-surface-card shadow-sm p-5 mx-1 flex flex-col gap-3"
             >
-              <p className="text-sm font-semibold text-text-sub text-center">{t.leadQrTitle}</p>
-              <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-border-soft">
-                <Image
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=12&data=${encodeURIComponent(`https://wa.me/${SITE_CONFIG.whatsappNumber}`)}`}
-                  alt="WhatsApp QR"
-                  width={200}
-                  height={200}
-                  unoptimized
-                  className="rounded-xl"
-                />
-              </div>
-              <p className="text-xs text-text-muted text-center leading-relaxed">{t.leadQrHint}</p>
               <p className="text-xs text-green-600 font-medium text-center">{t.leadQrSaved}</p>
+              <p className="text-sm font-semibold text-text-sub text-center">{t.leadConnectTitle}</p>
+
+              {connectAppUrl && (
+                <button
+                  onClick={() => window.open(connectAppUrl, "_blank")}
+                  className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
+                >
+                  <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">{WA_ICON}</svg>
+                  {t.leadConnectApp}
+                </button>
+              )}
+
+              {connectWebUrl && (
+                <button
+                  onClick={() => window.open(connectWebUrl, "_blank")}
+                  className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl border border-border-mid text-text-sub hover:border-primary hover:text-primary transition-colors"
+                >
+                  {t.leadConnectWeb}
+                </button>
+              )}
+
+              {SITE_CONFIG.whatsappNumber && (
+                <>
+                  <p className="text-xs text-text-muted text-center pt-1">{t.leadConnectOr}</p>
+                  <div className="flex justify-center">
+                    <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-border-soft">
+                      <Image
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=10&data=${encodeURIComponent(`https://wa.me/${SITE_CONFIG.whatsappNumber}`)}`}
+                        alt="WhatsApp QR"
+                        width={180}
+                        height={180}
+                        unoptimized
+                        className="rounded-xl"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-text-muted text-center leading-relaxed">{t.leadQrHint}</p>
+                </>
+              )}
             </m.div>
           )}
         </AnimatePresence>
