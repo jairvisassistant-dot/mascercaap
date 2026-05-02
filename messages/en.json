@@ -199,12 +199,11 @@
     },
     "cta": {
       "badge": "Deliveries in Bogotá",
-      "title": "Ready to taste the freshness?",
+      "title": "Ready to taste the quality of our products?",
       "text": "Message us on WhatsApp for home, café, and restaurant orders. We deliver across Bogotá and coordinate each order based on area and availability.",
       "button": "Order via WhatsApp",
       "highlights": [
         "Homes, cafés, and restaurants",
-        "Deliveries across Bogotá",
         "Coordinated by area and availability"
       ]
     }

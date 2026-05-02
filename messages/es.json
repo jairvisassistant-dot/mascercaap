@@ -199,12 +199,11 @@
     },
     "cta": {
       "badge": "Entregas en Bogotá",
-      "title": "¿Listo para probar la frescura?",
+      "title": "¿Listo para probar la calidad de nuestros productos?",
       "text": "Escríbenos por WhatsApp para pedidos de hogares, cafeterías y restaurantes. Entregamos en Bogotá y coordinamos cada pedido según zona y disponibilidad.",
       "button": "Hacer pedido por WhatsApp",
       "highlights": [
         "Hogares, cafeterías y restaurantes",
-        "Entregas en Bogotá",
         "Coordinación por zona y disponibilidad"
       ]
     }
