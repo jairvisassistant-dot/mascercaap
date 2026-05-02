@@ -85,7 +85,7 @@ export default function HelpMenu({ onNavigate }: Props) {
         {SITE_CONFIG.whatsappNumber && (
           <button
             onClick={() => onNavigate("whatsapp")}
-            className="w-full flex items-center gap-4 px-6 py-4 border-b border-border-soft hover:bg-surface-page transition-colors group"
+            className="w-full flex items-center gap-4 px-6 py-4 border-b border-border-soft hover:bg-surface-page transition-colors text-left group"
           >
             <span className="text-green-600 shrink-0">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
