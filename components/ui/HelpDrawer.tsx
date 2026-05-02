@@ -8,10 +8,14 @@ import HelpMenu from "./drawer-views/HelpMenu";
 import FaqView from "./drawer-views/FaqView";
 import LegalView from "./drawer-views/LegalView";
 import ContactView from "./drawer-views/ContactView";
+import WhatsAppConnectView from "./drawer-views/WhatsAppConnectView";
 import { privacyPolicy, termsAndConditions } from "@/data/legal";
+import { SITE_CONFIG } from "@/lib/config";
 import type { Locale } from "@/lib/i18n";
 
-type View = "menu" | "faq" | "privacy" | "terms" | "contact";
+type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp";
+
+type WhatsAppState = { appUrl: string | null; webUrl: string | null; leadSaved: boolean };
 
 type Props = { onClose: () => void };
 
@@ -21,6 +25,7 @@ export default function HelpDrawer({ onClose }: Props) {
   const t = dict.helpHub;
   const { initialView } = useHelpHub();
   const [view, setView] = useState<View>(initialView);
+  const [whatsAppState, setWhatsAppState] = useState<WhatsAppState | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -52,11 +57,28 @@ export default function HelpDrawer({ onClose }: Props) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  function navigateToWhatsApp(state?: WhatsAppState) {
+    if (state) {
+      setWhatsAppState(state);
+    } else {
+      const encoded = encodeURIComponent(t.whatsappMessage);
+      const appUrl = SITE_CONFIG.whatsappNumber
+        ? `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encoded}`
+        : null;
+      const webUrl = SITE_CONFIG.whatsappNumber
+        ? `https://web.whatsapp.com/send?phone=${SITE_CONFIG.whatsappNumber}&text=${encoded}`
+        : null;
+      setWhatsAppState({ appUrl, webUrl, leadSaved: false });
+    }
+    setView("whatsapp");
+  }
+
   function getTitle(): string {
     if (view === "menu") return t.title;
     if (view === "faq") return t.menu.faq;
     if (view === "privacy") return privacyPolicy.title[locale];
     if (view === "terms") return termsAndConditions.title[locale];
+    if (view === "whatsapp") return t.menu.whatsapp;
     return t.menu.contact;
   }
 
@@ -132,10 +154,15 @@ export default function HelpDrawer({ onClose }: Props) {
               className="flex-1 flex flex-col overflow-hidden"
             >
               {view === "menu" && (
-                <HelpMenu onNavigate={setView} />
+                <HelpMenu onNavigate={(v) => v === "whatsapp" ? navigateToWhatsApp() : setView(v)} />
               )}
               {view === "faq" && (
-                <FaqView onContactClick={() => setView("contact")} />
+                <FaqView
+                  onContactClick={() => setView("contact")}
+                  onWhatsAppConnect={(appUrl, webUrl, leadSaved) =>
+                    navigateToWhatsApp({ appUrl, webUrl, leadSaved })
+                  }
+                />
               )}
               {view === "privacy" && (
                 <LegalView document={privacyPolicy} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
@@ -145,6 +172,13 @@ export default function HelpDrawer({ onClose }: Props) {
               )}
               {view === "contact" && (
                 <ContactView />
+              )}
+              {view === "whatsapp" && whatsAppState && (
+                <WhatsAppConnectView
+                  appUrl={whatsAppState.appUrl}
+                  webUrl={whatsAppState.webUrl}
+                  leadSaved={whatsAppState.leadSaved}
+                />
               )}
             </m.div>
           </AnimatePresence>
