@@ -4,7 +4,7 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { SITE_CONFIG } from "@/lib/config";
 
 
-type View = "menu" | "faq" | "privacy" | "terms" | "contact";
+type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp";
 
 type Props = {
   onNavigate: (view: View) => void;
