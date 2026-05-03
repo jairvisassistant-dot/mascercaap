@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import HeroCarousel from "@/components/ui/HeroCarousel";
 import ProductCategories from "@/components/sections/ProductCategories";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
+import YieldCalculator from "@/components/sections/YieldCalculator";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
 import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
@@ -66,6 +67,8 @@ export default async function HomePage({ params }: Props) {
       <ProductCategories dict={dict} lang={lang} />
 
       <FeaturedProducts products={featuredProducts} dict={dict} />
+
+      <YieldCalculator dict={dict} />
 
       <WhyChooseUs dict={dict} />
 

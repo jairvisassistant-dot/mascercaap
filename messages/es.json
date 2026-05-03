@@ -657,6 +657,24 @@
     "sendAriaLabel": "Enviar mensaje",
     "inputLabel": "Escribe tu pregunta"
   },
+  "yieldCalculator": {
+    "sectionLabel": "Rendimiento real",
+    "title": "¿Cuánto rinde una pulpa?",
+    "subtitle": "Calculá cuántos paquetes necesitás para tu negocio y compará contra fruta fresca.",
+    "step1Label": "¿Para cuántos vasos?",
+    "step2Label": "¿Qué fruta?",
+    "step3Label": "¿Qué presentación?",
+    "customPlaceholder": "Cantidad de vasos",
+    "resultPacksNeeded": "Necesitás {count} paquete(s) de {fruit} {presentation}",
+    "resultCupsYield": "Rinde aprox. {cups} vasos de 12oz",
+    "freshComparisonTitle": "Comparado con fruta fresca:",
+    "freshKg": "~{kg} kg de fruta fresca",
+    "minutesSaved": "~{minutes} min de procesamiento ahorrados",
+    "noWaste": "Cero desperdicio de cáscara y semillas",
+    "ctaWhatsapp": "Cotizar {count} paquete(s) por WhatsApp",
+    "disclaimer": "Valores aproximados según preparación estándar. Puede variar según receta e intensidad.",
+    "back": "Volver"
+  },
   "legal": {
     "lastUpdated": "Última actualización",
     "ctaButton": "Contactar",

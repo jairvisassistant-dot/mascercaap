@@ -657,6 +657,24 @@
     "sendAriaLabel": "Send message",
     "inputLabel": "Type your question"
   },
+  "yieldCalculator": {
+    "sectionLabel": "Real yield",
+    "title": "How much does a pulp yield?",
+    "subtitle": "Calculate how many packs you need for your business and compare against fresh fruit.",
+    "step1Label": "How many cups?",
+    "step2Label": "Which fruit?",
+    "step3Label": "Which pack size?",
+    "customPlaceholder": "Number of cups",
+    "resultPacksNeeded": "You need {count} pack(s) of {fruit} {presentation}",
+    "resultCupsYield": "Yields approx. {cups} cups (12oz)",
+    "freshComparisonTitle": "Compared to fresh fruit:",
+    "freshKg": "~{kg} kg of fresh fruit",
+    "minutesSaved": "~{minutes} min of processing saved",
+    "noWaste": "Zero peel and seed waste",
+    "ctaWhatsapp": "Quote {count} pack(s) via WhatsApp",
+    "disclaimer": "Approximate values based on standard preparation. May vary by recipe and intensity.",
+    "back": "Back"
+  },
   "legal": {
     "lastUpdated": "Last updated",
     "ctaButton": "Contact us",
