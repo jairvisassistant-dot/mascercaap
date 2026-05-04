@@ -157,12 +157,10 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
               {t.sectionLabel}
             </span>
           </div>
-          <div className="md:grid md:grid-cols-[3fr_2fr] md:gap-12 md:items-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-3 md:mb-0 text-balance">
-              {t.title}
-            </h2>
-            <p className="text-text-muted leading-relaxed">{t.subtitle}</p>
-          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-text-main mb-3">
+            {t.title}
+          </h2>
+          <p className="text-text-muted leading-relaxed">{t.subtitle}</p>
         </m.div>
 
         <div className="bg-white dark:bg-surface-card rounded-2xl border border-border-mid shadow-sm p-6 md:p-8">
