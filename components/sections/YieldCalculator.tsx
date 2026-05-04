@@ -27,7 +27,8 @@ const FRUIT_CUP_COLORS: Record<FruitKey, string> = {
   lulo:         "#86efac",
   guanabana:    "#6ee7b7",
   fresa:        "#f87171",
-  pina:         "#fde047",
+  guayaba:      "#fb7185",
+  frutos_rojos: "#dc2626",
   tomate_arbol: "#f97316",
 }
 

@@ -9,7 +9,8 @@ export type FruitKey =
   | "lulo"
   | "guanabana"
   | "fresa"
-  | "pina"
+  | "guayaba"
+  | "frutos_rojos"
   | "tomate_arbol"
 
 export interface FruitData {
@@ -22,10 +23,11 @@ export const FRUIT_DATA: Record<FruitKey, FruitData> = {
   // Solo lavar — sin cáscara ni pepas grandes
   mora:         { label: "Mora",            freshKgPer1kgPulp: 2.8, processingMinPer1kg: 12 },
   fresa:        { label: "Fresa",           freshKgPer1kgPulp: 1.3, processingMinPer1kg: 10 },
+  frutos_rojos: { label: "Frutos Rojos",    freshKgPer1kgPulp: 2.5, processingMinPer1kg: 12 },
   // Cáscara que pelar, sin pepas grandes
   maracuya:     { label: "Maracuyá",        freshKgPer1kgPulp: 4.0, processingMinPer1kg: 60 },
   lulo:         { label: "Lulo",            freshKgPer1kgPulp: 3.0, processingMinPer1kg: 35 },
-  pina:         { label: "Piña",            freshKgPer1kgPulp: 1.8, processingMinPer1kg: 35 },
+  guayaba:      { label: "Guayaba",         freshKgPer1kgPulp: 2.2, processingMinPer1kg: 25 },
   tomate_arbol: { label: "Tomate de árbol", freshKgPer1kgPulp: 2.5, processingMinPer1kg: 28 },
   // Cáscara + pepas/pepa grande — los más laboriosos
   mango:        { label: "Mango",           freshKgPer1kgPulp: 2.0, processingMinPer1kg: 45 },
