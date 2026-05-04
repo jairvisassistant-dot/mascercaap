@@ -31,12 +31,6 @@ const FRUIT_CUP_COLORS: Record<FruitKey, string> = {
   tomate_arbol: "#f97316",
 }
 
-const PRESENTATION_OPTIONS: { value: Presentation; label: string }[] = [
-  { value: "120g", label: "120g" },
-  { value: "300g", label: "300g" },
-  { value: "1000g", label: "1000g" },
-]
-
 const FRUIT_OPTIONS = (Object.keys(FRUIT_DATA) as FruitKey[]).map((key) => ({
   value: key,
   label: FRUIT_DATA[key].label,
@@ -192,7 +186,6 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           <div className={isCompleted ? "mb-6 pb-6 border-b border-border-mid" : ""}>
             {step === 1 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-                {/* Izquierda: tipo de preparación */}
                 <div>
                   <p className="text-sm font-semibold text-text-main mb-3">
                     <span className="text-primary mr-2">1.</span>{t.prepLabel}
@@ -203,7 +196,6 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                     onChange={handlePrepSelect}
                   />
                 </div>
-                {/* Derecha: cantidad de vasos */}
                 <div>
                   <p className="text-sm font-semibold text-text-main mb-3">
                     {t.step1Label}
@@ -270,16 +262,17 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
             </div>
           )}
 
-          {/* Paso 3 */}
-          {(step === 3 || step === "result") && targetCups && selectedPrep && (
+          {/* Paso 3 — comparativa animada de presentaciones */}
+          {(step === 3 || step === "result") && targetCups && selectedPrep && selectedFruit && (
             <div className={step !== 3 ? "mb-6 pb-6 border-b border-border-mid" : ""}>
-              <p className="text-sm font-semibold text-text-main mb-3">
+              <p className="text-sm font-semibold text-text-main mb-4">
                 <span className="text-primary mr-2">3.</span>{t.step3Label}
               </p>
               {step === 3 ? (
                 <PresentationComparison
                   targetCups={targetCups}
                   prep={selectedPrep}
+                  fruit={selectedFruit}
                   onSelect={handlePresentationSelect}
                 />
               ) : (
@@ -370,74 +363,114 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Paso 3 — Comparativa de presentaciones
+// Paso 3 — Tarjetas comparativas animadas (una por presentación)
 // ─────────────────────────────────────────────────────────────────
 const ALL_PRESENTATIONS: Presentation[] = ["120g", "300g", "1000g"]
+const MAX_MINI_CUPS = 32
 
 function PresentationComparison({
   targetCups,
   prep,
+  fruit,
   onSelect,
 }: {
   targetCups: number
   prep: PrepType
+  fruit: FruitKey
   onSelect: (value: Presentation) => void
 }) {
+  const color = FRUIT_CUP_COLORS[fruit]
+
   const cards = ALL_PRESENTATIONS.map((pres) => {
-    const packs   = packsNeeded(targetCups, pres, prep)
-    const cpp     = cupsPerPack(pres, prep)
-    const total   = cpp * packs
-    const extra   = total - targetCups
+    const packs = packsNeeded(targetCups, pres, prep)
+    const cpp   = cupsPerPack(pres, prep)
+    const total = cpp * packs
+    const extra = total - targetCups
     return { pres, packs, cpp, total, extra }
   })
 
-  // La de mayor cups/pack siempre es la de mayor rendimiento (1000g)
   const maxCpp = Math.max(...cards.map((c) => c.cpp))
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      {cards.map(({ pres, packs, cpp, total, extra }, i) => {
-        const isBest = cpp === maxCpp
+    <div className="space-y-3">
+      {cards.map(({ pres, packs, cpp, total, extra }, cardIdx) => {
+        const isBest  = cpp === maxCpp
+        const visible = Math.min(total, MAX_MINI_CUPS)
+        const overflow = total - visible
+
         return (
           <m.button
             key={pres}
             type="button"
             onClick={() => onSelect(pres)}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.09, duration: 0.35, ease: "easeOut" }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.96 }}
-            className={`relative text-left w-full rounded-xl border p-4 transition-colors cursor-pointer ${
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: cardIdx * 0.13, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ scale: 1.01, transition: { duration: 0.15 } }}
+            whileTap={{ scale: 0.975 }}
+            className={`relative w-full text-left rounded-xl border p-5 transition-colors cursor-pointer ${
               isBest
                 ? "border-primary/50 bg-primary/5 dark:bg-primary/10"
                 : "border-border-mid bg-white dark:bg-surface-card hover:border-primary/30"
             }`}
           >
-            {isBest && (
-              <span className="absolute top-2 right-2 text-[9px] font-bold text-primary uppercase tracking-wider bg-primary/10 px-1.5 py-0.5 rounded-full">
-                Mayor rendimiento
+            {/* Shimmer al hacer clic — Idea 5 */}
+            <AnimatePresence>
+              <m.span
+                key={`shimmer-${pres}`}
+                className="absolute inset-0 rounded-xl pointer-events-none"
+                initial={false}
+              />
+            </AnimatePresence>
+
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-bold text-text-main">{pres}</span>
+                {isBest && (
+                  <span className="text-[9px] font-bold text-primary uppercase tracking-wider bg-primary/10 px-1.5 py-0.5 rounded-full">
+                    Mayor rendimiento
+                  </span>
+                )}
+              </div>
+              <span className={`text-xs font-medium shrink-0 ${extra === 0 ? "text-primary" : "text-text-muted/70"}`}>
+                {extra === 0 ? "✓ Sin excedente" : `+${extra} vasos extra`}
               </span>
-            )}
-
-            {/* Presentación */}
-            <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{pres}</p>
-
-            {/* Paquetes */}
-            <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-4xl font-bold text-text-main tabular-nums leading-none">{packs}</span>
-              <span className="text-sm text-text-muted pb-0.5">{packs === 1 ? "paquete" : "paquetes"}</span>
             </div>
 
-            {/* Vasos totales */}
-            <p className="text-sm font-medium text-text-main mt-2">~{total} vasos</p>
+            {/* Odómetro de paquetes — Idea 1 */}
+            <div className="flex items-baseline gap-1.5 mb-4">
+              <AnimatedNumber
+                target={packs}
+                className="text-5xl font-bold text-primary tabular-nums leading-none"
+              />
+              <span className="text-base text-text-muted">{packs === 1 ? "paquete" : "paquetes"}</span>
+              <span className="text-sm text-text-muted ml-auto self-end pb-0.5">~{total} vasos</span>
+            </div>
 
-            {/* Excedente o exacto */}
-            {extra === 0 ? (
-              <p className="text-xs font-semibold text-primary mt-1">✓ Sin excedente</p>
-            ) : (
-              <p className="text-xs text-text-muted/70 mt-1">+{extra} vasos extra</p>
-            )}
+            {/* Vasos que se llenan — Idea 3 */}
+            <div className="flex flex-wrap gap-1.5 items-end">
+              {Array.from({ length: visible }).map((_, j) => (
+                <AnimatedCup
+                  key={j}
+                  color={color}
+                  delay={cardIdx * 0.13 + j * 0.03}
+                  index={cardIdx * 1000 + j}
+                  cupWidth={14}
+                  cupHeight={20}
+                />
+              ))}
+              {overflow > 0 && (
+                <m.span
+                  className="text-xs font-semibold text-text-muted self-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: cardIdx * 0.13 + visible * 0.03 + 0.25, duration: 0.3 }}
+                >
+                  +{overflow}
+                </m.span>
+              )}
+            </div>
           </m.button>
         )
       })}
@@ -500,13 +533,25 @@ function CupGrid({ totalCups, fruit }: { totalCups: number; fruit: FruitKey }) {
   )
 }
 
-function AnimatedCup({ color, delay, index }: { color: string; delay: number; index: number }) {
+function AnimatedCup({
+  color,
+  delay,
+  index,
+  cupWidth = 18,
+  cupHeight = 26,
+}: {
+  color: string
+  delay: number
+  index: number
+  cupWidth?: number
+  cupHeight?: number
+}) {
   const id = `cup-clip-${index}`
   return (
     <m.svg
       viewBox="0 0 18 26"
-      width="18"
-      height="26"
+      width={cupWidth}
+      height={cupHeight}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.2, ease: "easeOut" }}
@@ -516,9 +561,7 @@ function AnimatedCup({ color, delay, index }: { color: string; delay: number; in
           <polygon points="2,3 16,3 13,24 5,24" />
         </clipPath>
       </defs>
-      {/* Fondo del vaso */}
       <polygon points="2,3 16,3 13,24 5,24" fill="#f3f4f6" />
-      {/* Líquido que sube */}
       <m.rect
         x="-1" y="0" width="20" height="25"
         fill={color}
@@ -528,7 +571,6 @@ function AnimatedCup({ color, delay, index }: { color: string; delay: number; in
         animate={{ y: 2 }}
         transition={{ delay: delay + 0.12, duration: 0.55, ease: [0.32, 0, 0.67, 0] }}
       />
-      {/* Contorno */}
       <polygon points="2,3 16,3 13,24 5,24" fill="none" stroke="#d1d5db" strokeWidth="1" strokeLinejoin="round" />
     </m.svg>
   )
@@ -553,7 +595,6 @@ function PreparationTimeline({ minutesSaved }: { minutesSaved: number }) {
         Tiempo de preparación comparado
       </p>
 
-      {/* Fruta fresca */}
       <div className="space-y-1.5">
         <div className="flex justify-between text-xs">
           <span className="text-text-muted">🍋 Fruta fresca</span>
@@ -569,7 +610,6 @@ function PreparationTimeline({ minutesSaved }: { minutesSaved: number }) {
         </div>
       </div>
 
-      {/* Pulpa */}
       <div className="space-y-1.5">
         <div className="flex justify-between text-xs">
           <span className="text-text-muted">🧊 Pulpa Más Cerca</span>
@@ -585,7 +625,6 @@ function PreparationTimeline({ minutesSaved }: { minutesSaved: number }) {
         </div>
       </div>
 
-      {/* Ahorro */}
       <m.p
         className="text-sm font-semibold text-primary"
         initial={{ opacity: 0, x: -8 }}
