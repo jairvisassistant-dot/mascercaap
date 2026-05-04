@@ -15,7 +15,6 @@ const base = {
   consentAccepted: true as const,
   profile:         "cafeteria" as const,
   items:           [baseItem],
-  zone:            "bogota" as const,
   urgency:         "manana" as const,
 }
 

@@ -9,7 +9,6 @@ const validOrder = {
   items: [
     { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
   ],
-  zone:   "bogota",
   urgency: "manana",
 } as const
 

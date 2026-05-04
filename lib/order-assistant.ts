@@ -117,7 +117,6 @@ export function buildWhatsappMessage(order: OrderInput, waNumber: string): strin
     "Productos:",
     ...itemLines,
     "",
-    `Zona de entrega: ${ZONE_LABELS[order.zone]}`,
     `Urgencia: ${URGENCY_LABELS[order.urgency]}`,
     "",
     "¿Me confirman disponibilidad y precio?",
@@ -217,7 +216,6 @@ export function buildOrderEmailHtml(data: OrderInput): string {
   const email    = data.email           ? escapeHtml(data.email)            : "—"
   const whatsapp = data.whatsapp_number ? escapeHtml(data.whatsapp_number)  : "—"
   const profile  = escapeHtml(PROFILE_LABELS[data.profile])
-  const zone     = escapeHtml(ZONE_LABELS[data.zone])
   const urgency  = escapeHtml(URGENCY_LABELS[data.urgency])
 
   return `
@@ -260,13 +258,9 @@ export function buildOrderEmailHtml(data: OrderInput): string {
                   <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;">Email</p>
                   <p style="margin:4px 0 0;font-size:15px;color:#111827;">${email}</p>
                 </td></tr>
-                <tr><td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">
+                <tr><td style="padding:8px 0;">
                   <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;">WhatsApp</p>
                   <p style="margin:4px 0 0;font-size:15px;color:#111827;">${whatsapp}</p>
-                </td></tr>
-                <tr><td style="padding:8px 0;">
-                  <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;">Zona</p>
-                  <p style="margin:4px 0 0;font-size:15px;color:#111827;">${zone}</p>
                 </td></tr>
               </table>
             </td>
