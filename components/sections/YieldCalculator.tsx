@@ -363,10 +363,10 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Paso 3 — Tarjetas comparativas animadas (una por presentación)
+// Paso 3 — Tarjetas comparativas premium (una por presentación)
 // ─────────────────────────────────────────────────────────────────
 const ALL_PRESENTATIONS: Presentation[] = ["120g", "300g", "1000g"]
-const MAX_MINI_CUPS = 32
+const MAX_MINI_CUPS = 36
 
 function PresentationComparison({
   targetCups,
@@ -386,92 +386,129 @@ function PresentationComparison({
     const cpp   = cupsPerPack(pres, prep)
     const total = cpp * packs
     const extra = total - targetCups
-    return { pres, packs, cpp, total, extra }
+    const fc    = freshComparison(packs, pres, fruit)
+    return { pres, packs, cpp, total, extra, fc }
   })
 
   const maxCpp = Math.max(...cards.map((c) => c.cpp))
 
   return (
-    <div className="space-y-3">
-      {cards.map(({ pres, packs, cpp, total, extra }, cardIdx) => {
-        const isBest  = cpp === maxCpp
-        const visible = Math.min(total, MAX_MINI_CUPS)
+    <div className="space-y-4">
+      {cards.map(({ pres, packs, cpp, total, extra, fc }, cardIdx) => {
+        const isBest   = cpp === maxCpp
+        const visible  = Math.min(total, MAX_MINI_CUPS)
         const overflow = total - visible
+        const timeValue = fc.minutesSaved >= 60
+          ? Math.round(fc.minutesSaved / 60)
+          : fc.minutesSaved
+        const timeUnit  = fc.minutesSaved >= 60 ? "h ahorradas" : "min ahorrados"
 
         return (
           <m.button
             key={pres}
             type="button"
             onClick={() => onSelect(pres)}
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: cardIdx * 0.13, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ scale: 1.01, transition: { duration: 0.15 } }}
-            whileTap={{ scale: 0.975 }}
-            className={`relative w-full text-left rounded-xl border p-5 transition-colors cursor-pointer ${
+            transition={{ delay: cardIdx * 0.14, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ scale: 1.005, transition: { duration: 0.15 } }}
+            whileTap={{ scale: 0.985 }}
+            className={`relative w-full text-left rounded-2xl border-2 p-6 transition-colors cursor-pointer ${
               isBest
-                ? "border-primary/50 bg-primary/5 dark:bg-primary/10"
-                : "border-border-mid bg-white dark:bg-surface-card hover:border-primary/30"
+                ? "border-primary/40 bg-primary/4 dark:bg-primary/10 shadow-sm shadow-primary/10"
+                : "border-border-mid bg-white dark:bg-surface-card hover:border-primary/25"
             }`}
           >
-            {/* Shimmer al hacer clic — Idea 5 */}
-            <AnimatePresence>
-              <m.span
-                key={`shimmer-${pres}`}
-                className="absolute inset-0 rounded-xl pointer-events-none"
-                initial={false}
-              />
-            </AnimatePresence>
-
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-bold text-text-main">{pres}</span>
+            {/* ── Encabezado ─────────────────────── */}
+            <div className="flex items-start justify-between mb-5">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <span className="text-xl font-black text-text-main tracking-tight">{pres}</span>
                 {isBest && (
-                  <span className="text-[9px] font-bold text-primary uppercase tracking-wider bg-primary/10 px-1.5 py-0.5 rounded-full">
-                    Mayor rendimiento
+                  <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-primary uppercase tracking-widest bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
+                    ★ Mayor rendimiento
                   </span>
                 )}
               </div>
               {extra === 0 ? (
-                <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0">
+                <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/60 px-3 py-1 rounded-full text-xs font-bold shrink-0">
                   ✓ Sin excedente
                 </span>
               ) : (
-                <span className="inline-flex items-center bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-700 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0">
+                <span className="inline-flex items-center bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-700/60 px-3 py-1 rounded-full text-xs font-bold shrink-0">
                   +{extra} vasos extra
                 </span>
               )}
             </div>
 
-            {/* Odómetro paquetes (izq) + vasos animados (der) — Idea 1 */}
-            <div className="flex items-end justify-between gap-4 mb-4">
-              <div className="flex items-baseline gap-1.5">
+            {/* ── 4 métricas ─────────────────────── */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-5 gap-x-4 pb-5 mb-5 border-b border-border-soft">
+
+              {/* Métrica 1: Paquetes */}
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
+                  Paquetes
+                </p>
                 <AnimatedNumber
                   target={packs}
-                  className="text-5xl font-bold text-primary tabular-nums leading-none"
+                  className="text-5xl font-black text-primary tabular-nums leading-none"
                 />
-                <span className="text-base text-text-muted">{packs === 1 ? "paquete" : "paquetes"}</span>
+                <p className="text-xs font-semibold text-primary/70 mt-1">
+                  {pres} c/u
+                </p>
               </div>
-              <div className="text-right">
-                <div className="flex items-baseline gap-1 justify-end">
-                  <AnimatedNumber
-                    target={total}
-                    className="text-3xl font-bold text-text-main tabular-nums leading-none"
+
+              {/* Métrica 2: Vasos */}
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
+                  Vasos de 12oz
+                </p>
+                <AnimatedNumber
+                  target={total}
+                  className="text-5xl font-black text-text-main tabular-nums leading-none"
+                />
+                <p className="text-xs font-semibold text-text-muted mt-1">vasos totales</p>
+              </div>
+
+              {/* Métrica 3: Fruta fresca equivalente */}
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
+                  Fruta fresca equiv.
+                </p>
+                <div className="flex items-baseline gap-1 leading-none">
+                  <AnimatedFloat
+                    target={fc.freshKg}
+                    className="text-5xl font-black text-amber-500 tabular-nums leading-none"
                   />
-                  <span className="text-sm font-medium text-text-muted">vasos</span>
+                  <span className="text-xl font-black text-amber-400">kg</span>
                 </div>
-                <p className="text-xs text-text-muted/60 mt-0.5">de 12oz</p>
+                <p className="text-xs font-semibold text-amber-500/80 mt-1">habrías necesitado</p>
+              </div>
+
+              {/* Métrica 4: Tiempo ahorrado */}
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
+                  Tiempo ahorrado
+                </p>
+                <div className="flex items-baseline gap-1 leading-none">
+                  <AnimatedNumber
+                    target={timeValue}
+                    className="text-5xl font-black text-sky-500 tabular-nums leading-none"
+                  />
+                  <span className="text-xl font-black text-sky-400">
+                    {fc.minutesSaved >= 60 ? "h" : "min"}
+                  </span>
+                </div>
+                <p className="text-xs font-semibold text-sky-500/80 mt-1">{timeUnit}</p>
               </div>
             </div>
 
-            {/* Vasos que se llenan — Idea 3 */}
+            {/* ── Vasos que se llenan — Idea 3 ──── */}
             <div className="flex flex-wrap gap-1.5 items-end">
               {Array.from({ length: visible }).map((_, j) => (
                 <AnimatedCup
                   key={j}
                   color={color}
-                  delay={cardIdx * 0.13 + j * 0.03}
+                  delay={cardIdx * 0.14 + j * 0.025}
                   index={cardIdx * 1000 + j}
                   cupWidth={14}
                   cupHeight={20}
@@ -479,10 +516,10 @@ function PresentationComparison({
               ))}
               {overflow > 0 && (
                 <m.span
-                  className="text-xs font-semibold text-text-muted self-center"
+                  className="text-xs font-bold text-text-muted self-center ml-1"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: cardIdx * 0.13 + visible * 0.03 + 0.25, duration: 0.3 }}
+                  transition={{ delay: cardIdx * 0.14 + visible * 0.025 + 0.2, duration: 0.3 }}
                 >
                   +{overflow}
                 </m.span>
@@ -496,17 +533,27 @@ function PresentationComparison({
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Idea 1 — Odómetro animado
+// Idea 1 — Odómetro animado (enteros)
 // ─────────────────────────────────────────────────────────────────
 function AnimatedNumber({ target, className }: { target: number; className?: string }) {
   const mv = useMotionValue(0)
   const display = useTransform(mv, (v) => Math.round(v))
 
   useEffect(() => {
-    const controls = animate(mv, target, {
-      duration: 1.1,
-      ease: [0.16, 1, 0.3, 1],
-    })
+    const controls = animate(mv, target, { duration: 1.1, ease: [0.16, 1, 0.3, 1] })
+    return () => controls.stop()
+  }, [target])
+
+  return <m.span className={className}>{display}</m.span>
+}
+
+// Odómetro para decimales (e.g. 1.2 kg)
+function AnimatedFloat({ target, className }: { target: number; className?: string }) {
+  const mv = useMotionValue(0)
+  const display = useTransform(mv, (v) => v.toFixed(1))
+
+  useEffect(() => {
+    const controls = animate(mv, target, { duration: 1.1, ease: [0.16, 1, 0.3, 1] })
     return () => controls.stop()
   }, [target])
 
