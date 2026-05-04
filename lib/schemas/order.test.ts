@@ -15,7 +15,6 @@ const base = {
   consentAccepted: true as const,
   profile:         "cafeteria" as const,
   items:           [baseItem],
-  urgency:         "manana" as const,
 }
 
 describe("orderItemSchema", () => {

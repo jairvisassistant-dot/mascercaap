@@ -18,7 +18,6 @@ const baseOrder: OrderInput = {
   items: [
     { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
   ],
-  urgency: "manana",
 }
 
 // ──────────────────────────────────────────────

@@ -117,8 +117,6 @@ export function buildWhatsappMessage(order: OrderInput, waNumber: string): strin
     "Productos:",
     ...itemLines,
     "",
-    `Urgencia: ${URGENCY_LABELS[order.urgency]}`,
-    "",
     "¿Me confirman disponibilidad y precio?",
   ]
   const text = lines.join("\n")
@@ -216,7 +214,6 @@ export function buildOrderEmailHtml(data: OrderInput): string {
   const email    = data.email           ? escapeHtml(data.email)            : "—"
   const whatsapp = data.whatsapp_number ? escapeHtml(data.whatsapp_number)  : "—"
   const profile  = escapeHtml(PROFILE_LABELS[data.profile])
-  const urgency  = escapeHtml(URGENCY_LABELS[data.urgency])
 
   return `
 <!DOCTYPE html>
@@ -272,13 +269,6 @@ export function buildOrderEmailHtml(data: OrderInput): string {
                 Productos solicitados
               </p>
               ${buildItemsTableHtml(data.items)}
-            </td>
-          </tr>
-
-          <tr>
-            <td style="padding:8px 40px 32px;">
-              <p style="margin:0 0 6px;font-size:12px;color:#9ca3af;text-transform:uppercase;">Urgencia</p>
-              <p style="margin:0;font-size:15px;color:#111827;">${urgency}</p>
             </td>
           </tr>
 

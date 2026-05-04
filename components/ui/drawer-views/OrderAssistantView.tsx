@@ -11,17 +11,15 @@ import {
   formatCOP,
   FRUIT_OPTIONS,
   QUANTITY_OPTIONS,
-  URGENCY_LABELS,
   PROFILE_LABELS,
   type ClientProfile,
-  type Urgency,
 } from "@/lib/order-assistant"
 import { useDictionary } from "@/lib/i18n/DictionaryProvider"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 
 type Presentation = "120g" | "300g" | "1000g"
-type Step = 1 | 2 | 3 | 4 | 5 | "cart" | 6 | 7 | "result"
+type Step = 1 | 2 | 3 | 4 | 5 | "cart" | 6 | "result"
 type SubmitStatus = "idle" | "sending" | "success" | "error"
 
 const CUSTOM_QTY = -1
@@ -39,7 +37,6 @@ export default function OrderAssistantView() {
   const [step, setStep]       = useState<Step>(1)
   const [profile, setProfile] = useState<ClientProfile | null>(null)
   const [items, setItems]     = useState<OrderItem[]>([])
-  const [urgency, setUrgency] = useState<Urgency | null>(null)
 
   // ── Current item being built (steps 2–5) ─────────────────────
   const [curProductType, setCurProductType]   = useState<string | null>(null)
@@ -58,8 +55,8 @@ export default function OrderAssistantView() {
 
   // ── Derived ───────────────────────────────────────────────────
   const totals   = items.length > 0 ? calculateOrderTotal(items) : null
-  const stepNum  = step === "result" ? 8 : step === "cart" ? 5.5 : (step as number)
-  const progress = Math.min((stepNum / 7) * 100, 100)
+  const stepNum  = step === "result" ? 7 : step === "cart" ? 5.5 : (step as number)
+  const progress = Math.min((stepNum / 6) * 100, 100)
 
   const profileOptions = Object.entries(PROFILE_LABELS).map(([v, label]) => ({
     value: v as ClientProfile,
@@ -82,8 +79,6 @@ export default function OrderAssistantView() {
     ...QUANTITY_OPTIONS.map((v) => ({ value: v, label: String(v) })),
     { value: CUSTOM_QTY, label: "Personalizado" },
   ]
-
-  const urgencyOptions = Object.entries(URGENCY_LABELS).map(([v, label])=> ({ value: v as Urgency, label }))
 
   // ── Helpers ───────────────────────────────────────────────────
   function resetCurrentItem() {
@@ -131,7 +126,7 @@ export default function OrderAssistantView() {
   }
 
   async function handleEmailSubmit() {
-    if (!canSubmit() || !profile || !urgency || items.length === 0) return
+    if (!canSubmit() || !profile || items.length === 0) return
 
     const payload: OrderInput = {
       nombre:          nombre.trim(),
@@ -140,7 +135,6 @@ export default function OrderAssistantView() {
       consentAccepted: true,
       profile,
       items,
-      urgency,
     }
 
     setStatus("sending")
@@ -166,7 +160,6 @@ export default function OrderAssistantView() {
 
   function handleReset() {
     setStep(1); setProfile(null); setItems([])
-    setUrgency(null)
     resetCurrentItem()
     setNombre(""); setEmail(""); setWaNumber(""); setConsent(false)
     setStatus("idle"); setWaUrl(null)
@@ -478,34 +471,16 @@ export default function OrderAssistantView() {
               </m.div>
             )}
 
-            {/* ── Pasos globales 6–7 ───────────────────────────── */}
-            {(step === 6 || step === 7) && (
+            {/* ── Paso 6 — Datos de contacto ───────────────────── */}
+            {step === 6 && (
               <>
-                {/* Paso 6 — Urgencia */}
-                <StepBlock
-                  number={6}
-                  label={t.step7Label}
-                  active={step === 6}
-                  summary={urgency ? URGENCY_LABELS[urgency] : null}
-                  onEdit={() => { setStep(6); setUrgency(null) }}
-                  backLabel={t.back}
-                >
-                  <ChipSelector
-                    options={urgencyOptions}
-                    selected={urgency}
-                    onChange={(v) => { setUrgency(v); setStep(7) }}
-                  />
-                </StepBlock>
-
-                {/* Paso 7 — Datos de contacto */}
-                {step === 7 && (
                   <m.div
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
                   >
                     <p className="text-sm font-semibold text-text-main mb-4">
-                      <span className="text-primary mr-2">7.</span>{t.step8Label}
+                      <span className="text-primary mr-2">6.</span>{t.step8Label}
                     </p>
 
                     <div className="space-y-3">
@@ -569,7 +544,6 @@ export default function OrderAssistantView() {
                       </button>
                     </div>
                   </m.div>
-                )}
               </>
             )}
           </>

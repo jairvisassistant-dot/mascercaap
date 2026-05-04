@@ -18,7 +18,6 @@ export const orderSchema = z.object({
   consentAccepted: z.literal(true),
   profile:         z.enum(["hogar", "cafeteria", "evento", "distribucion"]),
   items:           z.array(orderItemSchema).min(1).max(20),
-  urgency:         z.enum(["hoy", "manana", "semana", "sin_urgencia"]),
 }).refine(
   (data) => Boolean(data.email) || Boolean(data.whatsapp_number),
   { message: "Se requiere email o número de WhatsApp", path: ["email"] }

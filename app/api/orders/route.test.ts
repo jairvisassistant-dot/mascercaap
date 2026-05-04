@@ -9,7 +9,6 @@ const validOrder = {
   items: [
     { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
   ],
-  urgency: "manana",
 } as const
 
 function createRequest(body: unknown, ip = "198.51.100.10") {
