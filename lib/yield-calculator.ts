@@ -1,5 +1,7 @@
 export type Presentation = "120g" | "300g" | "1000g"
 
+export type PrepType = "jugo" | "frappe"
+
 export type FruitKey =
   | "maracuya"
   | "mora"
@@ -33,17 +35,21 @@ export const PACK_GRAMS: Record<Presentation, number> = {
   "1000g": 1000,
 }
 
-// Gramos de pulpa por vaso de 12oz con intensidad estándar (MVP fijo)
-const GRAMS_PER_CUP = 55
+// Fuente: Alimentos SAS Colombia — 100g pulpa → 400ml jugo → 88.75g/355ml (12oz) ≈ 90g
+// Fuente: industria smoothie bars — ~45% fruta por volumen × densidad 1.07 g/ml ≈ 150g/12oz
+export const GRAMS_PER_CUP: Record<PrepType, number> = {
+  jugo:   90,
+  frappe: 150,
+}
 
 export const CUP_OPTIONS = [25, 50, 100, 200] as const
 
-export function cupsPerPack(presentation: Presentation): number {
-  return Math.floor(PACK_GRAMS[presentation] / GRAMS_PER_CUP)
+export function cupsPerPack(presentation: Presentation, prep: PrepType): number {
+  return Math.max(1, Math.floor(PACK_GRAMS[presentation] / GRAMS_PER_CUP[prep]))
 }
 
-export function packsNeeded(targetCups: number, presentation: Presentation): number {
-  return Math.ceil(targetCups / cupsPerPack(presentation))
+export function packsNeeded(targetCups: number, presentation: Presentation, prep: PrepType): number {
+  return Math.ceil(targetCups / cupsPerPack(presentation, prep))
 }
 
 export interface FreshComparison {
@@ -71,11 +77,14 @@ export function buildWhatsappMessage(params: {
   targetCups: number
   packsCount: number
   whatsappNumber: string
+  prepType: PrepType
 }): string {
   const fruitLabel = FRUIT_DATA[params.fruit].label
+  const prepLabel = params.prepType === "jugo" ? "Jugo" : "Frappe"
   const message = [
     "Hola, quiero cotizar un pedido de pulpa:",
     "",
+    `Preparación: ${prepLabel}`,
     `Fruta: ${fruitLabel}`,
     `Presentación: ${params.presentation}`,
     `Objetivo: ${params.targetCups} vasos de 12oz`,

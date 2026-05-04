@@ -12,6 +12,7 @@ import {
   CUP_OPTIONS,
   type FruitKey,
   type Presentation,
+  type PrepType,
 } from "@/lib/yield-calculator"
 import { SITE_CONFIG } from "@/lib/config"
 import type { Dictionary } from "@/lib/i18n"
@@ -62,7 +63,13 @@ function BackLink({ label, onClick }: { label: string; onClick: () => void }) {
 export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   const t = dict.yieldCalculator
 
+  const PREP_OPTIONS: { value: PrepType; label: string }[] = [
+    { value: "jugo",   label: t.prepJugo },
+    { value: "frappe", label: t.prepFrappe },
+  ]
+
   const [step, setStep] = useState<Step>(1)
+  const [selectedPrep, setSelectedPrep] = useState<PrepType | null>(null)
   const [targetCups, setTargetCups] = useState<number | null>(null)
   const [showCustomInput, setShowCustomInput] = useState(false)
   const [customCups, setCustomCups] = useState("")
@@ -74,6 +81,15 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     { value: CUSTOM_VALUE, label: "Personalizado" },
   ]
 
+  function advanceStep1IfReady(prep: PrepType | null, cups: number | null) {
+    if (prep !== null && cups !== null) setStep(2)
+  }
+
+  function handlePrepSelect(value: PrepType) {
+    setSelectedPrep(value)
+    advanceStep1IfReady(value, targetCups)
+  }
+
   function handleCupsSelect(value: number) {
     if (value === CUSTOM_VALUE) {
       setShowCustomInput(true)
@@ -82,7 +98,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
       setShowCustomInput(false)
       setCustomCups("")
       setTargetCups(value)
-      setStep(2)
+      advanceStep1IfReady(selectedPrep, value)
     }
   }
 
@@ -91,7 +107,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     if (!isNaN(parsed) && parsed > 0) {
       setTargetCups(parsed)
       setShowCustomInput(false)
-      setStep(2)
+      advanceStep1IfReady(selectedPrep, parsed)
     }
   }
 
@@ -107,6 +123,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 
   function handleReset() {
     setStep(1)
+    setSelectedPrep(null)
     setTargetCups(null)
     setShowCustomInput(false)
     setCustomCups("")
@@ -115,27 +132,33 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   }
 
   function handleBackToStep1() {
-    setStep(1); setTargetCups(null); setShowCustomInput(false)
-    setCustomCups(""); setSelectedFruit(null); setSelectedPresentation(null)
+    setStep(1)
+    setSelectedPrep(null)
+    setTargetCups(null)
+    setShowCustomInput(false)
+    setCustomCups("")
+    setSelectedFruit(null)
+    setSelectedPresentation(null)
   }
   function handleBackToStep2() { setStep(2); setSelectedFruit(null); setSelectedPresentation(null) }
   function handleBackToStep3() { setStep(3); setSelectedPresentation(null) }
 
-  const packs = targetCups && selectedPresentation
-    ? packsNeeded(targetCups, selectedPresentation)
+  const packs = targetCups && selectedPresentation && selectedPrep
+    ? packsNeeded(targetCups, selectedPresentation, selectedPrep)
     : null
 
   const comparison = packs && selectedPresentation && selectedFruit
     ? freshComparison(packs, selectedPresentation, selectedFruit)
     : null
 
-  const whatsappUrl = packs && selectedPresentation && selectedFruit && targetCups
+  const whatsappUrl = packs && selectedPresentation && selectedFruit && targetCups && selectedPrep
     ? buildWhatsappMessage({
         fruit: selectedFruit,
         presentation: selectedPresentation,
         targetCups,
         packsCount: packs,
         whatsappNumber: SITE_CONFIG.whatsappNumber,
+        prepType: selectedPrep,
       })
     : null
 
@@ -165,45 +188,62 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 
         <div className="bg-white dark:bg-surface-card rounded-2xl border border-border-mid shadow-sm p-6 md:p-8">
 
-          {/* Paso 1 */}
+          {/* Paso 1 — dos columnas: tipo de preparación + cantidad */}
           <div className={isCompleted ? "mb-6 pb-6 border-b border-border-mid" : ""}>
-            <p className="text-sm font-semibold text-text-main mb-3">
-              <span className="text-primary mr-2">1.</span>{t.step1Label}
-            </p>
             {step === 1 ? (
-              <>
-                <ChipSelector
-                  options={cupChipOptions}
-                  selected={showCustomInput ? CUSTOM_VALUE : targetCups}
-                  onChange={handleCupsSelect}
-                />
-                {showCustomInput && (
-                  <div className="mt-3 flex gap-2 items-center">
-                    <input
-                      type="number"
-                      min={1}
-                      max={9999}
-                      value={customCups}
-                      onChange={(e) => setCustomCups(e.target.value)}
-                      placeholder={t.customPlaceholder}
-                      className="w-40 rounded-lg border border-border-mid px-3 py-2 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                      onKeyDown={(e) => e.key === "Enter" && handleCustomCupsConfirm()}
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onClick={handleCustomCupsConfirm}
-                      disabled={!customCups || parseInt(customCups, 10) <= 0}
-                      className="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 transition-opacity"
-                    >
-                      OK
-                    </button>
-                  </div>
-                )}
-              </>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+                {/* Izquierda: tipo de preparación */}
+                <div>
+                  <p className="text-sm font-semibold text-text-main mb-3">
+                    <span className="text-primary mr-2">1.</span>{t.prepLabel}
+                  </p>
+                  <ChipSelector
+                    options={PREP_OPTIONS}
+                    selected={selectedPrep}
+                    onChange={handlePrepSelect}
+                  />
+                </div>
+                {/* Derecha: cantidad de vasos */}
+                <div>
+                  <p className="text-sm font-semibold text-text-main mb-3">
+                    {t.step1Label}
+                  </p>
+                  <ChipSelector
+                    options={cupChipOptions}
+                    selected={showCustomInput ? CUSTOM_VALUE : targetCups}
+                    onChange={handleCupsSelect}
+                  />
+                  {showCustomInput && (
+                    <div className="mt-3 flex gap-2 items-center">
+                      <input
+                        type="number"
+                        min={1}
+                        max={9999}
+                        value={customCups}
+                        onChange={(e) => setCustomCups(e.target.value)}
+                        placeholder={t.customPlaceholder}
+                        className="w-40 rounded-lg border border-border-mid px-3 py-2 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
+                        onKeyDown={(e) => e.key === "Enter" && handleCustomCupsConfirm()}
+                        autoFocus
+                      />
+                      <button
+                        type="button"
+                        onClick={handleCustomCupsConfirm}
+                        disabled={!customCups || parseInt(customCups, 10) <= 0}
+                        className="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 transition-opacity"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             ) : (
-              <p className="text-text-muted text-sm flex flex-wrap items-center">
-                <span>{targetCups} vasos</span>
+              <p className="text-sm font-semibold text-text-main flex flex-wrap items-center">
+                <span className="text-primary mr-2">1.</span>
+                <span className="text-text-muted font-normal">
+                  {selectedPrep === "jugo" ? t.prepJugo : t.prepFrappe} — {targetCups} vasos
+                </span>
                 <BackLink label={t.back} onClick={handleBackToStep1} />
               </p>
             )}
@@ -253,7 +293,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 
           {/* ── Resultado animado ─────────────────────────────────── */}
           <AnimatePresence>
-            {step === "result" && packs && comparison && selectedFruit && selectedPresentation && targetCups && (
+            {step === "result" && packs && comparison && selectedFruit && selectedPresentation && targetCups && selectedPrep && (
               <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -283,7 +323,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   {/* ── Idea 3: Vasos que se llenan ──────────────── */}
                   <div className="px-5 py-5 border-b border-primary/10">
                     <CupGrid
-                      totalCups={cupsPerPack(selectedPresentation) * packs}
+                      totalCups={cupsPerPack(selectedPresentation, selectedPrep) * packs}
                       fruit={selectedFruit}
                     />
                   </div>
