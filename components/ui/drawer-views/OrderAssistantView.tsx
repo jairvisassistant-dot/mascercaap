@@ -64,6 +64,11 @@ export default function OrderAssistantView() {
   const stepNum  = step === "result" ? 9 : step === "cart" ? 5.5 : (step as number)
   const progress = Math.min((stepNum / 8) * 100, 100)
 
+  const profileOptions = Object.entries(PROFILE_LABELS).map(([v, label]) => ({
+    value: v as ClientProfile,
+    label,
+  }))
+
   const productOptions = profile
     ? getProductOptionsForProfile(profile).map((v) => ({ value: v, label: v }))
     : []
