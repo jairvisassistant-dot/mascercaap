@@ -3,7 +3,7 @@ import { z } from "zod"
 export const orderItemSchema = z.object({
   productType:  z.string().min(1).max(60),
   fruit:        z.string().min(1).max(60),
-  presentation: z.enum(["120g", "300g", "1000g"]),
+  presentation: z.enum(["120g", "300g", "1000g"]).nullable(),
   quantity:     z.number().int().min(1).max(9999),
 })
 

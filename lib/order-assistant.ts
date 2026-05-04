@@ -11,7 +11,7 @@ export const PRODUCT_OPTIONS_BY_PROFILE: Record<ClientProfile, string[]> = {
   distribucion: ["Pulpas", "Zumos", "Lácteos"],
 }
 
-export const FRUIT_OPTIONS = [
+export const PULPA_FRUITS = [
   "Maracuyá",
   "Mora",
   "Mango",
@@ -21,6 +21,20 @@ export const FRUIT_OPTIONS = [
   "Piña",
   "Tomate de árbol",
 ]
+
+export const PRODUCT_OPTIONS_BY_TYPE: Record<string, string[]> = {
+  "Pulpas": PULPA_FRUITS,
+  "Zumos":  PULPA_FRUITS,
+  "Lácteos": [
+    "Kumis Del Hato 250ml",
+    "Kumis Yolito 900ml",
+    "Yogurt Del Hato 250ml",
+  ],
+}
+
+export function getProductOptionsForType(productType: string): string[] {
+  return PRODUCT_OPTIONS_BY_TYPE[productType] ?? []
+}
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
 
@@ -62,7 +76,8 @@ export function getProductOptionsForProfile(profile: ClientProfile): string[] {
   return PRODUCT_OPTIONS_BY_PROFILE[profile]
 }
 
-export function getUnitPrice(fruit: string, presentation: string): number | null {
+export function getUnitPrice(fruit: string, presentation: string | null | undefined): number | null {
+  if (!presentation) return null
   return PRICES_COP[fruit]?.[presentation] ?? null
 }
 
@@ -103,10 +118,10 @@ export function formatCOP(n: number): string {
 }
 
 export function buildWhatsappMessage(order: OrderInput, waNumber: string): string {
-  const itemLines = order.items.map(
-    (item, i) =>
-      `${i + 1}. ${item.productType} — ${item.fruit} ${item.presentation} × ${item.quantity} unidades`
-  )
+  const itemLines = order.items.map((item, i) => {
+    const pres = item.presentation ? ` ${item.presentation}` : ""
+    return `${i + 1}. ${item.productType} — ${item.fruit}${pres} × ${item.quantity} unidades`
+  })
 
   const lines = [
     "Hola, quiero hacer un pedido:",
@@ -143,7 +158,7 @@ function buildItemsTableHtml(items: OrderItem[]): string {
             ${escapeHtml(item.productType)} — ${escapeHtml(item.fruit)}
           </td>
           <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;text-align:center;">
-            ${escapeHtml(item.presentation)}
+            ${item.presentation ? escapeHtml(item.presentation) : "—"}
           </td>
           <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;text-align:center;">
             ${item.quantity}

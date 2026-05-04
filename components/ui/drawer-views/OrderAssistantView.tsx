@@ -5,11 +5,11 @@ import { m, AnimatePresence } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
   getProductOptionsForProfile,
+  getProductOptionsForType,
   buildWhatsappMessage,
   getUnitPrice,
   calculateOrderTotal,
   formatCOP,
-  FRUIT_OPTIONS,
   QUANTITY_OPTIONS,
   PROFILE_LABELS,
   type ClientProfile,
@@ -67,7 +67,8 @@ export default function OrderAssistantView() {
     ? getProductOptionsForProfile(profile).map((v) => ({ value: v, label: v }))
     : []
 
-  const fruitOptions = FRUIT_OPTIONS.map((v) => ({ value: v, label: v }))
+  const fruitOptions = getProductOptionsForType(curProductType ?? "").map((v) => ({ value: v, label: v }))
+  const isLacteos = curProductType === "Lácteos"
 
   // Chips de presentación con precio cuando hay fruta seleccionada
   const presentationOptions = PRESENTATION_OPTIONS.map(({ value, label }) => {
@@ -204,7 +205,7 @@ export default function OrderAssistantView() {
                     const price = getUnitPrice(item.fruit, item.presentation)
                     return (
                       <div key={i} className="flex justify-between text-sm">
-                        <span className="text-text-sub">{item.fruit} {item.presentation} × {item.quantity} {t.unitsShort}</span>
+                        <span className="text-text-sub">{item.fruit}{item.presentation ? ` ${item.presentation}` : ""} × {item.quantity} {t.unitsShort}</span>
                         <span className="text-text-muted">{price !== null ? formatCOP(price * item.quantity) : "—"}</span>
                       </div>
                     )
@@ -308,7 +309,11 @@ export default function OrderAssistantView() {
                     <ChipSelector
                       options={fruitOptions}
                       selected={curFruit}
-                      onChange={(v) => { setCurFruit(v); setCurPresentation(null); setStep(4) }}
+                      onChange={(v) => {
+                        setCurFruit(v)
+                        setCurPresentation(null)
+                        setStep(isLacteos ? 5 : 4)
+                      }}
                     />
                   </StepBlock>
                 )}
@@ -406,7 +411,7 @@ export default function OrderAssistantView() {
                       >
                         <div>
                           <p className="text-sm font-medium text-text-main">
-                            {item.fruit} {item.presentation}
+                            {item.fruit}{item.presentation ? ` ${item.presentation}` : ""}
                           </p>
                           <p className="text-xs text-text-muted">
                             {item.quantity} {t.unitsShort}

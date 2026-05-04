@@ -18,8 +18,13 @@ const base = {
 }
 
 describe("orderItemSchema", () => {
-  it("accepts valid item", () => {
+  it("accepts valid item with presentation", () => {
     expect(orderItemSchema.safeParse(baseItem).success).toBe(true)
+  })
+
+  it("accepts Lácteos item with null presentation", () => {
+    const lacteos = { productType: "Lácteos", fruit: "Kumis Del Hato 250ml", presentation: null, quantity: 6 }
+    expect(orderItemSchema.safeParse(lacteos).success).toBe(true)
   })
 
   it("fails with quantity 0", () => {
@@ -30,7 +35,7 @@ describe("orderItemSchema", () => {
     expect(orderItemSchema.safeParse({ ...baseItem, quantity: 10000 }).success).toBe(false)
   })
 
-  it("fails with invalid presentation", () => {
+  it("fails with invalid presentation string", () => {
     expect(orderItemSchema.safeParse({ ...baseItem, presentation: "500g" }).success).toBe(false)
   })
 })

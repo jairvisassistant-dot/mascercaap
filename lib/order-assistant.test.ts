@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
   getProductOptionsForProfile,
+  getProductOptionsForType,
   getUnitPrice,
   getDiscountRate,
   calculateOrderTotal,
@@ -36,6 +37,33 @@ describe("getProductOptionsForProfile", () => {
 })
 
 // ──────────────────────────────────────────────
+// getProductOptionsForType
+// ──────────────────────────────────────────────
+describe("getProductOptionsForType", () => {
+  it("Pulpas returns fruit list", () => {
+    const opts = getProductOptionsForType("Pulpas")
+    expect(opts).toContain("Maracuyá")
+    expect(opts).toContain("Mora")
+  })
+
+  it("Zumos returns same fruit list as Pulpas", () => {
+    expect(getProductOptionsForType("Zumos")).toEqual(getProductOptionsForType("Pulpas"))
+  })
+
+  it("Lácteos returns dairy products", () => {
+    const opts = getProductOptionsForType("Lácteos")
+    expect(opts).toContain("Kumis Del Hato 250ml")
+    expect(opts).toContain("Kumis Yolito 900ml")
+    expect(opts).toContain("Yogurt Del Hato 250ml")
+    expect(opts).not.toContain("Maracuyá")
+  })
+
+  it("unknown type returns empty array", () => {
+    expect(getProductOptionsForType("Desconocido")).toEqual([])
+  })
+})
+
+// ──────────────────────────────────────────────
 // getUnitPrice
 // ──────────────────────────────────────────────
 describe("getUnitPrice", () => {
@@ -53,6 +81,10 @@ describe("getUnitPrice", () => {
 
   it("returns null for unknown presentation", () => {
     expect(getUnitPrice("Maracuyá", "500g")).toBeNull()
+  })
+
+  it("returns null when presentation is null (Lácteos)", () => {
+    expect(getUnitPrice("Kumis Del Hato 250ml", null)).toBeNull()
   })
 })
 
