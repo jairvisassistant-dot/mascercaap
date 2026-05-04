@@ -35,8 +35,22 @@ describe("orderItemSchema", () => {
     expect(orderItemSchema.safeParse({ ...baseItem, quantity: 10000 }).success).toBe(false)
   })
 
-  it("fails with invalid presentation string", () => {
-    expect(orderItemSchema.safeParse({ ...baseItem, presentation: "500g" }).success).toBe(false)
+  it("accepts Zumos presentation in ml", () => {
+    const item = { productType: "Zumos", fruit: "Limón", presentation: "600ml", quantity: 5 }
+    expect(orderItemSchema.safeParse(item).success).toBe(true)
+  })
+
+  it("accepts 1L presentation for Zumos", () => {
+    const item = { productType: "Zumos", fruit: "Limonada con Cereza", presentation: "1L", quantity: 3 }
+    expect(orderItemSchema.safeParse(item).success).toBe(true)
+  })
+
+  it("fails with empty presentation string", () => {
+    expect(orderItemSchema.safeParse({ ...baseItem, presentation: "" }).success).toBe(false)
+  })
+
+  it("fails with presentation string over 20 chars", () => {
+    expect(orderItemSchema.safeParse({ ...baseItem, presentation: "a".repeat(21) }).success).toBe(false)
   })
 })
 

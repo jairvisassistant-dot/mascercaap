@@ -6,6 +6,7 @@ import ChipSelector from "@/components/ui/ChipSelector"
 import {
   getProductOptionsForProfile,
   getProductOptionsForType,
+  getPresentationsForProduct,
   buildWhatsappMessage,
   getUnitPrice,
   calculateOrderTotal,
@@ -18,16 +19,10 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 
-type Presentation = "120g" | "300g" | "1000g"
 type Step = 1 | 2 | 3 | 4 | 5 | "cart" | 6 | "result"
 type SubmitStatus = "idle" | "sending" | "success" | "error"
 
 const CUSTOM_QTY = -1
-const PRESENTATION_OPTIONS: { value: Presentation; label: string }[] = [
-  { value: "120g",   label: "120g" },
-  { value: "300g",   label: "300g" },
-  { value: "1000g",  label: "1000g" },
-]
 
 export default function OrderAssistantView() {
   const { dict } = useDictionary()
@@ -41,7 +36,7 @@ export default function OrderAssistantView() {
   // ── Current item being built (steps 2–5) ─────────────────────
   const [curProductType, setCurProductType]   = useState<string | null>(null)
   const [curFruit, setCurFruit]               = useState<string | null>(null)
-  const [curPresentation, setCurPresentation] = useState<Presentation | null>(null)
+  const [curPresentation, setCurPresentation] = useState<string | null>(null)
   const [showCustomQty, setShowCustomQty]     = useState(false)
   const [customQty, setCustomQty]             = useState("")
 
@@ -70,10 +65,14 @@ export default function OrderAssistantView() {
   const fruitOptions = getProductOptionsForType(curProductType ?? "").map((v) => ({ value: v, label: v }))
   const isLacteos = curProductType === "Lácteos"
 
-  // Chips de presentación con precio cuando hay fruta seleccionada
-  const presentationOptions = PRESENTATION_OPTIONS.map(({ value, label }) => {
-    const price = curFruit ? getUnitPrice(curFruit, value) : null
-    return { value, label: price !== null ? `${label} — ${formatCOP(price)}` : label }
+  // Chips de presentación dinámicos según tipo de producto y fruta/producto seleccionado
+  const presentationOptions = (
+    curProductType && curFruit
+      ? getPresentationsForProduct(curProductType, curFruit)
+      : []
+  ).map((pres) => {
+    const price = getUnitPrice(curFruit ?? "", pres)
+    return { value: pres, label: price !== null ? `${pres} — ${formatCOP(price)}` : pres }
   })
 
   const quantityOptions = [
@@ -91,7 +90,8 @@ export default function OrderAssistantView() {
   }
 
   function commitItem(qty: number) {
-    if (!curProductType || !curFruit || !curPresentation) return
+    if (!curProductType || !curFruit) return
+    if (!isLacteos && curPresentation === null) return
     setItems((prev) => [
       ...prev,
       { productType: curProductType, fruit: curFruit, presentation: curPresentation, quantity: qty },
@@ -331,7 +331,7 @@ export default function OrderAssistantView() {
                     <ChipSelector
                       options={presentationOptions}
                       selected={curPresentation}
-                      onChange={(v) => { setCurPresentation(v as Presentation); setStep(5) }}
+                      onChange={(v) => { setCurPresentation(v); setStep(5) }}
                     />
                   </StepBlock>
                 )}
