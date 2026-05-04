@@ -62,8 +62,16 @@ export default function OrderAssistantView() {
     ? getProductOptionsForProfile(profile).map((v) => ({ value: v, label: v }))
     : []
 
-  const fruitOptions = getProductOptionsForType(curProductType ?? "").map((v) => ({ value: v, label: v }))
   const isLacteos = curProductType === "Lácteos"
+
+  const fruitOptions = getProductOptionsForType(curProductType ?? "").map((v) => {
+    const price = isLacteos ? getUnitPrice(v, null) : null
+    return {
+      value: v,
+      label: v,
+      sublabel: price !== null ? formatCOP(price) : undefined,
+    }
+  })
 
   // Chips de presentación dinámicos según tipo de producto y fruta/producto seleccionado
   const presentationOptions = (
