@@ -271,16 +271,16 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           )}
 
           {/* Paso 3 */}
-          {(step === 3 || step === "result") && (
+          {(step === 3 || step === "result") && targetCups && selectedPrep && (
             <div className={step !== 3 ? "mb-6 pb-6 border-b border-border-mid" : ""}>
               <p className="text-sm font-semibold text-text-main mb-3">
                 <span className="text-primary mr-2">3.</span>{t.step3Label}
               </p>
               {step === 3 ? (
-                <ChipSelector
-                  options={PRESENTATION_OPTIONS}
-                  selected={selectedPresentation}
-                  onChange={handlePresentationSelect}
+                <PresentationComparison
+                  targetCups={targetCups}
+                  prep={selectedPrep}
+                  onSelect={handlePresentationSelect}
                 />
               ) : (
                 <p className="text-text-muted text-sm flex flex-wrap items-center">
@@ -366,6 +366,82 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
         </div>
       </div>
     </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Paso 3 — Comparativa de presentaciones
+// ─────────────────────────────────────────────────────────────────
+const ALL_PRESENTATIONS: Presentation[] = ["120g", "300g", "1000g"]
+
+function PresentationComparison({
+  targetCups,
+  prep,
+  onSelect,
+}: {
+  targetCups: number
+  prep: PrepType
+  onSelect: (value: Presentation) => void
+}) {
+  const cards = ALL_PRESENTATIONS.map((pres) => {
+    const packs   = packsNeeded(targetCups, pres, prep)
+    const cpp     = cupsPerPack(pres, prep)
+    const total   = cpp * packs
+    const extra   = total - targetCups
+    return { pres, packs, cpp, total, extra }
+  })
+
+  // La de mayor cups/pack siempre es la de mayor rendimiento (1000g)
+  const maxCpp = Math.max(...cards.map((c) => c.cpp))
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {cards.map(({ pres, packs, cpp, total, extra }, i) => {
+        const isBest = cpp === maxCpp
+        return (
+          <m.button
+            key={pres}
+            type="button"
+            onClick={() => onSelect(pres)}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.09, duration: 0.35, ease: "easeOut" }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.96 }}
+            className={`relative text-left w-full rounded-xl border p-4 transition-colors cursor-pointer ${
+              isBest
+                ? "border-primary/50 bg-primary/5 dark:bg-primary/10"
+                : "border-border-mid bg-white dark:bg-surface-card hover:border-primary/30"
+            }`}
+          >
+            {isBest && (
+              <span className="absolute top-2 right-2 text-[9px] font-bold text-primary uppercase tracking-wider bg-primary/10 px-1.5 py-0.5 rounded-full">
+                Mayor rendimiento
+              </span>
+            )}
+
+            {/* Presentación */}
+            <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{pres}</p>
+
+            {/* Paquetes */}
+            <div className="flex items-baseline gap-1 mb-1">
+              <span className="text-4xl font-bold text-text-main tabular-nums leading-none">{packs}</span>
+              <span className="text-sm text-text-muted pb-0.5">{packs === 1 ? "paquete" : "paquetes"}</span>
+            </div>
+
+            {/* Vasos totales */}
+            <p className="text-sm font-medium text-text-main mt-2">~{total} vasos</p>
+
+            {/* Excedente o exacto */}
+            {extra === 0 ? (
+              <p className="text-xs font-semibold text-primary mt-1">✓ Sin excedente</p>
+            ) : (
+              <p className="text-xs text-text-muted/70 mt-1">+{extra} vasos extra</p>
+            )}
+          </m.button>
+        )
+      })}
+    </div>
   )
 }
 

@@ -727,7 +727,7 @@
     "prepFrappe": "Frappe",
     "step1Label": "¿Para cuántos vasos?",
     "step2Label": "¿Qué fruta?",
-    "step3Label": "¿Qué presentación?",
+    "step3Label": "¿Cuál presentación te conviene más?",
     "customPlaceholder": "Cantidad de vasos",
     "resultPacksNeeded": "Necesitás {count} paquete(s) de {fruit} {presentation}",
     "resultCupsYield": "Rinde aprox. {cups} vasos de 12oz",

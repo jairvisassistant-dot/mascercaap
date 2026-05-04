@@ -727,7 +727,7 @@
     "prepFrappe": "Frappe",
     "step1Label": "How many cups?",
     "step2Label": "Which fruit?",
-    "step3Label": "Which pack size?",
+    "step3Label": "Which pack size works best for you?",
     "customPlaceholder": "Number of cups",
     "resultPacksNeeded": "You need {count} pack(s) of {fruit} {presentation}",
     "resultCupsYield": "Yields approx. {cups} cups (12oz)",
