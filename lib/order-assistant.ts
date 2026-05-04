@@ -5,9 +5,9 @@ export type DeliveryZone   = "bogota" | "medellin" | "cali" | "otra"
 export type Urgency        = "hoy" | "manana" | "semana" | "sin_urgencia"
 
 export const PRODUCT_OPTIONS_BY_PROFILE: Record<ClientProfile, string[]> = {
-  hogar:        ["Pulpas", "Zumos"],
+  hogar:        ["Pulpas", "Zumos", "Lácteos"],
   cafeteria:    ["Pulpas", "Zumos", "Lácteos"],
-  evento:       ["Pulpas", "Zumos"],
+  evento:       ["Pulpas", "Zumos", "Lácteos"],
   distribucion: ["Pulpas", "Zumos", "Lácteos"],
 }
 

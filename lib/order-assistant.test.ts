@@ -24,24 +24,15 @@ const baseOrder: OrderInput = {
 // getProductOptionsForProfile
 // ──────────────────────────────────────────────
 describe("getProductOptionsForProfile", () => {
-  it("hogar does not include Lácteos", () => {
-    const opts = getProductOptionsForProfile("hogar")
-    expect(opts).not.toContain("Lácteos")
-    expect(opts).toContain("Pulpas")
-    expect(opts).toContain("Zumos")
-  })
-
-  it("cafeteria includes Lácteos", () => {
-    expect(getProductOptionsForProfile("cafeteria")).toContain("Lácteos")
-  })
-
-  it("evento does not include Lácteos", () => {
-    expect(getProductOptionsForProfile("evento")).not.toContain("Lácteos")
-  })
-
-  it("distribucion includes Lácteos", () => {
-    expect(getProductOptionsForProfile("distribucion")).toContain("Lácteos")
-  })
+  it.each(["hogar", "cafeteria", "evento", "distribucion"] as const)(
+    "%s includes all three categories",
+    (profile) => {
+      const opts = getProductOptionsForProfile(profile)
+      expect(opts).toContain("Pulpas")
+      expect(opts).toContain("Zumos")
+      expect(opts).toContain("Lácteos")
+    }
+  )
 })
 
 // ──────────────────────────────────────────────
