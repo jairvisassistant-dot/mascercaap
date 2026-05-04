@@ -433,19 +433,36 @@ function PresentationComparison({
                   </span>
                 )}
               </div>
-              <span className={`text-xs font-medium shrink-0 ${extra === 0 ? "text-primary" : "text-text-muted/70"}`}>
-                {extra === 0 ? "✓ Sin excedente" : `+${extra} vasos extra`}
-              </span>
+              {extra === 0 ? (
+                <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0">
+                  ✓ Sin excedente
+                </span>
+              ) : (
+                <span className="inline-flex items-center bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-700 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0">
+                  +{extra} vasos extra
+                </span>
+              )}
             </div>
 
-            {/* Odómetro de paquetes — Idea 1 */}
-            <div className="flex items-baseline gap-1.5 mb-4">
-              <AnimatedNumber
-                target={packs}
-                className="text-5xl font-bold text-primary tabular-nums leading-none"
-              />
-              <span className="text-base text-text-muted">{packs === 1 ? "paquete" : "paquetes"}</span>
-              <span className="text-sm text-text-muted ml-auto self-end pb-0.5">~{total} vasos</span>
+            {/* Odómetro paquetes (izq) + vasos animados (der) — Idea 1 */}
+            <div className="flex items-end justify-between gap-4 mb-4">
+              <div className="flex items-baseline gap-1.5">
+                <AnimatedNumber
+                  target={packs}
+                  className="text-5xl font-bold text-primary tabular-nums leading-none"
+                />
+                <span className="text-base text-text-muted">{packs === 1 ? "paquete" : "paquetes"}</span>
+              </div>
+              <div className="text-right">
+                <div className="flex items-baseline gap-1 justify-end">
+                  <AnimatedNumber
+                    target={total}
+                    className="text-3xl font-bold text-text-main tabular-nums leading-none"
+                  />
+                  <span className="text-sm font-medium text-text-muted">vasos</span>
+                </div>
+                <p className="text-xs text-text-muted/60 mt-0.5">de 12oz</p>
+              </div>
             </div>
 
             {/* Vasos que se llenan — Idea 3 */}
