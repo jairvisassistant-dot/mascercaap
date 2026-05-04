@@ -46,8 +46,14 @@ describe("getProductOptionsForType", () => {
     expect(opts).toContain("Mora")
   })
 
-  it("Zumos returns same fruit list as Pulpas", () => {
-    expect(getProductOptionsForType("Zumos")).toEqual(getProductOptionsForType("Pulpas"))
+  it("Zumos returns zumo products, not pulpa fruits", () => {
+    const opts = getProductOptionsForType("Zumos")
+    expect(opts).toContain("Limón")
+    expect(opts).toContain("Limonada con Cereza")
+    expect(opts).toContain("Limonada con Coco")
+    expect(opts).toContain("Maracuyá")
+    expect(opts).not.toContain("Mora")
+    expect(opts).not.toContain("Guayaba")
   })
 
   it("Lácteos returns dairy products", () => {
@@ -137,10 +143,10 @@ describe("calculateOrderTotal", () => {
   })
 
   it("applies 15% discount for 50+ units", () => {
-    const items = [{ productType: "Pulpas", fruit: "Piña", presentation: "120g" as const, quantity: 50 }]
+    const items = [{ productType: "Pulpas", fruit: "Mora", presentation: "120g" as const, quantity: 50 }]
     const t = calculateOrderTotal(items)
     expect(t.discountRate).toBe(0.15)
-    expect(t.discount).toBe(Math.round(2400 * 50 * 0.15))
+    expect(t.discount).toBe(Math.round(3200 * 50 * 0.15))
   })
 })
 

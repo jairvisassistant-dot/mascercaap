@@ -18,13 +18,21 @@ export const PULPA_FRUITS = [
   "Lulo",
   "Guanábana",
   "Fresa",
-  "Piña",
+  "Guayaba",
+  "Frutos Rojos",
   "Tomate de árbol",
+]
+
+export const ZUMOS_PRODUCTS = [
+  "Limón",
+  "Limonada con Cereza",
+  "Limonada con Coco",
+  "Maracuyá",
 ]
 
 export const PRODUCT_OPTIONS_BY_TYPE: Record<string, string[]> = {
   "Pulpas": PULPA_FRUITS,
-  "Zumos":  PULPA_FRUITS,
+  "Zumos":  ZUMOS_PRODUCTS,
   "Lácteos": [
     "Kumis Del Hato 250ml",
     "Kumis Yolito 900ml",
@@ -34,6 +42,20 @@ export const PRODUCT_OPTIONS_BY_TYPE: Record<string, string[]> = {
 
 export function getProductOptionsForType(productType: string): string[] {
   return PRODUCT_OPTIONS_BY_TYPE[productType] ?? []
+}
+
+export const PULPA_PRESENTATIONS = ["120g", "300g", "1000g"] as const
+
+export const ZUMOS_PRESENTATIONS: Record<string, string[]> = {
+  "Limón":               ["600ml", "1L", "2L", "5L"],
+  "Limonada con Cereza": ["350ml", "1L", "2L"],
+  "Limonada con Coco":   ["350ml", "1L", "2L"],
+  "Maracuyá":            ["350ml", "1L", "2L"],
+}
+
+export function getPresentationsForProduct(productType: string, fruit: string): string[] {
+  if (productType === "Zumos") return ZUMOS_PRESENTATIONS[fruit] ?? []
+  return [...PULPA_PRESENTATIONS]
 }
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
@@ -62,14 +84,19 @@ export const PROFILE_LABELS: Record<ClientProfile, string> = {
 // Precios COP por fruta y presentación (pulpas de fruta congelada)
 // Valores provisorios — actualizar en Sanity Studio cuando esté disponible
 export const PRICES_COP: Record<string, Record<string, number>> = {
-  "Maracuyá":         { "120g": 2800,  "300g": 6800,  "1000g": 19500 },
+  "Maracuyá":         { "120g": 2800,  "300g": 6800,  "1000g": 19500, "350ml": 3500, "1L": 7500, "2L": 13000 },
   "Mora":             { "120g": 3200,  "300g": 7400,  "1000g": 21000 },
   "Mango":            { "120g": 2600,  "300g": 6200,  "1000g": 17500 },
   "Lulo":             { "120g": 3000,  "300g": 7000,  "1000g": 20000 },
   "Guanábana":        { "120g": 3800,  "300g": 8800,  "1000g": 24500 },
   "Fresa":            { "120g": 2900,  "300g": 6600,  "1000g": 18500 },
-  "Piña":             { "120g": 2400,  "300g": 5600,  "1000g": 16000 },
+  "Guayaba":          { "120g": 2700,  "300g": 6300,  "1000g": 17800 },
+  "Frutos Rojos":     { "120g": 3500,  "300g": 8000,  "1000g": 22500 },
   "Tomate de árbol":  { "120g": 2800,  "300g": 6500,  "1000g": 18000 },
+  // Zumos — precios provisorios, actualizar en Sanity
+  "Limón":               { "600ml": 4500,  "1L": 7000,  "2L": 12000, "5L": 25000 },
+  "Limonada con Cereza": { "350ml": 3500,  "1L": 7500,  "2L": 13000 },
+  "Limonada con Coco":   { "350ml": 3500,  "1L": 7500,  "2L": 13000 },
 }
 
 export function getProductOptionsForProfile(profile: ClientProfile): string[] {
