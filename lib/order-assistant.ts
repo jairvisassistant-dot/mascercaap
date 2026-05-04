@@ -81,6 +81,14 @@ export const PROFILE_LABELS: Record<ClientProfile, string> = {
   distribucion: "Distribución",
 }
 
+// Precios COP por producto lácteo (precio por unidad)
+// Valores provisorios — actualizar cuando el cliente pase la lista de precios
+export const LACTEOS_PRICES: Record<string, number> = {
+  "Kumis Del Hato 250ml":  2800,
+  "Kumis Yolito 900ml":    8500,
+  "Yogurt Del Hato 250ml": 3200,
+}
+
 // Precios COP por fruta y presentación (pulpas de fruta congelada)
 // Valores provisorios — actualizar en Sanity Studio cuando esté disponible
 export const PRICES_COP: Record<string, Record<string, number>> = {
@@ -104,7 +112,7 @@ export function getProductOptionsForProfile(profile: ClientProfile): string[] {
 }
 
 export function getUnitPrice(fruit: string, presentation: string | null | undefined): number | null {
-  if (!presentation) return null
+  if (!presentation) return LACTEOS_PRICES[fruit] ?? null
   return PRICES_COP[fruit]?.[presentation] ?? null
 }
 

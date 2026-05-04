@@ -89,8 +89,12 @@ describe("getUnitPrice", () => {
     expect(getUnitPrice("Maracuyá", "500g")).toBeNull()
   })
 
-  it("returns null when presentation is null (Lácteos)", () => {
-    expect(getUnitPrice("Kumis Del Hato 250ml", null)).toBeNull()
+  it("returns price for Lácteos product when presentation is null", () => {
+    expect(getUnitPrice("Kumis Del Hato 250ml", null)).toBeGreaterThan(0)
+  })
+
+  it("returns null for unknown Lácteos product with null presentation", () => {
+    expect(getUnitPrice("Avena Desconocida", null)).toBeNull()
   })
 })
 
