@@ -1,19 +1,41 @@
 import { describe, expect, it } from "vitest"
-import { orderSchema } from "./order"
+import { orderSchema, orderItemSchema } from "./order"
+
+const baseItem = {
+  productType:  "Pulpas",
+  fruit:        "Maracuyá",
+  presentation: "1000g" as const,
+  quantity:     10,
+}
 
 const base = {
-  nombre: "Juan García",
-  email: "juan@example.com",
+  nombre:          "Juan García",
+  email:           "juan@example.com",
   whatsapp_number: null,
   consentAccepted: true as const,
-  profile: "cafeteria" as const,
-  productType: "Pulpas",
-  fruit: "Maracuyá",
-  presentation: "1000g" as const,
-  quantity: 10,
-  zone: "bogota" as const,
-  urgency: "manana" as const,
+  profile:         "cafeteria" as const,
+  items:           [baseItem],
+  zone:            "bogota" as const,
+  urgency:         "manana" as const,
 }
+
+describe("orderItemSchema", () => {
+  it("accepts valid item", () => {
+    expect(orderItemSchema.safeParse(baseItem).success).toBe(true)
+  })
+
+  it("fails with quantity 0", () => {
+    expect(orderItemSchema.safeParse({ ...baseItem, quantity: 0 }).success).toBe(false)
+  })
+
+  it("fails with quantity 10000 (over max)", () => {
+    expect(orderItemSchema.safeParse({ ...baseItem, quantity: 10000 }).success).toBe(false)
+  })
+
+  it("fails with invalid presentation", () => {
+    expect(orderItemSchema.safeParse({ ...baseItem, presentation: "500g" }).success).toBe(false)
+  })
+})
 
 describe("orderSchema — valid payloads", () => {
   it("accepts payload with email only", () => {
@@ -30,20 +52,43 @@ describe("orderSchema — valid payloads", () => {
     expect(orderSchema.safeParse(input).success).toBe(true)
   })
 
-  it("accepts quantity 1 (min boundary)", () => {
-    expect(orderSchema.safeParse({ ...base, quantity: 1 }).success).toBe(true)
+  it("accepts multiple items", () => {
+    const input = {
+      ...base,
+      items: [
+        baseItem,
+        { productType: "Pulpas", fruit: "Mora", presentation: "300g" as const, quantity: 5 },
+      ],
+    }
+    expect(orderSchema.safeParse(input).success).toBe(true)
   })
 
-  it("accepts quantity 9999 (max boundary)", () => {
-    expect(orderSchema.safeParse({ ...base, quantity: 9999 }).success).toBe(true)
+  it("accepts quantity 1 (min boundary in item)", () => {
+    const input = { ...base, items: [{ ...baseItem, quantity: 1 }] }
+    expect(orderSchema.safeParse(input).success).toBe(true)
+  })
+
+  it("accepts quantity 9999 (max boundary in item)", () => {
+    const input = { ...base, items: [{ ...baseItem, quantity: 9999 }] }
+    expect(orderSchema.safeParse(input).success).toBe(true)
   })
 })
 
 describe("orderSchema — invalid payloads", () => {
+  it("fails when items array is empty", () => {
+    const input = { ...base, items: [] }
+    expect(orderSchema.safeParse(input).success).toBe(false)
+  })
+
+  it("fails when items has more than 20 entries", () => {
+    const manyItems = Array.from({ length: 21 }, () => baseItem)
+    const input = { ...base, items: manyItems }
+    expect(orderSchema.safeParse(input).success).toBe(false)
+  })
+
   it("fails when both email and whatsapp_number are null", () => {
     const input = { ...base, email: null, whatsapp_number: null }
-    const result = orderSchema.safeParse(input)
-    expect(result.success).toBe(false)
+    expect(orderSchema.safeParse(input).success).toBe(false)
   })
 
   it("fails when consentAccepted is false", () => {
@@ -53,19 +98,6 @@ describe("orderSchema — invalid payloads", () => {
 
   it("fails with invalid email", () => {
     const input = { ...base, email: "not-an-email" }
-    expect(orderSchema.safeParse(input).success).toBe(false)
-  })
-
-  it("fails with quantity 0", () => {
-    expect(orderSchema.safeParse({ ...base, quantity: 0 }).success).toBe(false)
-  })
-
-  it("fails with quantity 10000 (over max)", () => {
-    expect(orderSchema.safeParse({ ...base, quantity: 10000 }).success).toBe(false)
-  })
-
-  it("fails with invalid presentation", () => {
-    const input = { ...base, presentation: "500g" }
     expect(orderSchema.safeParse(input).success).toBe(false)
   })
 

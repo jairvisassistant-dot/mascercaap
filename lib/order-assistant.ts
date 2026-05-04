@@ -1,4 +1,4 @@
-import type { OrderInput } from "@/lib/schemas/order"
+import type { OrderInput, OrderItem } from "@/lib/schemas/order"
 
 export type ClientProfile = "hogar" | "cafeteria" | "evento" | "distribucion"
 export type DeliveryZone   = "bogota" | "medellin" | "cali" | "otra"
@@ -45,19 +45,78 @@ export const PROFILE_LABELS: Record<ClientProfile, string> = {
   distribucion: "Distribución",
 }
 
+// Precios COP por fruta y presentación (pulpas de fruta congelada)
+// Valores provisorios — actualizar en Sanity Studio cuando esté disponible
+export const PRICES_COP: Record<string, Record<string, number>> = {
+  "Maracuyá":         { "120g": 2800,  "300g": 6800,  "1000g": 19500 },
+  "Mora":             { "120g": 3200,  "300g": 7400,  "1000g": 21000 },
+  "Mango":            { "120g": 2600,  "300g": 6200,  "1000g": 17500 },
+  "Lulo":             { "120g": 3000,  "300g": 7000,  "1000g": 20000 },
+  "Guanábana":        { "120g": 3800,  "300g": 8800,  "1000g": 24500 },
+  "Fresa":            { "120g": 2900,  "300g": 6600,  "1000g": 18500 },
+  "Piña":             { "120g": 2400,  "300g": 5600,  "1000g": 16000 },
+  "Tomate de árbol":  { "120g": 2800,  "300g": 6500,  "1000g": 18000 },
+}
+
 export function getProductOptionsForProfile(profile: ClientProfile): string[] {
   return PRODUCT_OPTIONS_BY_PROFILE[profile]
 }
 
+export function getUnitPrice(fruit: string, presentation: string): number | null {
+  return PRICES_COP[fruit]?.[presentation] ?? null
+}
+
+export function getDiscountRate(totalUnits: number): number {
+  if (totalUnits >= 50) return 0.15
+  if (totalUnits >= 20) return 0.10
+  if (totalUnits >= 10) return 0.05
+  return 0
+}
+
+export type OrderTotals = {
+  subtotal:     number
+  totalUnits:   number
+  discountRate: number
+  discount:     number
+  total:        number
+  hasPrice:     boolean
+}
+
+export function calculateOrderTotal(items: OrderItem[]): OrderTotals {
+  const totalUnits  = items.reduce((sum, item) => sum + item.quantity, 0)
+  const discountRate = getDiscountRate(totalUnits)
+  let subtotal  = 0
+  let hasPrice  = items.length > 0
+
+  for (const item of items) {
+    const price = getUnitPrice(item.fruit, item.presentation)
+    if (price === null) { hasPrice = false; continue }
+    subtotal += price * item.quantity
+  }
+
+  const discount = Math.round(subtotal * discountRate)
+  return { subtotal, totalUnits, discountRate, discount, total: subtotal - discount, hasPrice }
+}
+
+export function formatCOP(n: number): string {
+  return `$${n.toLocaleString("es-CO")}`
+}
+
 export function buildWhatsappMessage(order: OrderInput, waNumber: string): string {
+  const itemLines = order.items.map(
+    (item, i) =>
+      `${i + 1}. ${item.productType} — ${item.fruit} ${item.presentation} × ${item.quantity} unidades`
+  )
+
   const lines = [
     "Hola, quiero hacer un pedido:",
     "",
     `Nombre: ${order.nombre}`,
     `Tipo de cliente: ${PROFILE_LABELS[order.profile]}`,
-    `Producto: ${order.productType} — ${order.fruit}`,
-    `Presentación: ${order.presentation}`,
-    `Cantidad: ${order.quantity} unidades`,
+    "",
+    "Productos:",
+    ...itemLines,
+    "",
     `Zona de entrega: ${ZONE_LABELS[order.zone]}`,
     `Urgencia: ${URGENCY_LABELS[order.urgency]}`,
     "",
@@ -76,15 +135,90 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;")
 }
 
+function buildItemsTableHtml(items: OrderItem[]): string {
+  const rows = items
+    .map((item) => {
+      const price     = getUnitPrice(item.fruit, item.presentation)
+      const lineTotal = price !== null ? formatCOP(price * item.quantity) : "—"
+      return `
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;">
+            ${escapeHtml(item.productType)} — ${escapeHtml(item.fruit)}
+          </td>
+          <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;text-align:center;">
+            ${escapeHtml(item.presentation)}
+          </td>
+          <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;text-align:center;">
+            ${item.quantity}
+          </td>
+          <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;text-align:right;">
+            ${lineTotal}
+          </td>
+        </tr>`
+    })
+    .join("")
+
+  const totals    = calculateOrderTotal(items)
+  const totalUnits = totals.totalUnits
+
+  const discountRow =
+    totals.hasPrice && totals.discountRate > 0
+      ? `<tr>
+          <td colspan="3" style="padding:6px 0;font-size:13px;color:#3f8f46;">
+            Descuento volumen (${(totals.discountRate * 100).toFixed(0)}%)
+          </td>
+          <td style="padding:6px 0;font-size:13px;color:#3f8f46;text-align:right;">
+            −${formatCOP(totals.discount)}
+          </td>
+        </tr>`
+      : ""
+
+  const totalRow = totals.hasPrice
+    ? `<tr>
+        <td colspan="3" style="padding:10px 0 0;font-size:14px;font-weight:700;color:#111827;">
+          Total estimado
+        </td>
+        <td style="padding:10px 0 0;font-size:14px;font-weight:700;color:#3f8f46;text-align:right;">
+          ${formatCOP(totals.total)}
+        </td>
+      </tr>`
+    : ""
+
+  return `
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th style="padding:0 0 8px;font-size:12px;color:#9ca3af;text-align:left;text-transform:uppercase;">Producto</th>
+          <th style="padding:0 0 8px;font-size:12px;color:#9ca3af;text-align:center;text-transform:uppercase;">Pres.</th>
+          <th style="padding:0 0 8px;font-size:12px;color:#9ca3af;text-align:center;text-transform:uppercase;">Cant.</th>
+          <th style="padding:0 0 8px;font-size:12px;color:#9ca3af;text-align:right;text-transform:uppercase;">Valor</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="padding:6px 0;font-size:13px;color:#6b7280;">
+            Subtotal (${totalUnits} u.)
+          </td>
+          <td style="padding:6px 0;font-size:13px;color:#6b7280;text-align:right;">
+            ${totals.hasPrice ? formatCOP(totals.subtotal) : "—"}
+          </td>
+        </tr>
+        ${discountRow}
+        ${totalRow}
+      </tfoot>
+    </table>
+    ${totals.hasPrice ? '<p style="margin:8px 0 0;font-size:11px;color:#9ca3af;">* Precio estimado. El equipo confirma el valor final.</p>' : ""}
+  `
+}
+
 export function buildOrderEmailHtml(data: OrderInput): string {
-  const nombre      = escapeHtml(data.nombre)
-  const email       = data.email       ? escapeHtml(data.email)            : "—"
-  const whatsapp    = data.whatsapp_number ? escapeHtml(data.whatsapp_number) : "—"
-  const profile     = escapeHtml(PROFILE_LABELS[data.profile])
-  const productType = escapeHtml(data.productType)
-  const fruit       = escapeHtml(data.fruit)
-  const zone        = escapeHtml(ZONE_LABELS[data.zone])
-  const urgency     = escapeHtml(URGENCY_LABELS[data.urgency])
+  const nombre   = escapeHtml(data.nombre)
+  const email    = data.email           ? escapeHtml(data.email)            : "—"
+  const whatsapp = data.whatsapp_number ? escapeHtml(data.whatsapp_number)  : "—"
+  const profile  = escapeHtml(PROFILE_LABELS[data.profile])
+  const zone     = escapeHtml(ZONE_LABELS[data.zone])
+  const urgency  = escapeHtml(URGENCY_LABELS[data.urgency])
 
   return `
 <!DOCTYPE html>
@@ -139,26 +273,18 @@ export function buildOrderEmailHtml(data: OrderInput): string {
           </tr>
 
           <tr>
-            <td style="padding:16px 40px 32px;">
-              <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">Detalle del pedido</p>
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr><td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">
-                  <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;">Tipo de producto</p>
-                  <p style="margin:4px 0 0;font-size:15px;color:#111827;">${productType}</p>
-                </td></tr>
-                <tr><td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">
-                  <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;">Fruta</p>
-                  <p style="margin:4px 0 0;font-size:15px;font-weight:600;color:#111827;">${fruit}</p>
-                </td></tr>
-                <tr><td style="padding:8px 0;border-bottom:1px solid #f0f0f0;">
-                  <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;">Presentación / Cantidad</p>
-                  <p style="margin:4px 0 0;font-size:15px;color:#111827;">${escapeHtml(data.presentation)} × ${data.quantity} unidades</p>
-                </td></tr>
-                <tr><td style="padding:8px 0;">
-                  <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;">Urgencia</p>
-                  <p style="margin:4px 0 0;font-size:15px;color:#111827;">${urgency}</p>
-                </td></tr>
-              </table>
+            <td style="padding:16px 40px 8px;">
+              <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">
+                Productos solicitados
+              </p>
+              ${buildItemsTableHtml(data.items)}
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:8px 40px 32px;">
+              <p style="margin:0 0 6px;font-size:12px;color:#9ca3af;text-transform:uppercase;">Urgencia</p>
+              <p style="margin:0;font-size:15px;color:#111827;">${urgency}</p>
             </td>
           </tr>
 

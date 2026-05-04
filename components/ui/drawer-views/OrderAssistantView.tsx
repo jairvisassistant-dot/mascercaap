@@ -6,6 +6,9 @@ import ChipSelector from "@/components/ui/ChipSelector"
 import {
   getProductOptionsForProfile,
   buildWhatsappMessage,
+  getUnitPrice,
+  calculateOrderTotal,
+  formatCOP,
   FRUIT_OPTIONS,
   QUANTITY_OPTIONS,
   ZONE_LABELS,
@@ -17,45 +20,49 @@ import {
 } from "@/lib/order-assistant"
 import { useDictionary } from "@/lib/i18n/DictionaryProvider"
 import { SITE_CONFIG } from "@/lib/config"
-import type { Presentation } from "@/lib/yield-calculator"
-import type { OrderInput } from "@/lib/schemas/order"
+import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 
-type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | "result"
+type Presentation = "120g" | "300g" | "1000g"
+type Step = 1 | 2 | 3 | 4 | 5 | "cart" | 6 | 7 | 8 | "result"
 type SubmitStatus = "idle" | "sending" | "success" | "error"
 
 const CUSTOM_QTY = -1
 const PRESENTATION_OPTIONS: { value: Presentation; label: string }[] = [
-  { value: "120g", label: "120g" },
-  { value: "300g", label: "300g" },
-  { value: "1000g", label: "1000g" },
+  { value: "120g",   label: "120g" },
+  { value: "300g",   label: "300g" },
+  { value: "1000g",  label: "1000g" },
 ]
 
 export default function OrderAssistantView() {
   const { dict } = useDictionary()
   const t = dict.orderAssistant
 
-  const [step, setStep] = useState<Step>(1)
-  const [profile, setProfile]             = useState<ClientProfile | null>(null)
-  const [productType, setProductType]     = useState<string | null>(null)
-  const [fruit, setFruit]                 = useState<string | null>(null)
-  const [presentation, setPresentation]   = useState<Presentation | null>(null)
-  const [quantity, setQuantity]           = useState<number | null>(null)
-  const [showCustomQty, setShowCustomQty] = useState(false)
-  const [customQty, setCustomQty]         = useState("")
-  const [zone, setZone]                   = useState<DeliveryZone | null>(null)
-  const [urgency, setUrgency]             = useState<Urgency | null>(null)
+  // ── Global state ───────────────────────────────────────────────
+  const [step, setStep]       = useState<Step>(1)
+  const [profile, setProfile] = useState<ClientProfile | null>(null)
+  const [items, setItems]     = useState<OrderItem[]>([])
+  const [zone, setZone]       = useState<DeliveryZone | null>(null)
+  const [urgency, setUrgency] = useState<Urgency | null>(null)
 
-  const [nombre, setNombre]           = useState("")
-  const [email, setEmail]             = useState("")
-  const [waNumber, setWaNumber]       = useState("")
-  const [consent, setConsent]         = useState(false)
-  const [status, setStatus]           = useState<SubmitStatus>("idle")
-  const [waUrl, setWaUrl]             = useState<string | null>(null)
+  // ── Current item being built (steps 2–5) ─────────────────────
+  const [curProductType, setCurProductType]   = useState<string | null>(null)
+  const [curFruit, setCurFruit]               = useState<string | null>(null)
+  const [curPresentation, setCurPresentation] = useState<Presentation | null>(null)
+  const [showCustomQty, setShowCustomQty]     = useState(false)
+  const [customQty, setCustomQty]             = useState("")
 
-  const profileOptions = Object.entries(PROFILE_LABELS).map(([v, label]) => ({
-    value: v as ClientProfile,
-    label,
-  }))
+  // ── Contact & submit ──────────────────────────────────────────
+  const [nombre, setNombre]   = useState("")
+  const [email, setEmail]     = useState("")
+  const [waNumber, setWaNumber] = useState("")
+  const [consent, setConsent] = useState(false)
+  const [status, setStatus]   = useState<SubmitStatus>("idle")
+  const [waUrl, setWaUrl]     = useState<string | null>(null)
+
+  // ── Derived ───────────────────────────────────────────────────
+  const totals   = items.length > 0 ? calculateOrderTotal(items) : null
+  const stepNum  = step === "result" ? 9 : step === "cart" ? 5.5 : (step as number)
+  const progress = Math.min((stepNum / 8) * 100, 100)
 
   const productOptions = profile
     ? getProductOptionsForProfile(profile).map((v) => ({ value: v, label: v }))
@@ -63,76 +70,86 @@ export default function OrderAssistantView() {
 
   const fruitOptions = FRUIT_OPTIONS.map((v) => ({ value: v, label: v }))
 
+  // Chips de presentación con precio cuando hay fruta seleccionada
+  const presentationOptions = PRESENTATION_OPTIONS.map(({ value, label }) => {
+    const price = curFruit ? getUnitPrice(curFruit, value) : null
+    return { value, label: price !== null ? `${label} — ${formatCOP(price)}` : label }
+  })
+
   const quantityOptions = [
     ...QUANTITY_OPTIONS.map((v) => ({ value: v, label: String(v) })),
     { value: CUSTOM_QTY, label: "Personalizado" },
   ]
 
-  const zoneOptions = Object.entries(ZONE_LABELS).map(([v, label]) => ({
-    value: v as DeliveryZone,
-    label,
-  }))
+  const zoneOptions    = Object.entries(ZONE_LABELS).map(([v, label])   => ({ value: v as DeliveryZone, label }))
+  const urgencyOptions = Object.entries(URGENCY_LABELS).map(([v, label])=> ({ value: v as Urgency, label }))
 
-  const urgencyOptions = Object.entries(URGENCY_LABELS).map(([v, label]) => ({
-    value: v as Urgency,
-    label,
-  }))
+  // ── Helpers ───────────────────────────────────────────────────
+  function resetCurrentItem() {
+    setCurProductType(null)
+    setCurFruit(null)
+    setCurPresentation(null)
+    setShowCustomQty(false)
+    setCustomQty("")
+  }
+
+  function commitItem(qty: number) {
+    if (!curProductType || !curFruit || !curPresentation) return
+    setItems((prev) => [
+      ...prev,
+      { productType: curProductType, fruit: curFruit, presentation: curPresentation, quantity: qty },
+    ])
+    resetCurrentItem()
+    setStep("cart")
+  }
+
+  function removeItem(index: number) {
+    setItems((prev) => prev.filter((_, i) => i !== index))
+  }
 
   function handleQtySelect(val: number) {
     if (val === CUSTOM_QTY) {
       setShowCustomQty(true)
-      setQuantity(null)
     } else {
       setShowCustomQty(false)
       setCustomQty("")
-      setQuantity(val)
-      setStep(6)
+      commitItem(val)
     }
   }
 
   function confirmCustomQty() {
     const n = parseInt(customQty, 10)
     if (!isNaN(n) && n > 0) {
-      setQuantity(n)
       setShowCustomQty(false)
-      setStep(6)
+      commitItem(n)
     }
   }
 
   function canSubmit() {
-    return (
-      nombre.trim().length >= 2 &&
-      (email.trim() || waNumber.trim()) &&
-      consent
-    )
+    return nombre.trim().length >= 2 && (email.trim() || waNumber.trim()) && consent
   }
 
   async function handleEmailSubmit() {
-    if (!canSubmit() || !profile || !productType || !fruit || !presentation || !quantity || !zone || !urgency) return
+    if (!canSubmit() || !profile || !zone || !urgency || items.length === 0) return
 
     const payload: OrderInput = {
-      nombre:           nombre.trim(),
-      email:            email.trim() || null,
-      whatsapp_number:  waNumber.trim() || null,
-      consentAccepted:  true,
+      nombre:          nombre.trim(),
+      email:           email.trim() || null,
+      whatsapp_number: waNumber.trim() || null,
+      consentAccepted: true,
       profile,
-      productType,
-      fruit,
-      presentation,
-      quantity,
+      items,
       zone,
       urgency,
     }
 
     setStatus("sending")
-
     try {
       const res = await fetch("/api/orders", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body:    JSON.stringify(payload),
       })
-
       if (res.ok) {
         if (SITE_CONFIG.whatsappNumber) {
           setWaUrl(buildWhatsappMessage(payload, SITE_CONFIG.whatsappNumber))
@@ -148,17 +165,14 @@ export default function OrderAssistantView() {
   }
 
   function handleReset() {
-    setStep(1)
-    setProfile(null); setProductType(null); setFruit(null)
-    setPresentation(null); setQuantity(null); setShowCustomQty(false)
-    setCustomQty(""); setZone(null); setUrgency(null)
+    setStep(1); setProfile(null); setItems([])
+    setZone(null); setUrgency(null)
+    resetCurrentItem()
     setNombre(""); setEmail(""); setWaNumber(""); setConsent(false)
     setStatus("idle"); setWaUrl(null)
   }
 
-  const completedSteps = (step === "result" ? 9 : (step as number)) - 1
-  const progress = Math.min((completedSteps / 8) * 100, 100)
-
+  // ── Render ─────────────────────────────────────────────────────
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Barra de progreso */}
@@ -172,7 +186,7 @@ export default function OrderAssistantView() {
 
       <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
 
-        {/* Resultado final */}
+        {/* ── Resultado final ─────────────────────────────────── */}
         {step === "result" && (
           <AnimatePresence mode="wait">
             <m.div
@@ -189,6 +203,40 @@ export default function OrderAssistantView() {
               </div>
               <h3 className="text-lg font-bold text-text-main mb-2">{t.successTitle}</h3>
               <p className="text-text-muted text-sm mb-6">{t.successText}</p>
+
+              {/* Resumen del pedido */}
+              {totals && (
+                <div className="w-full text-left bg-surface-page rounded-xl border border-border-soft p-4 mb-5 space-y-2">
+                  {items.map((item, i) => {
+                    const price = getUnitPrice(item.fruit, item.presentation)
+                    return (
+                      <div key={i} className="flex justify-between text-sm">
+                        <span className="text-text-sub">{item.fruit} {item.presentation} × {item.quantity} {t.unitsShort}</span>
+                        <span className="text-text-muted">{price !== null ? formatCOP(price * item.quantity) : "—"}</span>
+                      </div>
+                    )
+                  })}
+                  {totals.hasPrice && (
+                    <>
+                      <div className="border-t border-border-soft pt-2 flex justify-between text-sm">
+                        <span className="text-text-muted">{t.subtotalLabel}</span>
+                        <span className="text-text-muted">{formatCOP(totals.subtotal)}</span>
+                      </div>
+                      {totals.discountRate > 0 && (
+                        <div className="flex justify-between text-sm text-primary">
+                          <span>{(totals.discountRate * 100).toFixed(0)}% {t.discountSuffix}</span>
+                          <span>−{formatCOP(totals.discount)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-sm font-bold">
+                        <span className="text-text-main">{t.totalLabel}</span>
+                        <span className="text-primary">{formatCOP(totals.total)}</span>
+                      </div>
+                      <p className="text-[11px] text-text-faint">{t.priceNote}</p>
+                    </>
+                  )}
+                </div>
+              )}
 
               {waUrl && (
                 <a
@@ -216,193 +264,331 @@ export default function OrderAssistantView() {
           </AnimatePresence>
         )}
 
+        {/* ── Pasos 1–8 ────────────────────────────────────────── */}
         {step !== "result" && (
           <>
-            {/* Paso 1 */}
+            {/* Paso 1 — Perfil */}
             <StepBlock
               number={1}
               label={t.step1Label}
               active={step === 1}
               summary={profile ? PROFILE_LABELS[profile] : null}
-              onEdit={() => { setStep(1); setProfile(null); setProductType(null); setFruit(null); setPresentation(null); setQuantity(null); setZone(null); setUrgency(null) }}
+              onEdit={() => { setStep(1); setProfile(null); resetCurrentItem() }}
               backLabel={t.back}
             >
-              <ChipSelector options={profileOptions} selected={profile} onChange={(v) => { setProfile(v); setProductType(null); setStep(2) }} />
+              <ChipSelector
+                options={profileOptions}
+                selected={profile}
+                onChange={(v) => { setProfile(v); resetCurrentItem(); setStep(2) }}
+              />
             </StepBlock>
 
-            {/* Paso 2 */}
-            {step >= 2 && (
-              <StepBlock
-                number={2}
-                label={t.step2Label}
-                active={step === 2}
-                summary={productType}
-                onEdit={() => { setStep(2); setProductType(null); setFruit(null); setPresentation(null); setQuantity(null); setZone(null); setUrgency(null) }}
-                backLabel={t.back}
-              >
-                <ChipSelector options={productOptions} selected={productType} onChange={(v) => { setProductType(v); setFruit(null); setStep(3) }} />
-              </StepBlock>
-            )}
+            {/* ── Construcción del ítem actual (pasos 2–5) ───── */}
+            {(step === 2 || step === 3 || step === 4 || step === 5) && (
+              <>
+                {/* Paso 2 — Tipo de producto */}
+                <StepBlock
+                  number={2}
+                  label={t.step2Label}
+                  active={step === 2}
+                  summary={curProductType}
+                  onEdit={() => { setStep(2); setCurProductType(null); setCurFruit(null); setCurPresentation(null) }}
+                  backLabel={t.back}
+                >
+                  <ChipSelector
+                    options={productOptions}
+                    selected={curProductType}
+                    onChange={(v) => { setCurProductType(v); setCurFruit(null); setStep(3) }}
+                  />
+                </StepBlock>
 
-            {/* Paso 3 */}
-            {step >= 3 && (
-              <StepBlock
-                number={3}
-                label={t.step3Label}
-                active={step === 3}
-                summary={fruit}
-                onEdit={() => { setStep(3); setFruit(null); setPresentation(null); setQuantity(null); setZone(null); setUrgency(null) }}
-                backLabel={t.back}
-              >
-                <ChipSelector options={fruitOptions} selected={fruit} onChange={(v) => { setFruit(v); setPresentation(null); setStep(4) }} />
-              </StepBlock>
-            )}
-
-            {/* Paso 4 */}
-            {step >= 4 && (
-              <StepBlock
-                number={4}
-                label={t.step4Label}
-                active={step === 4}
-                summary={presentation}
-                onEdit={() => { setStep(4); setPresentation(null); setQuantity(null); setZone(null); setUrgency(null) }}
-                backLabel={t.back}
-              >
-                <ChipSelector options={PRESENTATION_OPTIONS} selected={presentation} onChange={(v) => { setPresentation(v); setQuantity(null); setStep(5) }} />
-              </StepBlock>
-            )}
-
-            {/* Paso 5 */}
-            {step >= 5 && (
-              <StepBlock
-                number={5}
-                label={t.step5Label}
-                active={step === 5}
-                summary={quantity ? `${quantity} unidades` : null}
-                onEdit={() => { setStep(5); setQuantity(null); setZone(null); setUrgency(null) }}
-                backLabel={t.back}
-              >
-                <ChipSelector options={quantityOptions} selected={showCustomQty ? CUSTOM_QTY : quantity} onChange={handleQtySelect} />
-                {showCustomQty && (
-                  <div className="mt-3 flex gap-2">
-                    <input
-                      type="number" min={1} max={9999}
-                      value={customQty}
-                      onChange={(e) => setCustomQty(e.target.value)}
-                      placeholder={t.customQtyPlaceholder}
-                      className="w-32 rounded-lg border border-border-mid px-3 py-2 text-sm bg-surface-page focus:outline-none focus:border-primary"
-                      onKeyDown={(e) => e.key === "Enter" && confirmCustomQty()}
-                      autoFocus
+                {/* Paso 3 — Fruta */}
+                {step >= 3 && (
+                  <StepBlock
+                    number={3}
+                    label={t.step3Label}
+                    active={step === 3}
+                    summary={curFruit}
+                    onEdit={() => { setStep(3); setCurFruit(null); setCurPresentation(null) }}
+                    backLabel={t.back}
+                  >
+                    <ChipSelector
+                      options={fruitOptions}
+                      selected={curFruit}
+                      onChange={(v) => { setCurFruit(v); setCurPresentation(null); setStep(4) }}
                     />
-                    <button type="button" onClick={confirmCustomQty} disabled={!customQty || parseInt(customQty) <= 0}
-                      className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 min-h-[44px]">
-                      OK
-                    </button>
-                  </div>
+                  </StepBlock>
                 )}
-              </StepBlock>
+
+                {/* Paso 4 — Presentación (con precio) */}
+                {step >= 4 && (
+                  <StepBlock
+                    number={4}
+                    label={t.step4Label}
+                    active={step === 4}
+                    summary={curPresentation}
+                    onEdit={() => { setStep(4); setCurPresentation(null) }}
+                    backLabel={t.back}
+                  >
+                    <ChipSelector
+                      options={presentationOptions}
+                      selected={curPresentation}
+                      onChange={(v) => { setCurPresentation(v as Presentation); setStep(5) }}
+                    />
+                  </StepBlock>
+                )}
+
+                {/* Paso 5 — Cantidad */}
+                {step === 5 && (
+                  <StepBlock
+                    number={5}
+                    label={t.step5Label}
+                    active={true}
+                    summary={null}
+                    onEdit={() => {}}
+                    backLabel={t.back}
+                  >
+                    <ChipSelector
+                      options={quantityOptions}
+                      selected={showCustomQty ? CUSTOM_QTY : null}
+                      onChange={handleQtySelect}
+                    />
+                    {showCustomQty && (
+                      <div className="mt-3 flex gap-2">
+                        <input
+                          type="number" min={1} max={9999}
+                          value={customQty}
+                          onChange={(e) => setCustomQty(e.target.value)}
+                          placeholder={t.customQtyPlaceholder}
+                          className="w-32 rounded-lg border border-border-mid px-3 py-2 text-sm bg-surface-page focus:outline-none focus:border-primary"
+                          onKeyDown={(e) => e.key === "Enter" && confirmCustomQty()}
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          onClick={confirmCustomQty}
+                          disabled={!customQty || parseInt(customQty) <= 0}
+                          className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 min-h-[44px]"
+                        >
+                          OK
+                        </button>
+                      </div>
+                    )}
+                  </StepBlock>
+                )}
+
+                {/* Link para volver al carrito si ya hay ítems */}
+                {items.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => { resetCurrentItem(); setStep("cart") }}
+                    className="text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors"
+                  >
+                    {t.cancelToCart} ({items.length})
+                  </button>
+                )}
+              </>
             )}
 
-            {/* Paso 6 */}
-            {step >= 6 && (
-              <StepBlock
-                number={6}
-                label={t.step6Label}
-                active={step === 6}
-                summary={zone ? ZONE_LABELS[zone] : null}
-                onEdit={() => { setStep(6); setZone(null); setUrgency(null) }}
-                backLabel={t.back}
-              >
-                <ChipSelector options={zoneOptions} selected={zone} onChange={(v) => { setZone(v); setUrgency(null); setStep(7) }} />
-              </StepBlock>
-            )}
-
-            {/* Paso 7 */}
-            {step >= 7 && (
-              <StepBlock
-                number={7}
-                label={t.step7Label}
-                active={step === 7}
-                summary={urgency ? URGENCY_LABELS[urgency] : null}
-                onEdit={() => { setStep(7); setUrgency(null) }}
-                backLabel={t.back}
-              >
-                <ChipSelector options={urgencyOptions} selected={urgency} onChange={(v) => { setUrgency(v); setStep(8) }} />
-              </StepBlock>
-            )}
-
-            {/* Paso 8 — Datos de contacto */}
-            {step === 8 && (
+            {/* ── Vista del carrito ────────────────────────────── */}
+            {step === "cart" && (
               <m.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
+                className="space-y-4"
               >
-                <p className="text-sm font-semibold text-text-main mb-4">
-                  <span className="text-primary mr-2">8.</span>{t.step8Label}
+                <p className="text-sm font-semibold text-text-main">
+                  <span className="text-primary mr-2">🛒</span>{t.cartLabel}
                 </p>
 
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-text-muted mb-1">{t.nameLabel} *</label>
-                    <input
-                      type="text"
-                      value={nombre}
-                      onChange={(e) => setNombre(e.target.value)}
-                      placeholder={t.namePlaceholder}
-                      className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-text-muted mb-1">{t.emailLabel}</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={t.emailPlaceholder}
-                      className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-text-muted mb-1">{t.whatsappLabel}</label>
-                    <input
-                      type="tel"
-                      value={waNumber}
-                      onChange={(e) => setWaNumber(e.target.value)}
-                      placeholder={t.whatsappPlaceholder}
-                      className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                    />
-                    <p className="text-xs text-text-muted mt-1">{t.contactHint}</p>
-                  </div>
-
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={consent}
-                      onChange={(e) => setConsent(e.target.checked)}
-                      className="mt-0.5 w-4 h-4 accent-primary shrink-0"
-                    />
-                    <span className="text-xs text-text-muted leading-relaxed">{t.consentLabel}</span>
-                  </label>
+                {/* Lista de ítems */}
+                <div className="rounded-xl border border-border-soft overflow-hidden">
+                  {items.map((item, i) => {
+                    const price = getUnitPrice(item.fruit, item.presentation)
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between px-4 py-3 border-b border-border-soft last:border-0 bg-surface-card"
+                      >
+                        <div>
+                          <p className="text-sm font-medium text-text-main">
+                            {item.fruit} {item.presentation}
+                          </p>
+                          <p className="text-xs text-text-muted">
+                            {item.quantity} {t.unitsShort}
+                            {price !== null && (
+                              <span className="ml-2 text-text-sub">{formatCOP(price * item.quantity)}</span>
+                            )}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeItem(i)}
+                          className="text-xs text-red-500 hover:text-red-700 transition-colors min-h-[36px] px-2"
+                          aria-label={`${t.removeItem} ${item.fruit}`}
+                        >
+                          {t.removeItem}
+                        </button>
+                      </div>
+                    )
+                  })}
                 </div>
 
-                {status === "error" && (
-                  <p className="mt-3 text-xs text-red-600">{t.errorText}</p>
+                {/* Totales */}
+                {totals?.hasPrice && (
+                  <div className="rounded-xl bg-surface-page border border-border-soft p-4 space-y-1.5">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-text-muted">{t.subtotalLabel}</span>
+                      <span className="text-text-muted">{formatCOP(totals.subtotal)}</span>
+                    </div>
+                    {totals.discountRate > 0 && (
+                      <div className="flex justify-between text-sm text-primary">
+                        <span>{(totals.discountRate * 100).toFixed(0)}% {t.discountSuffix}</span>
+                        <span>−{formatCOP(totals.discount)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-sm font-bold border-t border-border-soft pt-1.5">
+                      <span className="text-text-main">{t.totalLabel}</span>
+                      <span className="text-primary">{formatCOP(totals.total)}</span>
+                    </div>
+                    <p className="text-[11px] text-text-faint">{t.priceNote}</p>
+                  </div>
                 )}
 
-                <div className="mt-5 flex flex-col gap-3">
-                  <button
-                    type="button"
-                    onClick={handleEmailSubmit}
-                    disabled={!canSubmit() || status === "sending"}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] disabled:opacity-50"
-                  >
-                    {status === "sending" ? t.sending : t.ctaEmail}
-                  </button>
-                </div>
+                {/* Acciones del carrito */}
+                <button
+                  type="button"
+                  onClick={() => { resetCurrentItem(); setStep(2) }}
+                  className="w-full text-sm text-primary border border-primary/30 rounded-full px-4 py-2.5 hover:bg-primary/5 transition-colors min-h-[44px]"
+                >
+                  {t.addAnother}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep(6)}
+                  disabled={items.length === 0}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] disabled:opacity-50"
+                >
+                  {t.continueLabel}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </button>
               </m.div>
+            )}
+
+            {/* ── Pasos globales 6–8 ───────────────────────────── */}
+            {(step === 6 || step === 7 || step === 8) && (
+              <>
+                {/* Paso 6 */}
+                <StepBlock
+                  number={6}
+                  label={t.step6Label}
+                  active={step === 6}
+                  summary={zone ? ZONE_LABELS[zone] : null}
+                  onEdit={() => { setStep(6); setZone(null); setUrgency(null) }}
+                  backLabel={t.back}
+                >
+                  <ChipSelector
+                    options={zoneOptions}
+                    selected={zone}
+                    onChange={(v) => { setZone(v); setUrgency(null); setStep(7) }}
+                  />
+                </StepBlock>
+
+                {/* Paso 7 */}
+                {step >= 7 && (
+                  <StepBlock
+                    number={7}
+                    label={t.step7Label}
+                    active={step === 7}
+                    summary={urgency ? URGENCY_LABELS[urgency] : null}
+                    onEdit={() => { setStep(7); setUrgency(null) }}
+                    backLabel={t.back}
+                  >
+                    <ChipSelector
+                      options={urgencyOptions}
+                      selected={urgency}
+                      onChange={(v) => { setUrgency(v); setStep(8) }}
+                    />
+                  </StepBlock>
+                )}
+
+                {/* Paso 8 — Datos de contacto */}
+                {step === 8 && (
+                  <m.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <p className="text-sm font-semibold text-text-main mb-4">
+                      <span className="text-primary mr-2">8.</span>{t.step8Label}
+                    </p>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-text-muted mb-1">{t.nameLabel} *</label>
+                        <input
+                          type="text"
+                          value={nombre}
+                          onChange={(e) => setNombre(e.target.value)}
+                          placeholder={t.namePlaceholder}
+                          className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-text-muted mb-1">{t.emailLabel}</label>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder={t.emailPlaceholder}
+                          className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-text-muted mb-1">{t.whatsappLabel}</label>
+                        <input
+                          type="tel"
+                          value={waNumber}
+                          onChange={(e) => setWaNumber(e.target.value)}
+                          placeholder={t.whatsappPlaceholder}
+                          className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
+                        />
+                        <p className="text-xs text-text-muted mt-1">{t.contactHint}</p>
+                      </div>
+
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={consent}
+                          onChange={(e) => setConsent(e.target.checked)}
+                          className="mt-0.5 w-4 h-4 accent-primary shrink-0"
+                        />
+                        <span className="text-xs text-text-muted leading-relaxed">{t.consentLabel}</span>
+                      </label>
+                    </div>
+
+                    {status === "error" && (
+                      <p className="mt-3 text-xs text-red-600">{t.errorText}</p>
+                    )}
+
+                    <div className="mt-5">
+                      <button
+                        type="button"
+                        onClick={handleEmailSubmit}
+                        disabled={!canSubmit() || status === "sending"}
+                        className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] disabled:opacity-50"
+                      >
+                        {status === "sending" ? t.sending : t.ctaEmail}
+                      </button>
+                    </div>
+                  </m.div>
+                )}
+              </>
             )}
           </>
         )}
@@ -411,7 +597,7 @@ export default function OrderAssistantView() {
   )
 }
 
-// Bloque de paso reutilizable
+// ── StepBlock reutilizable ────────────────────────────────────────
 function StepBlock({
   number, label, active, summary, onEdit, backLabel, children,
 }: {

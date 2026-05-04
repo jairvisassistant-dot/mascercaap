@@ -666,7 +666,17 @@
     "resetLabel": "Empezar de nuevo",
     "homeCTATitle": "Armá tu pedido en 30 segundos",
     "homeCTASubtitle": "Seleccioná productos, dejá tus datos y te confirmamos disponibilidad.",
-    "homeCTAButton": "Empezar pedido"
+    "homeCTAButton": "Empezar pedido",
+    "cartLabel": "Tu pedido",
+    "addAnother": "+ Agregar otro producto",
+    "continueLabel": "Continuar",
+    "removeItem": "Quitar",
+    "cancelToCart": "Volver al carrito",
+    "subtotalLabel": "Subtotal",
+    "discountSuffix": "de descuento por volumen",
+    "totalLabel": "Total estimado",
+    "priceNote": "* Estimación. El equipo confirma el precio final.",
+    "unitsShort": "u."
   },
   "chatbot": {
     "title": "Preguntas Frecuentes",

@@ -666,7 +666,17 @@
     "resetLabel": "Start over",
     "homeCTATitle": "Build your order in 30 seconds",
     "homeCTASubtitle": "Select products, leave your details and we'll confirm availability.",
-    "homeCTAButton": "Start order"
+    "homeCTAButton": "Start order",
+    "cartLabel": "Your order",
+    "addAnother": "+ Add another product",
+    "continueLabel": "Continue",
+    "removeItem": "Remove",
+    "cancelToCart": "Back to cart",
+    "subtotalLabel": "Subtotal",
+    "discountSuffix": "volume discount",
+    "totalLabel": "Estimated total",
+    "priceNote": "* Estimate. Final price confirmed by the team.",
+    "unitsShort": "u."
   },
   "chatbot": {
     "title": "Frequently Asked Questions",
