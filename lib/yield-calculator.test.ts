@@ -88,19 +88,23 @@ describe("freshComparison — maracuyá", () => {
 
 describe("freshComparison — mora", () => {
   it("2 packs 1000g → correct values", () => {
-    // pulpKg = 2 kg | freshKg = 2 * 2.8 = 5.6 | minutesSaved = 5.6 * 25 = 140
+    // pulpKg = 2 kg | freshKg = 2 * 2.8 = 5.6
+    // mora solo se lava (sin cáscara ni pepas grandes) → 12 min/kg
+    // minutesSaved = round(5.6 * 12) = round(67.2) = 67
     const result = freshComparison(2, "1000g", "mora")
     expect(result.freshKg).toBe(5.6)
-    expect(result.minutesSaved).toBe(140)
+    expect(result.minutesSaved).toBe(67)
   })
 })
 
 describe("freshComparison — mango", () => {
   it("1 pack 1000g → correct values", () => {
-    // pulpKg = 1 | freshKg = 2 | minutesSaved = 40
+    // pulpKg = 1 | freshKg = 2
+    // mango lleva cáscara + pepa grande → 45 min/kg
+    // minutesSaved = 2 * 45 = 90
     const result = freshComparison(1, "1000g", "mango")
     expect(result.freshKg).toBe(2)
-    expect(result.minutesSaved).toBe(40)
+    expect(result.minutesSaved).toBe(90)
   })
 })
 

@@ -424,7 +424,7 @@ function PresentationComparison({
               <div className="flex items-center gap-2.5 flex-wrap">
                 <span className="text-xl font-black text-text-main tracking-tight">{pres}</span>
                 {isBest && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-primary uppercase tracking-widest bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-white uppercase tracking-widest bg-primary px-2.5 py-1 rounded-full shadow-sm shadow-primary/40">
                     ★ Mayor rendimiento
                   </span>
                 )}

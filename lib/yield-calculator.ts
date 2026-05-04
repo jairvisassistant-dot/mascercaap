@@ -19,14 +19,17 @@ export interface FruitData {
 }
 
 export const FRUIT_DATA: Record<FruitKey, FruitData> = {
-  maracuya:     { label: "Maracuyá",       freshKgPer1kgPulp: 4.0, processingMinPer1kg: 60 },
-  mora:         { label: "Mora",           freshKgPer1kgPulp: 2.8, processingMinPer1kg: 25 },
-  mango:        { label: "Mango",          freshKgPer1kgPulp: 2.0, processingMinPer1kg: 20 },
-  lulo:         { label: "Lulo",           freshKgPer1kgPulp: 3.0, processingMinPer1kg: 30 },
-  guanabana:    { label: "Guanábana",      freshKgPer1kgPulp: 2.5, processingMinPer1kg: 35 },
-  fresa:        { label: "Fresa",          freshKgPer1kgPulp: 1.3, processingMinPer1kg: 15 },
-  pina:         { label: "Piña",           freshKgPer1kgPulp: 1.8, processingMinPer1kg: 20 },
-  tomate_arbol: { label: "Tomate de árbol", freshKgPer1kgPulp: 2.5, processingMinPer1kg: 25 },
+  // Solo lavar — sin cáscara ni pepas grandes
+  mora:         { label: "Mora",            freshKgPer1kgPulp: 2.8, processingMinPer1kg: 12 },
+  fresa:        { label: "Fresa",           freshKgPer1kgPulp: 1.3, processingMinPer1kg: 10 },
+  // Cáscara que pelar, sin pepas grandes
+  maracuya:     { label: "Maracuyá",        freshKgPer1kgPulp: 4.0, processingMinPer1kg: 60 },
+  lulo:         { label: "Lulo",            freshKgPer1kgPulp: 3.0, processingMinPer1kg: 35 },
+  pina:         { label: "Piña",            freshKgPer1kgPulp: 1.8, processingMinPer1kg: 35 },
+  tomate_arbol: { label: "Tomate de árbol", freshKgPer1kgPulp: 2.5, processingMinPer1kg: 28 },
+  // Cáscara + pepas/pepa grande — los más laboriosos
+  mango:        { label: "Mango",           freshKgPer1kgPulp: 2.0, processingMinPer1kg: 45 },
+  guanabana:    { label: "Guanábana",       freshKgPer1kgPulp: 2.5, processingMinPer1kg: 55 },
 }
 
 export const PACK_GRAMS: Record<Presentation, number> = {
