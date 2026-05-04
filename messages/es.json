@@ -610,12 +610,63 @@
     "contextGreeting": "Hola 👋 Vi que te interesa \"{product}\". ¿En qué te puedo ayudar?",
     "whatsappMessage": "Hola, necesito ayuda con un pedido de Más Cerca AP",
     "menu": {
+      "order": "Hacer un pedido",
       "faq": "Preguntas frecuentes",
       "privacy": "Políticas y privacidad",
       "terms": "Términos y condiciones",
       "contact": "Formulario de contacto",
       "whatsapp": "Contactar por WhatsApp"
     }
+  },
+  "orderAssistant": {
+    "title": "Armá tu pedido",
+    "subtitle": "Te guiamos en 8 pasos y dejamos todo listo para enviarlo.",
+    "step1Label": "¿Para quién es el pedido?",
+    "step2Label": "¿Qué tipo de producto?",
+    "step3Label": "¿Qué fruta o producto?",
+    "step4Label": "¿Qué presentación?",
+    "step5Label": "¿Cuántas unidades?",
+    "step6Label": "¿Zona de entrega?",
+    "step7Label": "¿Cuándo lo necesitás?",
+    "step8Label": "Tus datos de contacto",
+    "profiles": {
+      "hogar": "Hogar",
+      "cafeteria": "Cafetería / Restaurante",
+      "evento": "Evento",
+      "distribucion": "Distribución"
+    },
+    "zones": {
+      "bogota": "Bogotá",
+      "medellin": "Medellín",
+      "cali": "Cali",
+      "otra": "Otra ciudad"
+    },
+    "urgency": {
+      "hoy": "Hoy",
+      "manana": "Mañana",
+      "semana": "Esta semana",
+      "sin_urgencia": "Sin urgencia"
+    },
+    "customQtyPlaceholder": "Cantidad",
+    "nameLabel": "Nombre completo",
+    "namePlaceholder": "Tu nombre",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "whatsappLabel": "Número de WhatsApp",
+    "whatsappPlaceholder": "300 123 4567",
+    "contactHint": "Necesitamos al menos uno para contactarte.",
+    "consentLabel": "Acepto que mis datos sean usados para contactarme sobre mi pedido.",
+    "ctaEmail": "Enviar pedido por email",
+    "ctaWhatsapp": "Enviar por WhatsApp",
+    "sending": "Enviando...",
+    "successTitle": "¡Pedido enviado!",
+    "successText": "Te contactamos a la brevedad para confirmar disponibilidad.",
+    "errorText": "Hubo un error al enviar. Intentá de nuevo o escribinos por WhatsApp.",
+    "back": "Volver",
+    "resetLabel": "Empezar de nuevo",
+    "homeCTATitle": "Armá tu pedido en 30 segundos",
+    "homeCTASubtitle": "Seleccioná productos, dejá tus datos y te confirmamos disponibilidad.",
+    "homeCTAButton": "Empezar pedido"
   },
   "chatbot": {
     "title": "Preguntas Frecuentes",
