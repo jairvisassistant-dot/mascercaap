@@ -151,16 +151,18 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           transition={{ duration: 0.6 }}
           className="mb-10"
         >
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-5">
             <span className="h-px w-10 bg-primary/40 rounded-full" />
             <span className="text-xs font-bold tracking-[0.22em] text-primary uppercase">
               {t.sectionLabel}
             </span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-3 text-balance">
-            {t.title}
-          </h2>
-          <p className="text-text-muted max-w-[58ch] leading-relaxed">{t.subtitle}</p>
+          <div className="md:grid md:grid-cols-[3fr_2fr] md:gap-12 md:items-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-3 md:mb-0 text-balance">
+              {t.title}
+            </h2>
+            <p className="text-text-muted leading-relaxed">{t.subtitle}</p>
+          </div>
         </m.div>
 
         <div className="bg-white dark:bg-surface-card rounded-2xl border border-border-mid shadow-sm p-6 md:p-8">
