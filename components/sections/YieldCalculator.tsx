@@ -32,10 +32,15 @@ const FRUIT_CUP_COLORS: Record<FruitKey, string> = {
   tomate_arbol: "#f97316",
 }
 
-const FRUIT_OPTIONS = (Object.keys(FRUIT_DATA) as FruitKey[]).map((key) => ({
-  value: key,
-  label: FRUIT_DATA[key].label,
-}))
+// Fila 1 — nombres cortos (5 chips)
+const FRUIT_OPTIONS_ROW1 = (
+  ["mora", "fresa", "lulo", "mango", "guayaba"] as FruitKey[]
+).map((k) => ({ value: k, label: FRUIT_DATA[k].label }))
+
+// Fila 2 — nombres más largos (4 chips)
+const FRUIT_OPTIONS_ROW2 = (
+  ["maracuya", "frutos_rojos", "guanabana", "tomate_arbol"] as FruitKey[]
+).map((k) => ({ value: k, label: FRUIT_DATA[k].label }))
 
 const CUSTOM_VALUE = -1
 
@@ -249,11 +254,20 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                 <span className="text-primary mr-2">2.</span>{t.step2Label}
               </p>
               {step === 2 ? (
-                <ChipSelector
-                  options={FRUIT_OPTIONS}
-                  selected={selectedFruit}
-                  onChange={handleFruitSelect}
-                />
+                <div className="space-y-3">
+                  <ChipSelector
+                    options={FRUIT_OPTIONS_ROW1}
+                    selected={selectedFruit}
+                    onChange={handleFruitSelect}
+                    className="flex flex-wrap gap-3"
+                  />
+                  <ChipSelector
+                    options={FRUIT_OPTIONS_ROW2}
+                    selected={selectedFruit}
+                    onChange={handleFruitSelect}
+                    className="flex flex-wrap gap-3"
+                  />
+                </div>
               ) : (
                 <p className="text-text-muted text-sm flex flex-wrap items-center">
                   <span>{selectedFruit ? FRUIT_DATA[selectedFruit].label : ""}</span>
