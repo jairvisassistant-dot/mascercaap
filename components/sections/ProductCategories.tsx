@@ -42,7 +42,7 @@ type CategoryStructure = {
 const CATEGORIES: CategoryStructure[] = [
   {
     key: "jugos",
-    image: "/imgs/SKU_Limon-Portada.png",
+    image: "/imgs/SKU_Limon-Portada.webp",
     href: "/productos?categoria=jugos",
     gradient: "from-[#dcefc5] via-[#8fbd68] to-[#3f7f4a]",
     glowColor: "bg-lime-100/24",
@@ -51,7 +51,7 @@ const CATEGORIES: CategoryStructure[] = [
   },
   {
     key: "pulpas",
-    image: "/imgs/pulpas-portada-test.png",
+    image: "/imgs/pulpasFrutas-portada.webp",
     href: "/productos?categoria=pulpas",
     gradient: "from-[#f47f22] via-[#f59a24] to-[#f2bd54]",
     glowColor: "bg-orange-100/24",
@@ -59,7 +59,7 @@ const CATEGORIES: CategoryStructure[] = [
   },
   {
     key: "lacteos",
-    image: "/imgs/lacteos_Portada.png",
+    image: "/imgs/lacteos_Portada.webp",
     href: "/productos?categoria=lacteos",
     gradient: "from-[#153f3a] via-[#276357] to-[#6f967f]",
     glowColor: "bg-stone-100/20",

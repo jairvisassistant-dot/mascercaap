@@ -13,7 +13,7 @@ export const SITE_CONFIG = {
   /** URL canónica del sitio */
   siteUrl: "https://mascercap.com",
   /** Logo público usado para metadata y datos estructurados */
-  logoPath: "/imgs/Logo.png",
+  logoPath: "/imgs/Logo.webp",
   /** Imagen social temporal hasta tener pieza OG final de marca */
   ogImagePath: "/imgs/Slide1.1.webp",
   /** Redes sociales — dejar vacío ("") para ocultar el ícono */

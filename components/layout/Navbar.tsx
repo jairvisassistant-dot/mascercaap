@@ -62,7 +62,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold text-primary">
-              <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={97} height={60} priority className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
+              <Image src="/imgs/Logo.webp" alt="Más Cerca AP" width={97} height={60} priority className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
               <BrandFruitMark />
