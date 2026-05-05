@@ -5,8 +5,10 @@ import { SITE_CONFIG } from "@/lib/config";
 const baseUrl = SITE_CONFIG.siteUrl;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Fecha fija intencional — evita NEXT-06: new Date() sin args genera checksums distintos en cada build.
-  // Actualizar manualmente al hacer cambios de contenido significativos.
+  // Fecha fija intencional — evita NEXT-06: new Date() sin args genera checksums distintos en cada build
+  // y dispara re-indexación innecesaria en Google Search Console.
+  // CHECKLIST DE RELEASE: actualizar esta fecha cuando cambie contenido estructural
+  // (nuevas rutas, nuevas páginas de producto, cambios de URL). No actualizar para edits de copy.
   const now = new Date("2026-04-19");
 
   const staticPages = [

@@ -1,0 +1,354 @@
+- generic [ref=e1]:
+  - link "Saltar al contenido" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Más Cerca AP MAS CERCA AP" [ref=e7] [cursor=pointer]:
+          - /url: /es
+          - img "Más Cerca AP" [ref=e8]
+          - generic [ref=e9]: MAS CERCA
+          - generic [ref=e10]: AP
+          - generic [ref=e12]: 🍋
+        - navigation [ref=e13]:
+          - link "Inicio" [ref=e14] [cursor=pointer]:
+            - /url: /es
+          - link "Productos" [ref=e15] [cursor=pointer]:
+            - /url: /es/productos
+          - link "Nosotros" [ref=e16] [cursor=pointer]:
+            - /url: /es/nosotros
+          - link "Contacto" [ref=e17] [cursor=pointer]:
+            - /url: /es/contacto
+        - generic [ref=e18]:
+          - button "Activar modo oscuro" [ref=e19]:
+            - img [ref=e20]
+            - generic [ref=e22]: Oscuro
+          - button "Switch to English" [ref=e23]:
+            - generic [ref=e24]: 🇺🇸
+            - generic [ref=e25]: EN
+          - button "Pedir ahora" [ref=e26]
+    - main [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e492]:
+          - img "La fruta sale del campo hoy. Mañana está en tu mesa." [ref=e495]
+          - generic [ref=e498]:
+            - generic [ref=e499]:
+              - paragraph [ref=e500]: PULPAS 100% NATURALES · SIN CONSERVANTES · SIN COLORANTES
+              - heading "La fruta sale del campo hoy. Mañana está en tu mesa." [level=1] [ref=e501]
+              - paragraph [ref=e502]: Fruta colombiana congelada en su punto exacto de madurez. Conserva sus aromas, color y sabor — exactamente como recién cosechada.
+              - generic [ref=e503]:
+                - link "Conocer nuestra historia" [ref=e504] [cursor=pointer]:
+                  - /url: /es/nosotros
+                - button "Pedir ahora" [ref=e505]
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Más Cerca AP
+                - paragraph: Del campo colombiano a tu mesa con frescura, cuidado y entrega cercana.
+        - button "Slide anterior" [ref=e43]:
+          - img [ref=e44]
+        - button "Slide siguiente" [ref=e46]:
+          - img [ref=e47]
+        - generic [ref=e49]:
+          - button "Ir al slide 1" [ref=e50]
+          - button "Ir al slide 2" [ref=e51]
+          - button "Ir al slide 3" [ref=e52]
+          - button "Ir al slide 4" [ref=e53]
+          - button "Ir al slide 5" [ref=e54]
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - generic [ref=e60]: Catálogo
+          - heading "Categorías de Productos" [level=2] [ref=e62]
+          - paragraph [ref=e63]: Tres líneas de productos frescos para cada momento del día.
+        - generic [ref=e64]:
+          - link "Zumos y Limonadas Zumos y Limonadas Zumos y Limonadas Limón, cereza, coco y maracuyá. Sabor auténtico, elaborados con los más altos estándares de calidad. Ver productos" [ref=e66] [cursor=pointer]:
+            - /url: /es/productos?categoria=jugos
+            - generic [ref=e68]:
+              - generic:
+                - img "Zumos y Limonadas"
+              - generic [ref=e69]:
+                - generic [ref=e70]:
+                  - generic [ref=e72]: 🍋
+                  - generic [ref=e73]: Zumos y Limonadas
+                - generic [ref=e74]:
+                  - heading "Zumos y Limonadas" [level=3] [ref=e75]
+                  - paragraph [ref=e76]: Limón, cereza, coco y maracuyá. Sabor auténtico, elaborados con los más altos estándares de calidad.
+                  - generic [ref=e77]:
+                    - text: Ver productos
+                    - img [ref=e78]
+          - link "Pulpas de Frutas Pulpas de Frutas Pulpas de Frutas Frutas colombianas congeladas en su punto exacto de madurez. Listas para preparar. Ver productos" [ref=e81] [cursor=pointer]:
+            - /url: /es/productos?categoria=pulpas
+            - generic [ref=e83]:
+              - generic:
+                - img "Pulpas de Frutas"
+              - generic [ref=e84]:
+                - generic [ref=e85]:
+                  - generic [ref=e87]: 🍓
+                  - generic [ref=e88]: Pulpas de Frutas
+                - generic [ref=e89]:
+                  - heading "Pulpas de Frutas" [level=3] [ref=e90]
+                  - paragraph [ref=e91]: Frutas colombianas congeladas en su punto exacto de madurez. Listas para preparar.
+                  - generic [ref=e92]:
+                    - text: Ver productos
+                    - img [ref=e93]
+          - link "Lácteos Lácteos Lácteos Kumis y yogurt de tradición colombiana. Frescura y sabor en cada sorbo. Ver productos" [ref=e96] [cursor=pointer]:
+            - /url: /es/productos?categoria=lacteos
+            - generic [ref=e98]:
+              - generic:
+                - img "Lácteos"
+              - generic [ref=e99]:
+                - generic [ref=e100]:
+                  - generic [ref=e102]: 🥛
+                  - generic [ref=e103]: Lácteos
+                - generic [ref=e104]:
+                  - heading "Lácteos" [level=3] [ref=e105]
+                  - paragraph [ref=e106]: Kumis y yogurt de tradición colombiana. Frescura y sabor en cada sorbo.
+                  - generic [ref=e107]:
+                    - text: Ver productos
+                    - img [ref=e108]
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e115]: Alta rotación
+          - heading "Lo que más están pidiendo" [level=2] [ref=e117]
+          - paragraph [ref=e118]: Estos son los productos que más se han movido entre hogares, cafeterías y restaurantes. Prueba la calidad de nuestros productos y sabrás por qué los demás también lo están llevando. Pídelo aquí.
+        - generic [ref=e119]:
+          - article [ref=e120]:
+            - generic [ref=e121]:
+              - generic [ref=e122]:
+                - generic [ref=e123]: "#1 en pedidos"
+                - generic [ref=e124]: 600ml
+              - img "Zumo de Limón 600ml" [ref=e127]
+              - generic [ref=e128]:
+                - paragraph [ref=e129]: Favorito familiar
+                - heading "Zumo de Limón" [level=3] [ref=e130]
+                - paragraph [ref=e131]: El básico que más se repite para nevera, comidas y jugos rápidos en casa.
+                - button "Pedir este producto ↗" [ref=e132]:
+                  - generic [ref=e133]: Pedir este producto
+                  - generic [ref=e134]: ↗
+          - article [ref=e135]:
+            - generic [ref=e136]:
+              - generic [ref=e137]:
+                - generic [ref=e138]: Top negocios
+                - generic [ref=e139]: 300g
+              - img "Pulpa de Maracuyá 300g" [ref=e142]
+              - generic [ref=e143]:
+                - paragraph [ref=e144]: Alta rotación
+                - heading "Pulpa de Maracuyá" [level=3] [ref=e145]
+                - paragraph [ref=e146]: Muy solicitado por cafeterías y restaurantes por su rendimiento y sabor constante.
+                - button "Cotizar por WhatsApp ↗" [ref=e147]:
+                  - generic [ref=e148]: Cotizar por WhatsApp
+                  - generic [ref=e149]: ↗
+          - article [ref=e150]:
+            - generic [ref=e151]:
+              - generic [ref=e152]:
+                - generic [ref=e153]: Muy consultado
+                - generic [ref=e154]: 900ml
+              - img "Kumis Yolito 900ml" [ref=e157]
+              - generic [ref=e158]:
+                - paragraph [ref=e159]: Consumo diario
+                - heading "Kumis Yolito" [level=3] [ref=e160]
+                - paragraph [ref=e161]: Una opción fresca que acompaña desayunos, meriendas y pedidos recurrentes.
+                - button "Consultar disponibilidad ↗" [ref=e162]:
+                  - generic [ref=e163]: Consultar disponibilidad
+                  - generic [ref=e164]: ↗
+      - generic [ref=e166]:
+        - generic [ref=e167]:
+          - generic [ref=e170]: Rendimiento real
+          - heading "¿Descubre cuánto te puede rendir nuestras pulpas de frutas en las preparaciones que más te gustan?" [level=2] [ref=e171]
+          - paragraph [ref=e172]: Solo elige la preparación que más te gusta y la cantidad de vasos que quieres preparar y te mostraremos la cantidad necesaria para tu preparación, nuestros productos son ideales para preparar en casa o para tu negocio.
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - paragraph [ref=e177]: 1.¿Qué querés preparar?
+            - generic [ref=e178]:
+              - button "Jugo" [active] [ref=e179]:
+                - generic [ref=e180]: Jugo
+              - button "Frappe" [ref=e181]:
+                - generic [ref=e182]: Frappe
+          - generic [ref=e183]:
+            - paragraph [ref=e184]: ¿Para cuántos vasos?
+            - generic [ref=e185]:
+              - button "25" [ref=e186]:
+                - generic [ref=e187]: "25"
+              - button "50" [ref=e188]:
+                - generic [ref=e189]: "50"
+              - button "100" [ref=e190]:
+                - generic [ref=e191]: "100"
+              - button "200" [ref=e192]:
+                - generic [ref=e193]: "200"
+              - button "Personalizado" [ref=e194]:
+                - generic [ref=e195]: Personalizado
+      - generic [ref=e198]:
+        - generic [ref=e199]:
+          - generic [ref=e202]: Nuestra promesa
+          - heading "Por qué elegirnos" [level=2] [ref=e203]
+          - paragraph [ref=e204]: Comprometidos con tu bienestar y el sabor auténtico de lo natural.
+        - generic [ref=e205]:
+          - generic [ref=e206]:
+            - img [ref=e208]
+            - generic [ref=e210]:
+              - heading "Ingredientes Claros" [level=3] [ref=e211]
+              - paragraph [ref=e212]: Te contamos qué contiene cada producto para que puedas elegir con confianza.
+          - generic [ref=e213]:
+            - img [ref=e215]
+            - generic [ref=e217]:
+              - heading "Sin Conservantes" [level=3] [ref=e218]
+              - paragraph [ref=e219]: Productos frescos que mantienen sus propiedades nutricionales.
+          - generic [ref=e220]:
+            - img [ref=e222]
+            - generic [ref=e225]:
+              - heading "Hecho en Colombia" [level=3] [ref=e226]
+              - paragraph [ref=e227]: Producido localmente con frutas de proveedores cercanos.
+          - generic [ref=e228]:
+            - img [ref=e230]
+            - generic [ref=e232]:
+              - heading "Entrega Rápida" [level=3] [ref=e233]
+              - paragraph [ref=e234]: De nuestro almacén a tu puerta en menos de 24 horas.
+      - generic [ref=e236]:
+        - generic [ref=e237]:
+          - generic [ref=e240]: Cómo trabajamos
+          - heading "Estándares que cuidamos en cada entrega" [level=2] [ref=e242]
+          - paragraph [ref=e243]: Servicio cercano, producto fresco y una operación pensada para darte calidad constante.
+        - generic [ref=e244]:
+          - img "ATENCIÓN PERSONALIZADA" [ref=e246]:
+            - generic [ref=e257]: 🤝
+            - generic [ref=e258]: ATENCIÓN
+            - generic [ref=e259]: PERSONALIZADA
+          - img "PRODUCTOS FRESCOS" [ref=e261]:
+            - generic [ref=e272]: 🌿
+            - generic [ref=e273]: PRODUCTOS
+            - generic [ref=e274]: FRESCOS
+          - img "CALIDAD GARANTIZADA" [ref=e276]:
+            - generic [ref=e287]: 🏆
+            - generic [ref=e288]: CALIDAD
+            - generic [ref=e289]: GARANTIZADA
+          - img "ENTREGA RÁPIDA" [ref=e291]:
+            - generic [ref=e302]: 🚚
+            - generic [ref=e303]: ENTREGA
+            - generic [ref=e304]: RÁPIDA
+      - generic [ref=e306]:
+        - generic [ref=e307]:
+          - generic [ref=e310]: Clientes
+          - heading "Lo que dicen nuestros clientes" [level=2] [ref=e312]
+          - paragraph [ref=e313]: Empresas y negocios que confían en Mas Cerca Ap para sus necesidades de jugos naturales.
+          - generic [ref=e314]:
+            - generic [ref=e315]: Restaurantes y cafeterías
+            - generic [ref=e316]: Aliados comerciales en Bogotá
+            - generic [ref=e317]: Clientes que vuelven a pedir
+        - generic [ref=e318]:
+          - generic [ref=e473]:
+            - generic [ref=e474]: “
+            - generic [ref=e475]:
+              - img [ref=e476]
+              - img [ref=e478]
+              - img [ref=e480]
+              - img [ref=e482]
+              - img [ref=e484]
+            - paragraph [ref=e486]: La calidad y el servicio son excepcionales. Llevamos 2 años trabajando con ellos y nunca nos han fallado. 100% recomendados.
+            - generic [ref=e488]:
+              - paragraph [ref=e489]: Carlos Andrés Mendoza
+              - paragraph [ref=e490]: Distribuidor Mayorista, Zipaquirá
+          - generic [ref=e337]:
+            - button "Ir a testimonio 1" [ref=e338]
+            - button "Ir a testimonio 2" [ref=e339]
+            - button "Ir a testimonio 3" [ref=e340]
+          - button "Pausar testimonios" [ref=e342]
+      - generic [ref=e345]:
+        - generic [ref=e346]:
+          - img [ref=e348]
+          - generic [ref=e350]:
+            - heading "Armá tu pedido en 30 segundos" [level=2] [ref=e351]
+            - paragraph [ref=e352]: Seleccioná productos, dejá tus datos y te confirmamos disponibilidad.
+        - button "Empezar pedido" [ref=e353]:
+          - img [ref=e354]
+          - text: Empezar pedido
+      - generic [ref=e357]:
+        - generic [ref=e358]: Entregas en Bogotá
+        - heading "¿Listo para probar la calidad de nuestros productos?" [level=2] [ref=e360]
+        - paragraph [ref=e361]: Escríbenos por WhatsApp para pedidos de hogares, cafeterías y restaurantes. Entregamos en Bogotá y coordinamos cada pedido según zona y disponibilidad.
+        - generic [ref=e362]:
+          - generic [ref=e363]: Hogares, cafeterías y restaurantes
+          - generic [ref=e364]: Coordinación por zona y disponibilidad
+        - button "Hacer pedido por WhatsApp" [ref=e366]:
+          - generic [ref=e367] [cursor=pointer]:
+            - img [ref=e369]
+            - generic [ref=e371]: Hacer pedido por WhatsApp
+    - contentinfo [ref=e372]:
+      - generic [ref=e373]:
+        - generic [ref=e374]:
+          - generic [ref=e375]:
+            - link "Más Cerca AP MAS CERCA AP" [ref=e376] [cursor=pointer]:
+              - /url: /es
+              - img "Más Cerca AP" [ref=e377]
+              - generic [ref=e378]: MAS CERCA
+              - generic [ref=e379]: AP
+              - generic [ref=e381]: 🍋
+            - paragraph [ref=e382]: Nuestros productos son elaborados con altos estándares de calidad para que siempre disfrutes del sabor y el aroma de las frutas que más te gustan.
+            - generic [ref=e383]:
+              - link "Síguenos en Facebook" [ref=e384] [cursor=pointer]:
+                - /url: /es/facebook
+                - img [ref=e385]
+              - link "Síguenos en Instagram" [ref=e387] [cursor=pointer]:
+                - /url: /es/instagram
+                - img [ref=e388]
+              - generic "Síguenos en TikTok" [ref=e390]:
+                - img [ref=e391]
+          - generic [ref=e393]:
+            - heading "Navegación" [level=3] [ref=e394]
+            - list [ref=e395]:
+              - listitem [ref=e396]:
+                - link "Inicio" [ref=e397] [cursor=pointer]:
+                  - /url: /es
+              - listitem [ref=e398]:
+                - link "Productos" [ref=e399] [cursor=pointer]:
+                  - /url: /es/productos
+              - listitem [ref=e400]:
+                - link "Nosotros" [ref=e401] [cursor=pointer]:
+                  - /url: /es/nosotros
+              - listitem [ref=e402]:
+                - link "Contacto" [ref=e403] [cursor=pointer]:
+                  - /url: /es/contacto
+          - generic [ref=e404]:
+            - heading "Productos" [level=3] [ref=e405]
+            - list [ref=e406]:
+              - listitem [ref=e407]:
+                - link "Zumos & Limonadas" [ref=e408] [cursor=pointer]:
+                  - /url: /es/productos?categoria=jugos
+              - listitem [ref=e409]:
+                - link "Pulpas de Frutas" [ref=e410] [cursor=pointer]:
+                  - /url: /es/productos?categoria=pulpas
+              - listitem [ref=e411]:
+                - link "Lácteos" [ref=e412] [cursor=pointer]:
+                  - /url: /es/productos?categoria=lacteos
+          - generic [ref=e413]:
+            - heading "Contacto" [level=3] [ref=e414]
+            - list [ref=e415]:
+              - listitem [ref=e416]:
+                - link "Chía, Colombia" [ref=e417] [cursor=pointer]:
+                  - /url: https://www.google.com/maps/search/?api=1&query=Calle%2012a%20%23%2015-53%2C%20Chia%2C%20Cundinamarca%2C%20Colombia
+                  - img [ref=e418]
+                  - text: Chía, Colombia
+              - listitem [ref=e421]:
+                - link "apalejandraplata@gmail.com" [ref=e422] [cursor=pointer]:
+                  - /url: mailto:apalejandraplata@gmail.com
+                  - img [ref=e423]
+                  - text: apalejandraplata@gmail.com
+              - listitem [ref=e425]:
+                - link "+57 321 905 4984" [ref=e426] [cursor=pointer]:
+                  - /url: tel:+57-321-905-4984
+                  - img [ref=e427]
+                  - text: +57 321 905 4984
+        - generic [ref=e429]:
+          - link "Políticas y privacidad" [ref=e430] [cursor=pointer]:
+            - /url: /es/politicas
+          - generic [ref=e431]: ·
+          - link "Términos y condiciones" [ref=e432] [cursor=pointer]:
+            - /url: /es/terminos
+        - generic [ref=e433]:
+          - paragraph [ref=e434]: © 2026 Mas Cerca Ap. Todos los derechos reservados.
+          - paragraph [ref=e435]: Hecho con 🍋 y 🍊 en Colombia
+    - button "¿Necesita ayuda?" [ref=e436]:
+      - img [ref=e437]
+      - generic [ref=e439]: ¿Necesita ayuda?
+  - button "Open Next.js Dev Tools" [ref=e445] [cursor=pointer]:
+    - img [ref=e446]
+  - alert [ref=e452]

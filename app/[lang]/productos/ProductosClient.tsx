@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ProductLineRow from "@/components/ui/ProductLineRow";
@@ -29,16 +30,17 @@ const PULPA_KEYS = new Set<ProductLineKey>([
 interface ProductosClientProps {
   products: Product[];
   productLines: ProductLineConfig[];
-  initialCategory?: string;
 }
 
-export default function ProductosClient({ products, productLines, initialCategory }: ProductosClientProps) {
+export default function ProductosClient({ products, productLines }: ProductosClientProps) {
+  const searchParams = useSearchParams();
   const { dict, lang } = useDictionary();
 
   // Nivel 1 — siempre hay una categoría activa, default "todas"
-  const [activeCategory, setActiveCategory] = useState<string>(() =>
-    initialCategory && CATEGORY_LINES[initialCategory] ? initialCategory : DEFAULT_CATEGORY
-  );
+  const [activeCategory, setActiveCategory] = useState<string>(() => {
+    const cat = searchParams.get("categoria");
+    return cat && CATEGORY_LINES[cat] ? cat : DEFAULT_CATEGORY;
+  });
 
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
   const [activeSubLines, setActiveSubLines] = useState<ProductLineKey[]>([]);

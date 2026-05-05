@@ -264,7 +264,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[540px] md:min-h-[640px] overflow-hidden bg-emerald-950">
+    <section ref={sectionRef} className="relative min-h-[600px] md:min-h-[640px] overflow-hidden bg-emerald-950">
 
       <AnimatePresence mode="wait">
         <m.div
@@ -306,7 +306,7 @@ export default function HeroCarousel() {
           <div className="hero-overlay absolute inset-0" />
 
           <div className="relative h-full min-h-[540px] md:min-h-[640px]">
-            <div className="mx-auto grid h-full min-h-[540px] max-w-7xl items-center px-6 py-28 sm:px-8 md:min-h-[640px] md:grid-cols-[minmax(0,0.92fr)_minmax(260px,0.58fr)] md:px-12 lg:px-16">
+            <div className="mx-auto grid h-full min-h-[600px] max-w-7xl items-center px-6 py-16 sm:py-24 sm:px-8 md:min-h-[640px] md:py-28 md:grid-cols-[minmax(0,0.92fr)_minmax(260px,0.58fr)] md:px-12 lg:px-16">
               <div className={`${currentSlide === 3 ? "max-w-3xl" : "max-w-2xl"} text-left text-white`}>
 
               <m.p
@@ -322,7 +322,7 @@ export default function HeroCarousel() {
                 initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: shouldReduceMotion ? 0 : 0.3, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className={`${currentSlide === 3 ? "max-w-[760px]" : currentSlide === 2 ? "max-w-[720px]" : "max-w-[17ch]"} mb-5 whitespace-pre-line text-balance text-4xl font-bold leading-[0.96] tracking-[-0.045em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-5xl md:text-6xl lg:text-7xl`}
+                className={`${currentSlide === 3 ? "max-w-[760px]" : currentSlide === 2 ? "max-w-[720px]" : "max-w-[17ch]"} mb-5 whitespace-pre-line text-balance text-3xl font-bold leading-[0.96] tracking-[-0.045em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-4xl md:text-6xl lg:text-7xl`}
               >
                 {slideText.title}
               </m.h1>
@@ -393,7 +393,7 @@ export default function HeroCarousel() {
 
       <button
         onClick={prevSlide}
-        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
+        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 hidden sm:flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
         aria-label={dict.home.hero.prevSlide}
       >
         <svg className="h-4 w-4 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -402,7 +402,7 @@ export default function HeroCarousel() {
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
+        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 hidden sm:flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
         aria-label={dict.home.hero.nextSlide}
       >
         <svg className="h-4 w-4 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

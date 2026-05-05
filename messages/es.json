@@ -25,7 +25,7 @@
     },
     "contact": "Contacto",
     "location": "Chía, Colombia",
-    "copyright": "© 2026 Mas Cerca Ap. Todos los derechos reservados.",
+    "copyright": "© 2026 Más Cerca AP. Todos los derechos reservados.",
     "madeWith": "Hecho con 🍋 y 🍊 en Colombia",
     "socialLabel": "Síguenos en"
   },
@@ -35,21 +35,21 @@
   },
   "socialQr": {
     "facebook": {
-      "eyebrow": "Facebook · Mas Cerca AP",
+      "eyebrow": "Facebook · Más Cerca AP",
       "title": "Conecta con nuestro perfil oficial",
-      "description": "Este QR abre el perfil público de Mas Cerca AP. No es un código para iniciar sesión en Facebook en otro dispositivo.",
+      "description": "Este QR abre el perfil público de Más Cerca AP. No es un código para iniciar sesión en Facebook en otro dispositivo.",
       "openProfile": "Abrir perfil",
       "backHome": "Volver al inicio",
-      "qrAlt": "QR del perfil de Facebook de Mas Cerca AP",
+      "qrAlt": "QR del perfil de Facebook de Más Cerca AP",
       "scanHint": "Escanea el código con la cámara del celular para abrir el perfil en la app o navegador de Facebook."
     },
     "instagram": {
-      "eyebrow": "Instagram · Mas Cerca AP",
+      "eyebrow": "Instagram · Más Cerca AP",
       "title": "Conecta con nuestro Instagram oficial",
-      "description": "Este QR abre el perfil público de Instagram de Mas Cerca AP. No es un código para iniciar sesión en otro dispositivo.",
+      "description": "Este QR abre el perfil público de Instagram de Más Cerca AP. No es un código para iniciar sesión en otro dispositivo.",
       "openProfile": "Abrir perfil",
       "backHome": "Volver al inicio",
-      "qrAlt": "QR del perfil de Instagram de Mas Cerca AP",
+      "qrAlt": "QR del perfil de Instagram de Más Cerca AP",
       "scanHint": "Escanea el código con la cámara del celular para abrir el perfil en la app o navegador de Instagram."
     }
   },
@@ -128,13 +128,13 @@
           "badge": "Top negocios",
           "kicker": "Alta rotación",
           "text": "Muy solicitado por cafeterías y restaurantes por su rendimiento y sabor constante.",
-          "cta": "Cotizar por WhatsApp"
+          "cta": "Pedir este producto"
         },
         {
           "badge": "Muy consultado",
           "kicker": "Consumo diario",
           "text": "Una opción fresca que acompaña desayunos, meriendas y pedidos recurrentes.",
-          "cta": "Consultar disponibilidad"
+          "cta": "Pedir este producto"
         }
       ]
     },
@@ -187,7 +187,7 @@
     "testimonials": {
       "label": "Clientes",
       "title": "Lo que dicen nuestros clientes",
-      "subtitle": "Empresas y negocios que confían en Mas Cerca Ap para sus necesidades de jugos naturales.",
+      "subtitle": "Empresas y negocios que confían en Más Cerca AP para sus necesidades de jugos naturales.",
       "goTo": "Ir a testimonio",
       "pause": "Pausar testimonios",
       "resume": "Reanudar testimonios",
@@ -225,9 +225,9 @@
     },
     "cta": {
       "badge": "Acompañamiento comercial",
-      "title": "¿Necesitás ayuda sobre alguno de nuestros productos?",
+      "title": "¿Necesitas ayuda sobre alguno de nuestros productos?",
       "text": "Te brindamos la asesoría adecuada para tu negocio, para que elijas la presentación ideal de nuestro catálogo.",
-      "button": "Hablá con nosotros",
+      "button": "Habla con nosotros",
       "stats": [
         { "value": "43+", "label": "Productos en catálogo" },
         { "value": "<24h", "label": "Respuesta comercial" },
@@ -262,7 +262,7 @@
   "about": {
     "hero": {
       "title": "Sobre Nosotros",
-      "subtitle": "Conoce la historia detrás de Mas Cerca Ap y nuestro compromiso con la frescura y calidad."
+      "subtitle": "Conoce la historia detrás de Más Cerca AP y nuestro compromiso con la frescura y calidad."
     },
     "history": {
       "title": "Nuestra Historia",
@@ -400,19 +400,19 @@
         },
         {
           "year": "2026",
-          "text": "Hoy llegamos a toda Bogotá con más de 13 variedades de productos frescos y un equipo comprometido."
+          "text": "Hoy llegamos a toda Bogotá con más de 43 productos en catálogo y un equipo comprometido."
         }
       ],
       "stats": {
         "label": "En Números",
         "items": [
           {
-            "value": "13+",
-            "description": "Variedades de productos"
+            "value": "43+",
+            "description": "Productos en catálogo"
           },
           {
-            "value": "250ml",
-            "description": "Lácteos Del Hato"
+            "value": "WhatsApp",
+            "description": "Atención directa"
           },
           {
             "value": "<24h",
@@ -434,7 +434,7 @@
     },
     "whoWeAre": {
       "label": "",
-      "text": "En Más cerca AP cada mensaje se atiende personalmente, siempre nos preocupamos por darte lo mejor."
+      "text": "En Más Cerca AP cada mensaje se atiende personalmente, siempre nos preocupamos por darte lo mejor."
     },
     "cards": {
       "location": {
@@ -451,8 +451,8 @@
     },
     "map": {
       "title": "Dónde estamos",
-      "subtitle": "Puedes pasar a buscar tu pedido directamente en nuestra bodega.",
-      "iframeTitle": "Ubicación bodega Mas Cerca Ap"
+      "subtitle": "Puedes pasar a recoger tu pedido directamente en nuestra bodega.",
+      "iframeTitle": "Ubicación bodega Más Cerca AP"
     },
     "form": {
       "title": "Envíanos un mensaje",
@@ -482,7 +482,7 @@
       "submitting": "Enviando...",
       "success": {
         "title": "¡Mensaje enviado!",
-        "text": "Te respondemos pronto. También puedes escribirnos directo por WhatsApp.",
+        "text": "Te respondemos pronto. También puedes escribirnos directamente por WhatsApp.",
         "quickResponse": "¿Quieres una respuesta más rápida?",
         "whatsappButton": "Continuar por WhatsApp"
       },
@@ -580,28 +580,28 @@
       "keywords": "jugos, naturales, Colombia, limón, naranja, zumos, bebidas"
     },
     "products": {
-      "title": "Productos — Mas Cerca Ap",
+      "title": "Productos — Más Cerca AP",
       "description": "Zumos, pulpas de frutas y bebidas naturales elaborados con frutas colombianas. Del campo a tu mesa."
     },
     "about": {
-      "title": "Nosotros — Mas Cerca Ap",
+      "title": "Nosotros — Más Cerca AP",
       "description": "Conoce la historia de Más Cerca AP: una empresa colombiana que produce y comercializa jugos, pulpas y productos frescos comprando directamente al campesino."
     },
     "contact": {
-      "title": "Contacto — Mas Cerca Ap",
+      "title": "Contacto — Más Cerca AP",
       "description": "Contacta a Más Cerca AP para hacer un pedido, ser distribuidor o hacer una consulta."
     },
     "privacy": {
-      "title": "Políticas y Privacidad — Mas Cerca AP",
+      "title": "Políticas y Privacidad — Más Cerca AP",
       "description": "Conoce las políticas de privacidad y tratamiento de datos personales de Más Cerca AP."
     },
     "terms": {
-      "title": "Términos y Condiciones — Mas Cerca AP",
+      "title": "Términos y Condiciones — Más Cerca AP",
       "description": "Lee los términos y condiciones de uso de los servicios y productos de Más Cerca AP."
     }
   },
   "helpHub": {
-    "trigger": "¿Necesita ayuda?",
+    "trigger": "¿Necesitas ayuda?",
     "title": "Centro de ayuda",
     "close": "Cerrar",
     "back": "Volver",
@@ -619,7 +619,7 @@
     }
   },
   "orderAssistant": {
-    "title": "Armá tu pedido",
+    "title": "Arma tu pedido",
     "subtitle": "Te guiamos en 8 pasos y dejamos todo listo para enviarlo.",
     "step1Label": "¿Para quién es el pedido?",
     "step2Label": "¿Qué tipo de producto?",
@@ -627,7 +627,7 @@
     "step4Label": "¿Qué presentación?",
     "step5Label": "¿Cuántas unidades?",
     "step6Label": "¿Zona de entrega?",
-    "step7Label": "¿Cuándo lo necesitás?",
+    "step7Label": "¿Cuándo lo necesitas?",
     "step8Label": "Tus datos de contacto",
     "profiles": {
       "hogar": "Hogar",
@@ -661,11 +661,11 @@
     "sending": "Enviando...",
     "successTitle": "¡Pedido enviado!",
     "successText": "Te contactamos a la brevedad para confirmar disponibilidad.",
-    "errorText": "Hubo un error al enviar. Intentá de nuevo o escribinos por WhatsApp.",
+    "errorText": "Hubo un error al enviar. Intenta de nuevo o escríbenos por WhatsApp.",
     "back": "Volver",
     "resetLabel": "Empezar de nuevo",
-    "homeCTATitle": "Armá tu pedido en 30 segundos",
-    "homeCTASubtitle": "Seleccioná productos, dejá tus datos y te confirmamos disponibilidad.",
+    "homeCTATitle": "Arma tu pedido en 30 segundos",
+    "homeCTASubtitle": "Selecciona productos, deja tus datos y te confirmamos disponibilidad.",
     "homeCTAButton": "Empezar pedido",
     "cartLabel": "Tu pedido",
     "addAnother": "+ Agregar otro producto",
@@ -680,11 +680,11 @@
   },
   "chatbot": {
     "title": "Preguntas Frecuentes",
-    "welcome": "Hola! 👋 Soy el asistente de Más Cerca AP. Selecciona una categoría o escribe tu pregunta.",
+    "welcome": "Hola. 👋 Soy el asistente de Más Cerca AP. Selecciona una categoría o escribe tu pregunta.",
     "placeholder": "Escribe tu pregunta...",
     "fallback": "No tengo información sobre eso. ¿Te gustaría hablar con nuestro equipo?",
     "talkToHuman": "Hablar con una persona",
-    "advisorOffer": "¿Querés hablar igual con un asesor?",
+    "advisorOffer": "¿Quieres hablar con un asesor?",
     "talkToAdvisor": "Conectar con asesor",
     "leadFormIntro": "Para conectarte con un asesor, necesito algunos datos rápidos:",
     "leadName": "Tu nombre",
@@ -699,12 +699,12 @@
     "leadConsentLink": "Ver política de privacidad",
     "leadSubmit": "Conectar con asesor",
     "leadSkip": "Omitir",
-    "leadConnectTitle": "¿Cómo querés conectarte?",
+    "leadConnectTitle": "¿Cómo quieres conectarte?",
     "leadConnectApp": "Abrir aplicación",
     "leadConnectWeb": "Continuar en WhatsApp Web",
-    "leadConnectOr": "O escaneá con tu celular:",
-    "leadQrTitle": "Escaneá con tu celular",
-    "leadQrHint": "Abrí la cámara de tu celular y enfocá el código para iniciar la conversación en WhatsApp.",
+    "leadConnectOr": "O escanea con tu celular:",
+    "leadQrTitle": "Escanea con tu celular",
+    "leadQrHint": "Abre la cámara de tu celular y enfoca el código para iniciar la conversación en WhatsApp.",
     "leadQrSaved": "✓ Tus datos fueron guardados. El asesor tendrá el contexto de tu consulta.",
     "helpful": "¿Te fue útil esta respuesta?",
     "yes": "Sí, gracias",
@@ -720,16 +720,16 @@
   },
   "yieldCalculator": {
     "sectionLabel": "Rendimiento real",
-    "title": "¿Descubre cuánto te puede rendir nuestras pulpas de frutas en las preparaciones que más te gustan?",
-    "subtitle": "Solo elige la preparación que más te gusta y la cantidad de vasos que quieres preparar y te mostraremos la cantidad necesaria para tu preparación, nuestros productos son ideales para preparar en casa o para tu negocio.",
-    "prepLabel": "¿Qué querés preparar?",
+    "title": "Descubre cuánto te pueden rendir nuestras pulpas de frutas en las preparaciones que más te gustan",
+    "subtitle": "Solo elige la preparación que más te gusta y la cantidad de vasos que quieres preparar, y te mostraremos la cantidad necesaria para tu preparación. Nuestros productos son ideales para preparar en casa o para tu negocio.",
+    "prepLabel": "¿Qué quieres preparar?",
     "prepJugo": "Jugo",
     "prepFrappe": "Frappe",
     "step1Label": "¿Para cuántos vasos?",
     "step2Label": "¿Qué fruta?",
     "step3Label": "¿Cuál presentación te conviene más?",
     "customPlaceholder": "Cantidad de vasos",
-    "resultPacksNeeded": "Necesitás {count} paquete(s) de {fruit} {presentation}",
+    "resultPacksNeeded": "Necesitas {count} paquete(s) de {fruit} {presentation}",
     "resultCupsYield": "Rinde aprox. {cups} vasos de 12oz",
     "freshComparisonTitle": "Comparado con fruta fresca:",
     "freshKg": "~{kg} kg de fruta fresca",

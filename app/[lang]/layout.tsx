@@ -14,7 +14,7 @@ import { SITE_CONFIG } from "@/lib/config";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
 });
 
@@ -23,6 +23,7 @@ const dmSerif = DM_Serif_Display({
   weight: ["400"],
   style: ["normal", "italic"],
   variable: "--font-dm-serif",
+  preload: false,
 });
 
 export async function generateStaticParams() {
@@ -33,7 +34,7 @@ function getJsonLd(lang: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Mas Cerca Ap",
+    name: "Más Cerca AP",
     url: SITE_CONFIG.siteUrl,
     logo: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`,
     description:

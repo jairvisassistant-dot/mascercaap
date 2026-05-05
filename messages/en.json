@@ -25,7 +25,7 @@
     },
     "contact": "Contact",
     "location": "Chia, Colombia",
-    "copyright": "© 2026 Mas Cerca Ap. All rights reserved.",
+    "copyright": "© 2026 Más Cerca AP. All rights reserved.",
     "madeWith": "Made with 🍋 and 🍊 in Colombia",
     "socialLabel": "Follow us on"
   },
@@ -35,21 +35,21 @@
   },
   "socialQr": {
     "facebook": {
-      "eyebrow": "Facebook · Mas Cerca AP",
+      "eyebrow": "Facebook · Más Cerca AP",
       "title": "Connect with our official profile",
-      "description": "This QR opens the public Mas Cerca AP profile. It is not a code to sign in to Facebook on another device.",
+      "description": "This QR opens the public Más Cerca AP profile. It is not a code to sign in to Facebook on another device.",
       "openProfile": "Open profile",
       "backHome": "Back home",
-      "qrAlt": "Mas Cerca AP Facebook profile QR",
+      "qrAlt": "Más Cerca AP Facebook profile QR",
       "scanHint": "Scan the code with your phone camera to open the profile in the Facebook app or browser."
     },
     "instagram": {
-      "eyebrow": "Instagram · Mas Cerca AP",
+      "eyebrow": "Instagram · Más Cerca AP",
       "title": "Connect with our official Instagram",
-      "description": "This QR opens the public Mas Cerca AP Instagram profile. It is not a code to sign in on another device.",
+      "description": "This QR opens the public Más Cerca AP Instagram profile. It is not a code to sign in on another device.",
       "openProfile": "Open profile",
       "backHome": "Back home",
-      "qrAlt": "Mas Cerca AP Instagram profile QR",
+      "qrAlt": "Más Cerca AP Instagram profile QR",
       "scanHint": "Scan the code with your phone camera to open the profile in the Instagram app or browser."
     }
   },
@@ -128,13 +128,13 @@
           "badge": "Top for business",
           "kicker": "High rotation",
           "text": "Often requested by cafés and restaurants for its yield and consistent flavor.",
-          "cta": "Quote via WhatsApp"
+          "cta": "Order this product"
         },
         {
           "badge": "Most asked about",
           "kicker": "Everyday use",
           "text": "A fresh option for breakfast, snacks, and recurring orders.",
-          "cta": "Check availability"
+          "cta": "Order this product"
         }
       ]
     },
@@ -187,7 +187,7 @@
     "testimonials": {
       "label": "Clients",
       "title": "What Our Clients Say",
-      "subtitle": "Businesses that trust Mas Cerca Ap for their natural juice needs.",
+      "subtitle": "Businesses that trust Más Cerca AP for their natural juice needs.",
       "goTo": "Go to testimonial",
       "pause": "Pause testimonials",
       "resume": "Resume testimonials",
@@ -229,10 +229,10 @@
       "text": "Contact us directly. We have more varieties and can build custom orders for your business.",
       "button": "Talk to us",
       "stats": [
-        { "value": "13+", "label": "Product varieties" },
-        { "value": "<24h", "label": "Delivery in Bogotá" },
-        { "value": "250ml", "label": "Del Hato dairy" },
-        { "value": "3", "label": "Product lines" }
+        { "value": "43+", "label": "Products in catalog" },
+        { "value": "<24h", "label": "Commercial response" },
+        { "value": "3", "label": "Product lines" },
+        { "value": "WhatsApp", "label": "Direct support" }
       ]
     },
     "pulpaGrid": {
@@ -262,12 +262,12 @@
   "about": {
     "hero": {
       "title": "About Us",
-      "subtitle": "Learn the story behind Mas Cerca Ap and our commitment to freshness and quality."
+      "subtitle": "Learn the story behind Más Cerca AP and our commitment to freshness and quality."
     },
     "history": {
       "title": "Our Story",
       "text": "Más Cerca AP is not just a business — it is a gift from God, and living proof that new beginnings are possible. It was founded by a couple who believed that serving people was the best way to build something. We produce and sell fruit juices, fruit pulps and fresh products sourced directly from farms, buying from farmers at their land and serving as the platform that brings their products to homes, businesses and new markets. We are driven by faith in God, guided by honesty and defined by our commitment to the Colombian countryside.",
-      "imageAlt": "Mas Cerca AP founders at their production facility in Chia, Cundinamarca",
+      "imageAlt": "Más Cerca AP founders at their production facility in Chia, Cundinamarca",
       "headline": {
         "prefix": "We connect the",
         "highlight": "Colombian countryside",
@@ -311,12 +311,12 @@
       "mission": {
         "label": "Mission",
         "title": "Our Mission",
-        "text": "We are Mas Cerca AP, a company driven by our love for service and the conviction that every person deserves access to fresh, high-quality products. We directly connect Colombian farmers with homes, businesses and new markets, serving as the bridge that brings the countryside to the table and small producers to great opportunities. We act with honesty, commitment, and a vocation for service as the foundation of every decision we make."
+        "text": "We are Más Cerca AP, a company driven by our love for service and the conviction that every person deserves access to fresh, high-quality products. We directly connect Colombian farmers with homes, businesses and new markets, serving as the bridge that brings the countryside to the table and small producers to great opportunities. We act with honesty, commitment, and a vocation for service as the foundation of every decision we make."
       },
       "vision": {
         "label": "Vision",
         "title": "Our Vision",
-        "text": "In the short and medium term, Mas Cerca AP will become ever more true to its name: a company that keeps bringing the countryside closer to the world, producers to new markets and Colombian products to new frontiers. We will grow as the platform that drives the growth of others, being the most reliable and efficient bridge between rural wealth and urban markets, faithful to our purpose: to serve with love, honesty and faith in God as our foundation."
+        "text": "In the short and medium term, Más Cerca AP will become ever more true to its name: a company that keeps bringing the countryside closer to the world, producers to new markets and Colombian products to new frontiers. We will grow as the platform that drives the growth of others, being the most reliable and efficient bridge between rural wealth and urban markets, faithful to our purpose: to serve with love, honesty and faith in God as our foundation."
       }
     },
     "values": {
@@ -333,7 +333,7 @@
         },
         {
           "title": "Quality",
-          "description": "Quality at Mas Cerca AP doesn't come from a certification but from the conviction that people deserve the best."
+          "description": "Quality at Más Cerca AP doesn't come from a certification but from the conviction that people deserve the best."
         },
         {
           "title": "Social Impact",
@@ -400,19 +400,19 @@
         },
         {
           "year": "2026",
-          "text": "Today we reach all of Bogotá with over 13 varieties of fresh products and a committed team."
+          "text": "Today we reach all of Bogotá with over 43 catalog products and a committed team."
         }
       ],
       "stats": {
         "label": "By the Numbers",
         "items": [
           {
-            "value": "13+",
-            "description": "Product varieties"
+            "value": "43+",
+            "description": "Products in catalog"
           },
           {
-            "value": "250ml",
-            "description": "Del Hato dairy"
+            "value": "WhatsApp",
+            "description": "Direct support"
           },
           {
             "value": "<24h",
@@ -452,7 +452,7 @@
     "map": {
       "title": "Where We Are",
       "subtitle": "You can pick up your order directly at our warehouse.",
-      "iframeTitle": "Mas Cerca Ap warehouse location"
+      "iframeTitle": "Más Cerca AP warehouse location"
     },
     "form": {
       "title": "Send Us a Message",
@@ -575,29 +575,29 @@
   },
   "metadata": {
     "home": {
-      "title": "Mas Cerca AP - 100% Natural Juices Colombia",
+      "title": "Más Cerca AP - 100% Natural Juices Colombia",
       "description": "100% natural juices and citrus fruits. From farm to glass in hours.",
       "keywords": "juices, natural, Colombia, lemon, orange, beverages, fruit pulp"
     },
     "products": {
-      "title": "Products — Mas Cerca Ap",
+      "title": "Products — Más Cerca AP",
       "description": "Juices, fruit pulps and natural beverages made with Colombian fruits. From farm to table."
     },
     "about": {
-      "title": "About Us — Mas Cerca Ap",
-      "description": "Learn the story of Mas Cerca AP: a Colombian company that produces and sells juices, pulps and fresh products buying directly from farmers."
+      "title": "About Us — Más Cerca AP",
+      "description": "Learn the story of Más Cerca AP: a Colombian company that produces and sells juices, pulps and fresh products buying directly from farmers."
     },
     "contact": {
-      "title": "Contact — Mas Cerca Ap",
-      "description": "Contact Mas Cerca AP to place an order, become a distributor or make an inquiry."
+      "title": "Contact — Más Cerca AP",
+      "description": "Contact Más Cerca AP to place an order, become a distributor or make an inquiry."
     },
     "privacy": {
-      "title": "Privacy Policy — Mas Cerca AP",
-      "description": "Read the privacy policy and personal data processing practices of Mas Cerca AP."
+      "title": "Privacy Policy — Más Cerca AP",
+      "description": "Read the privacy policy and personal data processing practices of Más Cerca AP."
     },
     "terms": {
-      "title": "Terms and Conditions — Mas Cerca AP",
-      "description": "Read the terms and conditions of use for Mas Cerca AP services and products."
+      "title": "Terms and Conditions — Más Cerca AP",
+      "description": "Read the terms and conditions of use for Más Cerca AP services and products."
     }
   },
   "helpHub": {

@@ -7,6 +7,12 @@ export const isSanityReady =
   !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
   process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder";
 
+// ESTRATEGIA DE FUENTE DUAL — estado deliberado, no deuda técnica.
+// data/products.ts actúa como fallback hasta que Sanity sea la única fuente de verdad.
+// Criterio de migración: todos los productos tienen image, name, description y price en Sanity
+// → cuando se cumpla, eliminar el parámetro fallback de todas las llamadas a safeFetch
+// y borrar data/products.ts. Rastrear avance en Otros/Info_Auditorias/.
+
 /**
  * Ejecuta una query GROQ contra Sanity si está disponible.
  * Si no lo está, o si la query falla, devuelve `fallback`.

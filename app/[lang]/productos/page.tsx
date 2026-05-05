@@ -11,7 +11,6 @@ export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ categoria?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -43,11 +42,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ProductosPage({ params, searchParams }: Props) {
+export default async function ProductosPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-
-  const { categoria } = await searchParams;
 
   const rawProducts = await safeFetch(ALL_PRODUCTS_QUERY, {}, staticProducts);
 
@@ -65,10 +62,8 @@ export default async function ProductosPage({ params, searchParams }: Props) {
 
   return (
     <ProductosClient
-      key={categoria ?? "todas"}
       products={products}
       productLines={productLines}
-      initialCategory={categoria}
     />
   );
 }

@@ -1,0 +1,267 @@
+- generic [active] [ref=e1]:
+  - link "Saltar al contenido" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Más Cerca AP MAS CERCA AP" [ref=e7] [cursor=pointer]:
+          - /url: /es
+          - img "Más Cerca AP" [ref=e8]
+          - generic [ref=e9]: MAS CERCA
+          - generic [ref=e10]: AP
+          - generic [ref=e12]: 🍋
+        - navigation [ref=e13]:
+          - link "Inicio" [ref=e14] [cursor=pointer]:
+            - /url: /es
+          - link "Productos" [ref=e15] [cursor=pointer]:
+            - /url: /es/productos
+          - link "Nosotros" [ref=e16] [cursor=pointer]:
+            - /url: /es/nosotros
+          - link "Contacto" [ref=e17] [cursor=pointer]:
+            - /url: /es/contacto
+        - generic [ref=e18]:
+          - button "Activar modo oscuro" [ref=e19]:
+            - img [ref=e20]
+            - generic [ref=e22]: Oscuro
+          - button "Switch to English" [ref=e23]:
+            - generic [ref=e24]: 🇺🇸
+            - generic [ref=e25]: EN
+          - button "Pedir ahora" [ref=e26]
+    - main [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic:
+            - img
+          - generic [ref=e30]:
+            - paragraph [ref=e31]: Chía · Cundinamarca, Colombia
+            - heading "Sobre Nosotros" [level=1] [ref=e32]
+            - paragraph [ref=e33]: Conocé la historia detrás de Más Cerca AP y nuestro compromiso con la frescura y calidad.
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - generic [ref=e38]: Nuestra Historia
+            - heading "Conectamos el campo colombiano con tu mesa" [level=2] [ref=e39]:
+              - text: Conectamos el
+              - emphasis [ref=e40]: campo colombiano
+              - text: con tu mesa
+            - paragraph [ref=e41]: "Más Cerca AP no es solo un negocio: es un regalo de Dios, y la prueba viva de que los nuevos comienzos existen. Fue fundada por una pareja que creyó que servir a la gente era la mejor forma de emprender. Producimos y comercializamos zumos de frutas, pulpas de frutas y productos frescos de origen directo, comprando a los campesinos en la finca y siendo la plataforma que lleva sus productos a hogares, negocios y nuevos mercados. Nos mueve la fe en Dios, nos guía la honestidad y nos define el compromiso con el campo colombiano."
+          - img "Fundadoras de Más Cerca AP en su bodega de producción en Chía, Cundinamarca" [ref=e44]
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e48]: Proceso artesanal
+            - heading "Del Campo a Tu Mesa" [level=2] [ref=e49]
+            - paragraph [ref=e50]: Nuestro proceso artesanal garantiza la máxima frescura y calidad en cada jugo que producimos.
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e56]: 🌱
+              - heading "Cultivo" [level=3] [ref=e58]
+              - paragraph [ref=e59]: Seleccionamos las mejores frutas de proveedores locales en Cundinamarca.
+            - generic [ref=e60]:
+              - generic [ref=e64]: 👀
+              - heading "Selección" [level=3] [ref=e66]
+              - paragraph [ref=e67]: Inspeccionamos cada fruta para garantizar solo la mejor calidad.
+            - generic [ref=e68]:
+              - generic [ref=e72]: 🚿
+              - heading "Lavado" [level=3] [ref=e74]
+              - paragraph [ref=e75]: Lavado profundo con agua purificada para máxima higiene.
+            - generic [ref=e76]:
+              - generic [ref=e80]: 🧃
+              - heading "Exprimido" [level=3] [ref=e82]
+              - paragraph [ref=e83]: Expresión en frío para preservar vitaminas y nutrientes.
+            - generic [ref=e84]:
+              - generic [ref=e88]: 🫙
+              - heading "Embotellado" [level=3] [ref=e90]
+              - paragraph [ref=e91]: Envasado esterilizado para mantener la frescura.
+            - generic [ref=e92]:
+              - generic [ref=e96]: 📦
+              - heading "Entrega" [level=3] [ref=e97]
+              - paragraph [ref=e98]: Distribución en toda Bogotá en menos de 24 horas.
+        - generic [ref=e100]:
+          - generic [ref=e101]:
+            - generic [ref=e102]: Quiénes somos
+            - heading "Misión & Visión" [level=2] [ref=e103]
+          - generic [ref=e105]:
+            - button "Misión" [ref=e106]
+            - button "Visión" [ref=e107]
+          - generic [ref=e111]:
+            - img [ref=e113]
+            - generic [ref=e117]:
+              - heading "Nuestra Misión" [level=3] [ref=e118]
+              - paragraph [ref=e119]: Somos Más Cerca AP, una empresa impulsada por el amor al servicio y la convicción de que cada persona merece acceso a productos frescos y de alta calidad. Conectamos directamente a agricultores colombianos con hogares, negocios y nuevos mercados, siendo el puente que acerca el campo a la mesa y los pequeños productores a grandes oportunidades. Actuamos con honestidad, compromiso, y vocación de servicio como fundamento de cada decisión que tomamos.
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - generic [ref=e123]: Lo que nos guía
+            - heading "Nuestros Valores" [level=2] [ref=e124]
+          - generic [ref=e125]:
+            - generic [ref=e128]:
+              - generic [ref=e131]: 🙏
+              - heading "Fe y Compromiso" [level=3] [ref=e132]
+              - paragraph [ref=e133]: Todo lo que somos nace del amor a Dios y a las personas.
+            - generic [ref=e136]:
+              - generic [ref=e139]: 🤝
+              - heading "Servicio Genuino" [level=3] [ref=e140]
+              - paragraph [ref=e141]: "Servir a la gente no es lo que hacemos: es por lo qué existimos."
+            - generic [ref=e144]:
+              - generic [ref=e147]: ⭐
+              - heading "Calidad" [level=3] [ref=e148]
+              - paragraph [ref=e149]: La calidad en Más Cerca AP no viene de una certificación sino de la convicción de que la gente merece lo mejor.
+            - generic [ref=e152]:
+              - generic [ref=e155]: 🌱
+              - heading "Impacto Social" [level=3] [ref=e156]
+              - paragraph [ref=e157]: Crecer está bien. Crecer impulsando el crecimiento de otros es mejor.
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - generic [ref=e161]: Trayectoria
+            - heading "El camino recorrido" [level=2] [ref=e162]
+          - generic [ref=e163]:
+            - generic [ref=e166]:
+              - generic [ref=e170]:
+                - generic [ref=e171]: "2020"
+                - paragraph [ref=e172]: Nace Más Cerca AP con la visión de acercar los productos del campo colombiano a las familias urbanas de Bogotá.
+              - generic [ref=e176]:
+                - generic [ref=e177]: "2021"
+                - paragraph [ref=e178]: Ampliamos nuestro catálogo a pulpas de frutas congeladas, incorporando 9 variedades de frutas tropicales colombianas.
+              - generic [ref=e182]:
+                - generic [ref=e183]: "2023"
+                - paragraph [ref=e184]: Sumamos la línea de lácteos artesanales con Kumis y Yogurt Del Hato, de tradición colombiana.
+              - generic [ref=e188]:
+                - generic [ref=e189]: "2026"
+                - paragraph [ref=e190]: Hoy llegamos a toda Bogotá con más de 43 productos en catálogo y un equipo comprometido.
+            - generic [ref=e191]:
+              - generic [ref=e192]: En Números
+              - generic [ref=e193]:
+                - generic [ref=e194]:
+                  - generic [ref=e195]: 43+
+                  - generic [ref=e196]: Productos en catálogo
+                - generic [ref=e197]:
+                  - generic [ref=e198]: WhatsApp
+                  - generic [ref=e199]: Atención directa
+                - generic [ref=e200]:
+                  - generic [ref=e201]: <24h
+                  - generic [ref=e202]: Entrega en Bogotá
+                - generic [ref=e203]:
+                  - generic [ref=e204]: "3"
+                  - generic [ref=e205]: Líneas de producto
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]: Del campo a tu mesa
+            - heading "Nuestro Proceso en Imágenes" [level=2] [ref=e210]
+            - paragraph [ref=e211]: Una mirada detrás de escenas a cómo preparamos cada jugo.
+          - generic [ref=e214]:
+            - generic [ref=e215]:
+              - img "El origen lo es todo" [ref=e217]
+              - generic [ref=e220]:
+                - generic [ref=e221]: Paso 1 de 6
+                - heading "El origen lo es todo" [level=3] [ref=e222]
+                - paragraph [ref=e223]: Madrugamos junto al campesino para elegir solo la fruta en su punto exacto de madurez. No hay atajos en el campo — y nosotros tampoco los tomamos.
+            - generic [ref=e224]:
+              - img "Compramos en finca" [ref=e226]
+              - generic [ref=e229]:
+                - generic [ref=e230]: Paso 2 de 6
+                - heading "Compramos en finca" [level=3] [ref=e231]
+                - paragraph [ref=e232]: Sin intermediarios. El campesino colombiano merece un precio justo y tú mereces saber exactamente de dónde viene lo que tomas.
+            - generic [ref=e233]:
+              - img "Cada fruta tiene un juez" [ref=e235]
+              - generic [ref=e238]:
+                - generic [ref=e239]: Paso 3 de 6
+                - heading "Cada fruta tiene un juez" [level=3] [ref=e240]
+                - paragraph [ref=e241]: Antes de entrar a producción, cada fruta pasa por manos que saben lo que buscan. Si no cumple, no entra. Así de simple, así de honesto.
+            - generic [ref=e242]:
+              - img "Artesanal por convicción" [ref=e244]
+              - generic [ref=e247]:
+                - generic [ref=e248]: Paso 4 de 6
+                - heading "Artesanal por convicción" [level=3] [ref=e249]
+                - paragraph [ref=e250]: No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sientes en el sabor.
+            - generic [ref=e251]:
+              - img "La frescura no espera" [ref=e253]
+              - generic [ref=e256]:
+                - generic [ref=e257]: Paso 5 de 6
+                - heading "La frescura no espera" [level=3] [ref=e258]
+                - paragraph [ref=e259]: De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el jugo llega a ti con todo lo que la fruta tenía cuando salió del campo.
+            - generic [ref=e260]:
+              - img "Detrás de cada botella" [ref=e262]
+              - generic [ref=e265]:
+                - generic [ref=e266]: Paso 6 de 6
+                - heading "Detrás de cada botella" [level=3] [ref=e267]
+                - paragraph [ref=e268]: Somos una pareja que apostó por lo natural cuando nadie lo pedía. Cada entrega lleva nuestro nombre — y eso nos obliga a dar siempre lo mejor.
+        - generic [ref=e270]:
+          - heading "¿Quieres probar nuestros productos?" [level=2] [ref=e271]
+          - paragraph [ref=e272]: Contáctanos y descubre por qué somos la opción favorita de tantos bogotanos.
+          - link "Contáctanos" [ref=e273] [cursor=pointer]:
+            - /url: /es/contacto
+    - contentinfo [ref=e274]:
+      - generic [ref=e275]:
+        - generic [ref=e276]:
+          - generic [ref=e277]:
+            - link "Más Cerca AP MAS CERCA AP" [ref=e278] [cursor=pointer]:
+              - /url: /es
+              - img "Más Cerca AP" [ref=e279]
+              - generic [ref=e280]: MAS CERCA
+              - generic [ref=e281]: AP
+              - generic [ref=e283]: 🍋
+            - paragraph [ref=e284]: Nuestros productos son elaborados con altos estándares de calidad para que siempre disfrutes del sabor y el aroma de las frutas que más te gustan.
+            - generic [ref=e285]:
+              - link "Síguenos en Facebook" [ref=e286] [cursor=pointer]:
+                - /url: /es/facebook
+                - img [ref=e287]
+              - link "Síguenos en Instagram" [ref=e289] [cursor=pointer]:
+                - /url: /es/instagram
+                - img [ref=e290]
+          - generic [ref=e292]:
+            - heading "Navegación" [level=3] [ref=e293]
+            - list [ref=e294]:
+              - listitem [ref=e295]:
+                - link "Inicio" [ref=e296] [cursor=pointer]:
+                  - /url: /es
+              - listitem [ref=e297]:
+                - link "Productos" [ref=e298] [cursor=pointer]:
+                  - /url: /es/productos
+              - listitem [ref=e299]:
+                - link "Nosotros" [ref=e300] [cursor=pointer]:
+                  - /url: /es/nosotros
+              - listitem [ref=e301]:
+                - link "Contacto" [ref=e302] [cursor=pointer]:
+                  - /url: /es/contacto
+          - generic [ref=e303]:
+            - heading "Productos" [level=3] [ref=e304]
+            - list [ref=e305]:
+              - listitem [ref=e306]:
+                - link "Zumos & Limonadas" [ref=e307] [cursor=pointer]:
+                  - /url: /es/productos?categoria=jugos
+              - listitem [ref=e308]:
+                - link "Pulpas de Frutas" [ref=e309] [cursor=pointer]:
+                  - /url: /es/productos?categoria=pulpas
+              - listitem [ref=e310]:
+                - link "Lácteos" [ref=e311] [cursor=pointer]:
+                  - /url: /es/productos?categoria=lacteos
+          - generic [ref=e312]:
+            - heading "Contacto" [level=3] [ref=e313]
+            - list [ref=e314]:
+              - listitem [ref=e315]:
+                - link "Chía, Colombia" [ref=e316] [cursor=pointer]:
+                  - /url: https://www.google.com/maps/search/?api=1&query=Calle%2012a%20%23%2015-53%2C%20Chia%2C%20Cundinamarca%2C%20Colombia
+                  - img [ref=e317]
+                  - text: Chía, Colombia
+              - listitem [ref=e320]:
+                - link "apalejandraplata@gmail.com" [ref=e321] [cursor=pointer]:
+                  - /url: mailto:apalejandraplata@gmail.com
+                  - img [ref=e322]
+                  - text: apalejandraplata@gmail.com
+              - listitem [ref=e324]:
+                - link "+57 321 905 4984" [ref=e325] [cursor=pointer]:
+                  - /url: tel:+57-321-905-4984
+                  - img [ref=e326]
+                  - text: +57 321 905 4984
+        - generic [ref=e328]:
+          - link "Políticas y privacidad" [ref=e329] [cursor=pointer]:
+            - /url: /es/politicas
+          - generic [ref=e330]: ·
+          - link "Términos y condiciones" [ref=e331] [cursor=pointer]:
+            - /url: /es/terminos
+        - generic [ref=e332]:
+          - paragraph [ref=e333]: © 2026 Más Cerca AP. Todos los derechos reservados.
+          - paragraph [ref=e334]: Hecho con 🍋 y 🍊 en Colombia
+    - button "¿Necesitás ayuda?" [ref=e335]:
+      - img [ref=e336]
+      - generic [ref=e338]: ¿Necesitás ayuda?
+  - button "Open Next.js Dev Tools" [ref=e344] [cursor=pointer]:
+    - img [ref=e345]

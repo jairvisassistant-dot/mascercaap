@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { m, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
@@ -69,6 +69,8 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   ]
 
   const [step, setStep] = useState<Step>(1)
+  const cardRef = useRef<HTMLDivElement>(null)
+
   const [selectedPrep, setSelectedPrep] = useState<PrepType | null>(null)
   const [targetCups, setTargetCups] = useState<number | null>(null)
   const [showCustomInput, setShowCustomInput] = useState(false)
@@ -111,14 +113,22 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     }
   }
 
+  function scrollCard() {
+    setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+    }, 50)
+  }
+
   function handleFruitSelect(value: FruitKey) {
     setSelectedFruit(value)
     setStep(3)
+    scrollCard()
   }
 
   function handlePresentationSelect(value: Presentation) {
     setSelectedPresentation(value)
     setStep("result")
+    scrollCard()
   }
 
   function handleReset() {
@@ -186,7 +196,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           <p className="text-text-muted leading-relaxed">{t.subtitle}</p>
         </m.div>
 
-        <div className="bg-white dark:bg-surface-card rounded-2xl border border-border-mid shadow-sm p-6 md:p-8">
+        <div ref={cardRef} className="bg-white dark:bg-surface-card rounded-2xl border border-border-mid shadow-sm p-6 md:p-8">
 
           {/* Paso 1 — dos columnas: tipo de preparación + cantidad */}
           <div className={isCompleted ? "mb-6 pb-6 border-b border-border-mid" : ""}>
@@ -312,7 +322,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   {/* ── Idea 1: Héroe con odómetro ───────────────── */}
                   <div className="px-5 pt-6 pb-5 text-center border-b border-primary/10">
                     <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-                      Para {targetCups} vasos de 12oz necesitás
+                      Para {targetCups} vasos de 12oz necesitas
                     </p>
                     <div className="flex items-end justify-center gap-2 mb-2">
                       <AnimatedNumber
