@@ -14,7 +14,7 @@
     "themeActivateLight": "Activar modo claro"
   },
   "footer": {
-    "description": "Jugos y cítricos 100% naturales, elaborados con frutas seleccionadas directamente del campo. Del campo al vaso en horas, sin conservantes.",
+    "description": "Nuestros productos son elaborados con altos estándares de calidad para que siempre disfrutes del sabor y el aroma de las frutas que más te gustan.",
     "quickLinks": "Navegación",
     "productsTitle": "Productos",
     "productLines": {
@@ -224,15 +224,15 @@
       "empty": "Sin productos en esta presentación"
     },
     "cta": {
-      "badge": "Pedidos personalizados",
-      "title": "¿No encuentras lo que buscas?",
-      "text": "Contáctanos directamente. Tenemos más variedades y podemos armar pedidos a la medida de tu negocio.",
-      "button": "Hablar con nosotros",
+      "badge": "Acompañamiento comercial",
+      "title": "¿Necesitás ayuda sobre alguno de nuestros productos?",
+      "text": "Te brindamos la asesoría adecuada para tu negocio, para que elijas la presentación ideal de nuestro catálogo.",
+      "button": "Hablá con nosotros",
       "stats": [
-        { "value": "13+", "label": "Variedades de productos" },
-        { "value": "<24h", "label": "Entrega en Bogotá" },
-        { "value": "250ml", "label": "Lácteos Del Hato" },
-        { "value": "3", "label": "Líneas de producto" }
+        { "value": "43+", "label": "Productos en catálogo" },
+        { "value": "<24h", "label": "Respuesta comercial" },
+        { "value": "3", "label": "Líneas de producto" },
+        { "value": "WhatsApp", "label": "Atención directa" }
       ]
     },
     "pulpaGrid": {
@@ -429,12 +429,12 @@
   "contact": {
     "hero": {
       "title": "Contáctanos",
-      "subtitle": "Estamos listos para llevarte la frescura a tu puerta",
+      "subtitle": "Estamos listos para llevarte la calidad y frescura de nuestros productos a tu puerta",
       "responseTime": "Respondemos en menos de 24 horas"
     },
     "whoWeAre": {
-      "label": "Quiénes somos",
-      "text": "Somos una pareja que atiende personalmente cada mensaje. No hay un call center — hay personas reales que se preocupan por darte lo mejor."
+      "label": "",
+      "text": "En Más cerca AP cada mensaje se atiende personalmente, siempre nos preocupamos por darte lo mejor."
     },
     "cards": {
       "location": {
