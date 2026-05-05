@@ -37,6 +37,7 @@ export const productLines: ProductLineConfig[] = [
     description: "Exótica y aromática, congelada en su punto exacto de madurez.",
     gradient: "from-yellow-400 to-amber-600",
     iconEmoji: "🟡",
+    chipImage: "/imgs/pulpaPortada-maracuyaV2.webp",
   },
   {
     key: "pulpa-mora",
@@ -114,7 +115,7 @@ export const products: Product[] = [
     line: "limon",
     presentation: "600ml",
     presentationOrder: 1,
-    image: "/imgs/SKU_Limon600V2.webp",
+    image: "/imgs/SKU_Limon1000.webp",
     description: "Presentación personal ideal para el día a día.",
     ingredients: ["Limón fresco", "Agua purificada"],
     benefits: ["Rico en vitamina C", "Refrescante", "Sin conservantes"],
@@ -278,7 +279,7 @@ export const products: Product[] = [
     line: "pulpa-maracuya",
     presentation: "300g",
     presentationOrder: 2,
-    image: "/imgs/pulpa-maracuya300.webp",
+    image: "/imgs/pulpa-maracuya1000.webp",
     description: "Tamaño ideal para jugos familiares. Maracuyá congelada en su punto exacto de madurez.",
     ingredients: ["Maracuyá 100% natural"],
     benefits: ["Vitamina A y C", "Antioxidantes", "Sin conservantes"],
@@ -588,13 +589,25 @@ export const products: Product[] = [
     benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
   },
 
+  {
+    id: "kumiss-yolito-900ml",
+    name: "Kumis Yolito",
+    line: "kumiss",
+    presentation: "900ml",
+    presentationOrder: 2,
+    image: "/imgs/Kumis-YolitoV2.webp",
+    description: "Kumis Yolito, bebida láctea fermentada con sabor fresco y cremoso, elaborada con leche colombiana.",
+    ingredients: ["Leche semidescremada", "Cultivos lácticos", "Azúcar"],
+    benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
+  },
+
   // ── Yogurt ────────────────────────────────────────────────────────────────
   {
     id: "yogurt-del-hato-250ml",
     name: "Yogurt Del Hato",
     line: "kumiss",
     presentation: "250ml",
-    presentationOrder: 2,
+    presentationOrder: 3,
     image: "/imgs/Yogurt-HatoV2.webp",
     description: "Yogurt semidescremado con dulce sabor a melocotón, elaborado con leche fresca colombiana.",
     ingredients: ["Leche semidescremada", "Cultivos lácticos", "Azúcar", "Sabor artificial a melocotón"],
@@ -605,7 +618,7 @@ export const products: Product[] = [
 const featuredProductIds = new Set([
   "limon-600",
   "pulpa-maracuya-300",
-  "kumiss-del-hato-250ml",
+  "kumiss-yolito-900ml",
 ]);
 
 export const featuredProducts = products.filter((p) => featuredProductIds.has(p.id));
