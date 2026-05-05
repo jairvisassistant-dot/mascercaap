@@ -7,10 +7,10 @@ import ProductCard from "@/components/ui/ProductCard";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey, ProductLineTranslation } from "@/types";
 
-function FruitImage({ slug, name }: { slug: string; name: string }) {
+function FruitImage({ slug, name, chipImage }: { slug: string; name: string; chipImage?: string }) {
   return (
     <Image
-      src={`/imgs/pulpaPortada-${slug}.webp`}
+      src={chipImage ?? `/imgs/pulpaPortada-${slug}.webp`}
       alt={name}
       fill
       className="object-cover"
@@ -120,7 +120,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                     isSelected ? "border-primary shadow-md" : "border-border-soft"
                   }`}
                 >
-                  <FruitImage slug={fruitSlug} name={fruitName} />
+                  <FruitImage slug={fruitSlug} name={fruitName} chipImage={line.chipImage} />
                 </div>
                 <span
                   className={`text-xs font-medium text-center leading-tight transition-colors ${

@@ -62,6 +62,7 @@ export type ProductLineConfig = {
   description: string;
   gradient: string;   // clases Tailwind
   iconEmoji: string;
+  chipImage?: string;
 };
 
 export type Testimonial = {
