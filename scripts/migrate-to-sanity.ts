@@ -1,6 +1,14 @@
 /**
- * Script de migración one-time: mueve los productos estáticos de data/products.ts
- * a Sanity CMS, incluyendo la subida de imágenes al asset CDN.
+ * Script de migración/sync: sincroniza productos de data/products.ts con Sanity CMS.
+ *
+ * Comportamiento:
+ *   - Si el documento YA EXISTE en Sanity → solo actualiza la imagen (preserva
+ *     featured, isBestSeller, isSoldOut, orderRank configurados en el Studio).
+ *   - Si el documento NO EXISTE → lo crea completo con todos los campos.
+ *
+ * Casos de uso:
+ *   · Primera migración (todos los docs son nuevos)
+ *   · Sync de imágenes después de reemplazar/optimizar archivos en /public/imgs/
  *
  * Requisitos previos:
  *   1. Haber corrido: npx sanity@latest init --env .env.local
@@ -10,8 +18,7 @@
  * Cómo correr:
  *   npx tsx scripts/migrate-to-sanity.ts
  *
- * Es idempotente: usa createOrReplace con IDs deterministas.
- * Podés correrlo múltiples veces sin generar duplicados.
+ * Es idempotente: podés correrlo múltiples veces sin duplicados ni pérdida de datos.
  */
 
 import { createClient } from "@sanity/client";
@@ -93,28 +100,49 @@ async function uploadImage(imagePath: string): Promise<string | null> {
   }
 }
 
-// ─── Migración principal ───────────────────────────────────────────────────────
+// ─── Migración / Sync principal ───────────────────────────────────────────────
 
 async function migrate() {
-  console.log(`\n🚀 Iniciando migración a Sanity`);
+  console.log(`\n🚀 Iniciando sync con Sanity`);
   console.log(`   Proyecto: ${projectId}`);
   console.log(`   Dataset:  ${dataset}`);
-  console.log(`   Total productos: ${products.length}\n`);
+  console.log(`   Total productos en catálogo: ${products.length}\n`);
 
-  let successCount = 0;
-  let errorCount = 0;
+  // Trae los docs existentes con el filename actual del asset en Sanity
+  const existing: { _id: string; imageFilename: string | null }[] =
+    await client.fetch(
+      `*[_type == "product"]{ _id, "imageFilename": image.asset->originalFilename }`
+    );
+  const existingMap = new Map(existing.map((d) => [d._id, d.imageFilename]));
+  console.log(`   Docs existentes en Sanity: ${existingMap.size}\n`);
 
-  // Genera ranks LexoRank secuenciales — el mismo algoritmo que usa el botón
-  // "Reset Order" del plugin @sanity/orderable-document-list.
+  let created = 0;
+  let updated = 0;
+  let skipped = 0;
+  let errors = 0;
+
+  // LexoRank solo se usa al CREAR documentos nuevos
   let currentRank = LexoRank.min();
 
   for (const [index, product] of products.entries()) {
-    console.log(`[${index + 1}/${products.length}] Migrando: ${product.id}`);
-    // Avanza dos pasos (igual que resetOrder) para dejar espacio antes del primer item
-    currentRank = currentRank.genNext().genNext();
+    const docId = `product-${product.id}`;
+    const isNew = !existingMap.has(docId);
+    const localFilename = product.image ? path.basename(decodeURIComponent(product.image)) : null;
+    const sanityFilename = existingMap.get(docId) ?? null;
 
+    const imageChanged = localFilename !== sanityFilename;
+    const label = isNew ? "NUEVO" : imageChanged ? "SYNC " : "OK   ";
+    console.log(`[${index + 1}/${products.length}] [${label}] ${product.id}`);
+
+    if (!isNew && !imageChanged) {
+      // Imagen idéntica en Sanity → nada que hacer
+      console.log(`   ⏭  Imagen sin cambios (${sanityFilename ?? "sin imagen"})`);
+      skipped++;
+      continue;
+    }
+
+    // Subir imagen solo si cambió o es nuevo
     let imageRef: object | undefined;
-
     if (product.image) {
       const assetId = await uploadImage(product.image);
       if (assetId) {
@@ -125,47 +153,51 @@ async function migrate() {
       }
     }
 
-    // Los primeros 6 productos con imagen se marcan como "featured"
-    // para replicar la lógica actual del home (products.filter(p => p.image !== "").slice(0, 6))
-    const isFeaturedCandidate = Boolean(product.image) && index < 10;
-
     try {
-      await client.createOrReplace({
-        _type: "product",
-        // ID determinista — correr el script múltiples veces no crea duplicados
-        _id: `product-${product.id}`,
-        id: {
-          _type: "slug",
-          current: product.id,
-        },
-        name: product.name,
-        line: product.line,
-        presentation: product.presentation,
-        presentationOrder: product.presentationOrder,
-        ...(product.price !== undefined && { price: product.price }),
-        ...(imageRef && { image: imageRef }),
-        description: product.description,
-        ingredients: product.ingredients ?? [],
-        benefits: product.benefits ?? [],
-        isSoldOut: false,
-        isBestSeller: false,
-        featured: isFeaturedCandidate,
-        // Campo requerido por @sanity/orderable-document-list.
-        // Sin esto el Studio muestra "X documents have no order".
-        orderRank: currentRank.toString(),
-      });
-
-      console.log(`   ✅ Creado en Sanity`);
-      successCount++;
+      if (isNew) {
+        // Documento nuevo → crear completo
+        currentRank = currentRank.genNext().genNext();
+        await client.createOrReplace({
+          _type: "product",
+          _id: docId,
+          id: { _type: "slug", current: product.id },
+          name: product.name,
+          line: product.line,
+          presentation: product.presentation,
+          presentationOrder: product.presentationOrder,
+          ...(product.price !== undefined && { price: product.price }),
+          ...(imageRef && { image: imageRef }),
+          description: product.description,
+          ingredients: product.ingredients ?? [],
+          benefits: product.benefits ?? [],
+          isSoldOut: false,
+          isBestSeller: false,
+          featured: false,
+          orderRank: currentRank.toString(),
+        });
+        console.log(`   ✅ Creado`);
+        created++;
+      } else {
+        // Imagen cambió → patch solo el campo image
+        if (imageRef) {
+          await client.patch(docId).set({ image: imageRef }).commit();
+          console.log(`   ✅ Imagen actualizada (${sanityFilename} → ${localFilename})`);
+        } else {
+          console.log(`   ⚠️  Sin imagen local, omitido`);
+        }
+        updated++;
+      }
     } catch (err) {
       console.error(`   ❌ Error:`, err);
-      errorCount++;
+      errors++;
     }
   }
 
-  console.log(`\n📊 Migración completada:`);
-  console.log(`   ✅ Exitosos: ${successCount}`);
-  if (errorCount > 0) console.log(`   ❌ Errores: ${errorCount}`);
+  console.log(`\n📊 Sync completado:`);
+  console.log(`   🆕 Creados:          ${created}`);
+  console.log(`   🔄 Imágenes sync:    ${updated}`);
+  console.log(`   ⏭  Sin cambios:      ${skipped}`);
+  if (errors > 0) console.log(`   ❌ Errores:          ${errors}`);
   console.log(`\n📌 Próximos pasos:`);
   console.log(`   1. Abrí el Studio: http://localhost:3000/studio`);
   console.log(`   2. Revisá los productos en "Productos"`);
