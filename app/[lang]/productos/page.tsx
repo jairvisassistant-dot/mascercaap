@@ -58,7 +58,7 @@ export default async function ProductosPage({ params, searchParams }: Props) {
     const image = hasNewLocalImage ? staticMatch!.image : p.image;
 
     if (p.line === "kumiss" && !image) {
-      return { ...p, image: "/imgs/Kumis-Hato.webp", presentation: "1L" };
+      return { ...p, image: "/imgs/Kumis-HatoV2.webp", presentation: "1L" };
     }
     return { ...p, image };
   });
