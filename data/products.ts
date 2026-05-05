@@ -115,7 +115,7 @@ export const products: Product[] = [
     line: "limon",
     presentation: "600ml",
     presentationOrder: 1,
-    image: "/imgs/SKU_Limon1000.webp",
+    image: "/imgs/SKU_Limon600V2.webp",
     description: "Presentación personal ideal para el día a día.",
     ingredients: ["Limón fresco", "Agua purificada"],
     benefits: ["Rico en vitamina C", "Refrescante", "Sin conservantes"],
