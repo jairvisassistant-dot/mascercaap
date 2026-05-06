@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+.playwright-mcp/
 
 # next.js
 /.next/
@@ -47,4 +48,4 @@ next-env.d.ts
 # agent registry
 .atl/
 
-Otros/
+#Otros/

@@ -144,20 +144,20 @@
       "subtitle": "Comprometidos con tu bienestar y el sabor auténtico de lo natural.",
       "pillars": [
         {
-          "title": "Ingredientes Claros",
-          "description": "Te contamos qué contiene cada producto para que puedas elegir con confianza."
+          "title": "Productos elaborados con altos estándares de calidad",
+          "description": "Cada lote se procesa bajo rigurosos controles de calidad para garantizarte inocuidad, sabor constante y el mejor rendimiento en cada preparación."
         },
         {
-          "title": "Sin Conservantes",
+          "title": "Pulpas de frutas sin conservantes",
           "description": "Productos frescos que mantienen sus propiedades nutricionales."
+        },
+        {
+          "title": "Aliados estratégicos en crecimiento",
+          "description": "Acompañamos tu negocio con abastecimiento confiable, precios justos y asesoría para optimizar tu operación y escalar sin complicaciones."
         },
         {
           "title": "Hecho en Colombia",
           "description": "Producido localmente con frutas de proveedores cercanos."
-        },
-        {
-          "title": "Entrega Rápida",
-          "description": "De nuestro almacén a tu puerta en menos de 24 horas."
         }
       ]
     },
@@ -387,40 +387,44 @@
       "title": "El camino recorrido",
       "milestones": [
         {
-          "year": "2020",
-          "text": "Nace Más Cerca AP con la visión de acercar los productos del campo colombiano a las familias urbanas de Bogotá."
-        },
-        {
-          "year": "2021",
-          "text": "Ampliamos nuestro catálogo a pulpas de frutas congeladas, incorporando 9 variedades de frutas tropicales colombianas."
+          "year": "2022",
+          "text": "Nace Más Cerca AP con la visión de acercar los productos del campo colombiano a las familias y negocios de todo el país."
         },
         {
           "year": "2023",
-          "text": "Sumamos la línea de lácteos artesanales con Kumis y Yogurt Del Hato, de tradición colombiana."
+          "text": "Ingresamos a supermercados de grandes superficies con presencia en 12 departamentos y 15 ciudades a nivel nacional, y lanzamos nuestra primera línea de producto: zumos de limón."
+        },
+        {
+          "year": "2024",
+          "text": "Ampliamos nuestro catálogo de productos para grandes superficies e iniciamos alianzas estratégicas con cadenas de restaurantes, abriendo un nuevo canal de distribución."
+        },
+        {
+          "year": "2025",
+          "text": "Expandimos nuestra cobertura al ingresar a una nueva cadena de grandes superficies, consolidando y mejorando nuestra presencia a nivel nacional."
         },
         {
           "year": "2026",
-          "text": "Hoy llegamos a toda Bogotá con más de 43 productos en catálogo y un equipo comprometido."
+          "text": "Hoy operamos con 3 líneas de productos, atendiendo grandes superficies, cadenas de restaurantes y clientes directos con un catálogo en constante crecimiento."
         }
       ],
       "stats": {
         "label": "En Números",
         "items": [
           {
+            "value": "3",
+            "description": "Líneas de producto"
+          },
+          {
             "value": "43+",
             "description": "Productos en catálogo"
           },
           {
+            "value": "15",
+            "description": "Ciudades con presencia"
+          },
+          {
             "value": "WhatsApp",
             "description": "Atención directa"
-          },
-          {
-            "value": "<24h",
-            "description": "Entrega en Bogotá"
-          },
-          {
-            "value": "3",
-            "description": "Líneas de producto"
           }
         ]
       }
@@ -730,12 +734,12 @@
     "step3Label": "¿Cuál presentación te conviene más?",
     "customPlaceholder": "Cantidad de vasos",
     "resultPacksNeeded": "Necesitas {count} paquete(s) de {fruit} {presentation}",
-    "resultCupsYield": "Rinde aprox. {cups} vasos de 12oz",
+    "resultCupsYield": "Rinde aprox. {cups} vasos de 16oz",
     "freshComparisonTitle": "Comparado con fruta fresca:",
     "freshKg": "~{kg} kg de fruta fresca",
     "minutesSaved": "~{minutes} min de procesamiento ahorrados",
     "noWaste": "Cero desperdicio de cáscara y semillas",
-    "ctaWhatsapp": "Cotizar {count} paquete(s) por WhatsApp",
+    "ctaWhatsapp": "Hacer pedido",
     "disclaimer": "Valores aproximados según preparación estándar. Puede variar según receta e intensidad.",
     "back": "Volver"
   },

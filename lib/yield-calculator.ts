@@ -40,21 +40,28 @@ export const PACK_GRAMS: Record<Presentation, number> = {
   "1000g": 1000,
 }
 
-// Fuente: Alimentos SAS Colombia — 100g pulpa → 400ml jugo → 88.75g/355ml (12oz) ≈ 90g
-// Fuente: industria smoothie bars — ~45% fruta por volumen × densidad 1.07 g/ml ≈ 150g/12oz
+// Fuente: productor — 120g pulpa rinde exactamente 1 vaso de 16oz (473ml) de jugo
+// Frappe: mezcla con leche/hielo, menos dilución → más pulpa por vaso → 150g/16oz
 export const GRAMS_PER_CUP: Record<PrepType, number> = {
-  jugo:   90,
+  jugo:   120,
   frappe: 150,
 }
 
 export const CUP_OPTIONS = [25, 50, 100, 200] as const
 
+// Solo para display: vasos completos que rinde un paquete (mínimo 1 para no mostrar 0)
 export function cupsPerPack(presentation: Presentation, prep: PrepType): number {
   return Math.max(1, Math.floor(PACK_GRAMS[presentation] / GRAMS_PER_CUP[prep]))
 }
 
+// Cálculo directo desde gramos — sin pasar por cupsPerPack para evitar doble redondeo
 export function packsNeeded(targetCups: number, presentation: Presentation, prep: PrepType): number {
-  return Math.ceil(targetCups / cupsPerPack(presentation, prep))
+  return Math.ceil((targetCups * GRAMS_PER_CUP[prep]) / PACK_GRAMS[presentation])
+}
+
+// Vasos reales que se obtienen de una cantidad de paquetes comprados
+export function totalCupsFromPacks(packs: number, presentation: Presentation, prep: PrepType): number {
+  return Math.floor((packs * PACK_GRAMS[presentation]) / GRAMS_PER_CUP[prep])
 }
 
 export interface FreshComparison {
@@ -92,7 +99,7 @@ export function buildWhatsappMessage(params: {
     `Preparación: ${prepLabel}`,
     `Fruta: ${fruitLabel}`,
     `Presentación: ${params.presentation}`,
-    `Objetivo: ${params.targetCups} vasos de 12oz`,
+    `Objetivo: ${params.targetCups} vasos de 16oz`,
     `Cantidad estimada: ${params.packsCount} paquete(s)`,
     "",
     "¿Me confirman disponibilidad y precio?",

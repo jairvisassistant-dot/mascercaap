@@ -6,15 +6,15 @@ import ChipSelector from "@/components/ui/ChipSelector"
 import {
   cupsPerPack,
   packsNeeded,
+  totalCupsFromPacks,
   freshComparison,
-  buildWhatsappMessage,
   FRUIT_DATA,
   CUP_OPTIONS,
   type FruitKey,
   type Presentation,
   type PrepType,
 } from "@/lib/yield-calculator"
-import { SITE_CONFIG } from "@/lib/config"
+import { useHelpHub } from "@/lib/help-hub-context"
 import type { Dictionary } from "@/lib/i18n"
 
 type Step = 1 | 2 | 3 | "result"
@@ -62,6 +62,7 @@ function BackLink({ label, onClick }: { label: string; onClick: () => void }) {
 
 export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   const t = dict.yieldCalculator
+  const { openDrawer } = useHelpHub()
 
   const PREP_OPTIONS: { value: PrepType; label: string }[] = [
     { value: "jugo",   label: t.prepJugo },
@@ -161,16 +162,6 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     ? freshComparison(packs, selectedPresentation, selectedFruit)
     : null
 
-  const whatsappUrl = packs && selectedPresentation && selectedFruit && targetCups && selectedPrep
-    ? buildWhatsappMessage({
-        fruit: selectedFruit,
-        presentation: selectedPresentation,
-        targetCups,
-        packsCount: packs,
-        whatsappNumber: SITE_CONFIG.whatsappNumber,
-        prepType: selectedPrep,
-      })
-    : null
 
   const isCompleted = step !== 1
 
@@ -322,7 +313,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   {/* ── Idea 1: Héroe con odómetro ───────────────── */}
                   <div className="px-5 pt-6 pb-5 text-center border-b border-primary/10">
                     <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-                      Para {targetCups} vasos de 12oz necesitas
+                      Para {targetCups} vasos de 16oz necesitas
                     </p>
                     <div className="flex items-end justify-center gap-2 mb-2">
                       <AnimatedNumber
@@ -341,7 +332,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   {/* ── Idea 3: Vasos que se llenan ──────────────── */}
                   <div className="px-5 py-5 border-b border-primary/10">
                     <CupGrid
-                      totalCups={cupsPerPack(selectedPresentation, selectedPrep) * packs}
+                      totalCups={totalCupsFromPacks(packs, selectedPresentation, selectedPrep)}
                       fruit={selectedFruit}
                     />
                   </div>
@@ -354,19 +345,14 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 
                 {/* CTA */}
                 <div className="flex flex-col sm:flex-row gap-3 items-start">
-                  {whatsappUrl && (
-                    <a
-                      href={whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px]"
+                  {packs && (
+                    <button
+                      type="button"
+                      onClick={() => openDrawer("order")}
+                      className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px]"
                     >
-                      <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.534 5.857L0 24l6.335-1.518A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.797 9.797 0 01-5.092-1.424l-.366-.217-3.762.902.944-3.653-.238-.374A9.776 9.776 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z" />
-                      </svg>
-                      {interpolate(t.ctaWhatsapp, { count: packs })}
-                    </a>
+                      {t.ctaWhatsapp}
+                    </button>
                   )}
                   <button
                     type="button"
@@ -409,7 +395,7 @@ function PresentationComparison({
   const cards = ALL_PRESENTATIONS.map((pres) => {
     const packs = packsNeeded(targetCups, pres, prep)
     const cpp   = cupsPerPack(pres, prep)
-    const total = cpp * packs
+    const total = totalCupsFromPacks(packs, pres, prep)
     const extra = total - targetCups
     const fc    = freshComparison(packs, pres, fruit)
     return { pres, packs, cpp, total, extra, fc }
@@ -485,7 +471,7 @@ function PresentationComparison({
               {/* Métrica 2: Vasos */}
               <div>
                 <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
-                  Vasos de 12oz
+                  Vasos de 16oz
                 </p>
                 <AnimatedNumber
                   target={total}
@@ -616,7 +602,7 @@ function CupGrid({ totalCups, fruit }: { totalCups: number; fruit: FruitKey }) {
         )}
       </div>
       <p className="text-xs text-text-muted">
-        ~{totalCups} vasos de 12oz por cada ciclo de preparación
+        ~{totalCups} vasos de 16oz por cada ciclo de preparación
       </p>
     </div>
   )

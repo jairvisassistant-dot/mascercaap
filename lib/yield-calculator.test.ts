@@ -2,22 +2,24 @@ import { describe, expect, it } from "vitest"
 import {
   cupsPerPack,
   packsNeeded,
+  totalCupsFromPacks,
   freshComparison,
   buildWhatsappMessage,
 } from "./yield-calculator"
 
-// Fuente: Alimentos SAS Colombia — 100g pulpa → 400ml jugo → 88.75g/355ml (12oz) ≈ 90g
-// Fuente: industria smoothie bars — ~45% fruta por volumen × densidad 1.07 g/ml ≈ 150g/12oz
+// jugo:   120g/16oz (dato del productor)
+// frappe: 150g/16oz (más pulpa por menor dilución con leche/hielo)
+// packsNeeded usa fórmula directa: ceil(cups × g_por_vaso / g_por_pack)
 
-describe("cupsPerPack — jugo (90g/cup)", () => {
+describe("cupsPerPack — jugo (120g/cup)", () => {
   it("120g → 1 cup", () => {
-    expect(cupsPerPack("120g", "jugo")).toBe(1)  // floor(120/90) = 1
+    expect(cupsPerPack("120g", "jugo")).toBe(1)  // floor(120/120) = 1
   })
-  it("300g → 3 cups", () => {
-    expect(cupsPerPack("300g", "jugo")).toBe(3)  // floor(300/90) = 3
+  it("300g → 2 cups", () => {
+    expect(cupsPerPack("300g", "jugo")).toBe(2)  // floor(300/120) = 2
   })
-  it("1000g → 11 cups", () => {
-    expect(cupsPerPack("1000g", "jugo")).toBe(11) // floor(1000/90) = 11
+  it("1000g → 8 cups", () => {
+    expect(cupsPerPack("1000g", "jugo")).toBe(8) // floor(1000/120) = 8
   })
 })
 
@@ -33,36 +35,51 @@ describe("cupsPerPack — frappe (150g/cup)", () => {
   })
 })
 
-describe("packsNeeded — jugo", () => {
-  it("50 cups with 1000g → 5 packs", () => {
-    expect(packsNeeded(50, "1000g", "jugo")).toBe(5) // ceil(50/11) = 5
+describe("packsNeeded — jugo (fórmula directa)", () => {
+  it("50 cups with 1000g → 6 packs", () => {
+    expect(packsNeeded(50, "1000g", "jugo")).toBe(6) // ceil(50×120/1000) = ceil(6) = 6
   })
-  it("11 cups exactly with 1000g → 1 pack (no over-rounding)", () => {
-    expect(packsNeeded(11, "1000g", "jugo")).toBe(1) // ceil(11/11) = 1
+  it("8 cups exactly with 1000g → 1 pack (sin sobre-redondeo)", () => {
+    expect(packsNeeded(8, "1000g", "jugo")).toBe(1)  // ceil(8×120/1000) = ceil(0.96) = 1
   })
-  it("12 cups with 1000g → 2 packs", () => {
-    expect(packsNeeded(12, "1000g", "jugo")).toBe(2) // ceil(12/11) = 2
+  it("9 cups with 1000g → 2 packs", () => {
+    expect(packsNeeded(9, "1000g", "jugo")).toBe(2)  // ceil(9×120/1000) = ceil(1.08) = 2
   })
   it("10 cups with 120g → 10 packs", () => {
-    expect(packsNeeded(10, "120g", "jugo")).toBe(10) // cupsPerPack=1, ceil(10/1) = 10
+    expect(packsNeeded(10, "120g", "jugo")).toBe(10) // ceil(10×120/120) = 10
   })
-  it("9 cups with 300g → 3 packs", () => {
-    expect(packsNeeded(9, "300g", "jugo")).toBe(3)  // ceil(9/3) = 3
+  it("9 cups with 300g → 4 packs", () => {
+    expect(packsNeeded(9, "300g", "jugo")).toBe(4)   // ceil(9×120/300) = ceil(3.6) = 4
   })
 })
 
-describe("packsNeeded — frappe", () => {
+describe("packsNeeded — frappe (fórmula directa)", () => {
   it("12 cups with 1000g → 2 packs", () => {
-    expect(packsNeeded(12, "1000g", "frappe")).toBe(2) // ceil(12/6) = 2
+    expect(packsNeeded(12, "1000g", "frappe")).toBe(2) // ceil(12×150/1000) = ceil(1.8) = 2
   })
-  it("6 cups exactly with 1000g → 1 pack (no over-rounding)", () => {
-    expect(packsNeeded(6, "1000g", "frappe")).toBe(1) // ceil(6/6) = 1
+  it("5 cups with 1000g → 1 pack", () => {
+    expect(packsNeeded(5, "1000g", "frappe")).toBe(1)  // ceil(5×150/1000) = ceil(0.75) = 1
   })
   it("4 cups with 300g → 2 packs", () => {
-    expect(packsNeeded(4, "300g", "frappe")).toBe(2) // ceil(4/2) = 2
+    expect(packsNeeded(4, "300g", "frappe")).toBe(2)   // ceil(4×150/300) = ceil(2) = 2
   })
   it("2 cups with 300g → 1 pack", () => {
-    expect(packsNeeded(2, "300g", "frappe")).toBe(1) // ceil(2/2) = 1
+    expect(packsNeeded(2, "300g", "frappe")).toBe(1)   // ceil(2×150/300) = ceil(1) = 1
+  })
+})
+
+describe("totalCupsFromPacks", () => {
+  it("4 packs 300g jugo → 10 cups", () => {
+    expect(totalCupsFromPacks(4, "300g", "jugo")).toBe(10) // floor(4×300/120) = floor(10) = 10
+  })
+  it("6 packs 1000g jugo → 50 cups", () => {
+    expect(totalCupsFromPacks(6, "1000g", "jugo")).toBe(50) // floor(6×1000/120) = floor(50) = 50
+  })
+  it("2 packs 1000g frappe → 13 cups", () => {
+    expect(totalCupsFromPacks(2, "1000g", "frappe")).toBe(13) // floor(2×1000/150) = floor(13.33) = 13
+  })
+  it("1 pack 120g frappe → 0 cups → no, min 0 raw (display handled upstream)", () => {
+    expect(totalCupsFromPacks(1, "120g", "frappe")).toBe(0) // floor(120/150) = 0
   })
 })
 

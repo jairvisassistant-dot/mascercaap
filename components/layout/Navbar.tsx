@@ -63,7 +63,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold text-primary">
               <Image src="/imgs/Logo.webp" alt="Más Cerca AP" width={97} height={60} priority className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
-              <span className="text-primary">MAS CERCA</span>
+              <span className="text-primary whitespace-nowrap">MAS CERCA</span>
               <span className="text-accent">AP</span>
               <BrandFruitMark />
             </Link>
@@ -90,7 +90,7 @@ export default function Navbar() {
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
-                onClick={() => openDrawer("faq")}
+                onClick={() => openDrawer("order")}
                 className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
               >
                 {dict.nav.cta}
@@ -160,7 +160,7 @@ export default function Navbar() {
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
-                onClick={() => { setIsOpen(false); openDrawer("faq"); }}
+                onClick={() => { setIsOpen(false); openDrawer("order"); }}
                 className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center"
               >
                 {dict.nav.cta}

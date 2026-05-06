@@ -138,7 +138,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                         {hook.text}
                       </p>
                       <button
-                        onClick={() => openDrawer("faq", { product: product.name })}
+                        onClick={() => openDrawer("order")}
                         className="group mt-6 inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98]"
                       >
                         <span>{hook.cta}</span>

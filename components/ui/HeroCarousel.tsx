@@ -344,7 +344,7 @@ export default function HeroCarousel() {
               >
                 {slide.ctaHref === "__whatsapp__" ? (
                   <button
-                    onClick={() => openDrawer("faq")}
+                    onClick={() => openDrawer("order")}
                     className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] md:text-base`}
                   >
                     {slideText.cta}
@@ -358,7 +358,7 @@ export default function HeroCarousel() {
                   </Link>
                 )}
                 <button
-                  onClick={() => openDrawer("faq")}
+                  onClick={() => openDrawer("order")}
                   className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/28 bg-white/10 px-7 py-3 text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/18 active:translate-y-0 active:scale-[0.98] md:text-base"
                 >
                   {dict.nav.cta}

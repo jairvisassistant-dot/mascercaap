@@ -144,20 +144,20 @@
       "subtitle": "Committed to your well-being and the authentic flavor of nature.",
       "pillars": [
         {
-          "title": "Clear Ingredients",
-          "description": "We tell you what each product contains so you can choose with confidence."
+          "title": "Products made to high quality standards",
+          "description": "Every batch is processed under rigorous quality controls to guarantee safety, consistent flavor, and the best yield in every preparation."
         },
         {
-          "title": "No Preservatives",
+          "title": "Fruit pulps with no preservatives",
           "description": "Fresh products that maintain their nutritional properties."
+        },
+        {
+          "title": "Strategic partners in growth",
+          "description": "We support your business with reliable supply, fair prices, and guidance to optimize your operation and scale without complications."
         },
         {
           "title": "Made in Colombia",
           "description": "Locally produced with fruit from nearby farms."
-        },
-        {
-          "title": "Fast Delivery",
-          "description": "From our warehouse to your door in under 24 hours."
         }
       ]
     },
@@ -387,40 +387,44 @@
       "title": "The path we've walked",
       "milestones": [
         {
-          "year": "2020",
-          "text": "Más Cerca AP is born with the vision of bringing Colombian field products closer to urban families in Bogotá."
-        },
-        {
-          "year": "2021",
-          "text": "We expanded our catalog to include frozen fruit pulps, adding 9 varieties of Colombian tropical fruits."
+          "year": "2022",
+          "text": "Más Cerca AP is founded with the vision of bringing Colombian field products closer to families and businesses across the country."
         },
         {
           "year": "2023",
-          "text": "We added the artisan dairy line with Kumis and Del Hato Yogurt, a Colombian tradition."
+          "text": "We entered large-format supermarkets with a presence in 12 departments and 15 cities nationwide, and launched our first product line: lemon juice."
+        },
+        {
+          "year": "2024",
+          "text": "We expanded our product catalog for large-format retail and established strategic partnerships with restaurant chains, opening a new distribution channel."
+        },
+        {
+          "year": "2025",
+          "text": "We grew our coverage by joining a new large-format supermarket chain, strengthening and extending our national presence."
         },
         {
           "year": "2026",
-          "text": "Today we reach all of Bogotá with over 43 catalog products and a committed team."
+          "text": "Today we operate across 3 product lines, serving large-format retailers, restaurant chains, and direct customers with an ever-growing catalog."
         }
       ],
       "stats": {
         "label": "By the Numbers",
         "items": [
           {
+            "value": "3",
+            "description": "Product lines"
+          },
+          {
             "value": "43+",
             "description": "Products in catalog"
           },
           {
+            "value": "15",
+            "description": "Cities with presence"
+          },
+          {
             "value": "WhatsApp",
             "description": "Direct support"
-          },
-          {
-            "value": "<24h",
-            "description": "Delivery in Bogotá"
-          },
-          {
-            "value": "3",
-            "description": "Product lines"
           }
         ]
       }
@@ -730,12 +734,12 @@
     "step3Label": "Which pack size works best for you?",
     "customPlaceholder": "Number of cups",
     "resultPacksNeeded": "You need {count} pack(s) of {fruit} {presentation}",
-    "resultCupsYield": "Yields approx. {cups} cups (12oz)",
+    "resultCupsYield": "Yields approx. {cups} cups (16oz)",
     "freshComparisonTitle": "Compared to fresh fruit:",
     "freshKg": "~{kg} kg of fresh fruit",
     "minutesSaved": "~{minutes} min of processing saved",
     "noWaste": "Zero peel and seed waste",
-    "ctaWhatsapp": "Quote {count} pack(s) via WhatsApp",
+    "ctaWhatsapp": "Place order",
     "disclaimer": "Approximate values based on standard preparation. May vary by recipe and intensity.",
     "back": "Back"
   },
