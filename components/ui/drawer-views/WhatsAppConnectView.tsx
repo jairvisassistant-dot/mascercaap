@@ -57,10 +57,9 @@ export default function WhatsAppConnectView({ appUrl, webUrl, leadSaved }: Props
               <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-border-soft">
                 <Image
                   src={qrSrc}
-                  alt="WhatsApp QR"
+                  alt={t.whatsappQrAlt}
                   width={180}
                   height={180}
-                  unoptimized
                   className="rounded-xl"
                 />
               </div>

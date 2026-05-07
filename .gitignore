@@ -48,4 +48,5 @@ next-env.d.ts
 # agent registry
 .atl/
 
-#Otros/
+Otros/
+/public/uploads/

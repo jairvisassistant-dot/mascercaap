@@ -160,27 +160,34 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
     return { appUrl: waUrl, webUrl };
   }
 
-  function handleLeadSubmit(e: React.FormEvent) {
+  async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!leadConsent || !leadData.nombre.trim() || !leadData.tipo) return;
 
-    void fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nombre: leadData.nombre.trim(),
-        email: leadData.email.trim() || null,
-        tipo: leadData.tipo,
-        producto_interes: drawerContext?.product ?? null,
-        preguntas_bot: messages
-          .filter((m) => m.role === "user" && m.id !== "welcome")
-          .map((m) => m.text),
-      }),
-    });
-
     const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppUrl(messages, leadData));
+
+    let leadSaved = false;
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: leadData.nombre.trim(),
+          email: leadData.email.trim() || null,
+          tipo: leadData.tipo,
+          producto_interes: drawerContext?.product ?? null,
+          preguntas_bot: messages
+            .filter((m) => m.role === "user" && m.id !== "welcome")
+            .map((m) => m.text),
+        }),
+      });
+      leadSaved = res.ok;
+    } catch {
+      // error de red — se abre WhatsApp sin marcar lead como guardado
+    }
+
     setShowLeadForm(false);
-    onWhatsAppConnect(appUrl, webUrl, true);
+    onWhatsAppConnect(appUrl, webUrl, leadSaved);
   }
 
   function handleLeadSkip() {

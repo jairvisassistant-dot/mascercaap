@@ -15,6 +15,11 @@ interface ProductGridCardProps {
   priority?: boolean;
 }
 
+const CARD_GRADIENTS: Record<string, string> = {
+  "pulpa-guanabana": "from-green-950 via-emerald-900 to-green-900",
+  "pulpa-guayaba":   "from-fuchsia-950 via-pink-900 to-rose-950",
+};
+
 export default function ProductGridCard({ product, line, priority = false }: ProductGridCardProps) {
   const { dict } = useDictionary();
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -24,6 +29,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
   const hasPackagingImage = product.line.startsWith("pulpa-") && !product.image.includes("/imgs/fruta-");
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
+  const cardGradient = CARD_GRADIENTS[product.line] ?? line.gradient;
 
   return (
     <>
@@ -34,7 +40,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
         onClick={() => setLightboxOpen(true)}
       >
         {/* Imagen */}
-        <div className={`relative aspect-[4/5] ${product.line === "kumiss" ? "bg-surface-card" : hasPackagingImage ? `bg-gradient-to-b ${line.gradient}` : "bg-surface-page"}`}>
+        <div className={`relative aspect-[4/5] ${product.line === "kumiss" ? "bg-surface-card" : hasPackagingImage ? `bg-gradient-to-b ${cardGradient}` : "bg-surface-page"}`}>
           {product.image ? (
             <Image
               src={product.image}
@@ -96,10 +102,19 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
         <div className="p-3">
           <p className="text-sm font-semibold text-text-sub line-clamp-1 mb-2">{displayName}</p>
 
-          {/* Category pill */}
-          <div className="inline-flex items-center gap-1 bg-surface-page px-2 py-0.5 rounded-full border border-border-soft">
-            <span className="text-[11px] leading-none">{line.iconEmoji}</span>
-            <span className="text-[10px] font-semibold text-text-muted">{displayName}</span>
+          <div className="flex items-center justify-between gap-2">
+            {/* Category pill */}
+            <div className="inline-flex items-center gap-1 bg-surface-page px-2 py-0.5 rounded-full border border-border-soft">
+              <span className="text-[11px] leading-none">{line.iconEmoji}</span>
+              <span className="text-[10px] font-semibold text-text-muted">{displayName}</span>
+            </div>
+
+            {/* Precio */}
+            {product.price != null && (
+              <span className="text-sm font-bold text-primary whitespace-nowrap">
+                ${product.price.toLocaleString("es-CO")}
+              </span>
+            )}
           </div>
         </div>
       </button>

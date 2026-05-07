@@ -8,10 +8,7 @@ import YieldCalculator from "@/components/sections/YieldCalculator";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
 import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
-import { testimonials as staticTestimonials } from "@/data/testimonials";
-import { featuredProducts as staticFeaturedProducts } from "@/data/products";
-import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
-import { safeFetch } from "@/lib/sanity/safeFetch";
+import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import OrderAssistantCTA from "@/components/sections/OrderAssistantCTA";
 import { SITE_CONFIG } from "@/lib/config";
@@ -57,8 +54,8 @@ export default async function HomePage({ params }: Props) {
   const dict = await getDictionary(lang);
 
   const [featuredProducts, testimonials] = await Promise.all([
-    safeFetch(FEATURED_PRODUCTS_QUERY, {}, staticFeaturedProducts),
-    safeFetch(ALL_TESTIMONIALS_QUERY, {}, staticTestimonials),
+    getFeaturedProducts(),
+    getAllTestimonials(),
   ]);
 
   return (

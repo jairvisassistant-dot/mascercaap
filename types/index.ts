@@ -36,6 +36,7 @@ export type ProductLineKey =
   | "pulpa-lulo"
   | "pulpa-guayaba"
   | "pulpa-frutos-rojos"
+  | "pulpa-frutos-amarillos"
   | "pulpa-tomate-arbol"
   | "kumiss";
 

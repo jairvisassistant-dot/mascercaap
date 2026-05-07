@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ALL_PRODUCTS_QUERY } from "@/sanity/lib/queries";
-import { products as staticProducts, productLines } from "@/data/products";
+import { productLines } from "@/data/products";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
-import { safeFetch } from "@/lib/sanity/safeFetch";
+import { getAllProducts } from "@/lib/supabase/queries";
 
 export const revalidate = 3600;
 
@@ -46,19 +45,7 @@ export default async function ProductosPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const rawProducts = await safeFetch(ALL_PRODUCTS_QUERY, {}, staticProducts);
-
-  const products = rawProducts.map((p: (typeof staticProducts)[0]) => {
-    // Si existe imagen local nueva (no la foto genérica fruta-*.webp), usarla sobre Sanity
-    const staticMatch = staticProducts.find((s) => s.id === p.id);
-    const hasNewLocalImage = staticMatch?.image && !staticMatch.image.includes("/imgs/fruta-");
-    const image = hasNewLocalImage ? staticMatch!.image : p.image;
-
-    if (p.line === "kumiss" && !image) {
-      return { ...p, image: "/imgs/Kumis-HatoV2.webp", presentation: "1L" };
-    }
-    return { ...p, image };
-  });
+  const products = await getAllProducts();
 
   return (
     <ProductosClient

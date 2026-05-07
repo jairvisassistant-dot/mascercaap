@@ -29,15 +29,16 @@ export default function ProductCard({ product, accentGradient = "from-primary to
 
   // Degradados ricos para fondo de card — más dramáticos que los de badges/iconos
   const CARD_GRADIENTS: Record<string, string> = {
-    "pulpa-mora":          "from-purple-300 via-purple-500 to-violet-800",
-    "pulpa-maracuya":      "from-yellow-200 via-amber-400 to-amber-700",
-    "pulpa-fresa":         "from-rose-200 via-rose-500 to-red-700",
-    "pulpa-mango":         "from-yellow-300 via-amber-400 to-orange-500",
-    "pulpa-guanabana":     "from-emerald-200 via-green-400 to-green-700",
-    "pulpa-lulo":          "from-yellow-300 via-lime-400 to-orange-500",
-    "pulpa-guayaba":       "from-pink-200 via-pink-400 to-rose-700",
-    "pulpa-frutos-rojos":  "from-rose-300 via-red-500 to-red-800",
-    "pulpa-tomate-arbol":  "from-orange-200 via-orange-500 to-red-700",
+    "pulpa-mora":              "from-purple-300 via-purple-500 to-violet-800",
+    "pulpa-maracuya":          "from-yellow-200 via-amber-400 to-amber-700",
+    "pulpa-fresa":             "from-rose-200 via-rose-500 to-red-700",
+    "pulpa-mango":             "from-yellow-300 via-amber-400 to-orange-500",
+    "pulpa-guanabana":         "from-green-950 via-emerald-900 to-green-900",
+    "pulpa-guayaba":           "from-pink-200 via-pink-400 to-rose-700",
+    "pulpa-lulo":              "from-yellow-300 via-lime-400 to-orange-500",
+    "pulpa-frutos-rojos":      "from-rose-300 via-red-500 to-red-800",
+    "pulpa-frutos-amarillos":  "from-yellow-200 via-amber-300 to-orange-400",
+    "pulpa-tomate-arbol":      "from-orange-200 via-orange-500 to-red-700",
   };
   const cardGradient = CARD_GRADIENTS[product.line] ?? accentGradient;
 

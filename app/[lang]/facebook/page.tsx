@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/config";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function FacebookPage({
   params,
@@ -50,14 +53,12 @@ export default async function FacebookPage({
 
         <div className="flex flex-col items-center justify-center px-6 py-9 text-center sm:px-9 lg:py-12">
           <div className="rounded-[1.5rem] bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.12)] ring-1 ring-black/8">
-            {/* unoptimized: la URL es dinámica (api.qrserver.com), Next Image no puede optimizar dominios externos no configurados en next.config */}
             <Image
               src={qrUrl}
               alt={t.qrAlt}
               width={320}
               height={320}
               priority
-              unoptimized
               className="h-64 w-64 rounded-2xl sm:h-72 sm:w-72"
             />
           </div>

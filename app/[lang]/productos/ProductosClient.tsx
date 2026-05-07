@@ -12,9 +12,9 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
 
 const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
-  todas: ["limon", "limonada-cereza", "limonada-coco", "maracuya", "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-tomate-arbol", "kumiss"],
+  todas: ["limon", "limonada-cereza", "limonada-coco", "maracuya", "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol", "kumiss"],
   jugos: ["limon", "limonada-cereza", "limonada-coco", "maracuya"],
-  pulpas: ["pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-tomate-arbol"],
+  pulpas: ["pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol"],
   lacteos: ["kumiss"],
 };
 
@@ -24,7 +24,7 @@ const DEFAULT_CATEGORY = "todas";
 const PULPA_KEYS = new Set<ProductLineKey>([
   "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
   "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba",
-  "pulpa-frutos-rojos", "pulpa-tomate-arbol",
+  "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol",
 ]);
 
 interface ProductosClientProps {
@@ -41,6 +41,15 @@ export default function ProductosClient({ products, productLines }: ProductosCli
     const cat = searchParams.get("categoria");
     return cat && CATEGORY_LINES[cat] ? cat : DEFAULT_CATEGORY;
   });
+
+  // Sincroniza la categoría cuando la URL cambia (ej: navegación con historial o links externos)
+  useEffect(() => {
+    const cat = searchParams.get("categoria");
+    const next = cat && CATEGORY_LINES[cat] ? cat : DEFAULT_CATEGORY;
+    setActiveCategory(next);
+    setActiveSubLines([]);
+    setActiveSize("todos");
+  }, [searchParams]);
 
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
   const [activeSubLines, setActiveSubLines] = useState<ProductLineKey[]>([]);
