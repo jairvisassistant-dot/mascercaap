@@ -5,11 +5,9 @@ const locales = ["es", "en"];
 const defaultLocale = "es";
 
 function getLocale(request: NextRequest): string {
-  // 1. Check cookie preference
   const cookie = request.cookies.get("NEXT_LOCALE");
   if (cookie && locales.includes(cookie.value)) return cookie.value;
 
-  // 2. Check Accept-Language header — parse by quality value, not naive substring
   const acceptLang = request.headers.get("accept-language") ?? "";
   const preferred = acceptLang
     .split(",")
@@ -29,6 +27,32 @@ function getLocale(request: NextRequest): string {
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Redirigir rutas admin con locale prefix → sin locale
+  // Ej: /es/admin/login → /admin/login
+  for (const locale of locales) {
+    if (pathname.startsWith(`/${locale}/admin`)) {
+      const withoutLocale = pathname.slice(locale.length + 1);
+      return NextResponse.redirect(new URL(withoutLocale, request.url));
+    }
+  }
+
+  // Admin routes — cookie check only (JWT validation en los Server Components)
+  if (pathname.startsWith("/admin")) {
+    const isLoginPage = pathname === "/admin/login";
+    const hasSession = !!request.cookies.get("admin_session")?.value;
+
+    if (!hasSession) {
+      if (isLoginPage) return NextResponse.next();
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+
+    if (isLoginPage) {
+      return NextResponse.redirect(new URL("/admin/productos", request.url));
+    }
+
+    return NextResponse.next();
+  }
+
   // Skip internal paths, API routes, static files, studio
   if (
     pathname.startsWith("/_next") ||
@@ -47,7 +71,12 @@ export default function proxy(request: NextRequest) {
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (pathnameHasLocale) return;
+  if (pathnameHasLocale) {
+    const lang = locales.find((l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`) ?? defaultLocale;
+    const res = NextResponse.next();
+    res.headers.set("x-lang", lang);
+    return res;
+  }
 
   // Redirect to the locale-prefixed path
   const locale = getLocale(request);
