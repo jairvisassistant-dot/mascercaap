@@ -44,6 +44,7 @@ export const productSchema = defineType({
           { title: "🍊 Pulpa de Lulo", value: "pulpa-lulo" },
           { title: "🍈 Pulpa de Guayaba", value: "pulpa-guayaba" },
           { title: "🍇 Pulpa de Frutos Rojos", value: "pulpa-frutos-rojos" },
+          { title: "💛 Pulpa de Frutos Amarillos", value: "pulpa-frutos-amarillos" },
           { title: "🍅 Pulpa de Tomate de Árbol", value: "pulpa-tomate-arbol" },
           { title: "🥛 Lácteos (Kumis/Yogurt)", value: "kumiss" },
         ],

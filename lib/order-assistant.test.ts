@@ -59,7 +59,7 @@ describe("getProductOptionsForType", () => {
   it("Lácteos returns dairy products", () => {
     const opts = getProductOptionsForType("Lácteos")
     expect(opts).toContain("Kumis Del Hato 250ml")
-    expect(opts).toContain("Kumis Yolito 900ml")
+    expect(opts).toContain("Kumis Yolito 250ml")
     expect(opts).toContain("Yogurt Del Hato 250ml")
     expect(opts).not.toContain("Maracuyá")
   })

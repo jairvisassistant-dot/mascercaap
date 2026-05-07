@@ -61,5 +61,12 @@
     "pulpColor": "warm orange-red tree tomato pulp",
     "fruitGarnish": "whole and sliced tree tomato/tamarillo",
     "avoid": ["regular tomato look", "pumpkin color", "generic orange juice"]
+  },
+  "frutos-amarillos": {
+    "spanishName": "Frutos Amarillos",
+    "labelText": "FRUTOS AMARILLOS",
+    "pulpColor": "bright golden-yellow tropical fruit pulp blend, warm amber-yellow with natural dense texture",
+    "fruitGarnish": "whole passion fruit halved showing golden pulp, fresh mango slices, and a pineapple chunk in a controlled premium cluster",
+    "avoid": ["maracuyá look with seeds as dominant feature", "pure-mango orange dominant color", "neon yellow", "artificial candy yellow", "orange-only pulp", "confusing with single-fruit identity"]
   }
 }

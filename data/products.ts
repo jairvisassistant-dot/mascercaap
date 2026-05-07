@@ -89,6 +89,14 @@ export const productLines: ProductLineConfig[] = [
     iconEmoji: "🍓",
   },
   {
+    key: "pulpa-frutos-amarillos",
+    label: "Pulpa de Frutos Amarillos",
+    description: "Mix tropical de frutas amarillas, dulce y vibrante.",
+    gradient: "from-yellow-300 to-amber-500",
+    iconEmoji: "💛",
+    chipImage: "/imgs/pulpaPortada-frutos-amarillos.webp",
+  },
+  {
     key: "pulpa-tomate-arbol",
     label: "Pulpa de Tomate de Árbol",
     description: "Ideal para jugos y salsas naturales, bajo en calorías.",
@@ -279,7 +287,7 @@ export const products: Product[] = [
     line: "pulpa-maracuya",
     presentation: "300g",
     presentationOrder: 2,
-    image: "/imgs/pulpa-maracuya1000.webp",
+    image: "/imgs/pulpa-maracuya300.webp",
     description: "Tamaño ideal para jugos familiares. Maracuyá congelada en su punto exacto de madurez.",
     ingredients: ["Maracuyá 100% natural"],
     benefits: ["Vitamina A y C", "Antioxidantes", "Sin conservantes"],
@@ -471,24 +479,13 @@ export const products: Product[] = [
     benefits: ["Vitamina C", "Antioxidantes", "Sin conservantes"],
   },
 
-  // Guayaba — 3 presentaciones
-  {
-    id: "pulpa-guayaba-120",
-    name: "Pulpa de Guayaba",
-    line: "pulpa-guayaba",
-    presentation: "120g",
-    presentationOrder: 1,
-    image: "/imgs/pulpa-guayaba120.webp",
-    description: "Porción individual lista para preparar. Guayaba colombiana dulce y aromática, congelada en su punto exacto.",
-    ingredients: ["Guayaba 100% natural"],
-    benefits: ["Vitamina C y A", "Fibra natural", "Sin conservantes"],
-  },
+  // Guayaba — 2 presentaciones (no maneja 120g)
   {
     id: "pulpa-guayaba-300",
     name: "Pulpa de Guayaba",
     line: "pulpa-guayaba",
     presentation: "300g",
-    presentationOrder: 2,
+    presentationOrder: 1,
     image: "/imgs/pulpa-guayaba300.webp",
     description: "Ideal para jugos, salsas y postres. Guayaba colombiana congelada para preservar su aroma natural.",
     ingredients: ["Guayaba 100% natural"],
@@ -499,7 +496,7 @@ export const products: Product[] = [
     name: "Pulpa de Guayaba",
     line: "pulpa-guayaba",
     presentation: "1000g",
-    presentationOrder: 3,
+    presentationOrder: 2,
     image: "/imgs/pulpa-guayaba1000.webp",
     description: "Presentación institucional para negocios y restaurantes. Guayaba colombiana 100% natural.",
     ingredients: ["Guayaba 100% natural"],
@@ -541,24 +538,48 @@ export const products: Product[] = [
     benefits: ["Antioxidantes", "Vitamina C y K", "Sin conservantes"],
   },
 
-  // Tomate de Árbol — 3 presentaciones
+  // Frutos Amarillos — 3 presentaciones
   {
-    id: "pulpa-tomate-arbol-120",
-    name: "Pulpa de Tomate de Árbol",
-    line: "pulpa-tomate-arbol",
+    id: "pulpa-frutos-amarillos-120",
+    name: "Pulpa de Frutos Amarillos",
+    line: "pulpa-frutos-amarillos",
     presentation: "120g",
     presentationOrder: 1,
-    image: "/imgs/pulpa-tomate-arbol120.webp",
-    description: "Porción individual lista para preparar. Tomate de árbol colombiano, ideal para jugos naturales.",
-    ingredients: ["Tomate de árbol 100% natural"],
-    benefits: ["Vitamina A, C y E", "Bajo en calorías", "Sin conservantes"],
+    image: "/imgs/pulpa-frutos-amarillos120.webp",
+    description: "Porción individual lista para preparar. Mix tropical de frutas amarillas congelado en su punto exacto.",
+    ingredients: ["Frutos amarillos 100% naturales"],
+    benefits: ["Vitamina C y A", "Antioxidantes", "Sin conservantes"],
   },
+  {
+    id: "pulpa-frutos-amarillos-300",
+    name: "Pulpa de Frutos Amarillos",
+    line: "pulpa-frutos-amarillos",
+    presentation: "300g",
+    presentationOrder: 2,
+    image: "/imgs/pulpa-frutos-amarillos300.webp",
+    description: "Ideal para jugos y smoothies. Mix de frutas amarillas colombianas congeladas para preservar su dulzura natural.",
+    ingredients: ["Frutos amarillos 100% naturales"],
+    benefits: ["Vitamina C y A", "Antioxidantes", "Sin conservantes"],
+  },
+  {
+    id: "pulpa-frutos-amarillos-1000",
+    name: "Pulpa de Frutos Amarillos",
+    line: "pulpa-frutos-amarillos",
+    presentation: "1000g",
+    presentationOrder: 3,
+    image: "/imgs/pulpa-frutos-amarillos1000.webp",
+    description: "Presentación institucional para negocios y restaurantes. Mix de frutos amarillos colombianos 100% naturales.",
+    ingredients: ["Frutos amarillos 100% naturales"],
+    benefits: ["Vitamina C y A", "Antioxidantes", "Sin conservantes"],
+  },
+
+  // Tomate de Árbol — 2 presentaciones (no maneja 120g)
   {
     id: "pulpa-tomate-arbol-300",
     name: "Pulpa de Tomate de Árbol",
     line: "pulpa-tomate-arbol",
     presentation: "300g",
-    presentationOrder: 2,
+    presentationOrder: 1,
     image: "/imgs/pulpa-tomate-arbol300.webp",
     description: "Ideal para jugos y salsas naturales. Tomate de árbol colombiano congelado en su punto exacto.",
     ingredients: ["Tomate de árbol 100% natural"],
@@ -569,7 +590,7 @@ export const products: Product[] = [
     name: "Pulpa de Tomate de Árbol",
     line: "pulpa-tomate-arbol",
     presentation: "1000g",
-    presentationOrder: 3,
+    presentationOrder: 2,
     image: "/imgs/pulpa-tomate-arbol1000.webp",
     description: "Presentación institucional para negocios y restaurantes. Tomate de árbol colombiano 100% natural.",
     ingredients: ["Tomate de árbol 100% natural"],
@@ -589,28 +610,29 @@ export const products: Product[] = [
     benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
   },
 
-  {
-    id: "kumiss-yolito-900ml",
-    name: "Kumis Yolito",
-    line: "kumiss",
-    presentation: "900ml",
-    presentationOrder: 2,
-    image: "/imgs/Kumis-YolitoV2.webp",
-    description: "Kumis Yolito, bebida láctea fermentada con sabor fresco y cremoso, elaborada con leche colombiana.",
-    ingredients: ["Leche semidescremada", "Cultivos lácticos", "Azúcar"],
-    benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
-  },
-
   // ── Yogurt ────────────────────────────────────────────────────────────────
   {
     id: "yogurt-del-hato-250ml",
     name: "Yogurt Del Hato",
     line: "kumiss",
     presentation: "250ml",
-    presentationOrder: 3,
+    presentationOrder: 2,
     image: "/imgs/Yogurt-HatoV2.webp",
     description: "Yogurt semidescremado con dulce sabor a melocotón, elaborado con leche fresca colombiana.",
     ingredients: ["Leche semidescremada", "Cultivos lácticos", "Azúcar", "Sabor artificial a melocotón"],
+    benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
+  },
+
+  {
+    id: "kumiss-yolito-250ml",
+    name: "Kumis Yolito",
+    line: "kumiss",
+    presentation: "250ml",
+    presentationOrder: 3,
+    price: 3400,
+    image: "/imgs/Kumis-YolitoV2.webp",
+    description: "Kumis Yolito, bebida láctea fermentada con sabor fresco y cremoso, elaborada con leche colombiana.",
+    ingredients: ["Leche semidescremada", "Cultivos lácticos", "Azúcar"],
     benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
   },
 ];
@@ -618,7 +640,7 @@ export const products: Product[] = [
 const featuredProductIds = new Set([
   "limon-600",
   "pulpa-maracuya-300",
-  "kumiss-yolito-900ml",
+  "kumiss-yolito-250ml",
 ]);
 
 export const featuredProducts = products.filter((p) => featuredProductIds.has(p.id));

@@ -20,6 +20,7 @@ export const PULPA_FRUITS = [
   "Fresa",
   "Guayaba",
   "Frutos Rojos",
+  "Frutos Amarillos",
   "Tomate de árbol",
 ]
 
@@ -35,7 +36,7 @@ export const PRODUCT_OPTIONS_BY_TYPE: Record<string, string[]> = {
   "Zumos":  ZUMOS_PRODUCTS,
   "Lácteos": [
     "Kumis Del Hato 250ml",
-    "Kumis Yolito 900ml",
+    "Kumis Yolito 250ml",
     "Yogurt Del Hato 250ml",
   ],
 }
@@ -85,7 +86,7 @@ export const PROFILE_LABELS: Record<ClientProfile, string> = {
 // Valores provisorios — actualizar cuando el cliente pase la lista de precios
 export const LACTEOS_PRICES: Record<string, number> = {
   "Kumis Del Hato 250ml":  2800,
-  "Kumis Yolito 900ml":    8500,
+  "Kumis Yolito 250ml":    3400,
   "Yogurt Del Hato 250ml": 3200,
 }
 
@@ -100,6 +101,7 @@ export const PRICES_COP: Record<string, Record<string, number>> = {
   "Fresa":            { "120g": 2900,  "300g": 6600,  "1000g": 18500 },
   "Guayaba":          { "120g": 2700,  "300g": 6300,  "1000g": 17800 },
   "Frutos Rojos":     { "120g": 3500,  "300g": 8000,  "1000g": 22500 },
+  "Frutos Amarillos": { "120g": 3200,  "300g": 7500,  "1000g": 21000 },
   "Tomate de árbol":  { "120g": 2800,  "300g": 6500,  "1000g": 18000 },
   // Zumos — precios provisorios, actualizar en Sanity
   "Limón":               { "600ml": 4500,  "1L": 7000,  "2L": 12000, "5L": 25000 },
@@ -152,25 +154,38 @@ export function formatCOP(n: number): string {
   return `$${n.toLocaleString("es-CO")}`
 }
 
-export function buildWhatsappMessage(order: OrderInput, waNumber: string): string {
-  const itemLines = order.items.map((item, i) => {
+export type WaMsgI18n = {
+  greeting?:     string
+  clientType?:   string
+  products?:     string
+  confirm?:      string
+  profileLabel?: string
+}
+
+export function buildWhatsappMessage(order: OrderInput, waNumber: string, i18n: WaMsgI18n = {}): string {
+  const greeting     = i18n.greeting     ?? "Hola, quiero hacer un pedido:"
+  const clientType   = i18n.clientType   ?? "Tipo de cliente"
+  const products     = i18n.products     ?? "Productos"
+  const confirm      = i18n.confirm      ?? "¿Me confirman disponibilidad y precio?"
+  const profileLabel = i18n.profileLabel ?? PROFILE_LABELS[order.profile]
+
+  const itemLines = order.items.map((item, idx) => {
     const pres = item.presentation ? ` ${item.presentation}` : ""
-    return `${i + 1}. ${item.productType} — ${item.fruit}${pres} × ${item.quantity} unidades`
+    return `${idx + 1}. ${item.productType} — ${item.fruit}${pres} × ${item.quantity} unidades`
   })
 
   const lines = [
-    "Hola, quiero hacer un pedido:",
+    greeting,
     "",
     `Nombre: ${order.nombre}`,
-    `Tipo de cliente: ${PROFILE_LABELS[order.profile]}`,
+    `${clientType}: ${profileLabel}`,
     "",
-    "Productos:",
+    `${products}:`,
     ...itemLines,
     "",
-    "¿Me confirman disponibilidad y precio?",
+    confirm,
   ]
-  const text = lines.join("\n")
-  return `https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`
+  return `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`
 }
 
 function escapeHtml(str: string): string {
