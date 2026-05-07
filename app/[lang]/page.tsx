@@ -7,7 +7,8 @@ import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import YieldCalculator from "@/components/sections/YieldCalculator";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
-import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
+import TestimonialMarquee from "@/components/ui/TestimonialMarquee";
+import { StickyStackContainer, StickyStackItem } from "@/components/ui/StickyStack";
 import { testimonials as staticTestimonials } from "@/data/testimonials";
 import { featuredProducts as staticFeaturedProducts } from "@/data/products";
 import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
@@ -64,15 +65,21 @@ export default async function HomePage({ params }: Props) {
     <>
       <HeroCarousel />
 
-      <ProductCategories dict={dict} lang={lang} />
-
-      <FeaturedProducts products={featuredProducts} dict={dict} />
-
-      <YieldCalculator dict={dict} />
-
-      <WhyChooseUs dict={dict} />
+      <StickyStackContainer>
+        <StickyStackItem index={0} total={3}>
+          <ProductCategories dict={dict} lang={lang} />
+        </StickyStackItem>
+        <StickyStackItem index={1} total={3}>
+          <FeaturedProducts products={featuredProducts} dict={dict} />
+        </StickyStackItem>
+        <StickyStackItem index={2} total={3}>
+          <WhyChooseUs dict={dict} />
+        </StickyStackItem>
+      </StickyStackContainer>
 
       <DailyOffer dict={dict} />
+
+      <YieldCalculator dict={dict} />
 
       <section className="py-24 bg-[#233746] relative overflow-hidden">
         {/* Glow decorativo */}
@@ -105,7 +112,7 @@ export default async function HomePage({ params }: Props) {
             </div>
           </div>
 
-          <TestimonialCarousel testimonials={testimonials} dict={dict} lang={lang} />
+          <TestimonialMarquee testimonials={testimonials} dict={dict} lang={lang} />
         </div>
       </section>
 
