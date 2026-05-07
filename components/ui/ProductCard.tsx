@@ -24,6 +24,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const displayDescription = lang !== "es" ? (pl[product.line]?.description ?? product.description) : product.description;
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
+  const isDairyProduct = product.line === "kumiss";
   // Tratamiento nuevo solo para productos con imagen de packaging (no las fotos de campo fruta-*.webp)
   const hasPackagingImage = product.line.startsWith("pulpa-") && !product.image.includes("/imgs/fruta-");
 
@@ -54,32 +55,35 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   };
   const cardGradient = CARD_GRADIENTS[product.line] ?? accentGradient;
   const cardShadowTint = CARD_SHADOW_TINTS[product.line] ?? "shadow-md hover:shadow-xl hover:shadow-primary/8";
+  const baseCardClasses = hasPackagingImage
+    ? `border-white/70 ${cardShadowTint}`
+    : "border-white/70 shadow-[0_16px_36px_rgba(15,23,42,0.10)] hover:shadow-[0_22px_48px_rgba(15,23,42,0.16)]";
 
   return (
     <div className={`card-shimmer group relative shrink-0 w-[234px] overflow-hidden rounded-[1.35rem] border bg-surface-card transition-all duration-300 hover:-translate-y-1 ${
-      hasPackagingImage
-        ? `border-white/70 ${cardShadowTint}`
-        : "border-border-soft shadow-md hover:shadow-xl hover:shadow-primary/8"
+      baseCardClasses
     }`}>
-      {hasPackagingImage && (
+      {(hasPackagingImage || product.image) && (
         <>
           <div className="pointer-events-none absolute inset-[1px] z-[1] rounded-[1.28rem] border border-white/35" />
-          <div className={`pointer-events-none absolute inset-x-6 -top-10 z-[1] h-20 rounded-full bg-gradient-to-r ${cardGradient} opacity-20 blur-2xl transition-opacity duration-300 group-hover:opacity-30`} />
+          <div className={`pointer-events-none absolute inset-x-6 -top-10 z-[1] h-20 rounded-full bg-gradient-to-r blur-2xl transition-opacity duration-300 ${cardGradient} ${
+            hasPackagingImage ? "opacity-20 group-hover:opacity-30" : "opacity-10 group-hover:opacity-20"
+          }`} />
         </>
       )}
 
       {/* Imagen */}
       <div className={`relative h-60 ${
-        product.line === "kumiss"
+        isDairyProduct
           ? "bg-white"
           : hasPackagingImage
             ? `bg-gradient-to-b ${cardGradient}`
             : "bg-surface-page"
       }`}>
-        {hasPackagingImage && (
+        {(hasPackagingImage || product.image) && (
           <>
-            <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_14%,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.12)_24%,transparent_58%)]" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.18)_0%,transparent_68%)]" />
+            <div className={`pointer-events-none absolute inset-0 z-[1] ${hasPackagingImage ? "bg-[radial-gradient(circle_at_50%_14%,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.12)_24%,transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.08)_22%,transparent_55%)]"}`} />
+            <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] ${hasPackagingImage ? "h-24 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.18)_0%,transparent_68%)]" : "h-28 bg-[linear-gradient(180deg,transparent_0%,rgba(15,23,42,0.14)_100%)]"}`} />
             <div className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,transparent_28%,rgba(0,0,0,0.06)_100%)]" />
           </>
         )}
@@ -111,10 +115,10 @@ export default function ProductCard({ product, accentGradient = "from-primary to
               src={product.image}
               alt={`${displayName} ${product.presentation}`}
               fill
-              className={product.line === "kumiss" ? "object-contain object-center p-3" : "object-cover"}
-              sizes="208px"
-              priority={priority}
-            />
+                className={`transition-transform duration-500 group-hover:scale-[1.04] ${isDairyProduct ? "object-contain object-center p-3" : "object-cover"}`}
+                sizes="208px"
+                priority={priority}
+              />
           )
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${accentGradient} flex flex-col items-center justify-center gap-2`}>
@@ -130,7 +134,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
 
         {!isComingSoon && (
           <span className={`absolute top-3 right-3 ${
-            hasPackagingImage
+            product.image
               ? "border border-white/60 bg-white/88 text-gray-700 shadow-[0_8px_20px_rgba(255,255,255,0.22)] backdrop-blur-md"
               : `bg-gradient-to-r ${accentGradient} text-white`
           } z-10 rounded-full px-2.5 py-1 text-xs font-bold shadow`}>
@@ -161,8 +165,8 @@ export default function ProductCard({ product, accentGradient = "from-primary to
       )}
 
       {/* Info base */}
-      <div className={`relative px-4 pb-4 pt-4.5 ${hasPackagingImage ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.96)_22%,#ffffff_100%)]" : ""}`}>
-        {hasPackagingImage && <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-white/90" />}
+      <div className={`relative px-4 pb-4 pt-4.5 ${hasPackagingImage ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.96)_22%,#ffffff_100%)]" : "bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,#ffffff_100%)]"}`}>
+        <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-white/90" />
         <div className="space-y-1.5">
           <p className="line-clamp-1 text-[0.98rem] font-semibold leading-tight tracking-[-0.018em] text-text-main text-balance">
             {displayName}
