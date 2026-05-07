@@ -51,6 +51,15 @@
       "backHome": "Volver al inicio",
       "qrAlt": "QR del perfil de Instagram de Más Cerca AP",
       "scanHint": "Escanea el código con la cámara del celular para abrir el perfil en la app o navegador de Instagram."
+    },
+    "tiktok": {
+      "eyebrow": "TikTok · Más Cerca AP",
+      "title": "Síguenos en TikTok",
+      "description": "Este QR abre el perfil oficial de Más Cerca AP en TikTok. Contenido fresco, natural y directo del campo.",
+      "openProfile": "Abrir perfil",
+      "backHome": "Volver al inicio",
+      "qrAlt": "QR del perfil de TikTok de Más Cerca AP",
+      "scanHint": "Escanea el código con la cámara del celular para abrir el perfil en la app de TikTok."
     }
   },
   "home": {
@@ -568,6 +577,10 @@
       "label": "Pulpa de Frutos Rojos",
       "description": "Mix de berries antioxidantes, intenso y natural."
     },
+    "pulpa-frutos-amarillos": {
+      "label": "Pulpa de Frutos Amarillos",
+      "description": "Mix tropical de frutas amarillas, dulce y vibrante."
+    },
     "pulpa-tomate-arbol": {
       "label": "Pulpa de Tomate de Árbol",
       "description": "Ideal para jugos y salsas naturales, bajo en calorías."
@@ -639,6 +652,11 @@
       "evento": "Evento",
       "distribucion": "Distribución"
     },
+    "productTypes": {
+      "Pulpas": "Pulpas",
+      "Zumos": "Zumos",
+      "Lácteos": "Lácteos"
+    },
     "zones": {
       "bogota": "Bogotá",
       "medellin": "Medellín",
@@ -651,7 +669,12 @@
       "semana": "Esta semana",
       "sin_urgencia": "Sin urgencia"
     },
+    "customQtyLabel": "Personalizado",
     "customQtyPlaceholder": "Cantidad",
+    "waGreeting": "Hola, quiero hacer un pedido:",
+    "waClientType": "Tipo de cliente",
+    "waProducts": "Productos",
+    "waConfirm": "¿Me confirman disponibilidad y precio?",
     "nameLabel": "Nombre completo",
     "namePlaceholder": "Tu nombre",
     "emailLabel": "Email",
@@ -710,6 +733,7 @@
     "leadQrTitle": "Escanea con tu celular",
     "leadQrHint": "Abre la cámara de tu celular y enfoca el código para iniciar la conversación en WhatsApp.",
     "leadQrSaved": "✓ Tus datos fueron guardados. El asesor tendrá el contexto de tu consulta.",
+    "whatsappQrAlt": "Código QR para iniciar conversación por WhatsApp",
     "helpful": "¿Te fue útil esta respuesta?",
     "yes": "Sí, gracias",
     "no": "No del todo",

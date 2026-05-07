@@ -14,7 +14,7 @@
     "themeActivateLight": "Activate light mode"
   },
   "footer": {
-    "description": "100% natural juices and citrus fruits, made with hand-picked fruit straight from the farm. From farm to glass in hours, no preservatives.",
+    "description": "100% natural juices, fruit pulps, and dairy drinks, made with hand-picked fruit straight from the farm. From farm to table in hours, no preservatives.",
     "quickLinks": "Navigation",
     "productsTitle": "Products",
     "productLines": {
@@ -51,6 +51,15 @@
       "backHome": "Back home",
       "qrAlt": "Más Cerca AP Instagram profile QR",
       "scanHint": "Scan the code with your phone camera to open the profile in the Instagram app or browser."
+    },
+    "tiktok": {
+      "eyebrow": "TikTok · Más Cerca AP",
+      "title": "Follow us on TikTok",
+      "description": "This QR opens the official Más Cerca AP TikTok profile. Fresh, natural content straight from the field.",
+      "openProfile": "Open profile",
+      "backHome": "Back home",
+      "qrAlt": "Más Cerca AP TikTok profile QR",
+      "scanHint": "Scan the code with your phone camera to open the profile in the TikTok app."
     }
   },
   "home": {
@@ -568,6 +577,10 @@
       "label": "Mixed Berry Pulp",
       "description": "Antioxidant-rich berry blend, intense and all natural."
     },
+    "pulpa-frutos-amarillos": {
+      "label": "Yellow Fruit Pulp",
+      "description": "Tropical blend of yellow fruits, sweet and vibrant."
+    },
     "pulpa-tomate-arbol": {
       "label": "Tree Tomato Pulp",
       "description": "Ideal for natural juices and sauces, low in calories."
@@ -639,6 +652,11 @@
       "evento": "Event",
       "distribucion": "Distribution"
     },
+    "productTypes": {
+      "Pulpas": "Fruit Pulps",
+      "Zumos": "Juices",
+      "Lácteos": "Dairy"
+    },
     "zones": {
       "bogota": "Bogotá",
       "medellin": "Medellín",
@@ -651,7 +669,12 @@
       "semana": "This week",
       "sin_urgencia": "No rush"
     },
+    "customQtyLabel": "Custom",
     "customQtyPlaceholder": "Quantity",
+    "waGreeting": "Hello, I'd like to place an order:",
+    "waClientType": "Client type",
+    "waProducts": "Products",
+    "waConfirm": "Can you confirm availability and price?",
     "nameLabel": "Full name",
     "namePlaceholder": "Your name",
     "emailLabel": "Email",
@@ -710,6 +733,7 @@
     "leadQrTitle": "Scan with your phone",
     "leadQrHint": "Open your phone camera and point it at the code to start a WhatsApp conversation.",
     "leadQrSaved": "✓ Your info was saved. The advisor will have context for your inquiry.",
+    "whatsappQrAlt": "QR code to start a WhatsApp conversation",
     "helpful": "Was this answer helpful?",
     "yes": "Yes, thanks",
     "no": "Not really",

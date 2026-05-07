@@ -53,13 +53,18 @@ export default function OrderAssistantView() {
   const stepNum  = step === "result" ? 7 : step === "cart" ? 5.5 : (step as number)
   const progress = Math.min((stepNum / 6) * 100, 100)
 
-  const profileOptions = Object.entries(PROFILE_LABELS).map(([v, label]) => ({
+  const profileOptions = Object.entries(PROFILE_LABELS).map(([v]) => ({
     value: v as ClientProfile,
-    label,
+    label: t.profiles[v as ClientProfile],
   }))
 
+  const productTypeLabels = t.productTypes as Record<string, string>
+
   const productOptions = profile
-    ? getProductOptionsForProfile(profile).map((v) => ({ value: v, label: v }))
+    ? getProductOptionsForProfile(profile).map((v) => ({
+        value: v,
+        label: productTypeLabels[v] ?? v,
+      }))
     : []
 
   const isLacteos = curProductType === "Lácteos"
@@ -85,7 +90,7 @@ export default function OrderAssistantView() {
 
   const quantityOptions = [
     ...QUANTITY_OPTIONS.map((v) => ({ value: v, label: String(v) })),
-    { value: CUSTOM_QTY, label: "Personalizado" },
+    { value: CUSTOM_QTY, label: t.customQtyLabel },
   ]
 
   // ── Helpers ───────────────────────────────────────────────────
@@ -155,7 +160,13 @@ export default function OrderAssistantView() {
       })
       if (res.ok) {
         if (SITE_CONFIG.whatsappNumber) {
-          setWaUrl(buildWhatsappMessage(payload, SITE_CONFIG.whatsappNumber))
+          setWaUrl(buildWhatsappMessage(payload, SITE_CONFIG.whatsappNumber, {
+            greeting:     t.waGreeting,
+            clientType:   t.waClientType,
+            products:     t.waProducts,
+            confirm:      t.waConfirm,
+            profileLabel: profile ? t.profiles[profile] : undefined,
+          }))
         }
         setStatus("success")
         setStep("result")
@@ -274,7 +285,7 @@ export default function OrderAssistantView() {
               number={1}
               label={t.step1Label}
               active={step === 1}
-              summary={profile ? PROFILE_LABELS[profile] : null}
+              summary={profile ? t.profiles[profile] : null}
               onEdit={() => { setStep(1); setProfile(null); resetCurrentItem() }}
               backLabel={t.back}
             >
@@ -293,7 +304,7 @@ export default function OrderAssistantView() {
                   number={2}
                   label={t.step2Label}
                   active={step === 2}
-                  summary={curProductType}
+                  summary={curProductType ? (productTypeLabels[curProductType] ?? curProductType) : null}
                   onEdit={() => { setStep(2); setCurProductType(null); setCurFruit(null); setCurPresentation(null) }}
                   backLabel={t.back}
                 >
