@@ -42,15 +42,6 @@ export default function ProductosClient({ products, productLines }: ProductosCli
     return cat && CATEGORY_LINES[cat] ? cat : DEFAULT_CATEGORY;
   });
 
-  // Sincroniza la categoría cuando la URL cambia (ej: navegación con historial o links externos)
-  useEffect(() => {
-    const cat = searchParams.get("categoria");
-    const next = cat && CATEGORY_LINES[cat] ? cat : DEFAULT_CATEGORY;
-    setActiveCategory(next);
-    setActiveSubLines([]);
-    setActiveSize("todos");
-  }, [searchParams]);
-
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
   const [activeSubLines, setActiveSubLines] = useState<ProductLineKey[]>([]);
 

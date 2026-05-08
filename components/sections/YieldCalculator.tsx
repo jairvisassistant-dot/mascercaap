@@ -44,10 +44,6 @@ const FRUIT_OPTIONS_ROW2 = (
 
 const CUSTOM_VALUE = -1
 
-function interpolate(template: string, vars: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (_, key) => String(vars[key] ?? ""))
-}
-
 function BackLink({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <button
@@ -553,7 +549,7 @@ function AnimatedNumber({ target, className }: { target: number; className?: str
   useEffect(() => {
     const controls = animate(mv, target, { duration: 1.1, ease: [0.16, 1, 0.3, 1] })
     return () => controls.stop()
-  }, [target])
+  }, [mv, target])
 
   return <m.span className={className}>{display}</m.span>
 }
@@ -566,7 +562,7 @@ function AnimatedFloat({ target, className }: { target: number; className?: stri
   useEffect(() => {
     const controls = animate(mv, target, { duration: 1.1, ease: [0.16, 1, 0.3, 1] })
     return () => controls.stop()
-  }, [target])
+  }, [mv, target])
 
   return <m.span className={className}>{display}</m.span>
 }
