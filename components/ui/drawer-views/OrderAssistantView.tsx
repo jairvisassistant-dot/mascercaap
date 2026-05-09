@@ -141,6 +141,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
       email:           email.trim() || null,
       whatsapp_number: waNumber.trim() || null,
       consentAccepted: true,
+      profile:         "hogar",
       items,
     }
 
