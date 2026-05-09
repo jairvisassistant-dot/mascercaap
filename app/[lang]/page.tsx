@@ -7,7 +7,7 @@ import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import YieldCalculator from "@/components/sections/YieldCalculator";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
-import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
+import TestimonialMarquee from "@/components/ui/TestimonialMarquee";
 import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import OrderAssistantCTA from "@/components/sections/OrderAssistantCTA";
@@ -103,7 +103,7 @@ export default async function HomePage({ params }: Props) {
             </div>
           </div>
 
-          <TestimonialCarousel testimonials={testimonials} dict={dict} lang={lang} />
+          <TestimonialMarquee testimonials={testimonials} dict={dict} lang={lang} />
         </div>
       </section>
 

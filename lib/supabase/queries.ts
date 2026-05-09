@@ -35,7 +35,11 @@ export async function getAllTestimonials(): Promise<Testimonial[]> {
     .eq("active", true)
     .order("created_at");
   if (error || !data) return staticTestimonials;
-  return data;
+  if (data.length >= staticTestimonials.length) return data;
+
+  const existingIds = new Set(data.map((testimonial) => testimonial.id));
+  const fallbackTestimonials = staticTestimonials.filter((testimonial) => !existingIds.has(testimonial.id));
+  return [...data, ...fallbackTestimonials].slice(0, staticTestimonials.length);
 }
 
 function mapRowToProduct(row: Record<string, unknown>): Product {

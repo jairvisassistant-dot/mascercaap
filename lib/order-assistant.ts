@@ -4,11 +4,13 @@ export type ClientProfile = "hogar" | "cafeteria" | "evento" | "distribucion"
 export type DeliveryZone   = "bogota" | "medellin" | "cali" | "otra"
 export type Urgency        = "hoy" | "manana" | "semana" | "sin_urgencia"
 
+export const PRODUCT_TYPE_OPTIONS = ["Pulpas", "Zumos", "Lácteos"] as const
+
 export const PRODUCT_OPTIONS_BY_PROFILE: Record<ClientProfile, string[]> = {
-  hogar:        ["Pulpas", "Zumos", "Lácteos"],
-  cafeteria:    ["Pulpas", "Zumos", "Lácteos"],
-  evento:       ["Pulpas", "Zumos", "Lácteos"],
-  distribucion: ["Pulpas", "Zumos", "Lácteos"],
+  hogar:        [...PRODUCT_TYPE_OPTIONS],
+  cafeteria:    [...PRODUCT_TYPE_OPTIONS],
+  evento:       [...PRODUCT_TYPE_OPTIONS],
+  distribucion: [...PRODUCT_TYPE_OPTIONS],
 }
 
 export const PULPA_FRUITS = [
@@ -119,9 +121,7 @@ export function getUnitPrice(fruit: string, presentation: string | null | undefi
 }
 
 export function getDiscountRate(totalUnits: number): number {
-  if (totalUnits >= 50) return 0.15
-  if (totalUnits >= 20) return 0.10
-  if (totalUnits >= 10) return 0.05
+  void totalUnits
   return 0
 }
 
@@ -156,10 +156,10 @@ export function formatCOP(n: number): string {
 
 export type WaMsgI18n = {
   greeting?:     string
-  clientType?:   string
+  clientType?:   string | null
   products?:     string
   confirm?:      string
-  profileLabel?: string
+  profileLabel?: string | null
 }
 
 export function buildWhatsappMessage(order: OrderInput, waNumber: string, i18n: WaMsgI18n = {}): string {
@@ -167,7 +167,7 @@ export function buildWhatsappMessage(order: OrderInput, waNumber: string, i18n: 
   const clientType   = i18n.clientType   ?? "Tipo de cliente"
   const products     = i18n.products     ?? "Productos"
   const confirm      = i18n.confirm      ?? "¿Me confirman disponibilidad y precio?"
-  const profileLabel = i18n.profileLabel ?? PROFILE_LABELS[order.profile]
+  const profileLabel = i18n.profileLabel ?? null
 
   const itemLines = order.items.map((item, idx) => {
     const pres = item.presentation ? ` ${item.presentation}` : ""
@@ -178,14 +178,14 @@ export function buildWhatsappMessage(order: OrderInput, waNumber: string, i18n: 
     greeting,
     "",
     `Nombre: ${order.nombre}`,
-    `${clientType}: ${profileLabel}`,
+    clientType && profileLabel ? `${clientType}: ${profileLabel}` : null,
     "",
     `${products}:`,
     ...itemLines,
     "",
     confirm,
   ]
-  return `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`
+  return `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.filter((line) => line !== null).join("\n"))}`
 }
 
 function escapeHtml(str: string): string {
@@ -223,18 +223,6 @@ function buildItemsTableHtml(items: OrderItem[]): string {
   const totals    = calculateOrderTotal(items)
   const totalUnits = totals.totalUnits
 
-  const discountRow =
-    totals.hasPrice && totals.discountRate > 0
-      ? `<tr>
-          <td colspan="3" style="padding:6px 0;font-size:13px;color:#3f8f46;">
-            Descuento volumen (${(totals.discountRate * 100).toFixed(0)}%)
-          </td>
-          <td style="padding:6px 0;font-size:13px;color:#3f8f46;text-align:right;">
-            −${formatCOP(totals.discount)}
-          </td>
-        </tr>`
-      : ""
-
   const totalRow = totals.hasPrice
     ? `<tr>
         <td colspan="3" style="padding:10px 0 0;font-size:14px;font-weight:700;color:#111827;">
@@ -266,11 +254,10 @@ function buildItemsTableHtml(items: OrderItem[]): string {
             ${totals.hasPrice ? formatCOP(totals.subtotal) : "—"}
           </td>
         </tr>
-        ${discountRow}
         ${totalRow}
       </tfoot>
     </table>
-    ${totals.hasPrice ? '<p style="margin:8px 0 0;font-size:11px;color:#9ca3af;">* Precio estimado. El equipo confirma el valor final.</p>' : ""}
+    ${totals.hasPrice ? '<p style="margin:8px 0 0;font-size:11px;color:#6b7280;font-weight:600;">Los valores mostrados ya tienen IVA incluido.</p><p style="margin:4px 0 0;font-size:11px;color:#9ca3af;">* Precio estimado. El equipo confirma el valor final.</p>' : ""}
   `
 }
 
@@ -278,8 +265,6 @@ export function buildOrderEmailHtml(data: OrderInput): string {
   const nombre   = escapeHtml(data.nombre)
   const email    = data.email           ? escapeHtml(data.email)            : "—"
   const whatsapp = data.whatsapp_number ? escapeHtml(data.whatsapp_number)  : "—"
-  const profile  = escapeHtml(PROFILE_LABELS[data.profile])
-
   return `
 <!DOCTYPE html>
 <html lang="es">
@@ -303,7 +288,7 @@ export function buildOrderEmailHtml(data: OrderInput): string {
           <tr>
             <td style="padding:24px 40px 0;text-align:center;">
               <span style="display:inline-block;background:#fdf2e2;color:#c97016;font-size:13px;font-weight:600;padding:6px 16px;border-radius:20px;border:1px solid #f1c78f;">
-                🛒 Pedido — ${profile}
+                🛒 Pedido
               </span>
             </td>
           </tr>

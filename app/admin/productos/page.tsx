@@ -28,35 +28,40 @@ export default async function AdminProductosPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-400">Error cargando productos: {error.message}</p>
+      <div className="flex min-h-[100dvh] items-center justify-center bg-surface-soft px-4">
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+          Error cargando productos: {error.message}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-[100dvh] bg-surface-soft">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-border-soft bg-surface-card/95 px-6 py-4 shadow-[0_14px_40px_-32px_rgba(47,111,54,0.35)] backdrop-blur-sm">
+        <div className="mx-auto flex w-full max-w-[1680px] items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold text-white">Mas Cerca AP — Admin</h1>
-          <p className="text-gray-400 text-xs mt-0.5">{products?.length ?? 0} productos en total</p>
+          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.22em] text-accent-dark">Catálogo interno</p>
+          <h1 className="text-xl font-bold tracking-tight text-text-main">Mas Cerca AP — Admin</h1>
+          <p className="mt-0.5 text-xs text-text-muted">{products?.length ?? 0} productos en total</p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/admin/productos/nuevo"
-            className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
+            className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.85)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0"
           >
             + Nuevo producto
           </Link>
           <form action="/api/admin/auth/logout" method="POST">
             <button
               type="submit"
-              className="px-3 py-2 text-gray-400 hover:text-white text-sm transition-colors"
+              className="rounded-xl px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
             >
               Salir
             </button>
           </form>
+        </div>
         </div>
       </header>
 

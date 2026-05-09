@@ -69,6 +69,13 @@ describe("orderSchema — valid payloads", () => {
     expect(orderSchema.safeParse(input).success).toBe(true)
   })
 
+  it("accepts payload without profile and defaults it for backwards compatibility", () => {
+    const { profile: _profile, ...input } = base
+    const parsed = orderSchema.parse(input)
+    expect(parsed.profile).toBe("hogar")
+    void _profile
+  })
+
   it("accepts multiple items", () => {
     const input = {
       ...base,

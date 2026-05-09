@@ -104,12 +104,12 @@ describe("getUnitPrice", () => {
 describe("getDiscountRate", () => {
   it("0% for 1 unit", ()   => expect(getDiscountRate(1)).toBe(0))
   it("0% for 9 units", ()  => expect(getDiscountRate(9)).toBe(0))
-  it("5% for 10 units", () => expect(getDiscountRate(10)).toBe(0.05))
-  it("5% for 19 units", () => expect(getDiscountRate(19)).toBe(0.05))
-  it("10% for 20 units", ()=> expect(getDiscountRate(20)).toBe(0.10))
-  it("10% for 49 units", ()=> expect(getDiscountRate(49)).toBe(0.10))
-  it("15% for 50 units", ()=> expect(getDiscountRate(50)).toBe(0.15))
-  it("15% for 100 units",()=> expect(getDiscountRate(100)).toBe(0.15))
+  it("0% for 10 units", () => expect(getDiscountRate(10)).toBe(0))
+  it("0% for 19 units", () => expect(getDiscountRate(19)).toBe(0))
+  it("0% for 20 units", ()=> expect(getDiscountRate(20)).toBe(0))
+  it("0% for 49 units", ()=> expect(getDiscountRate(49)).toBe(0))
+  it("0% for 50 units", ()=> expect(getDiscountRate(50)).toBe(0))
+  it("0% for 100 units",()=> expect(getDiscountRate(100)).toBe(0))
 })
 
 // ──────────────────────────────────────────────
@@ -126,7 +126,7 @@ describe("calculateOrderTotal", () => {
     expect(t.hasPrice).toBe(true)
   })
 
-  it("applies 10% discount for 20 total units across items", () => {
+  it("keeps net total without volume discount for 20 total units", () => {
     const items = [
       { productType: "Pulpas", fruit: "Maracuyá", presentation: "300g" as const, quantity: 10 },
       { productType: "Pulpas", fruit: "Mora",      presentation: "300g" as const, quantity: 10 },
@@ -134,9 +134,9 @@ describe("calculateOrderTotal", () => {
     const t = calculateOrderTotal(items)
     const expectedSubtotal = 6800 * 10 + 7400 * 10  // 68000 + 74000 = 142000
     expect(t.subtotal).toBe(expectedSubtotal)
-    expect(t.discountRate).toBe(0.10)
-    expect(t.discount).toBe(Math.round(expectedSubtotal * 0.10))
-    expect(t.total).toBe(expectedSubtotal - Math.round(expectedSubtotal * 0.10))
+    expect(t.discountRate).toBe(0)
+    expect(t.discount).toBe(0)
+    expect(t.total).toBe(expectedSubtotal)
     expect(t.hasPrice).toBe(true)
   })
 
@@ -146,11 +146,13 @@ describe("calculateOrderTotal", () => {
     expect(t.hasPrice).toBe(false)
   })
 
-  it("applies 15% discount for 50+ units", () => {
+  it("keeps net total without volume discount for 50+ units", () => {
     const items = [{ productType: "Pulpas", fruit: "Mora", presentation: "120g" as const, quantity: 50 }]
     const t = calculateOrderTotal(items)
-    expect(t.discountRate).toBe(0.15)
-    expect(t.discount).toBe(Math.round(3200 * 50 * 0.15))
+    expect(t.subtotal).toBe(3200 * 50)
+    expect(t.discountRate).toBe(0)
+    expect(t.discount).toBe(0)
+    expect(t.total).toBe(3200 * 50)
   })
 })
 
@@ -169,10 +171,11 @@ describe("buildWhatsappMessage", () => {
     expect(text).toContain("Laura Sánchez")
   })
 
-  it("message contains profile label", () => {
+  it("message does not include hidden client profile by default", () => {
     const url  = buildWhatsappMessage(baseOrder, "573001234567")
     const text = decodeURIComponent(url.split("?text=")[1] ?? "")
-    expect(text).toContain("Cafetería / Restaurante")
+    expect(text).not.toContain("Cafetería / Restaurante")
+    expect(text).not.toContain("Tipo de cliente")
   })
 
   it("message contains fruit and presentation for each item", () => {

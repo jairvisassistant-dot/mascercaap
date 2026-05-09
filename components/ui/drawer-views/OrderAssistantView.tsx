@@ -4,7 +4,6 @@ import { useState } from "react"
 import { m, AnimatePresence } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
-  getProductOptionsForProfile,
   getProductOptionsForType,
   getPresentationsForProduct,
   buildWhatsappMessage,
@@ -12,8 +11,7 @@ import {
   calculateOrderTotal,
   formatCOP,
   QUANTITY_OPTIONS,
-  PROFILE_LABELS,
-  type ClientProfile,
+  PRODUCT_TYPE_OPTIONS,
 } from "@/lib/order-assistant"
 import { useDictionary } from "@/lib/i18n/DictionaryProvider"
 import { SITE_CONFIG } from "@/lib/config"
@@ -24,13 +22,16 @@ type SubmitStatus = "idle" | "sending" | "success" | "error"
 
 const CUSTOM_QTY = -1
 
-export default function OrderAssistantView() {
+type Props = {
+  onContactClick: () => void
+}
+
+export default function OrderAssistantView({ onContactClick }: Props) {
   const { dict } = useDictionary()
   const t = dict.orderAssistant
 
   // ── Global state ───────────────────────────────────────────────
   const [step, setStep]       = useState<Step>(1)
-  const [profile, setProfile] = useState<ClientProfile | null>(null)
   const [items, setItems]     = useState<OrderItem[]>([])
 
   // ── Current item being built (steps 2–5) ─────────────────────
@@ -50,22 +51,15 @@ export default function OrderAssistantView() {
 
   // ── Derived ───────────────────────────────────────────────────
   const totals   = items.length > 0 ? calculateOrderTotal(items) : null
-  const stepNum  = step === "result" ? 7 : step === "cart" ? 5.5 : (step as number)
-  const progress = Math.min((stepNum / 6) * 100, 100)
-
-  const profileOptions = Object.entries(PROFILE_LABELS).map(([v]) => ({
-    value: v as ClientProfile,
-    label: t.profiles[v as ClientProfile],
-  }))
+  const stepNum  = step === "result" ? 6 : step === "cart" ? 4.5 : (step as number)
+  const progress = Math.min((stepNum / 5) * 100, 100)
 
   const productTypeLabels = t.productTypes as Record<string, string>
 
-  const productOptions = profile
-    ? getProductOptionsForProfile(profile).map((v) => ({
-        value: v,
-        label: productTypeLabels[v] ?? v,
-      }))
-    : []
+  const productOptions = PRODUCT_TYPE_OPTIONS.map((v) => ({
+    value: v,
+    label: productTypeLabels[v] ?? v,
+  }))
 
   const isLacteos = curProductType === "Lácteos"
 
@@ -140,14 +134,13 @@ export default function OrderAssistantView() {
   }
 
   async function handleEmailSubmit() {
-    if (!canSubmit() || !profile || items.length === 0) return
+    if (!canSubmit() || items.length === 0) return
 
     const payload: OrderInput = {
       nombre:          nombre.trim(),
       email:           email.trim() || null,
       whatsapp_number: waNumber.trim() || null,
       consentAccepted: true,
-      profile,
       items,
     }
 
@@ -162,10 +155,8 @@ export default function OrderAssistantView() {
         if (SITE_CONFIG.whatsappNumber) {
           setWaUrl(buildWhatsappMessage(payload, SITE_CONFIG.whatsappNumber, {
             greeting:     t.waGreeting,
-            clientType:   t.waClientType,
             products:     t.waProducts,
             confirm:      t.waConfirm,
-            profileLabel: profile ? t.profiles[profile] : undefined,
           }))
         }
         setStatus("success")
@@ -179,7 +170,7 @@ export default function OrderAssistantView() {
   }
 
   function handleReset() {
-    setStep(1); setProfile(null); setItems([])
+    setStep(1); setItems([])
     resetCurrentItem()
     setNombre(""); setEmail(""); setWaNumber(""); setConsent(false)
     setStatus("idle"); setWaUrl(null)
@@ -195,6 +186,21 @@ export default function OrderAssistantView() {
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.3 }}
         />
+      </div>
+
+      <div className="shrink-0 border-b border-accent-light/70 bg-accent-light/20 px-6 py-3">
+        <div className="flex flex-col gap-3 rounded-2xl border border-accent-light/80 bg-surface-card px-4 py-3 shadow-[0_14px_34px_-28px_rgba(201,112,22,0.65)] sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm font-semibold leading-snug text-accent-dark">
+            {t.wholesaleBannerText}
+          </p>
+          <button
+            type="button"
+            onClick={onContactClick}
+            className="inline-flex min-h-[40px] items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card"
+          >
+            {t.wholesaleBannerButton}
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
@@ -235,16 +241,11 @@ export default function OrderAssistantView() {
                         <span className="text-text-muted">{t.subtotalLabel}</span>
                         <span className="text-text-muted">{formatCOP(totals.subtotal)}</span>
                       </div>
-                      {totals.discountRate > 0 && (
-                        <div className="flex justify-between text-sm text-primary">
-                          <span>{(totals.discountRate * 100).toFixed(0)}% {t.discountSuffix}</span>
-                          <span>−{formatCOP(totals.discount)}</span>
-                        </div>
-                      )}
                       <div className="flex justify-between text-sm font-bold">
                         <span className="text-text-main">{t.totalLabel}</span>
                         <span className="text-primary">{formatCOP(totals.total)}</span>
                       </div>
+                      <p className="text-[11px] font-medium text-text-muted">{t.taxIncludedNote}</p>
                       <p className="text-[11px] text-text-faint">{t.priceNote}</p>
                     </>
                   )}
@@ -280,49 +281,33 @@ export default function OrderAssistantView() {
         {/* ── Pasos 1–8 ────────────────────────────────────────── */}
         {step !== "result" && (
           <>
-            {/* Paso 1 — Perfil */}
+            {/* Paso 1 — Tipo de producto */}
             <StepBlock
               number={1}
               label={t.step1Label}
               active={step === 1}
-              summary={profile ? t.profiles[profile] : null}
-              onEdit={() => { setStep(1); setProfile(null); resetCurrentItem() }}
+              summary={curProductType ? (productTypeLabels[curProductType] ?? curProductType) : null}
+              onEdit={() => { setStep(1); setCurProductType(null); setCurFruit(null); setCurPresentation(null) }}
               backLabel={t.back}
             >
               <ChipSelector
-                options={profileOptions}
-                selected={profile}
-                onChange={(v) => { setProfile(v); resetCurrentItem(); setStep(2) }}
+                options={productOptions}
+                selected={curProductType}
+                onChange={(v) => { setCurProductType(v); setCurFruit(null); setCurPresentation(null); setStep(2) }}
               />
             </StepBlock>
 
-            {/* ── Construcción del ítem actual (pasos 2–5) ───── */}
-            {(step === 2 || step === 3 || step === 4 || step === 5) && (
+            {/* ── Construcción del ítem actual (pasos 2–4) ───── */}
+            {(step === 2 || step === 3 || step === 4) && (
               <>
-                {/* Paso 2 — Tipo de producto */}
-                <StepBlock
-                  number={2}
-                  label={t.step2Label}
-                  active={step === 2}
-                  summary={curProductType ? (productTypeLabels[curProductType] ?? curProductType) : null}
-                  onEdit={() => { setStep(2); setCurProductType(null); setCurFruit(null); setCurPresentation(null) }}
-                  backLabel={t.back}
-                >
-                  <ChipSelector
-                    options={productOptions}
-                    selected={curProductType}
-                    onChange={(v) => { setCurProductType(v); setCurFruit(null); setStep(3) }}
-                  />
-                </StepBlock>
-
-                {/* Paso 3 — Fruta */}
-                {step >= 3 && (
+                {/* Paso 2 — Fruta */}
+                {step >= 2 && (
                   <StepBlock
-                    number={3}
-                    label={t.step3Label}
-                    active={step === 3}
+                    number={2}
+                    label={t.step2Label}
+                    active={step === 2}
                     summary={curFruit}
-                    onEdit={() => { setStep(3); setCurFruit(null); setCurPresentation(null) }}
+                    onEdit={() => { setStep(2); setCurFruit(null); setCurPresentation(null) }}
                     backLabel={t.back}
                   >
                     <ChipSelector
@@ -331,34 +316,34 @@ export default function OrderAssistantView() {
                       onChange={(v) => {
                         setCurFruit(v)
                         setCurPresentation(null)
-                        setStep(isLacteos ? 5 : 4)
+                        setStep(isLacteos ? 4 : 3)
                       }}
                     />
                   </StepBlock>
                 )}
 
-                {/* Paso 4 — Presentación (con precio) */}
-                {step >= 4 && (
+                {/* Paso 3 — Presentación (con precio) */}
+                {step >= 3 && (
                   <StepBlock
-                    number={4}
+                    number={3}
                     label={t.step4Label}
-                    active={step === 4}
+                    active={step === 3}
                     summary={curPresentation}
-                    onEdit={() => { setStep(4); setCurPresentation(null) }}
+                    onEdit={() => { setStep(3); setCurPresentation(null) }}
                     backLabel={t.back}
                   >
                     <ChipSelector
                       options={presentationOptions}
                       selected={curPresentation}
-                      onChange={(v) => { setCurPresentation(v); setStep(5) }}
+                      onChange={(v) => { setCurPresentation(v); setStep(4) }}
                     />
                   </StepBlock>
                 )}
 
-                {/* Paso 5 — Cantidad */}
-                {step === 5 && (
+                {/* Paso 4 — Cantidad */}
+                {step === 4 && (
                   <StepBlock
-                    number={5}
+                    number={4}
                     label={t.step5Label}
                     active={true}
                     summary={null}
@@ -459,24 +444,19 @@ export default function OrderAssistantView() {
                       <span className="text-text-muted">{t.subtotalLabel}</span>
                       <span className="text-text-muted">{formatCOP(totals.subtotal)}</span>
                     </div>
-                    {totals.discountRate > 0 && (
-                      <div className="flex justify-between text-sm text-primary">
-                        <span>{(totals.discountRate * 100).toFixed(0)}% {t.discountSuffix}</span>
-                        <span>−{formatCOP(totals.discount)}</span>
-                      </div>
-                    )}
                     <div className="flex justify-between text-sm font-bold border-t border-border-soft pt-1.5">
                       <span className="text-text-main">{t.totalLabel}</span>
                       <span className="text-primary">{formatCOP(totals.total)}</span>
                     </div>
+                    <p className="text-[11px] font-medium text-text-muted">{t.taxIncludedNote}</p>
                     <p className="text-[11px] text-text-faint">{t.priceNote}</p>
                   </div>
                 )}
 
                 {/* Acciones del carrito */}
-                <button
-                  type="button"
-                  onClick={() => { resetCurrentItem(); setStep(2) }}
+                  <button
+                    type="button"
+                    onClick={() => { resetCurrentItem(); setStep(1) }}
                   className="w-full text-sm text-primary border border-primary/30 rounded-full px-4 py-2.5 hover:bg-primary/5 transition-colors min-h-[44px]"
                 >
                   {t.addAnother}
@@ -504,7 +484,7 @@ export default function OrderAssistantView() {
                     transition={{ duration: 0.3 }}
                   >
                     <p className="text-sm font-semibold text-text-main mb-4">
-                      <span className="text-primary mr-2">6.</span>{t.step8Label}
+                      <span className="text-primary mr-2">5.</span>{t.step8Label}
                     </p>
 
                     <div className="space-y-3">

@@ -183,7 +183,7 @@ export default function HelpDrawer({ onClose }: Props) {
                 />
               )}
               {view === "order" && (
-                <OrderAssistantView />
+                <OrderAssistantView onContactClick={() => setView("contact")} />
               )}
             </m.div>
           </AnimatePresence>

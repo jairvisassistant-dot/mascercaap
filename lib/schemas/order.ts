@@ -16,7 +16,7 @@ export const orderSchema = z.object({
     .optional()
     .nullable(),
   consentAccepted: z.literal(true),
-  profile:         z.enum(["hogar", "cafeteria", "evento", "distribucion"]),
+  profile:         z.enum(["hogar", "cafeteria", "evento", "distribucion"]).default("hogar"),
   items:           z.array(orderItemSchema).min(1).max(20),
 }).refine(
   (data) => Boolean(data.email) || Boolean(data.whatsapp_number),

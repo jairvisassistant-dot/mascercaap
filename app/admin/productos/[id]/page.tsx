@@ -52,17 +52,20 @@ export default async function EditarProductoPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen">
-      <header className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center gap-4">
-        <Link href="/admin/productos" className="text-gray-400 hover:text-white text-sm transition-colors">
+    <div className="min-h-[100dvh] bg-surface-soft">
+      <header className="border-b border-border-soft bg-surface-card/95 px-6 py-4 shadow-[0_14px_40px_-32px_rgba(47,111,54,0.35)] backdrop-blur-sm">
+        <div className="mx-auto flex w-full max-w-[1680px] items-center gap-4">
+        <Link href="/admin/productos" className="rounded-xl px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main">
           ← Volver
         </Link>
         <div>
-          <h1 className="text-lg font-bold text-white">{product.name}</h1>
-          <p className="text-gray-500 text-xs">{product.id}</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-accent-dark">Editar producto</p>
+          <h1 className="text-xl font-bold tracking-tight text-text-main">{product.name}</h1>
+          <p className="text-xs text-text-muted">{product.id}</p>
+        </div>
         </div>
       </header>
-      <div className="p-6">
+      <div className="mx-auto w-full max-w-[1680px] p-6 lg:px-8">
         <ProductoForm mode="edit" initial={initial} productId={product.id} />
       </div>
     </div>
