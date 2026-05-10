@@ -344,25 +344,20 @@ export default function HeroCarousel() {
               >
                 {slide.ctaHref === "__whatsapp__" ? (
                   <button
+                    type="button"
                     onClick={() => openDrawer("order")}
-                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] md:text-base`}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950 md:text-base`}
                   >
                     {slideText.cta}
                   </button>
                 ) : (
                   <Link
                     href={resolveHref(slide.ctaHref)!}
-                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] md:text-base`}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950 md:text-base`}
                   >
                     {slideText.cta}
                   </Link>
                 )}
-                <button
-                  onClick={() => openDrawer("order")}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/28 bg-white/10 px-7 py-3 text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/18 active:translate-y-0 active:scale-[0.98] md:text-base"
-                >
-                  {dict.nav.cta}
-                </button>
               </m.div>
 
               </div>
@@ -392,6 +387,7 @@ export default function HeroCarousel() {
       </AnimatePresence>
 
       <button
+        type="button"
         onClick={prevSlide}
         className="absolute left-3 top-1/2 z-10 -translate-y-1/2 hidden sm:flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
         aria-label={dict.home.hero.prevSlide}
@@ -401,6 +397,7 @@ export default function HeroCarousel() {
         </svg>
       </button>
       <button
+        type="button"
         onClick={nextSlide}
         className="absolute right-3 top-1/2 z-10 -translate-y-1/2 hidden sm:flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
         aria-label={dict.home.hero.nextSlide}
@@ -413,6 +410,7 @@ export default function HeroCarousel() {
       <div className="absolute bottom-7 left-6 z-10 flex gap-2.5 sm:left-8 md:left-12 lg:left-[calc((100vw-80rem)/2+4rem)]">
         {slides.map((s, index) => (
           <button
+            type="button"
             key={s.id}
             onClick={() => goToSlide(index)}
             className={`h-2.5 rounded-full border border-white/20 transition-all duration-300 ${

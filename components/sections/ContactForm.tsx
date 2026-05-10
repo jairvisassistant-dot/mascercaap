@@ -215,6 +215,8 @@ export default function ContactForm() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
+            role="status"
+            aria-live="polite"
             className="mt-5 rounded-2xl overflow-hidden border border-green-200"
           >
             <div className="bg-green-50 px-5 py-4 flex items-start gap-3">
@@ -251,6 +253,8 @@ export default function ContactForm() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
+            role="alert"
+            aria-live="assertive"
             className="mt-5 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3"
           >
             <EmojiIcon emoji="❌" label={t.error} size="sm" tone="danger" decorative={false} />

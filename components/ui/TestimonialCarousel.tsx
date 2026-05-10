@@ -82,12 +82,13 @@ export default function TestimonialCarousel({ testimonials, dict, lang }: Testim
       <div className="flex justify-center gap-2 mt-6">
         {testimonials.map((_, index) => (
           <button
+            type="button"
             key={index}
             onClick={() => {
               setCurrentIndex(index);
               setIsPaused(true);
             }}
-            className={`h-2 rounded-full transition-all ${
+            className={`h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#233746] ${
               index === currentIndex ? "bg-accent/90 w-6" : "bg-white/22 hover:bg-white/34 w-2"
             }`}
             aria-label={`${dict.home.testimonials.goTo} ${index + 1}`}

@@ -74,6 +74,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  aria-current={isActive(link.href) ? "page" : undefined}
                   className={`nav-link font-medium transition-colors ${
                     isActive(link.href)
                       ? "text-primary nav-link-active"
@@ -90,8 +91,9 @@ export default function Navbar() {
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
+                type="button"
                 onClick={() => openDrawer("order")}
-                className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
+                className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
               </button>
@@ -99,6 +101,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-primary p-2"
               aria-label={dict.nav.menuAriaLabel}
@@ -146,6 +149,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
                 onClick={() => setIsOpen(false)}
                 className={`block font-medium py-2 border-l-2 pl-3 transition-colors ${
                   isActive(link.href)
@@ -160,8 +164,9 @@ export default function Navbar() {
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
+                type="button"
                 onClick={() => { setIsOpen(false); openDrawer("order"); }}
-                className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center"
+                className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
               </button>

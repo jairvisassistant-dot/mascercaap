@@ -366,8 +366,9 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
             >
               <span className="text-xs text-text-faint">{t.advisorOffer}</span>
               <button
+                type="button"
                 onClick={handleAdvisorClick}
-                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-green-500 text-green-600 hover:bg-green-500 hover:text-white transition-colors font-medium shrink-0"
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-green-500 text-green-600 hover:bg-green-500 hover:text-white transition-colors font-medium shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
               >
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                   {WA_ICON}
@@ -389,8 +390,9 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
             >
               <p className="text-xs text-text-muted font-medium">{th.contactOptions}</p>
               <button
+                type="button"
                 onClick={handleAdvisorClick}
-                className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl bg-green-500 text-white hover:bg-green-600 transition-colors font-medium w-fit"
+                className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl bg-green-500 text-white hover:bg-green-600 transition-colors font-medium w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   {WA_ICON}
@@ -398,8 +400,9 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
                 {th.menu.whatsapp}
               </button>
               <button
+                type="button"
                 onClick={onContactClick}
-                className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl border border-primary text-primary hover:bg-primary hover:text-white transition-colors font-medium w-fit"
+                className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl border border-primary text-primary hover:bg-primary hover:text-white transition-colors font-medium w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -428,9 +431,10 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
               <div className="flex flex-wrap gap-2">
                 {faqData.categories.map((cat) => (
                   <button
+                    type="button"
                     key={cat.id}
                     onClick={() => handleCategoryClick(cat.id)}
-                    className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-border-mid bg-surface-card text-text-sub hover:border-primary hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-border-mid bg-surface-card text-text-sub hover:border-primary hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
                   >
                     <EmojiIcon emoji={cat.icon} label={cat.label[locale]} size="sm" tone="neutral" />
                     <span>{cat.label[locale]}</span>
@@ -447,17 +451,19 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
               transition={{ duration: 0.15 }}
             >
               <button
+                type="button"
                 onClick={() => { setChatView("categories"); setSelectedCategoryId(null); }}
-                className="text-xs text-primary hover:underline mb-2 flex items-center gap-1"
+                className="text-xs text-primary hover:underline mb-2 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
               >
                 ← {t.backToCategories}
               </button>
               <div className="flex flex-col gap-1.5">
                 {selectedCategory?.questions.map((q) => (
                   <button
+                    type="button"
                     key={q.id}
                     onClick={() => handleQuestionClick(q.id)}
-                    className="text-left text-xs px-3 py-2 rounded-xl border border-border-mid bg-surface-card text-text-sub hover:border-primary hover:text-primary transition-colors"
+                    className="text-left text-xs px-3 py-2 rounded-xl border border-border-mid bg-surface-card text-text-sub hover:border-primary hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
                   >
                     {q.question[locale]}
                   </button>

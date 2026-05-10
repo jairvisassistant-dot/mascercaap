@@ -104,7 +104,12 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
 
   return (
     <div ref={sectionRef} className="flex justify-center">
-      <button onClick={() => openDrawer("faq")}>
+      <button
+        type="button"
+        onClick={() => openDrawer("faq")}
+        aria-label={label}
+        className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
+      >
         <div className="inline-flex items-center bg-accent hover:bg-accent-dark rounded-full h-14 shadow-lg shadow-black/20 overflow-hidden cursor-pointer transition-colors duration-200">
           {/* Ícono — siempre visible */}
           <div className="shrink-0 w-14 h-14 flex items-center justify-center">

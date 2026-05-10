@@ -90,8 +90,9 @@ export default function ProductCard({ product, accentGradient = "from-primary to
 
         {product.image && !isComingSoon && (
           <button
+            type="button"
             onClick={() => setLightboxOpen(true)}
-            className="absolute inset-0 z-[5] w-full h-full cursor-zoom-in"
+            className="absolute inset-0 z-[5] w-full h-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
             aria-label={`${dict.products.card.viewImage} ${displayName} ${product.presentation}`}
           />
         )}

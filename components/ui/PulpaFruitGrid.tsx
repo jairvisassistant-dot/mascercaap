@@ -79,9 +79,10 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
       <div className="relative flex items-center gap-1">
         {/* Left arrow */}
         <button
+          type="button"
           onClick={() => scroll("left")}
           aria-label={dict.products.pulpaGrid.scrollPrev}
-          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all ${
+          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollLeft ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >
@@ -103,10 +104,11 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
 
             return (
               <button
+                type="button"
                 key={line.key}
                 onClick={() => handleSelect(line.key)}
                 style={{ width: 96 }}
-                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus:outline-none shrink-0 ${
+                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page shrink-0 ${
                   isSelected
                     ? "bg-primary/8 ring-2 ring-primary ring-offset-1"
                     : "hover:bg-surface-page"
@@ -136,9 +138,10 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
 
         {/* Right arrow */}
         <button
+          type="button"
           onClick={() => scroll("right")}
           aria-label={dict.products.pulpaGrid.scrollNext}
-          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all ${
+          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollRight ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >

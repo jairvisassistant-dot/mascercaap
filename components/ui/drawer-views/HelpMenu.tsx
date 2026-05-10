@@ -68,9 +68,10 @@ export default function HelpMenu({ onNavigate }: Props) {
       <nav className="flex-1 overflow-y-auto">
         {MENU_ITEMS.map(({ view, icon }) => (
           <button
+            type="button"
             key={view}
             onClick={() => onNavigate(view)}
-            className="w-full flex items-center gap-4 px-6 py-4 border-b border-border-soft hover:bg-surface-page transition-colors text-left group"
+            className="w-full flex items-center gap-4 px-6 py-4 border-b border-border-soft hover:bg-surface-page transition-colors text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
           >
             <span className="text-primary shrink-0">{icon}</span>
             <span className="flex-1 text-sm font-medium text-text-sub">
@@ -91,8 +92,9 @@ export default function HelpMenu({ onNavigate }: Props) {
         {/* WhatsApp — navega a la pantalla de conexión unificada */}
         {SITE_CONFIG.whatsappNumber && (
           <button
+            type="button"
             onClick={() => onNavigate("whatsapp")}
-            className="w-full flex items-center gap-4 px-6 py-4 border-b border-border-soft hover:bg-surface-page transition-colors text-left group"
+            className="w-full flex items-center gap-4 px-6 py-4 border-b border-border-soft hover:bg-surface-page transition-colors text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-inset"
           >
             <span className="text-green-600 shrink-0">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

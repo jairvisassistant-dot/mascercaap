@@ -53,8 +53,9 @@ export default function ProductLineRow({ line, products, firstLine = false }: Pr
       {/* Flecha izquierda */}
       {canScrollLeft && (
         <button
+          type="button"
           onClick={scrollLeft}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-surface-card border border-border-soft rounded-full shadow-md flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all -translate-x-1/2"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-surface-card border border-border-soft rounded-full shadow-md flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all -translate-x-1/2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
           aria-label={`${dict.products.scrollPrev} ${displayLineLabel}`}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,8 +67,9 @@ export default function ProductLineRow({ line, products, firstLine = false }: Pr
       {/* Flecha derecha */}
       {canScrollRight && (
         <button
+          type="button"
           onClick={scrollRight}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-surface-card border border-border-soft rounded-full shadow-md flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all translate-x-1/2"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-surface-card border border-border-soft rounded-full shadow-md flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all translate-x-1/2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
           aria-label={`${dict.products.scrollNext} ${displayLineLabel}`}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
