@@ -29,6 +29,12 @@ export default function TestimonialMarquee({ testimonials, dict, lang }: Testimo
           from { transform: translate3d(0, 0, 0); }
           to { transform: translate3d(-50%, 0, 0); }
         }
+        .marquee-normal {
+          animation: testimonial-marquee 74s linear infinite;
+        }
+        .marquee-reverse {
+          animation: testimonial-marquee 74s linear infinite reverse;
+        }
       `}</style>
     </div>
   );
@@ -48,11 +54,7 @@ function MarqueeRow({
   return (
     <div className="group motion-reduce:hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
       <div
-        className="flex w-max gap-5 will-change-transform group-hover:[animation-play-state:paused]"
-        style={{
-          animation: "testimonial-marquee 42s linear infinite",
-          animationDirection: direction,
-        }}
+        className={`flex w-max gap-5 will-change-transform group-hover:[animation-play-state:paused] ${direction === "reverse" ? "marquee-reverse" : "marquee-normal"}`}
       >
         {duplicatedItems.map((testimonial, index) => (
           <TestimonialCard key={`${testimonial.id}-${index}`} testimonial={testimonial} lang={lang} />
