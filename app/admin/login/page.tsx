@@ -38,15 +38,19 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-surface-soft px-4 py-12 text-text-main">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -left-28 top-[-140px] h-80 w-80 rounded-full bg-primary-light/45 blur-3xl" />
-        <div className="absolute -right-24 bottom-[-120px] h-96 w-96 rounded-full bg-accent-light/35 blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{ backgroundImage: "radial-gradient(circle, var(--primary-dark) 1px, transparent 1px)", backgroundSize: "26px 26px" }}
-        />
-      </div>
+    <div className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden px-4 py-12 text-text-main">
+      {/* Mismo fondo decorativo que /admin/productos */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(circle at 8% 12%, rgba(63,143,70,0.07) 0%, transparent 45%), radial-gradient(circle at 92% 88%, rgba(229,138,34,0.05) 0%, transparent 40%)",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{ backgroundImage: "radial-gradient(circle, var(--primary-dark) 1px, transparent 1px)", backgroundSize: "26px 26px" }}
+      />
 
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">

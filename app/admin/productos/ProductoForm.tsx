@@ -220,21 +220,32 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             <Image src={form.image} alt="preview" fill className="object-cover" />
           </div>
         )}
-        <label className="flex items-center gap-3 cursor-pointer">
-          <span className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark">
-            {uploading ? "Subiendo..." : "Subir imagen"}
-          </span>
-          <span className="text-xs text-text-muted">.webp, .jpg, .png — máx 2MB</span>
-          <input
-            type="file"
-            accept="image/webp,image/jpeg,image/png"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleImageUpload(file);
-            }}
-          />
-        </label>
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <span className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark">
+              {uploading ? "Subiendo..." : "Subir imagen"}
+            </span>
+            <span className="text-xs text-text-muted">.webp, .jpg, .png — máx 2MB</span>
+            <input
+              type="file"
+              accept="image/webp,image/jpeg,image/png"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleImageUpload(file);
+              }}
+            />
+          </label>
+          {mode === "edit" && (
+            <button
+              type="submit"
+              disabled={saving || uploading}
+              className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55"
+            >
+              {saving ? "Guardando..." : "Guardar cambios"}
+            </button>
+          )}
+        </div>
         {form.image && (
           <p className="mt-2 text-xs text-text-muted">{form.image}</p>
         )}

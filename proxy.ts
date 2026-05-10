@@ -53,11 +53,10 @@ export default function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Skip internal paths, API routes, static files, studio
+  // Skip internal paths, API routes, and static files
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
-    pathname.startsWith("/studio") ||
     pathname.startsWith("/sitemap") ||
     pathname.startsWith("/robots") ||
     pathname.startsWith("/favicon") ||
@@ -86,6 +85,6 @@ export default function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|studio|imgs|fonts).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|imgs|fonts).*)",
   ],
 };

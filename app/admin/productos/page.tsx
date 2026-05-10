@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -37,34 +36,7 @@ export default async function AdminProductosPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-surface-soft">
-      {/* Header */}
-      <header className="border-b border-border-soft bg-surface-card/95 px-6 py-4 shadow-[0_14px_40px_-32px_rgba(47,111,54,0.35)] backdrop-blur-sm">
-        <div className="mx-auto flex w-full max-w-[1680px] items-center justify-between gap-4">
-        <div>
-          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.22em] text-accent-dark">Catálogo interno</p>
-          <h1 className="text-xl font-bold tracking-tight text-text-main">Mas Cerca AP — Admin</h1>
-          <p className="mt-0.5 text-xs text-text-muted">{products?.length ?? 0} productos en total</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/admin/productos/nuevo"
-            className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.85)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0"
-          >
-            + Nuevo producto
-          </Link>
-          <form action="/api/admin/auth/logout" method="POST">
-            <button
-              type="submit"
-              className="rounded-xl px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
-            >
-              Salir
-            </button>
-          </form>
-        </div>
-        </div>
-      </header>
-
+    <div className="min-h-[100dvh]">
       <ProductosAdminClient initialProducts={products ?? []} />
     </div>
   );

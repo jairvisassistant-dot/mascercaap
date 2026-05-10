@@ -86,15 +86,18 @@ export default function ProductosAdminClient({ initialProducts }: { initialProdu
   const featuredCount = products.filter((p) => p.featured).length;
 
   return (
-    <div className="mx-auto w-full max-w-[1680px] p-6 lg:px-8">
+    <div className="relative mx-auto w-full max-w-[1680px] p-6 lg:px-8">
+      {/* Fondo decorativo sutil — consistente con las demás secciones del sitio */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_12%,rgba(63,143,70,0.07)_0%,transparent_45%),radial-gradient(circle_at_92%_88%,rgba(229,138,34,0.05)_0%,transparent_40%)]" />
+
       {error && (
-        <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+        <div className="relative mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
           {error}
         </div>
       )}
 
       {/* Filtros */}
-      <div className="mb-6 flex flex-wrap gap-3 rounded-3xl border border-border-soft bg-surface-card p-4 shadow-[0_20px_60px_-38px_rgba(47,111,54,0.45)]">
+      <div className="relative mb-6 flex flex-wrap gap-3 rounded-3xl border border-primary/15 bg-gradient-to-br from-[#f7ffe6]/80 via-surface-card to-surface-card p-4 shadow-[0_20px_60px_-38px_rgba(47,111,54,0.45)]">
         <input
           type="text"
           placeholder="Buscar por nombre o ID..."
@@ -112,32 +115,33 @@ export default function ProductosAdminClient({ initialProducts }: { initialProdu
             <option key={l} value={l}>{LINE_LABELS[l] ?? l}</option>
           ))}
         </select>
-        <span className="self-center rounded-full border border-accent-light/70 bg-accent-light/20 px-4 py-2 text-sm font-medium text-text-muted">
-          Destacados: <strong className={featuredCount >= 3 ? "text-accent-dark" : "text-primary-dark"}>{featuredCount}/3</strong>
+        <span className="self-center rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm font-medium text-accent-dark">
+          Destacados: <strong className={featuredCount >= 3 ? "text-red-500" : "text-primary-dark"}>{featuredCount}/3</strong>
         </span>
       </div>
 
       {/* Tabla */}
-      <div className="overflow-x-auto rounded-3xl border border-border-soft bg-surface-card shadow-[0_24px_70px_-40px_rgba(47,111,54,0.5)]">
+      <div className="relative overflow-x-auto rounded-3xl border border-primary/12 bg-surface-card shadow-[0_24px_70px_-40px_rgba(47,111,54,0.55)]">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-surface-warm text-left text-xs uppercase tracking-[0.16em] text-text-muted">
-              <th className="w-12 px-4 py-3 font-semibold">Img</th>
-              <th className="px-4 py-3 font-semibold">Nombre</th>
-              <th className="hidden px-4 py-3 font-semibold md:table-cell">Línea</th>
-              <th className="hidden px-4 py-3 font-semibold sm:table-cell">Presentación</th>
-              <th className="px-4 py-3 text-center font-semibold">Dest.</th>
-              <th className="px-4 py-3 text-center font-semibold">Vendido</th>
-              <th className="hidden px-4 py-3 text-center font-semibold sm:table-cell">+ Pedido</th>
-              <th className="px-4 py-3 text-center font-semibold">Activo</th>
-              <th className="px-4 py-3 font-medium w-16"></th>
+            <tr className="bg-gradient-to-r from-[#3a7f45] via-[#438b4d] to-[#347640] text-left text-xs uppercase tracking-[0.18em] text-white/90">
+              <th className="w-12 px-4 py-4 font-semibold">Img</th>
+              <th className="px-4 py-4 font-semibold">Nombre</th>
+              <th className="hidden px-4 py-4 font-semibold md:table-cell">Línea</th>
+              <th className="hidden px-4 py-4 font-semibold sm:table-cell">Presentación</th>
+              <th className="hidden px-4 py-4 font-semibold text-right sm:table-cell">Precio</th>
+              <th className="px-4 py-4 text-center font-semibold">Dest.</th>
+              <th className="px-4 py-4 text-center font-semibold">Vendido</th>
+              <th className="hidden px-4 py-4 text-center font-semibold sm:table-cell">+ Pedido</th>
+              <th className="px-4 py-4 text-center font-semibold">Activo</th>
+              <th className="w-16 px-4 py-4"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-soft">
             {filtered.map((p) => (
               <tr
                 key={p.id}
-                className={`${p.active ? "bg-surface-card hover:bg-surface-soft" : "bg-surface-warm/55 opacity-60"} transition-colors`}
+                className={`${p.active ? "bg-surface-card hover:bg-[#f7ffe6]/40" : "bg-surface-warm/55 opacity-60"} transition-colors`}
               >
                 <td className="px-4 py-3">
                   {p.image ? (
@@ -158,6 +162,9 @@ export default function ProductosAdminClient({ initialProducts }: { initialProdu
                   {LINE_LABELS[p.line] ?? p.line}
                 </td>
                 <td className="hidden px-4 py-3 text-text-sub sm:table-cell">{p.presentation}</td>
+                <td className="hidden px-4 py-3 text-right font-mono text-sm text-text-main sm:table-cell">
+                  {p.price != null ? `$${p.price.toLocaleString("es-CO")}` : <span className="text-text-faint">—</span>}
+                </td>
 
                 {/* Toggle: Destacado */}
                 <td className="px-4 py-3 text-center">

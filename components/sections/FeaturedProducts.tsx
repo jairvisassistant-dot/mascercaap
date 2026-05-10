@@ -76,12 +76,19 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
     update();
 
     const addListener = (mq: MediaQueryList, cb: () => void) => {
-      if ("addEventListener" in mq) {
+      if (typeof mq.addEventListener === "function") {
         mq.addEventListener("change", cb);
         return () => mq.removeEventListener("change", cb);
       }
-      mq.addListener(cb);
-      return () => mq.removeListener(cb);
+
+      const legacyMq = mq as MediaQueryList & {
+        addListener?: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void) => void;
+        removeListener?: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void) => void;
+      };
+
+      const handler = cb as unknown as (this: MediaQueryList, ev: MediaQueryListEvent) => void;
+      legacyMq.addListener?.(handler);
+      return () => legacyMq.removeListener?.(handler);
     };
 
     const cleanupHover = addListener(hoverQuery, update);

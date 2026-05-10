@@ -49,6 +49,12 @@ export function getProductOptionsForType(productType: string): string[] {
 
 export const PULPA_PRESENTATIONS = ["120g", "300g", "1000g"] as const
 
+// Guayaba y Tomate de árbol no tienen presentación 120g
+const PULPA_PRESENTATIONS_OVERRIDE: Record<string, string[]> = {
+  "Guayaba":         ["300g", "1000g"],
+  "Tomate de árbol": ["300g", "1000g"],
+}
+
 export const ZUMOS_PRESENTATIONS: Record<string, string[]> = {
   "Limón":               ["600ml", "1L", "2L", "5L"],
   "Limonada con Cereza": ["350ml", "1L", "2L"],
@@ -58,7 +64,7 @@ export const ZUMOS_PRESENTATIONS: Record<string, string[]> = {
 
 export function getPresentationsForProduct(productType: string, fruit: string): string[] {
   if (productType === "Zumos") return ZUMOS_PRESENTATIONS[fruit] ?? []
-  return [...PULPA_PRESENTATIONS]
+  return PULPA_PRESENTATIONS_OVERRIDE[fruit] ?? [...PULPA_PRESENTATIONS]
 }
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
@@ -84,31 +90,31 @@ export const PROFILE_LABELS: Record<ClientProfile, string> = {
   distribucion: "Distribución",
 }
 
-// Precios COP por producto lácteo (precio por unidad)
-// Valores provisorios — actualizar cuando el cliente pase la lista de precios
+// Precios COP por producto lácteo (precio por unidad) — fuente: Otros/ListaPreciosZumos.jpeg
 export const LACTEOS_PRICES: Record<string, number> = {
-  "Kumis Del Hato 250ml":  2800,
+  "Kumis Del Hato 250ml":  3700,
   "Kumis Yolito 250ml":    3400,
-  "Yogurt Del Hato 250ml": 3200,
+  "Yogurt Del Hato 250ml": 3700,
 }
 
-// Precios COP por fruta y presentación (pulpas de fruta congelada)
-// Valores provisorios — actualizar en Sanity Studio cuando esté disponible
+// Precios COP por fruta y presentación
+// Fuentes: Otros/Lista-Precios.md (pulpas) y Otros/ListaPreciosZumos.jpeg (zumos)
 export const PRICES_COP: Record<string, Record<string, number>> = {
-  "Maracuyá":         { "120g": 2800,  "300g": 6800,  "1000g": 19500, "350ml": 3500, "1L": 7500, "2L": 13000 },
-  "Mora":             { "120g": 3200,  "300g": 7400,  "1000g": 21000 },
-  "Mango":            { "120g": 2600,  "300g": 6200,  "1000g": 17500 },
-  "Lulo":             { "120g": 3000,  "300g": 7000,  "1000g": 20000 },
-  "Guanábana":        { "120g": 3800,  "300g": 8800,  "1000g": 24500 },
-  "Fresa":            { "120g": 2900,  "300g": 6600,  "1000g": 18500 },
-  "Guayaba":          { "120g": 2700,  "300g": 6300,  "1000g": 17800 },
-  "Frutos Rojos":     { "120g": 3500,  "300g": 8000,  "1000g": 22500 },
-  "Frutos Amarillos": { "120g": 3200,  "300g": 7500,  "1000g": 21000 },
-  "Tomate de árbol":  { "120g": 2800,  "300g": 6500,  "1000g": 18000 },
-  // Zumos — precios provisorios, actualizar en Sanity
-  "Limón":               { "600ml": 4500,  "1L": 7000,  "2L": 12000, "5L": 25000 },
-  "Limonada con Cereza": { "350ml": 3500,  "1L": 7500,  "2L": 13000 },
-  "Limonada con Coco":   { "350ml": 3500,  "1L": 7500,  "2L": 13000 },
+  // Pulpas — Maracuyá cubre también el zumo (350ml, 1L, 2L)
+  "Maracuyá":         { "120g": 2900,  "300g": 4850,  "1000g": 15500, "350ml": 4800, "1L": 10000, "2L": 18000 },
+  "Mora":             { "120g": 2300,  "300g": 4400,  "1000g": 13000 },
+  "Mango":            { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
+  "Lulo":             { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
+  "Guanábana":        { "120g": 2900,  "300g": 4850,  "1000g": 15500 },
+  "Fresa":            { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
+  "Guayaba":          {               "300g": 4000,  "1000g": 12000 },
+  "Frutos Rojos":     { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
+  "Frutos Amarillos": { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
+  "Tomate de árbol":  {               "300g": 4000,  "1000g": 12000 },
+  // Zumos
+  "Limón":               { "600ml": 5600,  "1L": 9000,  "2L": 16000, "5L": 36000 },
+  "Limonada con Cereza": { "350ml": 4800,  "1L": 10000, "2L": 18000 },
+  "Limonada con Coco":   { "350ml": 4800,  "1L": 10000, "2L": 18000 },
 }
 
 export function getProductOptionsForProfile(profile: ClientProfile): string[] {
@@ -119,6 +125,33 @@ export function getUnitPrice(fruit: string, presentation: string | null | undefi
   if (!presentation) return LACTEOS_PRICES[fruit] ?? null
   return PRICES_COP[fruit]?.[presentation] ?? null
 }
+
+// Maps order-form fruit display names to Supabase product line slugs.
+// Used by the orders API route to resolve live prices from Supabase.
+export const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
+  Pulpas: {
+    "Maracuyá":         "pulpa-maracuya",
+    "Mora":             "pulpa-mora",
+    "Mango":            "pulpa-mango",
+    "Lulo":             "pulpa-lulo",
+    "Guanábana":        "pulpa-guanabana",
+    "Fresa":            "pulpa-fresa",
+    "Guayaba":          "pulpa-guayaba",
+    "Frutos Rojos":     "pulpa-frutos-rojos",
+    "Frutos Amarillos": "pulpa-frutos-amarillos",
+    "Tomate de árbol":  "pulpa-tomate-arbol",
+  },
+  Zumos: {
+    "Limón":               "limon",
+    "Limonada con Cereza": "limonada-cereza",
+    "Limonada con Coco":   "limonada-coco",
+    "Maracuyá":            "maracuya",
+  },
+}
+
+// A function that resolves the unit price for a given fruit + presentation.
+// When provided, replaces the static PRICES_COP lookup (e.g., with live Supabase data).
+export type PriceResolver = (fruit: string, presentation: string | null | undefined) => number | null
 
 export function getDiscountRate(totalUnits: number): number {
   void totalUnits
@@ -134,14 +167,15 @@ export type OrderTotals = {
   hasPrice:     boolean
 }
 
-export function calculateOrderTotal(items: OrderItem[]): OrderTotals {
+export function calculateOrderTotal(items: OrderItem[], resolvePrice?: PriceResolver): OrderTotals {
   const totalUnits  = items.reduce((sum, item) => sum + item.quantity, 0)
   const discountRate = getDiscountRate(totalUnits)
   let subtotal  = 0
   let hasPrice  = items.length > 0
+  const lookup  = resolvePrice ?? getUnitPrice
 
   for (const item of items) {
-    const price = getUnitPrice(item.fruit, item.presentation)
+    const price = lookup(item.fruit, item.presentation)
     if (price === null) { hasPrice = false; continue }
     subtotal += price * item.quantity
   }
@@ -197,10 +231,11 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;")
 }
 
-function buildItemsTableHtml(items: OrderItem[]): string {
+function buildItemsTableHtml(items: OrderItem[], resolvePrice?: PriceResolver): string {
+  const lookup = resolvePrice ?? getUnitPrice
   const rows = items
     .map((item) => {
-      const price     = getUnitPrice(item.fruit, item.presentation)
+      const price     = lookup(item.fruit, item.presentation)
       const lineTotal = price !== null ? formatCOP(price * item.quantity) : "—"
       return `
         <tr>
@@ -220,7 +255,7 @@ function buildItemsTableHtml(items: OrderItem[]): string {
     })
     .join("")
 
-  const totals    = calculateOrderTotal(items)
+  const totals    = calculateOrderTotal(items, resolvePrice)
   const totalUnits = totals.totalUnits
 
   const totalRow = totals.hasPrice
@@ -261,7 +296,7 @@ function buildItemsTableHtml(items: OrderItem[]): string {
   `
 }
 
-export function buildOrderEmailHtml(data: OrderInput): string {
+export function buildOrderEmailHtml(data: OrderInput, resolvePrice?: PriceResolver): string {
   const nombre   = escapeHtml(data.nombre)
   const email    = data.email           ? escapeHtml(data.email)            : "—"
   const whatsapp = data.whatsapp_number ? escapeHtml(data.whatsapp_number)  : "—"
@@ -318,7 +353,7 @@ export function buildOrderEmailHtml(data: OrderInput): string {
               <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">
                 Productos solicitados
               </p>
-              ${buildItemsTableHtml(data.items)}
+              ${buildItemsTableHtml(data.items, resolvePrice)}
             </td>
           </tr>
 

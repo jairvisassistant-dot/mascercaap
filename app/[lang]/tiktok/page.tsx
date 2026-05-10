@@ -23,7 +23,7 @@ export default async function TikTokPage({
   return (
     <div className="grid min-h-[calc(100svh-88px)] place-items-center bg-surface-warm px-4 py-24 sm:py-28">
       <section className="mx-auto grid w-full max-w-4xl overflow-hidden rounded-[1.75rem] bg-surface-card shadow-[0_22px_70px_rgba(15,23,42,0.12)] ring-1 ring-border-soft lg:grid-cols-[0.92fr_1.08fr]">
-        <div className="bg-[#010101] px-6 py-9 text-white sm:px-9 lg:py-12">
+        <div className="bg-[#233746] px-6 py-9 text-white sm:px-9 lg:py-12">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.24em] text-white/52">
             {t.eyebrow}
           </p>
@@ -38,7 +38,7 @@ export default async function TikTokPage({
               href={SITE_CONFIG.socialTikTok}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#fe2c55] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#e0001b]"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-accent-dark"
             >
               {t.openProfile}
             </a>
