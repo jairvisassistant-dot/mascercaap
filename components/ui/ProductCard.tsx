@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Product } from "@/types";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
-
-const ProductLightbox = dynamic(() => import("./ProductLightbox"), { ssr: false });
+import ProductLightbox from "./ProductLightbox";
 
 interface ProductCardProps {
   product: Product;
