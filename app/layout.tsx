@@ -1,8 +1,14 @@
 import "./globals.css";
+import { headers } from "next/headers";
 
-// Root layout minimal — no renderiza <html>/<body>.
-// Cada segmento de ruta provee su propio <html lang={locale}> para que el atributo
-// sea correcto en SSR: app/[lang]/layout.tsx y app/studio/layout.tsx.
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const hdrs = await headers();
+  const headerLang = hdrs.get("x-lang");
+  const lang = headerLang === "en" ? "en" : "es";
+
+  return (
+    <html lang={lang} suppressHydrationWarning>
+      <body>{children}</body>
+    </html>
+  );
 }

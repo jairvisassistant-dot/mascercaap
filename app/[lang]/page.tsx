@@ -9,11 +9,9 @@ import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
 import TestimonialMarquee from "@/components/ui/TestimonialMarquee";
 import { StickyStackContainer, StickyStackItem } from "@/components/ui/StickyStack";
-import { testimonials as staticTestimonials } from "@/data/testimonials";
-import { featuredProducts as staticFeaturedProducts } from "@/data/products";
-import { FEATURED_PRODUCTS_QUERY, ALL_TESTIMONIALS_QUERY } from "@/sanity/lib/queries";
-import { safeFetch } from "@/lib/sanity/safeFetch";
+import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
+import OrderAssistantCTA from "@/components/sections/OrderAssistantCTA";
 import { SITE_CONFIG } from "@/lib/config";
 
 export const revalidate = 3600;
@@ -57,8 +55,8 @@ export default async function HomePage({ params }: Props) {
   const dict = await getDictionary(lang);
 
   const [featuredProducts, testimonials] = await Promise.all([
-    safeFetch(FEATURED_PRODUCTS_QUERY, {}, staticFeaturedProducts),
-    safeFetch(ALL_TESTIMONIALS_QUERY, {}, staticTestimonials),
+    getFeaturedProducts(),
+    getAllTestimonials(),
   ]);
 
   return (
@@ -115,6 +113,8 @@ export default async function HomePage({ params }: Props) {
           <TestimonialMarquee testimonials={testimonials} dict={dict} lang={lang} />
         </div>
       </section>
+
+      <OrderAssistantCTA />
 
       <section className="py-20 bg-gradient-to-br from-[#3a7f45] via-[#438b4d] to-[#347640] relative overflow-hidden">
         {/* Textura de puntos */}

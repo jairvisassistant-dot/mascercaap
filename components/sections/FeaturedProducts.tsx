@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Image from "next/image";
 import { useHelpHub } from "@/lib/help-hub-context";
@@ -58,6 +59,46 @@ const cardStyles = [
 export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
   const hooks = dict.home.featured.productHooks;
   const { openDrawer } = useHelpHub();
+  const [canFlip, setCanFlip] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const update = () => {
+      setCanFlip(hoverQuery.matches);
+      setReducedMotion(reducedMotionQuery.matches);
+    };
+
+    update();
+
+    const addListener = (mq: MediaQueryList, cb: () => void) => {
+      if (typeof mq.addEventListener === "function") {
+        mq.addEventListener("change", cb);
+        return () => mq.removeEventListener("change", cb);
+      }
+
+      const legacyMq = mq as MediaQueryList & {
+        addListener?: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void) => void;
+        removeListener?: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void) => void;
+      };
+
+      const handler = cb as unknown as (this: MediaQueryList, ev: MediaQueryListEvent) => void;
+      legacyMq.addListener?.(handler);
+      return () => legacyMq.removeListener?.(handler);
+    };
+
+    const cleanupHover = addListener(hoverQuery, update);
+    const cleanupMotion = addListener(reducedMotionQuery, update);
+
+    return () => {
+      cleanupHover();
+      cleanupMotion();
+    };
+  }, []);
 
   return (
     <section className="relative overflow-hidden bg-surface-soft py-24">
@@ -105,49 +146,124 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                   viewport={{ once: true }}
                   className={`group w-full max-w-[360px] rounded-[2rem] p-2 ring-1 shadow-[0_24px_70px_rgba(35,45,30,0.12)] ${style.shell}`}
                 >
-                  <div className={`relative flex min-h-[520px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]`}>
-                    <div className="relative z-10 flex items-start justify-between gap-4">
-                      <span className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] shadow-sm ${style.badge}`}>
-                        {hook.badge}
-                      </span>
-                      <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-gray-800 shadow-sm ring-1 ring-black/5">
-                        {product.presentation}
-                      </span>
-                    </div>
+                  {canFlip && !reducedMotion ? (
+                    <div className="relative min-h-[470px] [perspective:1200px]">
+                      <div className="relative min-h-[470px] w-full rounded-[1.5rem] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-focus-within:[transform:rotateY(180deg)]">
+                        <div className={`absolute inset-0 flex min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] transition-opacity duration-300 [backface-visibility:hidden] group-hover:opacity-0 group-focus-within:opacity-0`}>
+                          <div className="relative z-10 flex items-start justify-between gap-4">
+                            <span className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] shadow-sm ${style.badge}`}>
+                              {hook.badge}
+                            </span>
+                            <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-gray-800 shadow-sm ring-1 ring-black/5">
+                              {product.presentation}
+                            </span>
+                          </div>
 
-                    <div className="relative my-7 flex h-64 items-center justify-center">
-                      <div className={`absolute h-44 w-44 rounded-full blur-3xl ${style.imageGlow}`} />
-                      <Image
-                        src={product.image}
-                        alt={`${product.name} ${product.presentation}`}
-                        fill
-                        sizes="(max-width: 768px) 80vw, 320px"
-                        priority={index === 0}
-                        className="relative z-10 object-contain drop-shadow-[0_24px_34px_rgba(30,30,20,0.24)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                      />
-                    </div>
+                          <div className="relative my-7 flex h-64 items-center justify-center">
+                            <div className={`absolute h-44 w-44 rounded-full blur-3xl ${style.imageGlow}`} />
+                            <Image
+                              src={product.image}
+                              alt={`${product.name} ${product.presentation}`}
+                              fill
+                              sizes="(max-width: 768px) 80vw, 320px"
+                              priority={index === 0}
+                              className="relative z-10 object-contain drop-shadow-[0_24px_34px_rgba(30,30,20,0.24)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                            />
+                          </div>
 
-                    <div className="relative z-10 mt-auto">
-                      <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
-                        {hook.kicker}
-                      </p>
-                      <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
-                        {product.name}
-                      </h3>
-                      <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-gray-500">
-                        {hook.text}
-                      </p>
-                      <button
-                        onClick={() => openDrawer("faq", { product: product.name })}
-                        className="group mt-6 inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98]"
-                      >
-                        <span>{hook.cta}</span>
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-gray-950 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                          ↗
+                          <div className="relative z-10 mt-auto">
+                            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
+                              {hook.kicker}
+                            </p>
+                            <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
+                              {product.name}
+                            </h3>
+                          </div>
+                        </div>
+
+                        <div className={`absolute inset-0 flex min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] opacity-0 transition-opacity duration-300 [backface-visibility:hidden] [transform:rotateY(180deg)] group-hover:opacity-100 group-focus-within:opacity-100`}>
+                          <div className="relative z-10 flex items-start justify-between gap-4">
+                            <span className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] shadow-sm ${style.badge}`}>
+                              {hook.badge}
+                            </span>
+                            <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-gray-800 shadow-sm ring-1 ring-black/5">
+                              {product.presentation}
+                            </span>
+                          </div>
+
+                          <div className="mt-6">
+                            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
+                              {hook.kicker}
+                            </p>
+                            <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
+                              {product.name}
+                            </h3>
+                            <p className="mt-4 min-h-[8rem] text-sm leading-relaxed text-gray-500">
+                              {hook.text}
+                            </p>
+                          </div>
+
+                          <div className="mt-auto">
+                            <button
+                              type="button"
+                              onClick={() => openDrawer("order")}
+                              className="group inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                            >
+                              <span>{hook.cta}</span>
+                              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-gray-950 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                                ↗
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={`relative flex min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]`}>
+                      <div className="relative z-10 flex items-start justify-between gap-4">
+                        <span className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] shadow-sm ${style.badge}`}>
+                          {hook.badge}
                         </span>
-                      </button>
+                        <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-gray-800 shadow-sm ring-1 ring-black/5">
+                          {product.presentation}
+                        </span>
+                      </div>
+
+                      <div className="relative my-7 flex h-64 items-center justify-center">
+                        <div className={`absolute h-44 w-44 rounded-full blur-3xl ${style.imageGlow}`} />
+                        <Image
+                          src={product.image}
+                          alt={`${product.name} ${product.presentation}`}
+                          fill
+                          sizes="(max-width: 768px) 80vw, 320px"
+                          priority={index === 0}
+                          className="relative z-10 object-contain drop-shadow-[0_24px_34px_rgba(30,30,20,0.24)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                        />
+                      </div>
+
+                      <div className="relative z-10 mt-auto">
+                        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
+                          {hook.kicker}
+                        </p>
+                        <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
+                          {product.name}
+                        </h3>
+                        <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-gray-500">
+                          {hook.text}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => openDrawer("order")}
+                          className="group mt-6 inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        >
+                          <span>{hook.cta}</span>
+                          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-gray-950 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                            ↗
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </m.article>
               );
             })}

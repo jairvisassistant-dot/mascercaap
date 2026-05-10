@@ -13,13 +13,13 @@ export const SITE_CONFIG = {
   /** URL canónica del sitio */
   siteUrl: "https://mascercap.com",
   /** Logo público usado para metadata y datos estructurados */
-  logoPath: "/imgs/Logo.png",
+  logoPath: "/imgs/Logo.webp",
   /** Imagen social temporal hasta tener pieza OG final de marca */
   ogImagePath: "/imgs/Slide1.1.webp",
   /** Redes sociales — dejar vacío ("") para ocultar el ícono */
   socialInstagram: "https://instagram.com/mas_cerca_ap",
   socialFacebook: "https://www.facebook.com/p/M%C3%A1s-cerca-AP-61568005678877/",
-  socialTikTok: "",
+  socialTikTok: "https://www.tiktok.com/@mas.cerca.ap?_r=1&_t=ZS-968WOXCzaWD",
   /** Dirección física de la bodega */
   address: "Calle 12a # 15-53, Chia",
   /** Localidad y ciudad */

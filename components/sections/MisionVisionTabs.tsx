@@ -71,9 +71,10 @@ export default function MisionVisionTabs({ dict }: { dict: Dictionary }) {
               const label = tab === "mision" ? mv.mission.label : mv.vision.label;
               return (
                 <button
+                  type="button"
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  className={`relative px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
                     isActive ? "text-white shadow-md" : "text-text-muted hover:text-text-sub"
                   }`}
                   style={isActive ? { background: `linear-gradient(135deg, ${cfg.bgFrom}, ${cfg.bgTo})` } : {}}

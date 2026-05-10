@@ -1,5 +1,7 @@
 "use client"
 
+import { m, AnimatePresence } from "framer-motion"
+
 interface ChipOption<T> {
   value: T
   label: string
@@ -24,25 +26,41 @@ export default function ChipSelector<T extends string | number>({
       {options.map((opt) => {
         const isSelected = opt.value === selected
         return (
-          <button
+          <m.button
             key={String(opt.value)}
             type="button"
             onClick={() => onChange(opt.value)}
+            whileTap={{ scale: 0.93 }}
+            whileHover={!isSelected ? { scale: 1.04 } : {}}
+            transition={{ type: "spring", stiffness: 420, damping: 22 }}
             className={[
-              "inline-flex flex-col items-center justify-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-150",
+              "relative overflow-hidden inline-flex flex-col items-center justify-center px-4 py-2 rounded-full text-sm font-medium transition-colors duration-150",
               "min-h-[44px] min-w-[44px] border",
               isSelected
                 ? "bg-primary text-white border-primary shadow-sm"
                 : "bg-surface-page text-text-main border-border-mid hover:border-primary/60 hover:bg-primary/6",
             ].join(" ")}
           >
-            <span>{opt.label}</span>
+            {/* Shimmer burst al seleccionar */}
+            <AnimatePresence>
+              {isSelected && (
+                <m.span
+                  key="shimmer"
+                  className="absolute inset-0 rounded-full bg-white/25 pointer-events-none"
+                  initial={{ opacity: 0.7, scale: 0.3 }}
+                  animate={{ opacity: 0, scale: 2.2 }}
+                  exit={{}}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                />
+              )}
+            </AnimatePresence>
+            <span className="relative">{opt.label}</span>
             {opt.sublabel && (
-              <span className={`text-xs mt-0.5 ${isSelected ? "text-white/80" : "text-text-muted"}`}>
+              <span className={`relative text-xs mt-0.5 ${isSelected ? "text-white/80" : "text-text-muted"}`}>
                 {opt.sublabel}
               </span>
             )}
-          </button>
+          </m.button>
         )
       })}
     </div>

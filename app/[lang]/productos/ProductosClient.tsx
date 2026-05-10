@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ProductLineRow from "@/components/ui/ProductLineRow";
@@ -11,9 +12,9 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
 
 const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
-  todas: ["limon", "limonada-cereza", "limonada-coco", "maracuya", "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-tomate-arbol", "kumiss"],
+  todas: ["limon", "limonada-cereza", "limonada-coco", "maracuya", "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol", "kumiss"],
   jugos: ["limon", "limonada-cereza", "limonada-coco", "maracuya"],
-  pulpas: ["pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-tomate-arbol"],
+  pulpas: ["pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol"],
   lacteos: ["kumiss"],
 };
 
@@ -23,22 +24,23 @@ const DEFAULT_CATEGORY = "todas";
 const PULPA_KEYS = new Set<ProductLineKey>([
   "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
   "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba",
-  "pulpa-frutos-rojos", "pulpa-tomate-arbol",
+  "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol",
 ]);
 
 interface ProductosClientProps {
   products: Product[];
   productLines: ProductLineConfig[];
-  initialCategory?: string;
 }
 
-export default function ProductosClient({ products, productLines, initialCategory }: ProductosClientProps) {
+export default function ProductosClient({ products, productLines }: ProductosClientProps) {
+  const searchParams = useSearchParams();
   const { dict, lang } = useDictionary();
 
   // Nivel 1 — siempre hay una categoría activa, default "todas"
-  const [activeCategory, setActiveCategory] = useState<string>(() =>
-    initialCategory && CATEGORY_LINES[initialCategory] ? initialCategory : DEFAULT_CATEGORY
-  );
+  const [activeCategory, setActiveCategory] = useState<string>(() => {
+    const cat = searchParams.get("categoria");
+    return cat && CATEGORY_LINES[cat] ? cat : DEFAULT_CATEGORY;
+  });
 
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
   const [activeSubLines, setActiveSubLines] = useState<ProductLineKey[]>([]);
@@ -183,9 +185,10 @@ export default function ProductosClient({ products, productLines, initialCategor
             const isActive = activeCategory === cat;
             return (
               <button
+                type="button"
                 key={cat}
                 onClick={() => selectCategory(cat)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
                   isActive
                     ? "bg-accent text-white border-accent shadow-sm"
                     : isSticky
@@ -204,9 +207,10 @@ export default function ProductosClient({ products, productLines, initialCategor
           })}
           {hasActiveFilters && (
             <button
+              type="button"
               onClick={() => { setActiveCategory(DEFAULT_CATEGORY); setActiveSubLines([]); setActiveSize("todos"); setHasInteracted(false); }}
               aria-label={dict.products.filters.clear}
-              className="w-7 h-7 rounded-full flex items-center justify-center bg-surface-page hover:bg-red-50 text-text-faint hover:text-red-500 transition-all duration-200 hover:scale-110 ml-1 shrink-0"
+              className="w-7 h-7 rounded-full flex items-center justify-center bg-surface-page hover:bg-red-50 text-text-faint hover:text-red-500 transition-all duration-200 hover:scale-110 ml-1 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -239,9 +243,10 @@ export default function ProductosClient({ products, productLines, initialCategor
                         const isActive = activeSubLines.includes(line.key);
                         return (
                           <button
+                            type="button"
                             key={line.key}
                             onClick={() => toggleSubLine(line.key)}
-                            className={`flex shrink-0 items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
+                            className={`flex shrink-0 items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
                               isActive
                                 ? "bg-primary/15 text-primary-dark border-primary/40 shadow-sm"
                                 : isSticky
@@ -266,9 +271,10 @@ export default function ProductosClient({ products, productLines, initialCategor
                       <div className="flex gap-1.5">
                         {["todos", ...availableSizes].map((size) => (
                           <button
+                            type="button"
                             key={size}
                             onClick={() => setActiveSize(size)}
-                              className={`shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all border ${
+                              className={`shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
                               activeSize === size
                                 ? "bg-accent text-white border-accent shadow-sm"
                                 : isSticky

@@ -1,5 +1,6 @@
 import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -14,7 +15,7 @@ import { SITE_CONFIG } from "@/lib/config";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
 });
 
@@ -23,6 +24,7 @@ const dmSerif = DM_Serif_Display({
   weight: ["400"],
   style: ["normal", "italic"],
   variable: "--font-dm-serif",
+  preload: false,
 });
 
 export async function generateStaticParams() {
@@ -33,7 +35,7 @@ function getJsonLd(lang: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Mas Cerca Ap",
+    name: "Más Cerca AP",
     url: SITE_CONFIG.siteUrl,
     logo: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`,
     description:
@@ -71,20 +73,20 @@ export default async function LangLayout({
   const jsonLd = getJsonLd(lang);
 
   return (
-    <html lang={lang} suppressHydrationWarning>
-      <head>
-        {/* Detección de tema antes del primer paint — evita FOUC */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches,s=t==='light'||t==='dark'?t:d?'dark':'light';document.documentElement.setAttribute('data-theme',s);document.documentElement.style.colorScheme=s;}catch(e){}})();`,
-          }}
-        />
-      </head>
-      <body className={`${poppins.variable} ${dmSerif.variable} font-poppins antialiased`}>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+    <>
+      {/* Setea lang y tema antes del primer paint — usa next/script para evitar el warning de React 19 */}
+      <Script
+        id="theme-init"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `(function(){try{document.documentElement.lang="${lang}";var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches,s=t==='light'||t==='dark'?t:d?'dark':'light';document.documentElement.setAttribute('data-theme',s);document.documentElement.style.colorScheme=s;}catch(e){}})();`,
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className={`${poppins.variable} ${dmSerif.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
           <DictionaryProvider dict={dict} lang={lang}>
             <HelpHubProvider>
@@ -95,19 +97,17 @@ export default async function LangLayout({
                 {lang === "es" ? "Saltar al contenido" : "Skip to content"}
               </a>
               <ScrollProgress />
-              <div className="min-h-screen flex flex-col overflow-x-clip">
-                <Navbar />
-                <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
-                <Footer dict={dict} lang={lang} />
-                <HelpHub />
-              </div>
+              <Navbar />
+              <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
+              <Footer dict={dict} lang={lang} />
+              <HelpHub />
             </HelpHubProvider>
           </DictionaryProvider>
         </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         )}
-      </body>
-    </html>
+      </div>
+    </>
   );
 }

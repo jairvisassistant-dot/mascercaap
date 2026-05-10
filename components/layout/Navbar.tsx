@@ -62,8 +62,8 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold text-primary">
-              <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={97} height={60} priority className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
-              <span className="text-primary">MAS CERCA</span>
+              <Image src="/imgs/Logo.webp" alt="Más Cerca AP" width={97} height={60} priority className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
+              <span className="text-primary whitespace-nowrap">MAS CERCA</span>
               <span className="text-accent">AP</span>
               <BrandFruitMark />
             </Link>
@@ -74,6 +74,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  aria-current={isActive(link.href) ? "page" : undefined}
                   className={`nav-link font-medium transition-colors ${
                     isActive(link.href)
                       ? "text-primary nav-link-active"
@@ -90,8 +91,9 @@ export default function Navbar() {
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
-                onClick={() => openDrawer("faq")}
-                className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105"
+                type="button"
+                onClick={() => openDrawer("order")}
+                className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
               </button>
@@ -99,6 +101,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-primary p-2"
               aria-label={dict.nav.menuAriaLabel}
@@ -146,6 +149,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
                 onClick={() => setIsOpen(false)}
                 className={`block font-medium py-2 border-l-2 pl-3 transition-colors ${
                   isActive(link.href)
@@ -160,8 +164,9 @@ export default function Navbar() {
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
               <button
-                onClick={() => { setIsOpen(false); openDrawer("faq"); }}
-                className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center"
+                type="button"
+                onClick={() => { setIsOpen(false); openDrawer("order"); }}
+                className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
               </button>

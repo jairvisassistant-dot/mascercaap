@@ -9,11 +9,12 @@ import FaqView from "./drawer-views/FaqView";
 import LegalView from "./drawer-views/LegalView";
 import ContactView from "./drawer-views/ContactView";
 import WhatsAppConnectView from "./drawer-views/WhatsAppConnectView";
+import OrderAssistantView from "./drawer-views/OrderAssistantView";
 import { privacyPolicy, termsAndConditions } from "@/data/legal";
 import { SITE_CONFIG } from "@/lib/config";
 import type { Locale } from "@/lib/i18n";
 
-type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp";
+type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
 
 type WhatsAppState = { appUrl: string | null; webUrl: string | null; leadSaved: boolean };
 
@@ -79,6 +80,7 @@ export default function HelpDrawer({ onClose }: Props) {
     if (view === "privacy") return privacyPolicy.title[locale];
     if (view === "terms") return termsAndConditions.title[locale];
     if (view === "whatsapp") return t.menu.whatsapp;
+    if (view === "order") return t.menu.order;
     return t.menu.contact;
   }
 
@@ -111,8 +113,9 @@ export default function HelpDrawer({ onClose }: Props) {
         <div className="flex items-center gap-3 px-6 py-4 border-b border-border-soft shrink-0 bg-primary">
           {view !== "menu" && (
             <button
+              type="button"
               onClick={() => setView("menu")}
-              className="text-white/80 hover:text-white transition-colors shrink-0"
+              className="text-white/80 hover:text-white transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
               aria-label={t.back}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -131,9 +134,10 @@ export default function HelpDrawer({ onClose }: Props) {
           </div>
 
           <button
+            type="button"
             ref={closeButtonRef}
             onClick={onClose}
-            className="text-white/80 hover:text-white transition-colors shrink-0"
+            className="text-white/80 hover:text-white transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
             aria-label={t.close}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -179,6 +183,9 @@ export default function HelpDrawer({ onClose }: Props) {
                   webUrl={whatsAppState.webUrl}
                   leadSaved={whatsAppState.leadSaved}
                 />
+              )}
+              {view === "order" && (
+                <OrderAssistantView onContactClick={() => setView("contact")} />
               )}
             </m.div>
           </AnimatePresence>

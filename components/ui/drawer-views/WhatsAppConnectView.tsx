@@ -31,8 +31,9 @@ export default function WhatsAppConnectView({ appUrl, webUrl, leadSaved }: Props
 
         {appUrl && (
           <button
+            type="button"
             onClick={() => window.open(appUrl, "_blank")}
-            className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
           >
             <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
               <path d={WA_ICON_PATH} />
@@ -43,8 +44,9 @@ export default function WhatsAppConnectView({ appUrl, webUrl, leadSaved }: Props
 
         {webUrl && (
           <button
+            type="button"
             onClick={() => window.open(webUrl, "_blank")}
-            className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl border border-border-mid text-text-sub hover:border-primary hover:text-primary transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl border border-border-mid text-text-sub hover:border-primary hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
           >
             {t.leadConnectWeb}
           </button>
@@ -57,10 +59,9 @@ export default function WhatsAppConnectView({ appUrl, webUrl, leadSaved }: Props
               <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-border-soft">
                 <Image
                   src={qrSrc}
-                  alt="WhatsApp QR"
+                  alt={t.whatsappQrAlt}
                   width={180}
                   height={180}
-                  unoptimized
                   className="rounded-xl"
                 />
               </div>

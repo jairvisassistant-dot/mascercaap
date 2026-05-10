@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/config";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function FacebookPage({
   params,
@@ -56,7 +59,6 @@ export default async function FacebookPage({
               width={320}
               height={320}
               priority
-              unoptimized
               className="h-64 w-64 rounded-2xl sm:h-72 sm:w-72"
             />
           </div>

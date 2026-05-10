@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback } from "react";
 
-type View = "menu" | "faq" | "privacy" | "terms" | "contact";
+type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "order";
 
 export type DrawerContext = {
   product?: string;

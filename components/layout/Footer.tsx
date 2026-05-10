@@ -53,32 +53,29 @@ export default function Footer({ dict, lang }: FooterProps) {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid md:grid-cols-5 gap-8 mb-8">
           {/* Logo and description */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 md:pr-8">
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold mb-4">
-              <Image src="/imgs/Logo.png" alt="Más Cerca AP" width={97} height={60} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
+              <Image src="/imgs/Logo.webp" alt="Más Cerca AP" width={97} height={60} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
               <span className="text-primary">MAS CERCA</span>
               <span className="text-accent">AP</span>
               <BrandFruitMark />
             </Link>
-            <p className="text-white/62 mb-4 max-w-md">
+            <p className="text-white/62 mb-4 max-w-[48ch] text-[0.9rem] leading-relaxed text-justify">
               {dict.footer.description}
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social, index) => {
+                const internalSocialHref = social.name === "Facebook" ? `/${lang}/facebook` : social.name === "Instagram" ? `/${lang}/instagram` : social.name === "TikTok" ? `/${lang}/tiktok` : undefined;
+                const href = internalSocialHref ?? social.href;
+                if (!href) return null;
                 const cls = `w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
                   index === 1 ? "bg-accent hover:bg-accent/90" : "bg-primary hover:bg-primary/90"
                 }`;
                 const label = `${dict.footer.socialLabel} ${social.name}`;
-                const internalSocialHref = social.name === "Facebook" ? `/${lang}/facebook` : social.name === "Instagram" ? `/${lang}/instagram` : undefined;
-                const href = internalSocialHref ?? social.href;
-                return href ? (
+                return (
                   <a key={social.name} href={href} target={internalSocialHref ? undefined : "_blank"} rel={internalSocialHref ? undefined : "noopener noreferrer"} className={cls} aria-label={label}>
                     {social.icon}
                   </a>
-                ) : (
-                  <span key={social.name} className={cls} aria-label={label}>
-                    {social.icon}
-                  </span>
                 );
               })}
             </div>

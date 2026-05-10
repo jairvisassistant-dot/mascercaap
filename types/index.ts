@@ -36,6 +36,7 @@ export type ProductLineKey =
   | "pulpa-lulo"
   | "pulpa-guayaba"
   | "pulpa-frutos-rojos"
+  | "pulpa-frutos-amarillos"
   | "pulpa-tomate-arbol"
   | "kumiss";
 
@@ -50,7 +51,7 @@ export type Product = {
   description: string;
   ingredients?: string[];
   benefits?: string[];
-  // Campos de estado — gestionados desde Sanity Studio
+  // Campos de estado — gestionados desde /admin
   isSoldOut?: boolean;
   isBestSeller?: boolean;
   featured?: boolean;
@@ -62,6 +63,7 @@ export type ProductLineConfig = {
   description: string;
   gradient: string;   // clases Tailwind
   iconEmoji: string;
+  chipImage?: string;
 };
 
 export type Testimonial = {
