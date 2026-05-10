@@ -67,7 +67,7 @@ function MarqueeRow({
   return (
     <div className="group flex overflow-hidden">
       <div
-        className={`flex shrink-0 ${
+        className={`flex shrink-0 will-change-transform ${
           direction === "left"
             ? "animate-marquee-left group-hover:[animation-play-state:paused]"
             : "animate-marquee-right group-hover:[animation-play-state:paused]"
