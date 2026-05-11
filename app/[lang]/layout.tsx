@@ -1,6 +1,5 @@
 import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -74,14 +73,6 @@ export default async function LangLayout({
 
   return (
     <>
-      {/* Setea lang y tema antes del primer paint — usa next/script para evitar el warning de React 19 */}
-      <Script
-        id="theme-init"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{document.documentElement.lang="${lang}";var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches,s=t==='light'||t==='dark'?t:d?'dark':'light';document.documentElement.setAttribute('data-theme',s);document.documentElement.style.colorScheme=s;}catch(e){}})();`,
-        }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

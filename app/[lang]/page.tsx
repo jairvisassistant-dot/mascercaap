@@ -8,7 +8,6 @@ import YieldCalculator from "@/components/sections/YieldCalculator";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
 import TestimonialMarquee from "@/components/ui/TestimonialMarquee";
-import { StickyStackContainer, StickyStackItem } from "@/components/ui/StickyStack";
 import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import OrderAssistantCTA from "@/components/sections/OrderAssistantCTA";
@@ -63,17 +62,9 @@ export default async function HomePage({ params }: Props) {
     <>
       <HeroCarousel />
 
-      <StickyStackContainer>
-        <StickyStackItem index={0} total={3}>
-          <ProductCategories dict={dict} lang={lang} />
-        </StickyStackItem>
-        <StickyStackItem index={1} total={3}>
-          <FeaturedProducts products={featuredProducts} dict={dict} />
-        </StickyStackItem>
-        <StickyStackItem index={2} total={3}>
-          <WhyChooseUs dict={dict} />
-        </StickyStackItem>
-      </StickyStackContainer>
+      <ProductCategories dict={dict} lang={lang} />
+      <FeaturedProducts products={featuredProducts} dict={dict} />
+      <WhyChooseUs dict={dict} />
 
       <DailyOffer dict={dict} />
 

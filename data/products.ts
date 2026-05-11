@@ -6,14 +6,14 @@ export const productLines: ProductLineConfig[] = [
   {
     key: "limon",
     label: "Zumo de Limón",
-    description: "Puro, fresco y sin aditivos. El clásico que nunca falla.",
+    description: "Sabor intenso e inconfundible de limón. El clásico que nunca falla.",
     gradient: "from-lime-400 to-green-500",
     iconEmoji: "🍋",
   },
   {
     key: "limonada-cereza",
     label: "Zumo de Limonada con Cereza",
-    description: "La acidez del limón con el dulzor natural de la cereza.",
+    description: "La acidez del limón con el irresistible toque dulce de cereza.",
     gradient: "from-rose-400 to-red-600",
     iconEmoji: "🍒",
   },
@@ -27,7 +27,7 @@ export const productLines: ProductLineConfig[] = [
   {
     key: "maracuya",
     label: "Zumo de Maracuyá",
-    description: "Sabor exótico y vibrante directo del campo colombiano.",
+    description: "Sabor exótico y vibrante que despierta los sentidos.",
     gradient: "from-yellow-400 to-orange-500",
     iconEmoji: "🌟",
   },
@@ -126,8 +126,8 @@ export const products: Product[] = [
     price: 5600,
     image: "/imgs/SKU_Limon600V2.webp",
     description: "Presentación personal ideal para el día a día.",
-    ingredients: ["Limón fresco", "Agua purificada"],
-    benefits: ["Rico en vitamina C", "Refrescante", "Sin conservantes"],
+    ingredients: ["Limón", "Agua purificada"],
+    benefits: ["Refrescante al instante", "Listo para servir", "Disponible en 4 tamaños"],
   },
   {
     id: "limon-1000",
@@ -138,8 +138,8 @@ export const products: Product[] = [
     price: 9000,
     image: "/imgs/SKU_Limon1000V2.webp",
     description: "El tamaño familiar perfecto para compartir.",
-    ingredients: ["Limón fresco", "Agua purificada"],
-    benefits: ["Rico en vitamina C", "Refrescante", "Sin conservantes"],
+    ingredients: ["Limón", "Agua purificada"],
+    benefits: ["Refrescante al instante", "Listo para servir", "Disponible en 4 tamaños"],
   },
   {
     id: "limon-2000",
@@ -150,8 +150,8 @@ export const products: Product[] = [
     price: 16000,
     image: "/imgs/SKU_Limon2000V2.webp",
     description: "Para negocios y hogares con alto consumo.",
-    ingredients: ["Limón fresco", "Agua purificada"],
-    benefits: ["Rico en vitamina C", "Refrescante", "Sin conservantes"],
+    ingredients: ["Limón", "Agua purificada"],
+    benefits: ["Refrescante al instante", "Listo para servir", "Disponible en 4 tamaños"],
   },
   {
     id: "limon-5000",
@@ -162,8 +162,8 @@ export const products: Product[] = [
     price: 36000,
     image: "/imgs/SKU_Limon5000V2.webp",
     description: "Presentación institucional para restaurantes y cafeterías.",
-    ingredients: ["Limón fresco", "Agua purificada"],
-    benefits: ["Rico en vitamina C", "Refrescante", "Sin conservantes"],
+    ingredients: ["Limón", "Agua purificada"],
+    benefits: ["Refrescante al instante", "Listo para servir", "Disponible en 4 tamaños"],
   },
 
   // ── Zumo de Limonada con Cereza (3 presentaciones) ────────────────────────
@@ -176,8 +176,8 @@ export const products: Product[] = [
     price: 4800,
     image: "/imgs/SKU_LimonCereza350V2.webp",
     description: "El tamaño justo para disfrutar en cualquier momento.",
-    ingredients: ["Limón fresco", "Cereza natural", "Agua purificada"],
-    benefits: ["Antioxidantes", "Vitamina C", "Sin conservantes"],
+    ingredients: ["Limón", "Cereza", "Agua purificada"],
+    benefits: ["Sabor único e irresistible", "Color vibrante", "Perfecto para eventos"],
   },
   {
     id: "cereza-1000",
@@ -188,8 +188,8 @@ export const products: Product[] = [
     price: 10000,
     image: "/imgs/SKU_LimonCereza1000V2.webp",
     description: "Presentación familiar con todo el sabor de la cereza.",
-    ingredients: ["Limón fresco", "Cereza natural", "Agua purificada"],
-    benefits: ["Antioxidantes", "Vitamina C", "Sin conservantes"],
+    ingredients: ["Limón", "Cereza", "Agua purificada"],
+    benefits: ["Sabor único e irresistible", "Color vibrante", "Perfecto para eventos"],
   },
   {
     id: "cereza-2000",
@@ -200,8 +200,8 @@ export const products: Product[] = [
     price: 18000,
     image: "/imgs/SKU_LimonCereza2000V2.webp",
     description: "Para eventos y negocios que quieren ofrecer lo mejor.",
-    ingredients: ["Limón fresco", "Cereza natural", "Agua purificada"],
-    benefits: ["Antioxidantes", "Vitamina C", "Sin conservantes"],
+    ingredients: ["Limón", "Cereza", "Agua purificada"],
+    benefits: ["Sabor único e irresistible", "Color vibrante", "Perfecto para eventos"],
   },
 
   // ── Zumo de Limonada con Coco (3 presentaciones) ──────────────────────────────────
@@ -214,8 +214,8 @@ export const products: Product[] = [
     price: 4800,
     image: "/imgs/SKU_LimonCoco350V2.webp",
     description: "El sabor tropical que refresca diferente.",
-    ingredients: ["Limón fresco", "Coco natural", "Agua purificada"],
-    benefits: ["Electrolitos naturales", "Vitamina C", "Sin conservantes"],
+    ingredients: ["Limón", "Coco", "Agua purificada"],
+    benefits: ["Toque cremoso tropical", "Sabor diferenciador", "Refrescante en todo momento"],
   },
   {
     id: "coco-1000",
@@ -226,8 +226,8 @@ export const products: Product[] = [
     price: 10000,
     image: "/imgs/SKU_LimonCoco1000V2.webp",
     description: "Para compartir la experiencia tropical en familia.",
-    ingredients: ["Limón fresco", "Coco natural", "Agua purificada"],
-    benefits: ["Electrolitos naturales", "Vitamina C", "Sin conservantes"],
+    ingredients: ["Limón", "Coco", "Agua purificada"],
+    benefits: ["Toque cremoso tropical", "Sabor diferenciador", "Refrescante en todo momento"],
   },
   {
     id: "coco-2000",
@@ -238,8 +238,8 @@ export const products: Product[] = [
     price: 18000,
     image: "/imgs/SKU_LimonCoco2000V2.webp",
     description: "Volumen ideal para negocios y reuniones.",
-    ingredients: ["Limón fresco", "Coco natural", "Agua purificada"],
-    benefits: ["Electrolitos naturales", "Vitamina C", "Sin conservantes"],
+    ingredients: ["Limón", "Coco", "Agua purificada"],
+    benefits: ["Toque cremoso tropical", "Sabor diferenciador", "Refrescante en todo momento"],
   },
 
   // ── Zumo de Maracuyá (3 presentaciones) ───────────────────────────────────
@@ -252,8 +252,8 @@ export const products: Product[] = [
     price: 4800,
     image: "/imgs/SKU_Maracuya350V2.webp",
     description: "Sabor intenso y exótico en formato personal.",
-    ingredients: ["Maracuyá fresco", "Agua purificada"],
-    benefits: ["Vitamina A y C", "Antioxidantes", "Sin conservantes"],
+    ingredients: ["Maracuyá", "Agua purificada"],
+    benefits: ["Sabor exótico intenso", "Refrescante y vibrante", "Favorito para el verano"],
   },
   {
     id: "maracuya-1000",
@@ -264,8 +264,8 @@ export const products: Product[] = [
     price: 10000,
     image: "/imgs/SKU_Maracuya1000V2.webp",
     description: "El favorito tropical de la familia.",
-    ingredients: ["Maracuyá fresco", "Agua purificada"],
-    benefits: ["Vitamina A y C", "Antioxidantes", "Sin conservantes"],
+    ingredients: ["Maracuyá", "Agua purificada"],
+    benefits: ["Sabor exótico intenso", "Refrescante y vibrante", "Favorito para el verano"],
   },
   {
     id: "maracuya-2000",
@@ -276,8 +276,8 @@ export const products: Product[] = [
     price: 18000,
     image: "/imgs/SKU_Maracuya2000V2.webp",
     description: "Para hogares y negocios que piensan en grande.",
-    ingredients: ["Maracuyá fresco", "Agua purificada"],
-    benefits: ["Vitamina A y C", "Antioxidantes", "Sin conservantes"],
+    ingredients: ["Maracuyá", "Agua purificada"],
+    benefits: ["Sabor exótico intenso", "Refrescante y vibrante", "Favorito para el verano"],
   },
 
   // ── Pulpas de Frutas ──────────────────────────────────────────────────────

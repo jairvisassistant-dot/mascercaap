@@ -174,11 +174,6 @@ export default function ProductCard({ product, accentGradient = "from-primary to
             {displayDescription}
           </p>
         </div>
-        {product.price && (
-          <p className="mt-3 text-[1.05rem] font-bold leading-none tracking-[-0.03em] tabular-nums text-accent">
-            ${product.price.toLocaleString("es-CO")}
-          </p>
-        )}
       </div>
 
       <ProductLightbox

@@ -531,11 +531,11 @@
   "productLines": {
     "limon": {
       "label": "Zumo de Limón",
-      "description": "Puro, fresco y sin aditivos. El clásico que nunca falla."
+      "description": "Sabor intenso e inconfundible de limón. El clásico que nunca falla."
     },
     "limonada-cereza": {
       "label": "Zumo de Limonada con Cereza",
-      "description": "La acidez del limón con el dulzor natural de la cereza."
+      "description": "La acidez del limón con el irresistible toque dulce de cereza."
     },
     "limonada-coco": {
       "label": "Zumo de Limonada con Coco",
@@ -543,7 +543,7 @@
     },
     "maracuya": {
       "label": "Zumo de Maracuyá",
-      "description": "Sabor exótico y vibrante directo del campo colombiano."
+      "description": "Sabor exótico y vibrante que despierta los sentidos."
     },
     "pulpa-maracuya": {
       "label": "Pulpa de Maracuyá",
