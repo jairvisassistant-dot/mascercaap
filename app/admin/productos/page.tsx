@@ -20,10 +20,10 @@ export default async function AdminProductosPage() {
   if (authError || !user) redirect("/admin/login");
 
   const supabase = adminClient();
-  const { data: products, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("display_order");
+  const [{ data: products, error }, { data: linesData }] = await Promise.all([
+    supabase.from("products").select("*").order("display_order"),
+    supabase.from("product_lines").select("key, label").order("display_order"),
+  ]);
 
   if (error) {
     return (
@@ -35,9 +35,14 @@ export default async function AdminProductosPage() {
     );
   }
 
+  const lineLabels: Record<string, string> = {};
+  for (const l of linesData ?? []) {
+    lineLabels[l.key] = l.label;
+  }
+
   return (
     <div className="min-h-[100dvh]">
-      <ProductosAdminClient initialProducts={products ?? []} />
+      <ProductosAdminClient initialProducts={products ?? []} lineLabels={lineLabels} />
     </div>
   );
 }

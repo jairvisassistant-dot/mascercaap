@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const LINES = [
+const LINES_FALLBACK = [
   { key: "limon", label: "Zumo de Limón" },
   { key: "limonada-cereza", label: "Limonada con Cereza" },
   { key: "limonada-coco", label: "Limonada con Coco" },
@@ -40,6 +40,8 @@ type FormData = {
   displayOrder: number;
 };
 
+type LineOption = { key: string; label: string };
+
 type Props = {
   mode: "create" | "edit";
   initial?: Partial<FormData>;
@@ -67,11 +69,23 @@ const defaultForm: FormData = {
 export default function ProductoForm({ mode, initial, productId }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<FormData>({ ...defaultForm, ...initial });
+  const [lines, setLines] = useState<LineOption[]>(LINES_FALLBACK);
   const [newIngredient, setNewIngredient] = useState("");
   const [newBenefit, setNewBenefit] = useState("");
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/admin/product-lines")
+      .then((r) => r.json())
+      .then((data: { key: string; label: string }[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setLines(data.map((l) => ({ key: l.key, label: l.label })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -168,7 +182,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
               onChange={(e) => set("line", e.target.value)}
               className={inputCls}
             >
-              {LINES.map((l) => (
+              {lines.map((l) => (
                 <option key={l.key} value={l.key}>{l.label}</option>
               ))}
             </select>

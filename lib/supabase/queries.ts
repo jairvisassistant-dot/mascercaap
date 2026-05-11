@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import type { Product, Testimonial } from "@/types";
-import { products as staticProducts, featuredProducts as staticFeaturedProducts } from "@/data/products";
+import type { Product, ProductLineConfig, Testimonial } from "@/types";
+import { products as staticProducts, featuredProducts as staticFeaturedProducts, productLines as staticProductLines } from "@/data/products";
 import { testimonials as staticTestimonials } from "@/data/testimonials";
 
 export async function getAllProducts(): Promise<Product[]> {
@@ -40,6 +40,24 @@ export async function getAllTestimonials(): Promise<Testimonial[]> {
   const existingIds = new Set(data.map((testimonial) => testimonial.id));
   const fallbackTestimonials = staticTestimonials.filter((testimonial) => !existingIds.has(testimonial.id));
   return [...data, ...fallbackTestimonials].slice(0, staticTestimonials.length);
+}
+
+export async function getAllProductLines(): Promise<ProductLineConfig[]> {
+  if (!supabase) return staticProductLines;
+  const { data, error } = await supabase
+    .from("product_lines")
+    .select("*")
+    .eq("active", true)
+    .order("display_order");
+  if (error || !data || data.length === 0) return staticProductLines;
+  return data.map((row) => ({
+    key: row.key as string,
+    label: row.label as string,
+    description: row.description as string,
+    gradient: row.gradient as string,
+    iconEmoji: row.icon_emoji as string,
+    chipImage: (row.chip_image as string) ?? undefined,
+  }));
 }
 
 function mapRowToProduct(row: Record<string, unknown>): Product {

@@ -19,7 +19,7 @@ type Product = {
   display_order: number;
 };
 
-const LINE_LABELS: Record<string, string> = {
+const LINE_LABELS_STATIC: Record<string, string> = {
   limon: "Zumo de Limón",
   "limonada-cereza": "Limonada Cereza",
   "limonada-coco": "Limonada Coco",
@@ -37,7 +37,14 @@ const LINE_LABELS: Record<string, string> = {
   kumiss: "Kumiss / Yogurt",
 };
 
-export default function ProductosAdminClient({ initialProducts }: { initialProducts: Product[] }) {
+export default function ProductosAdminClient({
+  initialProducts,
+  lineLabels = {},
+}: {
+  initialProducts: Product[];
+  lineLabels?: Record<string, string>;
+}) {
+  const LINE_LABELS = { ...LINE_LABELS_STATIC, ...lineLabels };
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [search, setSearch] = useState("");
