@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import type { Product, ProductLineConfig, Testimonial } from "@/types";
+import type { Product, ProductCategory, ProductLineConfig, Testimonial } from "@/types";
 import { products as staticProducts, featuredProducts as staticFeaturedProducts, productLines as staticProductLines } from "@/data/products";
 import { testimonials as staticTestimonials } from "@/data/testimonials";
 
@@ -57,6 +57,21 @@ export async function getAllProductLines(): Promise<ProductLineConfig[]> {
     gradient: row.gradient as string,
     iconEmoji: row.icon_emoji as string,
     chipImage: (row.chip_image as string) ?? undefined,
+    categoryKey: (row.category_key as string | null) ?? null,
+  }));
+}
+
+export async function getAllProductCategories(): Promise<ProductCategory[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("product_categories")
+    .select("key, label")
+    .eq("active", true)
+    .order("display_order");
+  if (error || !data) return [];
+  return data.map((row) => ({
+    key: row.key as string,
+    label: row.label as string,
   }));
 }
 

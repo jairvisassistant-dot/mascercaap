@@ -65,6 +65,12 @@ export type ProductLineConfig = {
   gradient: string;
   iconEmoji: string;
   chipImage?: string;
+  categoryKey?: string | null;
+};
+
+export type ProductCategory = {
+  key: string;
+  label: string;
 };
 
 export type Testimonial = {

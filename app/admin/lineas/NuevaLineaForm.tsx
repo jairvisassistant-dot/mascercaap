@@ -1,44 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { GRADIENT_PRESETS } from "@/lib/gradient-presets";
+import { generateLineKey } from "@/lib/id-generators";
 
-function slugify(str: string) {
-  return str
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-}
+type Category = { key: string; label: string };
 
 export default function NuevaLineaForm() {
   const router = useRouter();
   const [label, setLabel] = useState("");
-  const [key, setKey] = useState("");
-  const [keyTouched, setKeyTouched] = useState(false);
   const [description, setDescription] = useState("");
   const [iconEmoji, setIconEmoji] = useState("🛍️");
   const [gradient, setGradient] = useState<string>(GRADIENT_PRESETS[0].tw);
+  const [categoryKey, setCategoryKey] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  function handleLabelChange(value: string) {
-    setLabel(value);
-    if (!keyTouched) {
-      setKey(slugify(value));
-    }
-  }
+  useEffect(() => {
+    fetch("/api/admin/categories")
+      .then((r) => r.json())
+      .then((data: Category[]) => {
+        if (Array.isArray(data)) setCategories(data);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCategories(false));
+  }, []);
 
-  function handleKeyChange(value: string) {
-    setKeyTouched(true);
-    setKey(slugify(value));
-  }
+  const generatedKey = useMemo(
+    () => generateLineKey(categoryKey, label),
+    [categoryKey, label],
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!generatedKey) return;
     setSaving(true);
     setError("");
 
@@ -46,7 +44,14 @@ export default function NuevaLineaForm() {
       const res = await fetch("/api/admin/product-lines", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key, label, description, gradient, iconEmoji }),
+        body: JSON.stringify({
+          key: generatedKey,
+          label,
+          description,
+          gradient,
+          iconEmoji,
+          categoryKey: categoryKey || null,
+        }),
       });
 
       const data = await res.json();
@@ -74,6 +79,41 @@ export default function NuevaLineaForm() {
         </div>
       )}
 
+      {/* Paso 1 — Categoría */}
+      <section className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+        <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+          Paso 1 — Categoría principal
+        </p>
+        <p className="mb-4 text-xs text-text-muted">
+          Elegí a qué categoría pertenece esta línea antes de continuar.
+        </p>
+        <Field label="Categoría *">
+          <select
+            value={categoryKey}
+            onChange={(e) => setCategoryKey(e.target.value)}
+            disabled={loadingCategories}
+            required
+            className={`${inputCls} border-primary/30`}
+          >
+            <option value="">
+              {loadingCategories ? "Cargando categorías..." : "— Seleccioná una categoría —"}
+            </option>
+            {categories.map((c) => (
+              <option key={c.key} value={c.key}>{c.label}</option>
+            ))}
+          </select>
+          {!loadingCategories && categories.length === 0 && (
+            <p className="mt-1.5 text-xs text-text-muted">
+              No hay categorías creadas aún.{" "}
+              <a href="/admin/categorias/nueva" className="font-semibold text-primary underline">
+                Crear una categoría
+              </a>
+            </p>
+          )}
+        </Field>
+      </section>
+
+      {/* Información básica */}
       <section>
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">
           Información básica
@@ -83,26 +123,23 @@ export default function NuevaLineaForm() {
             <input
               type="text"
               value={label}
-              onChange={(e) => handleLabelChange(e.target.value)}
+              onChange={(e) => setLabel(e.target.value)}
               required
               placeholder="ej: Jugos de Mora"
               className={inputCls}
             />
           </Field>
 
-          <Field label="Identificador (key) *">
-            <input
-              type="text"
-              value={key}
-              onChange={(e) => handleKeyChange(e.target.value)}
-              required
-              placeholder="ej: jugos-de-mora"
-              className={inputCls}
-            />
-            <p className="mt-1 text-xs text-text-muted">
-              Solo letras, números y guiones. Se usa internamente para identificar la línea.
-            </p>
-          </Field>
+          <IdChip
+            label="Identificador"
+            value={generatedKey}
+            empty={!categoryKey || !label.trim()}
+            emptyHint={
+              !categoryKey
+                ? "Seleccioná una categoría primero"
+                : "Escribí el nombre para generar el identificador"
+            }
+          />
 
           <Field label="Descripción">
             <textarea
@@ -129,6 +166,7 @@ export default function NuevaLineaForm() {
         </div>
       </section>
 
+      {/* Color de acento */}
       <section>
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">
           Color de acento
@@ -142,11 +180,11 @@ export default function NuevaLineaForm() {
               title={preset.label}
               className={`group relative h-14 rounded-2xl bg-gradient-to-br transition-all ${preset.tw} ${
                 gradient === preset.tw
-                  ? "ring-2 ring-offset-2 ring-primary scale-105 shadow-lg"
-                  : "opacity-75 hover:opacity-100 hover:scale-105"
+                  ? "scale-105 shadow-lg ring-2 ring-primary ring-offset-2"
+                  : "opacity-75 hover:scale-105 hover:opacity-100"
               }`}
             >
-              <span className="absolute inset-0 flex items-end justify-center pb-1.5 text-[10px] font-semibold text-white/80 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="absolute inset-0 flex items-end justify-center pb-1.5 text-[10px] font-semibold text-white/80 opacity-0 transition-opacity group-hover:opacity-100">
                 {preset.label}
               </span>
             </button>
@@ -154,13 +192,15 @@ export default function NuevaLineaForm() {
         </div>
         {selectedPreset && (
           <p className="mt-3 text-xs text-text-muted">
-            Seleccionado: <span className="font-semibold text-text-sub">{selectedPreset.label}</span>
+            Seleccionado:{" "}
+            <span className="font-semibold text-text-sub">{selectedPreset.label}</span>
           </p>
         )}
 
-        {/* Preview */}
         <div className="mt-4 flex items-center gap-3">
-          <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shadow-md`}>
+          <div
+            className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br shadow-md text-2xl ${gradient}`}
+          >
             {iconEmoji}
           </div>
           <div>
@@ -173,7 +213,7 @@ export default function NuevaLineaForm() {
       <div className="flex items-center gap-4 border-t border-border-soft pt-4">
         <button
           type="submit"
-          disabled={saving || !key || !label}
+          disabled={saving || !generatedKey || !label || !categoryKey}
           className="rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
         >
           {saving ? "Creando..." : "Crear línea"}
@@ -198,6 +238,35 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div>
       <label className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
       {children}
+    </div>
+  );
+}
+
+function IdChip({
+  label,
+  value,
+  empty,
+  emptyHint,
+}: {
+  label: string;
+  value: string;
+  empty?: boolean;
+  emptyHint?: string;
+}) {
+  return (
+    <div>
+      <p className="mb-1.5 text-sm font-semibold text-text-sub">{label}</p>
+      <div className="flex items-center gap-3 rounded-xl border border-border-soft bg-surface-warm px-4 py-3">
+        {empty ? (
+          <span className="text-sm italic text-text-faint">{emptyHint ?? "—"}</span>
+        ) : (
+          <span className="font-mono text-sm text-text-sub">{value}</span>
+        )}
+        <span className="ml-auto rounded-md bg-border-mid/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-muted">
+          Auto
+        </span>
+      </div>
+      <p className="mt-1 text-xs text-text-muted">Generado automáticamente. No es editable.</p>
     </div>
   );
 }

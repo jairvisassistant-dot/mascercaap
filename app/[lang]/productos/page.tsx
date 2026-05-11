@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { productLines } from "@/data/products";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
-import { getAllProducts } from "@/lib/supabase/queries";
+import { getAllProducts, getAllProductLines, getAllProductCategories } from "@/lib/supabase/queries";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -45,12 +44,17 @@ export default async function ProductosPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const products = await getAllProducts();
+  const [products, productLines, categories] = await Promise.all([
+    getAllProducts(),
+    getAllProductLines(),
+    getAllProductCategories(),
+  ]);
 
   return (
     <ProductosClient
       products={products}
       productLines={productLines}
+      categories={categories}
     />
   );
 }

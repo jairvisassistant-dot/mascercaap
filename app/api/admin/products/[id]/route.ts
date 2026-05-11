@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { requireAdminAuth } from "@/lib/admin-auth";
+import { revalidatePath } from "next/cache";
+
+function revalidateProductos() {
+  revalidatePath("/[lang]/productos", "page");
+}
 
 function adminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
   );
 }
 
@@ -59,6 +65,7 @@ export async function PUT(req: Request, { params }: Params) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
 
+  revalidateProductos();
   return NextResponse.json(data);
 }
 
@@ -105,6 +112,7 @@ export async function PATCH(req: Request, { params }: Params) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
 
+  revalidateProductos();
   return NextResponse.json(data);
 }
 
@@ -122,5 +130,6 @@ export async function DELETE(req: Request, { params }: Params) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  revalidateProductos();
   return NextResponse.json({ ok: true });
 }

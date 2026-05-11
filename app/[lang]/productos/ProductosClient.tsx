@@ -9,16 +9,8 @@ import ProductGridCard from "@/components/ui/ProductGridCard";
 import PulpaFruitGrid from "@/components/ui/PulpaFruitGrid";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
-import type { Product, ProductLineConfig, ProductLineKey } from "@/types";
+import type { Product, ProductCategory, ProductLineConfig, ProductLineKey } from "@/types";
 
-const CATEGORY_LINES: Record<string, ProductLineKey[]> = {
-  todas: ["limon", "limonada-cereza", "limonada-coco", "maracuya", "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol", "kumiss"],
-  jugos: ["limon", "limonada-cereza", "limonada-coco", "maracuya"],
-  pulpas: ["pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango", "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba", "pulpa-frutos-rojos", "pulpa-frutos-amarillos", "pulpa-tomate-arbol"],
-  lacteos: ["kumiss"],
-};
-
-const CATEGORY_ORDER = ["todas", "jugos", "pulpas", "lacteos"] as const;
 const DEFAULT_CATEGORY = "todas";
 
 const PULPA_KEYS = new Set<ProductLineKey>([
@@ -30,16 +22,44 @@ const PULPA_KEYS = new Set<ProductLineKey>([
 interface ProductosClientProps {
   products: Product[];
   productLines: ProductLineConfig[];
+  categories: ProductCategory[];
 }
 
-export default function ProductosClient({ products, productLines }: ProductosClientProps) {
+export default function ProductosClient({ products, productLines, categories }: ProductosClientProps) {
   const searchParams = useSearchParams();
   const { dict, lang } = useDictionary();
 
+  // Mapa dinámico: categoryKey → line keys. "todas" siempre incluye todo.
+  const categoryLines = useMemo<Record<string, string[]>>(() => {
+    const map: Record<string, string[]> = {
+      todas: productLines.map((l) => l.key),
+    };
+    for (const cat of categories) {
+      map[cat.key] = productLines
+        .filter((l) => l.categoryKey === cat.key)
+        .map((l) => l.key);
+    }
+    return map;
+  }, [productLines, categories]);
+
+  const categoryOrder = useMemo(
+    () => [DEFAULT_CATEGORY, ...categories.map((c) => c.key)],
+    [categories],
+  );
+
+  // Labels de categorías: "todas" del dict, el resto de la DB
+  const catLabels = useMemo<Record<string, string>>(() => {
+    const dictLabels = dict.footer.productLines as Record<string, string>;
+    const labels: Record<string, string> = { todas: dictLabels.todas ?? "Todas" };
+    for (const cat of categories) {
+      labels[cat.key] = dictLabels[cat.key] ?? cat.label;
+    }
+    return labels;
+  }, [categories, dict]);
+
   // Nivel 1 — siempre hay una categoría activa, default "todas"
   const [activeCategory, setActiveCategory] = useState<string>(() => {
-    const cat = searchParams.get("categoria");
-    return cat && CATEGORY_LINES[cat] ? cat : DEFAULT_CATEGORY;
+    return searchParams.get("categoria") ?? DEFAULT_CATEGORY;
   });
 
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
@@ -63,9 +83,9 @@ export default function ProductosClient({ products, productLines }: ProductosCli
 
   // Tamaños indexados: si hay sub-líneas activas → solo sus tamaños; si no → todos los de la categoría
   const availableSizes = useMemo(() => {
-    const relevantLines: ProductLineKey[] = activeSubLines.length > 0
+    const relevantLines: string[] = activeSubLines.length > 0
       ? activeSubLines
-      : (CATEGORY_LINES[activeCategory] ?? []);
+      : (categoryLines[activeCategory] ?? []);
 
     const sizes = products
       .filter((p) => relevantLines.includes(p.line) && p.presentation !== "Próximamente")
@@ -94,21 +114,56 @@ export default function ProductosClient({ products, productLines }: ProductosCli
     setActiveSize("todos"); // resetear tamaño porque el índice cambia
   };
 
-  // Líneas visibles: categoría siempre activa, sub-línea opcional
-  const visibleLines = useMemo(() => productLines.filter((line) => {
-    if (!CATEGORY_LINES[activeCategory]?.includes(line.key)) return false;
-    if (activeSubLines.length > 0) return activeSubLines.includes(line.key);
-    return true;
-  }), [productLines, activeCategory, activeSubLines]);
+  // Índice de posición de cada categoría (para ordenar líneas por categoría)
+  const catIndex = useMemo(() => {
+    const idx: Record<string, number> = {};
+    categories.forEach((cat, i) => { idx[cat.key] = i; });
+    return idx;
+  }, [categories]);
+
+  // Líneas visibles: filtradas por categoría/sub-línea y ordenadas por posición de categoría
+  const visibleLines = useMemo(() => productLines
+    .filter((line) => {
+      if (!categoryLines[activeCategory]?.includes(line.key)) return false;
+      if (activeSubLines.length > 0) return activeSubLines.includes(line.key);
+      return true;
+    })
+    .sort((a, b) => {
+      const ia = catIndex[a.categoryKey ?? ""] ?? categories.length;
+      const ib = catIndex[b.categoryKey ?? ""] ?? categories.length;
+      return ia - ib;
+      // Dentro de la misma categoría el array ya viene ordenado por display_order desde la DB
+    }),
+  [productLines, activeCategory, activeSubLines, categoryLines, catIndex, categories.length]);
 
   // Sub-líneas del nivel 2
   const categorySubLines = useMemo(() => productLines.filter(
-    (l) => CATEGORY_LINES[activeCategory]?.includes(l.key)
-  ), [productLines, activeCategory]);
+    (l) => categoryLines[activeCategory]?.includes(l.key)
+  ), [productLines, activeCategory, categoryLines]);
   const showSubFilter = activeCategory !== "todas" && categorySubLines.length > 1;
 
-  const nonPulpaLines = visibleLines.filter((l) => !PULPA_KEYS.has(l.key));
-  const pulpaVisibleLines = visibleLines.filter((l) => PULPA_KEYS.has(l.key));
+  // Build ordered segments: consecutive pulpa lines → one PulpaFruitGrid; others → individual rows
+  type RenderSegment =
+    | { type: "regular"; line: ProductLineConfig }
+    | { type: "pulpa"; lines: ProductLineConfig[] };
+
+  const segments = useMemo<RenderSegment[]>(() => {
+    const result: RenderSegment[] = [];
+    let pulpaBuffer: ProductLineConfig[] = [];
+    for (const line of visibleLines) {
+      if (PULPA_KEYS.has(line.key)) {
+        pulpaBuffer.push(line);
+      } else {
+        if (pulpaBuffer.length > 0) {
+          result.push({ type: "pulpa", lines: pulpaBuffer });
+          pulpaBuffer = [];
+        }
+        result.push({ type: "regular", line });
+      }
+    }
+    if (pulpaBuffer.length > 0) result.push({ type: "pulpa", lines: pulpaBuffer });
+    return result;
+  }, [visibleLines]);
 
   const getLineProducts = (lineKey: ProductLineKey) =>
     products
@@ -128,7 +183,6 @@ export default function ProductosClient({ products, productLines }: ProductosCli
   }, [activeSize, visibleLines, products]);
 
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
-  const catLabels = dict.footer.productLines as Record<string, string>;
 
   return (
     <div className="pt-20">
@@ -181,7 +235,7 @@ export default function ProductosClient({ products, productLines }: ProductosCli
           <span className={`text-xs font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark" : "text-text-faint"}`}>
             {dict.products.filters.category}
           </span>
-          {CATEGORY_ORDER.map((cat) => {
+          {categoryOrder.map((cat) => {
             const isActive = activeCategory === cat;
             return (
               <button
@@ -335,7 +389,24 @@ export default function ProductosClient({ products, productLines }: ProductosCli
             </m.div>
           ) : (
             <div className="flex flex-col gap-12">
-              {nonPulpaLines.map((line, lineIndex) => {
+              {segments.map((seg, segIndex) => {
+                if (seg.type === "pulpa") {
+                  return (
+                    <m.div
+                      key="pulpa-grid"
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: segIndex * 0.08 }}
+                    >
+                      <PulpaFruitGrid
+                        pulpaLines={seg.lines}
+                        products={products.filter((p) => PULPA_KEYS.has(p.line))}
+                      />
+                    </m.div>
+                  );
+                }
+                const { line } = seg;
                 const lineProducts = getLineProducts(line.key);
                 return (
                   <m.div
@@ -343,7 +414,7 @@ export default function ProductosClient({ products, productLines }: ProductosCli
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: lineIndex * 0.08 }}
+                    transition={{ delay: segIndex * 0.08 }}
                   >
                     <div className="flex items-center gap-4 mb-5">
                       <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
@@ -355,25 +426,11 @@ export default function ProductosClient({ products, productLines }: ProductosCli
                       </div>
                     </div>
                     {lineProducts.length > 0 && (
-                      <ProductLineRow line={line} products={lineProducts} firstLine={lineIndex === 0} />
+                      <ProductLineRow line={line} products={lineProducts} firstLine={segIndex === 0} />
                     )}
                   </m.div>
                 );
               })}
-
-              {pulpaVisibleLines.length > 0 && (
-                <m.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: nonPulpaLines.length * 0.08 }}
-                >
-                  <PulpaFruitGrid
-                    pulpaLines={pulpaVisibleLines}
-                    products={products.filter((p) => PULPA_KEYS.has(p.line))}
-                  />
-                </m.div>
-              )}
             </div>
           )}
 

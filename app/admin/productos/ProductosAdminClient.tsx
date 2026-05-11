@@ -40,27 +40,65 @@ const LINE_LABELS_STATIC: Record<string, string> = {
 export default function ProductosAdminClient({
   initialProducts,
   lineLabels = {},
+  lineCategories = {},
+  categories = [],
 }: {
   initialProducts: Product[];
   lineLabels?: Record<string, string>;
+  lineCategories?: Record<string, string>;
+  categories?: { key: string; label: string }[];
 }) {
   const LINE_LABELS = { ...LINE_LABELS_STATIC, ...lineLabels };
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [lineFilter, setLineFilter] = useState("all");
   const [, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const lines = Array.from(new Set(initialProducts.map((p) => p.line))).sort();
+  // Todas las líneas definidas en product_lines (incluyendo las nuevas sin productos)
+  const allLineKeys = Object.keys(LINE_LABELS).length > 0
+    ? Object.keys(LINE_LABELS)
+    : Array.from(new Set(initialProducts.map((p) => p.line))).sort();
+
+  // Líneas sin categoría asignada
+  const uncategorizedKeys = allLineKeys.filter((k) => !lineCategories[k]);
+
+  // Grupos desde Supabase — se muestran TODOS, tengan o no líneas asignadas
+  const visibleGroups = [
+    ...categories.map((cat) => ({
+      key: cat.key,
+      label: cat.label,
+      lineKeys: allLineKeys.filter((k) => lineCategories[k] === cat.key),
+    })),
+    ...(uncategorizedKeys.length > 0
+      ? [{ key: "sin-categoria", label: "Sin categoría", lineKeys: uncategorizedKeys }]
+      : []),
+  ];
+
+  // Líneas para el segundo select según la categoría elegida
+  const linesForCategory = categoryFilter === "all"
+    ? allLineKeys
+    : (visibleGroups.find((g) => g.key === categoryFilter)?.lineKeys ?? allLineKeys);
+
+  function handleCategoryChange(value: string) {
+    setCategoryFilter(value);
+    setLineFilter("all");
+  }
 
   const filtered = products.filter((p) => {
+    const activeGroup = visibleGroups.find((g) => g.key === categoryFilter);
+    const matchesCategory =
+      categoryFilter === "all" || (activeGroup?.lineKeys.includes(p.line) ?? false);
     const matchesLine = lineFilter === "all" || p.line === lineFilter;
     const matchesSearch =
       search === "" ||
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.id.toLowerCase().includes(search.toLowerCase());
-    return matchesLine && matchesSearch;
+    return matchesCategory && matchesLine && matchesSearch;
   });
 
   async function toggle(id: string, field: "featured" | "is_sold_out" | "is_best_seller" | "active", value: boolean) {
@@ -90,6 +128,21 @@ export default function ProductosAdminClient({
     startTransition(() => router.refresh());
   }
 
+  async function deleteProduct(id: string) {
+    setDeleting(true);
+    setError("");
+    const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error ?? "Error al eliminar");
+    } else {
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+      startTransition(() => router.refresh());
+    }
+    setConfirmDeleteId(null);
+    setDeleting(false);
+  }
+
   const featuredCount = products.filter((p) => p.featured).length;
 
   return (
@@ -112,13 +165,28 @@ export default function ProductosAdminClient({
           onChange={(e) => setSearch(e.target.value)}
           className="min-w-[220px] flex-1 rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
         />
+        {/* Filtro 1: Categoría */}
+        <select
+          value={categoryFilter}
+          onChange={(e) => handleCategoryChange(e.target.value)}
+          className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          <option value="all">Todas las categorías</option>
+          {visibleGroups.map((g) => (
+            <option key={g.key} value={g.key}>{g.label}</option>
+          ))}
+        </select>
+        {/* Filtro 2: Línea dentro de la categoría */}
         <select
           value={lineFilter}
           onChange={(e) => setLineFilter(e.target.value)}
-          className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+          disabled={linesForCategory.length === 0}
+          className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
         >
-          <option value="all">Todas las líneas</option>
-          {lines.map((l) => (
+          <option value="all">
+            {linesForCategory.length === 0 ? "Sin líneas en esta categoría" : "Todas las líneas"}
+          </option>
+          {linesForCategory.map((l) => (
             <option key={l} value={l}>{LINE_LABELS[l] ?? l}</option>
           ))}
         </select>
@@ -212,12 +280,45 @@ export default function ProductosAdminClient({
                 </td>
 
                 <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/productos/${p.id}`}
-                    className="rounded-lg border border-border-mid px-2.5 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
-                  >
-                    Editar
-                  </Link>
+                  {confirmDeleteId === p.id ? (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        disabled={deleting}
+                        onClick={() => deleteProduct(p.id)}
+                        className="rounded-lg bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+                      >
+                        {deleting ? "…" : "Confirmar"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={deleting}
+                        onClick={() => setConfirmDeleteId(null)}
+                        className="rounded-lg border border-border-mid px-2.5 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:bg-surface-warm"
+                      >
+                        No
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5">
+                      <Link
+                        href={`/admin/productos/${p.id}`}
+                        className="rounded-lg border border-border-mid px-2.5 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
+                      >
+                        Editar
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => { setError(""); setConfirmDeleteId(p.id); }}
+                        className="flex h-7 w-7 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-red-50 hover:text-red-500"
+                        title="Eliminar producto"
+                      >
+                        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

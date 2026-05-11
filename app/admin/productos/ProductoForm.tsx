@@ -1,29 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { generateProductId } from "@/lib/id-generators";
 
-const LINES_FALLBACK = [
-  { key: "limon", label: "Zumo de Limón" },
-  { key: "limonada-cereza", label: "Limonada con Cereza" },
-  { key: "limonada-coco", label: "Limonada con Coco" },
-  { key: "maracuya", label: "Zumo de Maracuyá" },
-  { key: "pulpa-maracuya", label: "Pulpa de Maracuyá" },
-  { key: "pulpa-mora", label: "Pulpa de Mora" },
-  { key: "pulpa-fresa", label: "Pulpa de Fresa" },
-  { key: "pulpa-mango", label: "Pulpa de Mango" },
-  { key: "pulpa-guanabana", label: "Pulpa de Guanábana" },
-  { key: "pulpa-lulo", label: "Pulpa de Lulo" },
-  { key: "pulpa-guayaba", label: "Pulpa de Guayaba" },
-  { key: "pulpa-frutos-rojos", label: "Pulpa de Frutos Rojos" },
-  { key: "pulpa-frutos-amarillos", label: "Pulpa de Frutos Amarillos" },
-  { key: "pulpa-tomate-arbol", label: "Pulpa de Tomate de Árbol" },
-  { key: "kumiss", label: "Kumiss / Yogurt" },
+const LINES_FALLBACK: LineOption[] = [
+  { key: "limon", label: "Zumo de Limón", categoryKey: null },
+  { key: "limonada-cereza", label: "Limonada con Cereza", categoryKey: null },
+  { key: "limonada-coco", label: "Limonada con Coco", categoryKey: null },
+  { key: "maracuya", label: "Zumo de Maracuyá", categoryKey: null },
+  { key: "pulpa-maracuya", label: "Pulpa de Maracuyá", categoryKey: null },
+  { key: "pulpa-mora", label: "Pulpa de Mora", categoryKey: null },
+  { key: "pulpa-fresa", label: "Pulpa de Fresa", categoryKey: null },
+  { key: "pulpa-mango", label: "Pulpa de Mango", categoryKey: null },
+  { key: "pulpa-guanabana", label: "Pulpa de Guanábana", categoryKey: null },
+  { key: "pulpa-lulo", label: "Pulpa de Lulo", categoryKey: null },
+  { key: "pulpa-guayaba", label: "Pulpa de Guayaba", categoryKey: null },
+  { key: "pulpa-frutos-rojos", label: "Pulpa de Frutos Rojos", categoryKey: null },
+  { key: "pulpa-frutos-amarillos", label: "Pulpa de Frutos Amarillos", categoryKey: null },
+  { key: "pulpa-tomate-arbol", label: "Pulpa de Tomate de Árbol", categoryKey: null },
+  { key: "kumiss", label: "Kumiss / Yogurt", categoryKey: null },
 ];
 
 type FormData = {
-  id: string;
   name: string;
   line: string;
   presentation: string;
@@ -40,18 +40,18 @@ type FormData = {
   displayOrder: number;
 };
 
-type LineOption = { key: string; label: string };
+type LineOption = { key: string; label: string; categoryKey?: string | null };
+type Category = { key: string; label: string };
 
 type Props = {
   mode: "create" | "edit";
-  initial?: Partial<FormData>;
+  initial?: Partial<FormData & { id: string }>;
   productId?: string;
 };
 
 const defaultForm: FormData = {
-  id: "",
   name: "",
-  line: "limon",
+  line: "",
   presentation: "",
   presentationOrder: 1,
   price: "",
@@ -70,6 +70,10 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<FormData>({ ...defaultForm, ...initial });
   const [lines, setLines] = useState<LineOption[]>(LINES_FALLBACK);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [existingIds, setExistingIds] = useState<Set<string>>(new Set());
+  const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [newIngredient, setNewIngredient] = useState("");
   const [newBenefit, setNewBenefit] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -77,15 +81,66 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/product-lines")
-      .then((r) => r.json())
-      .then((data: { key: string; label: string }[]) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setLines(data.map((l) => ({ key: l.key, label: l.label })));
+    Promise.all([
+      fetch("/api/admin/product-lines").then((r) => r.json()),
+      fetch("/api/admin/categories").then((r) => r.json()),
+      mode === "create" ? fetch("/api/admin/products").then((r) => r.json()) : Promise.resolve([]),
+    ])
+      .then(([linesData, catsData, productsData]) => {
+        const mappedLines: LineOption[] =
+          Array.isArray(linesData) && linesData.length > 0
+            ? linesData.map((l: Record<string, unknown>) => ({
+                key: l.key as string,
+                label: l.label as string,
+                categoryKey: (l.category_key as string | null) ?? null,
+              }))
+            : LINES_FALLBACK;
+
+        setLines(mappedLines);
+        if (Array.isArray(catsData)) setCategories(catsData);
+        if (Array.isArray(productsData)) {
+          setExistingIds(new Set(productsData.map((p: { id: string }) => p.id)));
+        }
+
+        // Pre-select category from current line (edit mode)
+        const currentLineKey = initial?.line ?? "";
+        if (currentLineKey) {
+          const currentLine = mappedLines.find((l) => l.key === currentLineKey);
+          if (currentLine?.categoryKey) setSelectedCategory(currentLine.categoryKey);
+        }
+
+        // Default to first available line (create mode)
+        if (mode === "create" && !initial?.line) {
+          const firstLine = mappedLines[0];
+          if (firstLine) {
+            setForm((prev) => ({ ...prev, line: firstLine.key }));
+            if (firstLine.categoryKey) setSelectedCategory(firstLine.categoryKey);
+          }
         }
       })
-      .catch(() => {});
-  }, []);
+      .catch(() => {})
+      .finally(() => setLoadingCatalog(false));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const filteredLines = selectedCategory
+    ? lines.filter((l) => l.categoryKey === selectedCategory)
+    : lines;
+
+  // Auto-generated product ID (create mode only)
+  const { id: generatedId, adjusted: idAdjusted } = useMemo(() => {
+    if (mode !== "create" || !form.line || !form.name.trim()) {
+      return { id: "", adjusted: false };
+    }
+    return generateProductId(form.line, form.name, existingIds);
+  }, [mode, form.line, form.name, existingIds]);
+
+  function handleCategoryChange(catKey: string) {
+    setSelectedCategory(catKey);
+    const newFiltered = catKey ? lines.filter((l) => l.categoryKey === catKey) : lines;
+    if (newFiltered.length > 0 && !newFiltered.find((l) => l.key === form.line)) {
+      set("line", newFiltered[0].key);
+    }
+  }
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -115,6 +170,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
 
     const payload = {
       ...form,
+      id: mode === "create" ? generatedId : productId,
       price: form.price !== "" ? Number(form.price) : null,
       image: form.image || null,
     };
@@ -142,31 +198,94 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-6xl space-y-8 rounded-3xl border border-border-soft bg-surface-card p-7 shadow-[0_24px_70px_-40px_rgba(47,111,54,0.5)] lg:p-8">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full max-w-6xl space-y-8 rounded-3xl border border-border-soft bg-surface-card p-7 shadow-[0_24px_70px_-40px_rgba(47,111,54,0.5)] lg:p-8"
+    >
       {error && (
         <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
           {error}
         </div>
       )}
 
-      {/* Información básica */}
+      {/* Paso 1 — Categoría */}
+      <section className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+        <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+          Paso 1 — Categoría
+        </p>
+        <p className="mb-4 text-xs text-text-muted">
+          Elegí a qué categoría pertenece este producto.
+        </p>
+        <Field label="Categoría *">
+          <select
+            value={selectedCategory}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            disabled={loadingCatalog}
+            className={`${inputCls} border-primary/30`}
+          >
+            <option value="">
+              {loadingCatalog ? "Cargando categorías..." : "— Seleccioná una categoría —"}
+            </option>
+            {categories.map((c) => (
+              <option key={c.key} value={c.key}>{c.label}</option>
+            ))}
+          </select>
+          {!loadingCatalog && categories.length === 0 && (
+            <p className="mt-1.5 text-xs text-text-muted">
+              No hay categorías creadas.{" "}
+              <a href="/admin/categorias/nueva" className="font-semibold text-primary underline">
+                Crear categoría
+              </a>
+            </p>
+          )}
+        </Field>
+      </section>
+
+      {/* Paso 2 — Línea */}
+      <section className="rounded-2xl border border-accent/20 bg-accent/5 p-5">
+        <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-accent-dark">
+          Paso 2 — Línea de producto
+        </p>
+        <p className="mb-4 text-xs text-text-muted">
+          {selectedCategory
+            ? "Líneas disponibles para la categoría seleccionada."
+            : "Seleccioná primero una categoría para filtrar las líneas."}
+        </p>
+        <Field label="Línea *">
+          <select
+            value={form.line}
+            onChange={(e) => set("line", e.target.value)}
+            disabled={loadingCatalog || filteredLines.length === 0}
+            required
+            className={inputCls}
+          >
+            {filteredLines.length === 0 ? (
+              <option value="">
+                {loadingCatalog ? "Cargando líneas..." : "Sin líneas para esta categoría"}
+              </option>
+            ) : (
+              filteredLines.map((l) => (
+                <option key={l.key} value={l.key}>{l.label}</option>
+              ))
+            )}
+          </select>
+          {!loadingCatalog && selectedCategory && filteredLines.length === 0 && (
+            <p className="mt-1.5 text-xs text-text-muted">
+              No hay líneas en esta categoría.{" "}
+              <a href="/admin/lineas/nueva" className="font-semibold text-primary underline">
+                Crear línea
+              </a>
+            </p>
+          )}
+        </Field>
+      </section>
+
+      {/* Información del producto */}
       <section>
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">
-          Información básica
+          Información del producto
         </h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {mode === "create" && (
-            <Field label="ID único *">
-              <input
-                type="text"
-                value={form.id}
-                onChange={(e) => set("id", e.target.value)}
-                required
-                placeholder="ej: pulpa-mora-120"
-                className={inputCls}
-              />
-            </Field>
-          )}
           <Field label="Nombre *">
             <input
               type="text"
@@ -175,17 +294,6 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
               required
               className={inputCls}
             />
-          </Field>
-          <Field label="Línea *">
-            <select
-              value={form.line}
-              onChange={(e) => set("line", e.target.value)}
-              className={inputCls}
-            >
-              {lines.map((l) => (
-                <option key={l.key} value={l.key}>{l.label}</option>
-              ))}
-            </select>
           </Field>
           <Field label="Presentación *">
             <input
@@ -206,6 +314,27 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
               className={inputCls}
             />
           </Field>
+        </div>
+
+        {/* ID chip — create mode: auto-generated / edit mode: fixed existing */}
+        <div className="mt-4">
+          {mode === "create" ? (
+            <IdChip
+              label="ID del producto"
+              value={generatedId}
+              adjusted={idAdjusted}
+              empty={!generatedId}
+              emptyHint={
+                !form.line
+                  ? "Seleccioná una línea primero"
+                  : !form.name.trim()
+                    ? "Escribí el nombre para generar el ID"
+                    : "—"
+              }
+            />
+          ) : (
+            <IdChip label="ID del producto" value={productId ?? ""} fixed />
+          )}
         </div>
       </section>
 
@@ -235,7 +364,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           </div>
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex cursor-pointer items-center gap-3">
             <span className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark">
               {uploading ? "Subiendo..." : "Subir imagen"}
             </span>
@@ -260,9 +389,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             </button>
           )}
         </div>
-        {form.image && (
-          <p className="mt-2 text-xs text-text-muted">{form.image}</p>
-        )}
+        {form.image && <p className="mt-2 text-xs text-text-muted">{form.image}</p>}
       </section>
 
       {/* Descripción */}
@@ -285,7 +412,9 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <div className="mb-3 space-y-2">
           {form.ingredients.map((ing, i) => (
             <div key={i} className="flex items-center gap-2">
-              <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">{ing}</span>
+              <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">
+                {ing}
+              </span>
               <button
                 type="button"
                 onClick={() => set("ingredients", form.ingredients.filter((_, j) => j !== i))}
@@ -334,7 +463,9 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <div className="mb-3 space-y-2">
           {form.benefits.map((b, i) => (
             <div key={i} className="flex items-center gap-2">
-              <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">{b}</span>
+              <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">
+                {b}
+              </span>
               <button
                 type="button"
                 onClick={() => set("benefits", form.benefits.filter((_, j) => j !== i))}
@@ -392,7 +523,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       <div className="flex items-center gap-4 border-t border-border-soft pt-4">
         <button
           type="submit"
-          disabled={saving || uploading}
+          disabled={saving || uploading || (mode === "create" && !generatedId)}
           className="rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
         >
           {saving ? "Guardando..." : mode === "create" ? "Crear producto" : "Guardar cambios"}
@@ -421,16 +552,72 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function ToggleField({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
+function IdChip({
+  label,
+  value,
+  adjusted,
+  empty,
+  emptyHint,
+  fixed,
+}: {
+  label: string;
+  value: string;
+  adjusted?: boolean;
+  empty?: boolean;
+  emptyHint?: string;
+  fixed?: boolean;
+}) {
+  return (
+    <div>
+      <p className="mb-1.5 text-sm font-semibold text-text-sub">{label}</p>
+      <div className="flex items-center gap-3 rounded-xl border border-border-soft bg-surface-warm px-4 py-3">
+        {empty ? (
+          <span className="text-sm italic text-text-faint">{emptyHint ?? "—"}</span>
+        ) : (
+          <span className="font-mono text-sm text-text-sub">{value}</span>
+        )}
+        <div className="ml-auto flex items-center gap-1.5">
+          {adjusted && (
+            <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">
+              Ajustado
+            </span>
+          )}
+          <span className="rounded-md bg-border-mid/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-muted">
+            {fixed ? "Fijo" : "Auto"}
+          </span>
+        </div>
+      </div>
+      <p className="mt-1 text-xs text-text-muted">
+        {fixed ? "El ID no se puede modificar una vez creado." : "Generado automáticamente. No es editable."}
+      </p>
+    </div>
+  );
+}
+
+function ToggleField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
   return (
     <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-border-soft bg-surface-warm px-3 py-3">
       <span className="text-sm font-medium text-text-sub">{label}</span>
       <button
         type="button"
         onClick={() => onChange(!value)}
-        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-warm ${value ? "bg-primary" : "bg-border-mid"}`}
+        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-warm ${
+          value ? "bg-primary" : "bg-border-mid"
+        }`}
       >
-        <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${value ? "translate-x-4" : "translate-x-1"}`} />
+        <span
+          className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${
+            value ? "translate-x-4" : "translate-x-1"
+          }`}
+        />
       </button>
     </label>
   );
