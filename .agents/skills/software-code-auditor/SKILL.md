@@ -42,225 +42,30 @@ Este archivo define el contrato común. Esta skill solo agrega las reglas espec�
 
 ---
 
-## Input Requerido (OBLIGATORIO antes de auditar)
+## Input Requerido y PASO 0
 
-Antes de emitir el primer hallazgo, revisar SIEMPRE en este orden:
+Aplicar el **Input Mínimo Obligatorio** y el **PASO 0 completo** definidos en:
 
-1. **LECCIONES_APRENDIDAS.md** → causas raíz, deuda conocida y convenciones del proyecto
-2. **Otros/Info_Auditorias/** → artefactos previos, si existen:
-   - `baseline_info.txt`
-   - `baseline_structure.txt`
-   - `baseline_dependencies.txt`
-   - `audit_code_*.md`
-   - `audit_architecture_*.md`
-   - `Respuesta-audit_code_*.md`
-   - `Respuesta-audit_architecture_*.md`
-   - `verification_*.md`
-3. **Git state actual** → branch, tracking remoto, commits, working tree y diff contra baseline si existe
-4. **Docs locales del framework** cuando un hallazgo dependa de convenciones versionadas del framework
+- `.agents/skills/shared-audit-baseline-traceability.md`
+
+Este archivo es la fuente única de verdad para baseline, trazabilidad y contexto pre-auditoría. Esta skill no redefine esos pasos.
 
 ---
 
-## PASO 0 — Contexto, Baseline y Trazabilidad (OBLIGATORIO antes de auditar)
+## Input Contextual (ejecución vía orquestador)
 
-**ANTES de comenzar la auditoría, ejecutar estos pasos:**
+Si esta skill es ejecutada por `software-audit-orchestrator` como **FASE 1** del pipeline:
 
-### 0A — Leer Historial de Auditorías
-
-Objetivo: evitar falsos positivos reciclados, deuda ya aceptada reportada como “nueva” y pérdida de contexto sobre fixes o regresiones previas.
-
-Checklist mínima:
-
-```text
-1. Leer LECCIONES_APRENDIDAS.md
-2. Leer los últimos audit_code_*.md y audit_architecture_*.md relevantes
-3. Leer las respuestas del desarrollador asociadas
-4. Leer las últimas verification_*.md si existen
-5. Registrar explícitamente qué artefactos previos fueron considerados
-```
-
-**Regla:** si existe `Otros/Info_Auditorias/` y no se leyó, la auditoría está incompleta.
-
-### 0B — Resolver el Baseline sin asumir commit automático
-
-Resolver baseline con esta prioridad:
-
-1. `Otros/Info_Auditorias/baseline_info.txt`
-2. Hash explícito dentro de auditorías o respuestas previas, por ejemplo:
-   - `Commit auditado: <hash>`
-   - `Snapshot de referencia: <hash>`
-3. `HEAD` actual como snapshot lógico si no existe baseline formal
-4. Heurística por historial git (`audit|baseline`) como último recurso
-
-```bash
-git status --short --branch
-
-BASELINE_HASH=$(cat /home/server/Escritorio/mascercaap/mas-cerca-ap/Otros/Info_Auditorias/baseline_info.txt 2>/dev/null | grep BASELINE_COMMIT | cut -d'=' -f2)
-
-# Fallback: parsear hash desde auditorías/respuestas previas
-# Buscar patrones como:
-# - Commit auditado: `abc123`
-# - Snapshot de referencia: `abc123`
-
-if [ -z "$BASELINE_HASH" ]; then
-  BASELINE_HASH=$(git log --oneline --all | grep -i "audit\|baseline" | head -1 | awk '{print $1}')
-fi
-```
-
-**Regla:** si el baseline no viene de `baseline_info.txt`, declarar la fuente en el reporte.
-
-### 0C — Detectar el modo real de comparación
-
-No asumir que todos los cambios están comiteados.
-
-| Escenario | Qué comparar |
+| Contexto | Valor |
 |---|---|
-| Hay baseline confiable, commits posteriores y working tree limpio | `BASELINE..HEAD` |
-| Hay baseline confiable, sin commits posteriores pero con working tree modificado | `git diff BASELINE` |
-| Hay baseline confiable, commits posteriores y además working tree modificado | reportar ambos |
-| No hay baseline confiable | auditoría full del estado actual + advertencia explícita |
+| `MODO_EJECUCION` | `pipeline` |
+| `SKIP_PASO_0` | `true` (el orquestador ya ejecutó el shared) |
+| `CONTEXTO_RESUELTO` | baseline hash, diff mode, working tree, commits |
+| `HALLAZGOS_PREVIOS` | ninguno (es la primera skill del pipeline) |
 
-```bash
-git status --short --branch
+Al ser FASE 1, sus hallazgos se pasan a `software-architecture-auditor` (FASE 2).
 
-if [ -n "$BASELINE_HASH" ]; then
-  git log --oneline "$BASELINE_HASH"..HEAD
-  git diff --name-only "$BASELINE_HASH"
-fi
-```
-
-**Regla:** el reporte debe declarar si se auditó `baseline..HEAD`, working tree vs baseline, repo actual completo, o una combinación.
-
-### 0D — Validar capacidad de trazabilidad Git / GitHub
-
-**Hacer commit local NO requiere conexión a GitHub.** GitHub solo importa para `push`, PR o trazabilidad remota compartida.
-
-Validar ambos planos por separado:
-
-#### Plano 1 — Git local
-
-```bash
-git rev-parse --is-inside-work-tree
-git status --short --branch
-git remote -v
-```
-
-#### Plano 2 — GitHub (`gh`) opcional
-
-```bash
-gh auth status
-```
-
-Interpretación rápida:
-
-- **Git local OK + `gh` no autenticado** → se puede auditar y se puede hacer commit local si el usuario lo autoriza
-- **Git local OK + `gh` autenticado** → además se puede usar trazabilidad remota (`push`, PR, issues) si el usuario lo pide
-- **Git local roto** → detenerse, porque ni siquiera hay baseline confiable del repo
-
-**Regla:** no bloquear auditoría ni commit local por falta de auth de GitHub.
-
-### 0E — Baseline commit formal (OPCIONAL y solo con permiso explícito)
-
-Crear commit baseline solo si se cumplen TODAS estas condiciones:
-
-1. El usuario pidió explícitamente máxima trazabilidad con commit baseline
-2. No existe ya un baseline confiable suficiente
-3. Hay cambios que vale la pena congelar antes de auditar
-4. El usuario autorizó el commit de forma explícita
-
-```bash
-git add -A
-git commit -m "chore(audit): baseline snapshot before code audit YYYY-MM-DD HH:MM"
-git log -1 --format='%H' HEAD
-```
-
-**Reglas críticas:**
-
-- NO asumir commit automático
-- NO crear baseline commit si el usuario no lo pidió
-- NO confundir `gh auth status` con requisito para commit local
-- Si no hay permiso, usar baseline lógico (`baseline_info`, auditoría previa o `HEAD`) y continuar
-
-### 0F — Generar Archivo de Contexto Baseline
-
-Crear o actualizar en `Otros/Info_Auditorias/` un snapshot documental del estado auditado. Sirve aunque no exista commit formal nuevo.
-
-Contenido mínimo del snapshot:
-
-- baseline hash o snapshot lógico usado
-- fuente del baseline
-- fecha
-- branch actual
-- modo de comparación
-- si había working tree modificado
-- estructura del scope auditado
-- dependencias relevantes
-
-### 0G — Archivo de Auditoría en Info_Auditorias
-
-Crear el archivo de informe vacío que se llenará al finalizar:
-
-```
-/home/server/Escritorio/mascercaap/mas-cerca-ap/Otros/Info_Auditorias/audit_code_YYYY-MM-DD_HHMM.md
-```
-
-Template inicial:
-```markdown
-# Auditoría de Código — [FECHA]
-
-## Metadatos
-- **Tipo:** Código
-- **Fecha:** [FECHA]
-- **Baseline / Snapshot:** [HASH O DESCRIPCIÓN]
-- **Fuente del baseline:** [baseline_info|auditoría previa|respuesta previa|HEAD actual|heurística git|sin baseline]
-- **Modo de comparación:** [repo actual completo|baseline..HEAD|working tree vs baseline|ambos]
-- **Artefactos previos leídos:** [LISTA]
-- **Auditor:** software-code-auditor v1.2
-- **Commits desde baseline:** [COMMITS_COUNT]
-
-## Estado Pre-Auditoría (Baseline)
-- Baseline o snapshot: [HASH O DESCRIPCIÓN]
-- Fecha baseline: [FECHA]
-- Working tree al iniciar: [limpio|modificado]
-- Archivos en scope: [FILES_COUNT]
-- Dependencias totales: [DEPS_COUNT]
-
-## Hallazgos Detallados
-- [SEVERIDAD] ID-REGLA — Archivo:línea
-  - Síntoma: ...
-  - Causa raíz: ...
-  - Solución: ...
-
-## Resumen Ejecutivo
-- Total hallazgos: [TOTAL]
-- 🔴 Críticos: [CRIT_COUNT]
-- 🟠 Altos: [HIGH_COUNT]
-- 🟡 Medios: [MED_COUNT]
-- 🟢 Bajos/Info: [LOW_COUNT]
-
-## Resumen por Categoría
-- 🟥 Seguridad (SEC): [SEC_COUNT]
-- 🟠 Bugs (BUG): [BUG_COUNT]
-- 🔵 Next.js (NEXT): [NEXT_COUNT]
-- 🟡 TypeScript (TS): [TS_COUNT]
-- 🟢 Rendimiento (PERF): [PERF_COUNT]
-- 🔷 Accesibilidad (A11Y): [A11Y_COUNT]
-- 🟣 Deuda Técnica (DT): [DT_COUNT]
-- 🩷 UX y Contenido (UX): [UX_COUNT]
-
-## Top 5 Issues (por impacto en usuario)
-1. ...
-2. ...
-3. ...
-4. ...
-5. ...
-
-## Archivos Sin Hallazgos
-- ...
-
-## Riesgos no validados por ejecución
-- [cambio o hallazgo] — [qué no se pudo validar sin build/test/runtime]
-```
+**Si se ejecuta standalone**, aplicar el PASO 0 del shared directamente.
 
 ---
 
