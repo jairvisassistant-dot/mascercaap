@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
   if (!ALLOWED_TYPES.includes(file.type)) {
     return NextResponse.json(
-      { error: "Tipo de archivo no permitido. Usá .webp, .jpg o .png" },
+      { error: "Tipo de archivo no permitido. Use .webp, .jpg o .png" },
       { status: 400 }
     );
   }
@@ -39,7 +39,8 @@ export async function POST(req: Request) {
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
   );
 
   const bytes = await file.arrayBuffer();

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { contactSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { SITE_CONFIG } from "@/lib/config";
 
 // Rate Limiting — sliding window, in-memory
 // 5 requests per IP per 60s. Resets on cold start — acceptable for a contact
@@ -150,7 +151,7 @@ function buildEmailHtml(data: ContactFormData): string {
             <td style="background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #f0f0f0;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
                 Este mensaje fue enviado desde el formulario de contacto de
-                <strong style="color:#3f8f46;">mascercap.com</strong>
+                <strong style="color:#3f8f46;">${new URL(SITE_CONFIG.siteUrl).hostname}</strong>
               </p>
             </td>
           </tr>

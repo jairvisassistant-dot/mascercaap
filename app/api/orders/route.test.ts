@@ -28,7 +28,16 @@ async function loadPost(
   })
 
   const mockSupabase = {
-    from: vi.fn(() => ({ insert: supabaseInsert })),
+    from: vi.fn((table: string) => {
+      if (table === "products") {
+        return {
+          select: vi.fn(() => ({
+            not: vi.fn().mockResolvedValue({ data: [], error: null }),
+          })),
+        }
+      }
+      return { insert: supabaseInsert }
+    }),
   }
 
   vi.resetModules()

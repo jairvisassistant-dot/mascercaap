@@ -30,8 +30,7 @@
     "socialLabel": "Síguenos en"
   },
   "whatsapp": {
-    "message": "Hola! Quiero información sobre sus productos.",
-    "ariaLabel": "Contactar por WhatsApp"
+    "message": "Hola! Quiero información sobre sus productos."
   },
   "socialQr": {
     "facebook": {
@@ -198,8 +197,6 @@
       "title": "Lo que dicen nuestros clientes",
       "subtitle": "Empresas y negocios que confían en Más Cerca AP para sus necesidades de jugos naturales.",
       "goTo": "Ir a testimonio",
-      "pause": "Pausar testimonios",
-      "resume": "Reanudar testimonios",
       "highlights": [
         "Restaurantes y cafeterías",
         "Aliados comerciales en Bogotá",
@@ -264,6 +261,7 @@
     "scrollPrev": "Ver productos anteriores de",
     "scrollNext": "Ver más productos de",
     "lightbox": {
+      "close": "Cerrar",
       "ingredients": "Ingredientes",
       "benefits": "Beneficios"
     }
@@ -356,9 +354,6 @@
       "stepOf": "de",
       "title": "Nuestro Proceso en Imágenes",
       "subtitle": "Una mirada detrás de escenas a cómo preparamos cada jugo.",
-      "mobileHint": "Toca cada imagen para conocer el proceso",
-      "pressMore": "Toca para saber más",
-      "pressBack": "Toca para volver",
       "cards": [
         {
           "title": "El origen lo es todo",
@@ -645,8 +640,6 @@
     "step3Label": "¿Qué fruta o producto?",
     "step4Label": "¿Qué presentación?",
     "step5Label": "¿Cuántas unidades?",
-    "step6Label": "¿Zona de entrega?",
-    "step7Label": "¿Cuándo lo necesitas?",
     "step8Label": "Tus datos de contacto",
     "profiles": {
       "hogar": "Hogar",
@@ -661,12 +654,9 @@
     },
     "zones": {
       "bogota": "Bogotá",
-      "medellin": "Medellín",
-      "cali": "Cali",
-      "otra": "Otra ciudad"
+      "medellin": "Medellín"
     },
     "urgency": {
-      "hoy": "Hoy",
       "manana": "Mañana",
       "semana": "Esta semana",
       "sin_urgencia": "Sin urgencia"
@@ -674,7 +664,6 @@
     "customQtyLabel": "Personalizado",
     "customQtyPlaceholder": "Cantidad",
     "waGreeting": "Hola, quiero hacer un pedido:",
-    "waClientType": "Tipo de cliente",
     "waProducts": "Productos",
     "waConfirm": "¿Me confirman disponibilidad y precio?",
     "nameLabel": "Nombre completo",
@@ -712,7 +701,6 @@
     "welcome": "Hola. 👋 Soy el asistente de Más Cerca AP. Selecciona una categoría o escribe tu pregunta.",
     "placeholder": "Escribe tu pregunta...",
     "fallback": "No tengo información sobre eso. ¿Te gustaría hablar con nuestro equipo?",
-    "talkToHuman": "Hablar con una persona",
     "advisorOffer": "¿Quieres hablar con un asesor?",
     "talkToAdvisor": "Conectar con asesor",
     "leadFormIntro": "Para conectarte con un asesor, necesito algunos datos rápidos:",
@@ -732,19 +720,11 @@
     "leadConnectApp": "Abrir aplicación",
     "leadConnectWeb": "Continuar en WhatsApp Web",
     "leadConnectOr": "O escanea con tu celular:",
-    "leadQrTitle": "Escanea con tu celular",
     "leadQrHint": "Abre la cámara de tu celular y enfoca el código para iniciar la conversación en WhatsApp.",
     "leadQrSaved": "✓ Tus datos fueron guardados. El asesor tendrá el contexto de tu consulta.",
     "whatsappQrAlt": "Código QR para iniciar conversación por WhatsApp",
-    "helpful": "¿Te fue útil esta respuesta?",
-    "yes": "Sí, gracias",
-    "no": "No del todo",
-    "thankYou": "¡Gracias por tu feedback!",
-    "notHelpful": "Entendido, gracias por decírnoslo. Puedes contactarnos directamente por WhatsApp para más ayuda.",
     "backToCategories": "← Volver a categorías",
     "categories": "¿Sobre qué quieres consultar?",
-    "ariaOpen": "Abrir asistente de preguntas frecuentes",
-    "ariaClose": "Cerrar asistente",
     "sendAriaLabel": "Enviar mensaje",
     "inputLabel": "Escribe tu pregunta"
   },
@@ -759,15 +739,33 @@
     "step2Label": "¿Qué fruta?",
     "step3Label": "¿Cuál presentación te conviene más?",
     "customPlaceholder": "Cantidad de vasos",
-    "resultPacksNeeded": "Necesitas {count} paquete(s) de {fruit} {presentation}",
-    "resultCupsYield": "Rinde aprox. {cups} vasos de 16oz",
-    "freshComparisonTitle": "Comparado con fruta fresca:",
-    "freshKg": "~{kg} kg de fruta fresca",
-    "minutesSaved": "~{minutes} min de procesamiento ahorrados",
-    "noWaste": "Cero desperdicio de cáscara y semillas",
     "ctaWhatsapp": "Hacer pedido",
     "disclaimer": "Valores aproximados según preparación estándar. Puede variar según receta e intensidad.",
-    "back": "Volver"
+    "back": "Volver",
+    "quickFlowLabel": "Flujo rápido",
+    "cups": "vasos",
+    "resultHeroPrefix": "Para {n} vasos de 16oz necesitas",
+    "pack": "paquete",
+    "packs": "paquetes",
+    "calcAgain": "Calcular de nuevo",
+    "bestYield": "★ Mayor rendimiento",
+    "noSurplus": "✓ Sin excedente",
+    "surplusLabel": "+{n} vasos extra",
+    "packetsMetric": "Paquetes",
+    "cupsMetric": "Vasos de 16oz",
+    "freshEquivMetric": "Fruta fresca equiv.",
+    "timeSavedMetric": "Tiempo ahorrado",
+    "eachUnit": "c/u",
+    "totalCupsLabel": "vasos totales",
+    "wouldHaveNeeded": "habrías necesitado",
+    "hoursSaved": "h ahorradas",
+    "minSaved": "min ahorrados",
+    "cupGridTitle": "Rendimiento — vasos que preparas",
+    "cupsPerCycle": "~{n} vasos de 16oz por cada ciclo de preparación",
+    "comparisonTitle": "Tiempo de preparación comparado",
+    "freshFruitLabel": "🍋 Fruta fresca",
+    "masApLabel": "🧊 Pulpa Más Cerca",
+    "timeSavedResult": "⏱ Ahorras {t} de procesamiento por preparación"
   },
   "legal": {
     "lastUpdated": "Última actualización",

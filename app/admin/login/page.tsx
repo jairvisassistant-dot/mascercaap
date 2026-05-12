@@ -61,14 +61,14 @@ export default function AdminLoginPage() {
             Administración
           </p>
           <h1 className="text-3xl font-bold tracking-tight text-text-main">Mas Cerca AP</h1>
-          <p className="mt-2 text-sm leading-relaxed text-text-muted">Ingresá para gestionar el catálogo de productos.</p>
+          <p className="mt-2 text-sm leading-relaxed text-text-muted">Ingrese para gestionar el catálogo de productos.</p>
         </div>
 
         <form
           onSubmit={handleSubmit}
           className="space-y-5 rounded-3xl border border-border-soft bg-surface-card p-7 shadow-[0_24px_70px_-34px_rgba(47,111,54,0.45)]"
         >
-          <div>
+          <div suppressHydrationWarning>
             <label htmlFor="admin-email" className="mb-1.5 block text-sm font-semibold text-text-sub">
               Email
             </label>
@@ -85,7 +85,7 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          <div>
+          <div suppressHydrationWarning>
             <label htmlFor="admin-password" className="mb-1.5 block text-sm font-semibold text-text-sub">
               Contraseña
             </label>

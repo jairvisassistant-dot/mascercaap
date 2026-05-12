@@ -1,19 +1,20 @@
 import type { OrderInput, OrderItem } from "@/lib/schemas/order"
+import { SITE_CONFIG } from "@/lib/config"
 
-export type ClientProfile = "hogar" | "cafeteria" | "evento" | "distribucion"
-export type DeliveryZone   = "bogota" | "medellin" | "cali" | "otra"
-export type Urgency        = "hoy" | "manana" | "semana" | "sin_urgencia"
+type ClientProfile = "hogar" | "cafeteria" | "evento" | "distribucion"
+type DeliveryZone   = "bogota" | "medellin" | "cali" | "otra"
+type Urgency        = "hoy" | "manana" | "semana" | "sin_urgencia"
 
 export const PRODUCT_TYPE_OPTIONS = ["Pulpas", "Zumos", "Lácteos"] as const
 
-export const PRODUCT_OPTIONS_BY_PROFILE: Record<ClientProfile, string[]> = {
+const PRODUCT_OPTIONS_BY_PROFILE: Record<ClientProfile, string[]> = {
   hogar:        [...PRODUCT_TYPE_OPTIONS],
   cafeteria:    [...PRODUCT_TYPE_OPTIONS],
   evento:       [...PRODUCT_TYPE_OPTIONS],
   distribucion: [...PRODUCT_TYPE_OPTIONS],
 }
 
-export const PULPA_FRUITS = [
+const PULPA_FRUITS = [
   "Maracuyá",
   "Mora",
   "Mango",
@@ -26,14 +27,14 @@ export const PULPA_FRUITS = [
   "Tomate de árbol",
 ]
 
-export const ZUMOS_PRODUCTS = [
+const ZUMOS_PRODUCTS = [
   "Limón",
   "Limonada con Cereza",
   "Limonada con Coco",
   "Maracuyá",
 ]
 
-export const PRODUCT_OPTIONS_BY_TYPE: Record<string, string[]> = {
+const PRODUCT_OPTIONS_BY_TYPE: Record<string, string[]> = {
   "Pulpas": PULPA_FRUITS,
   "Zumos":  ZUMOS_PRODUCTS,
   "Lácteos": [
@@ -47,7 +48,7 @@ export function getProductOptionsForType(productType: string): string[] {
   return PRODUCT_OPTIONS_BY_TYPE[productType] ?? []
 }
 
-export const PULPA_PRESENTATIONS = ["120g", "300g", "1000g"] as const
+const PULPA_PRESENTATIONS = ["120g", "300g", "1000g"] as const
 
 // Guayaba y Tomate de árbol no tienen presentación 120g
 const PULPA_PRESENTATIONS_OVERRIDE: Record<string, string[]> = {
@@ -55,7 +56,7 @@ const PULPA_PRESENTATIONS_OVERRIDE: Record<string, string[]> = {
   "Tomate de árbol": ["300g", "1000g"],
 }
 
-export const ZUMOS_PRESENTATIONS: Record<string, string[]> = {
+const ZUMOS_PRESENTATIONS: Record<string, string[]> = {
   "Limón":               ["600ml", "1L", "2L", "5L"],
   "Limonada con Cereza": ["350ml", "1L", "2L"],
   "Limonada con Coco":   ["350ml", "1L", "2L"],
@@ -69,21 +70,21 @@ export function getPresentationsForProduct(productType: string, fruit: string): 
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
 
-export const ZONE_LABELS: Record<DeliveryZone, string> = {
+const ZONE_LABELS: Record<DeliveryZone, string> = {
   bogota:    "Bogotá",
   medellin:  "Medellín",
   cali:      "Cali",
   otra:      "Otra ciudad",
 }
 
-export const URGENCY_LABELS: Record<Urgency, string> = {
+const URGENCY_LABELS: Record<Urgency, string> = {
   hoy:          "Hoy",
   manana:       "Mañana",
   semana:       "Esta semana",
   sin_urgencia: "Sin urgencia",
 }
 
-export const PROFILE_LABELS: Record<ClientProfile, string> = {
+const PROFILE_LABELS: Record<ClientProfile, string> = {
   hogar:        "Hogar",
   cafeteria:    "Cafetería / Restaurante",
   evento:       "Evento",
@@ -91,7 +92,7 @@ export const PROFILE_LABELS: Record<ClientProfile, string> = {
 }
 
 // Precios COP por producto lácteo (precio por unidad) — fuente: Otros/ListaPreciosZumos.jpeg
-export const LACTEOS_PRICES: Record<string, number> = {
+const LACTEOS_PRICES: Record<string, number> = {
   "Kumis Del Hato 250ml":  3700,
   "Kumis Yolito 250ml":    3400,
   "Yogurt Del Hato 250ml": 3700,
@@ -99,7 +100,7 @@ export const LACTEOS_PRICES: Record<string, number> = {
 
 // Precios COP por fruta y presentación
 // Fuentes: Otros/Lista-Precios.md (pulpas) y Otros/ListaPreciosZumos.jpeg (zumos)
-export const PRICES_COP: Record<string, Record<string, number>> = {
+const PRICES_COP: Record<string, Record<string, number>> = {
   // Pulpas — Maracuyá cubre también el zumo (350ml, 1L, 2L)
   "Maracuyá":         { "120g": 2900,  "300g": 4850,  "1000g": 15500, "350ml": 4800, "1L": 10000, "2L": 18000 },
   "Mora":             { "120g": 2300,  "300g": 4400,  "1000g": 13000 },
@@ -117,7 +118,7 @@ export const PRICES_COP: Record<string, Record<string, number>> = {
   "Limonada con Coco":   { "350ml": 4800,  "1L": 10000, "2L": 18000 },
 }
 
-export function getProductOptionsForProfile(profile: ClientProfile): string[] {
+function getProductOptionsForProfile(profile: ClientProfile): string[] {
   return PRODUCT_OPTIONS_BY_PROFILE[profile]
 }
 
@@ -153,8 +154,7 @@ export const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> =
 // When provided, replaces the static PRICES_COP lookup (e.g., with live Supabase data).
 export type PriceResolver = (fruit: string, presentation: string | null | undefined) => number | null
 
-export function getDiscountRate(totalUnits: number): number {
-  void totalUnits
+function getDiscountRate(_totalUnits: number): number {
   return 0
 }
 
@@ -361,7 +361,7 @@ export function buildOrderEmailHtml(data: OrderInput, resolvePrice?: PriceResolv
             <td style="background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #f0f0f0;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
                 Pedido enviado desde el Asistente de Pedido —
-                <strong style="color:#3f8f46;">mascercap.com</strong>
+                <strong style="color:#3f8f46;">${new URL(SITE_CONFIG.siteUrl).hostname}</strong>
               </p>
             </td>
           </tr>

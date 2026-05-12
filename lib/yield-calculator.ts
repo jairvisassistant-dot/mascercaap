@@ -13,7 +13,7 @@ export type FruitKey =
   | "frutos_rojos"
   | "tomate_arbol"
 
-export interface FruitData {
+interface FruitData {
   label: string
   freshKgPer1kgPulp: number
   processingMinPer1kg: number
@@ -64,7 +64,7 @@ export function totalCupsFromPacks(packs: number, presentation: Presentation, pr
   return Math.floor((packs * PACK_GRAMS[presentation]) / GRAMS_PER_CUP[prep])
 }
 
-export interface FreshComparison {
+interface FreshComparison {
   freshKg: number
   minutesSaved: number
 }
@@ -83,27 +83,3 @@ export function freshComparison(
   }
 }
 
-export function buildWhatsappMessage(params: {
-  fruit: FruitKey
-  presentation: Presentation
-  targetCups: number
-  packsCount: number
-  whatsappNumber: string
-  prepType: PrepType
-}): string {
-  const fruitLabel = FRUIT_DATA[params.fruit].label
-  const prepLabel = params.prepType === "jugo" ? "Jugo" : "Frappe"
-  const message = [
-    "Hola, quiero cotizar un pedido de pulpa:",
-    "",
-    `Preparación: ${prepLabel}`,
-    `Fruta: ${fruitLabel}`,
-    `Presentación: ${params.presentation}`,
-    `Objetivo: ${params.targetCups} vasos de 16oz`,
-    `Cantidad estimada: ${params.packsCount} paquete(s)`,
-    "",
-    "¿Me confirman disponibilidad y precio?",
-  ].join("\n")
-
-  return `https://wa.me/${params.whatsappNumber}?text=${encodeURIComponent(message)}`
-}

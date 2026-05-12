@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
-  getProductOptionsForProfile,
   getProductOptionsForType,
   getUnitPrice,
-  getDiscountRate,
   calculateOrderTotal,
   buildWhatsappMessage,
   buildOrderEmailHtml,
@@ -20,21 +18,6 @@ const baseOrder: OrderInput = {
     { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
   ],
 }
-
-// ──────────────────────────────────────────────
-// getProductOptionsForProfile
-// ──────────────────────────────────────────────
-describe("getProductOptionsForProfile", () => {
-  it.each(["hogar", "cafeteria", "evento", "distribucion"] as const)(
-    "%s includes all three categories",
-    (profile) => {
-      const opts = getProductOptionsForProfile(profile)
-      expect(opts).toContain("Pulpas")
-      expect(opts).toContain("Zumos")
-      expect(opts).toContain("Lácteos")
-    }
-  )
-})
 
 // ──────────────────────────────────────────────
 // getProductOptionsForType
@@ -74,11 +57,11 @@ describe("getProductOptionsForType", () => {
 // ──────────────────────────────────────────────
 describe("getUnitPrice", () => {
   it("returns correct price for Maracuyá 120g", () => {
-    expect(getUnitPrice("Maracuyá", "120g")).toBe(2800)
+    expect(getUnitPrice("Maracuyá", "120g")).toBe(2900)
   })
 
   it("returns correct price for Mora 1000g", () => {
-    expect(getUnitPrice("Mora", "1000g")).toBe(21000)
+    expect(getUnitPrice("Mora", "1000g")).toBe(13000)
   })
 
   it("returns null for unknown fruit", () => {
@@ -99,30 +82,16 @@ describe("getUnitPrice", () => {
 })
 
 // ──────────────────────────────────────────────
-// getDiscountRate
-// ──────────────────────────────────────────────
-describe("getDiscountRate", () => {
-  it("0% for 1 unit", ()   => expect(getDiscountRate(1)).toBe(0))
-  it("0% for 9 units", ()  => expect(getDiscountRate(9)).toBe(0))
-  it("0% for 10 units", () => expect(getDiscountRate(10)).toBe(0))
-  it("0% for 19 units", () => expect(getDiscountRate(19)).toBe(0))
-  it("0% for 20 units", ()=> expect(getDiscountRate(20)).toBe(0))
-  it("0% for 49 units", ()=> expect(getDiscountRate(49)).toBe(0))
-  it("0% for 50 units", ()=> expect(getDiscountRate(50)).toBe(0))
-  it("0% for 100 units",()=> expect(getDiscountRate(100)).toBe(0))
-})
-
-// ──────────────────────────────────────────────
 // calculateOrderTotal
 // ──────────────────────────────────────────────
 describe("calculateOrderTotal", () => {
   it("calculates subtotal and no discount for < 10 units", () => {
     const items = [{ productType: "Pulpas", fruit: "Maracuyá", presentation: "120g" as const, quantity: 5 }]
     const t = calculateOrderTotal(items)
-    expect(t.subtotal).toBe(2800 * 5)   // 14000
+    expect(t.subtotal).toBe(2900 * 5)   // 14500
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
-    expect(t.total).toBe(14000)
+    expect(t.total).toBe(14500)
     expect(t.hasPrice).toBe(true)
   })
 
@@ -132,7 +101,7 @@ describe("calculateOrderTotal", () => {
       { productType: "Pulpas", fruit: "Mora",      presentation: "300g" as const, quantity: 10 },
     ]
     const t = calculateOrderTotal(items)
-    const expectedSubtotal = 6800 * 10 + 7400 * 10  // 68000 + 74000 = 142000
+    const expectedSubtotal = 4850 * 10 + 4400 * 10  // 48500 + 44000 = 92500
     expect(t.subtotal).toBe(expectedSubtotal)
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
@@ -149,10 +118,10 @@ describe("calculateOrderTotal", () => {
   it("keeps net total without volume discount for 50+ units", () => {
     const items = [{ productType: "Pulpas", fruit: "Mora", presentation: "120g" as const, quantity: 50 }]
     const t = calculateOrderTotal(items)
-    expect(t.subtotal).toBe(3200 * 50)
+    expect(t.subtotal).toBe(2300 * 50)  // 115000
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
-    expect(t.total).toBe(3200 * 50)
+    expect(t.total).toBe(2300 * 50)
   })
 })
 
