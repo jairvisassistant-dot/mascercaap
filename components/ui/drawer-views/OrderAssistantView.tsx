@@ -7,13 +7,13 @@ import {
   getProductOptionsForType,
   getPresentationsForProduct,
   buildWhatsappMessage,
-  getUnitPrice,
   calculateOrderTotal,
   formatCOP,
   QUANTITY_OPTIONS,
   PRODUCT_TYPE_OPTIONS,
 } from "@/lib/order-assistant"
 import { useDictionary } from "@/lib/i18n/DictionaryProvider"
+import { usePrices } from "@/lib/prices/PriceProvider"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 
@@ -29,6 +29,7 @@ type Props = {
 export default function OrderAssistantView({ onContactClick }: Props) {
   const { dict } = useDictionary()
   const t = dict.orderAssistant
+  const resolvePrice = usePrices()
 
   // ── Global state ───────────────────────────────────────────────
   const [step, setStep]       = useState<Step>(1)
@@ -50,7 +51,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
   const [waUrl, setWaUrl]     = useState<string | null>(null)
 
   // ── Derived ───────────────────────────────────────────────────
-  const totals   = items.length > 0 ? calculateOrderTotal(items) : null
+  const totals   = items.length > 0 ? calculateOrderTotal(items, resolvePrice) : null
   const stepNum  = step === "result" ? 6 : step === "cart" ? 4.5 : (step as number)
   const progress = Math.min((stepNum / 5) * 100, 100)
 
@@ -64,7 +65,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
   const isLacteos = curProductType === "Lácteos"
 
   const fruitOptions = getProductOptionsForType(curProductType ?? "").map((v) => {
-    const price = isLacteos ? getUnitPrice(v, null) : null
+    const price = isLacteos ? resolvePrice(v, null) : null
     return {
       value: v,
       label: v,
@@ -78,7 +79,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
       ? getPresentationsForProduct(curProductType, curFruit)
       : []
   ).map((pres) => {
-    const price = getUnitPrice(curFruit ?? "", pres)
+    const price = resolvePrice(curFruit ?? "", pres)
     return { value: pres, label: price !== null ? `${pres} — ${formatCOP(price)}` : pres }
   })
 
@@ -228,7 +229,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
               {totals && (
                 <div className="w-full text-left bg-surface-page rounded-xl border border-border-soft p-4 mb-5 space-y-2">
                   {items.map((item, i) => {
-                    const price = getUnitPrice(item.fruit, item.presentation)
+                    const price = resolvePrice(item.fruit, item.presentation)
                     return (
                       <div key={i} className="flex justify-between text-sm">
                         <span className="text-text-sub">{item.fruit}{item.presentation ? ` ${item.presentation}` : ""} × {item.quantity} {t.unitsShort}</span>
@@ -408,7 +409,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                 {/* Lista de ítems */}
                 <div className="rounded-xl border border-border-soft overflow-hidden">
                   {items.map((item, i) => {
-                    const price = getUnitPrice(item.fruit, item.presentation)
+                    const price = resolvePrice(item.fruit, item.presentation)
                     return (
                       <div
                         key={i}

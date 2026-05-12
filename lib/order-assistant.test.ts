@@ -1,12 +1,35 @@
 import { describe, expect, it } from "vitest"
 import {
   getProductOptionsForType,
-  getUnitPrice,
   calculateOrderTotal,
   buildWhatsappMessage,
   buildOrderEmailHtml,
 } from "./order-assistant"
+import type { PriceResolver } from "./order-assistant"
 import type { OrderInput } from "@/lib/schemas/order"
+
+// Mock resolver that mirrors the prices previously hardcoded in PRICES_COP / LACTEOS_PRICES.
+// Used only in tests — production prices come from Supabase.
+const mockResolvePrice: PriceResolver = (fruit, presentation) => {
+  if (!presentation) {
+    const lacteos: Record<string, number> = {
+      "Kumis Del Hato 250ml":  3700,
+      "Kumis Yolito 250ml":    3400,
+      "Yogurt Del Hato 250ml": 3700,
+    }
+    return lacteos[fruit] ?? null
+  }
+  const prices: Record<string, Record<string, number>> = {
+    "Maracuyá":         { "120g": 2900, "300g": 4850,  "1000g": 15500 },
+    "Mora":             { "120g": 2300, "300g": 4400,  "1000g": 13000 },
+    "Mango":            { "120g": 2300, "300g": 4200,  "1000g": 13000 },
+    "Lulo":             { "120g": 2300, "300g": 4200,  "1000g": 13000 },
+    "Fresa":            { "120g": 2300, "300g": 4200,  "1000g": 13000 },
+    "Frutos Rojos":     { "120g": 2300, "300g": 4200,  "1000g": 13000 },
+    "Frutos Amarillos": { "120g": 2300, "300g": 4200,  "1000g": 13000 },
+  }
+  return prices[fruit]?.[presentation] ?? null
+}
 
 const baseOrder: OrderInput = {
   nombre:          "Laura Sánchez",
@@ -53,42 +76,13 @@ describe("getProductOptionsForType", () => {
 })
 
 // ──────────────────────────────────────────────
-// getUnitPrice
-// ──────────────────────────────────────────────
-describe("getUnitPrice", () => {
-  it("returns correct price for Maracuyá 120g", () => {
-    expect(getUnitPrice("Maracuyá", "120g")).toBe(2900)
-  })
-
-  it("returns correct price for Mora 1000g", () => {
-    expect(getUnitPrice("Mora", "1000g")).toBe(13000)
-  })
-
-  it("returns null for unknown fruit", () => {
-    expect(getUnitPrice("Corozo", "120g")).toBeNull()
-  })
-
-  it("returns null for unknown presentation", () => {
-    expect(getUnitPrice("Maracuyá", "500g")).toBeNull()
-  })
-
-  it("returns price for Lácteos product when presentation is null", () => {
-    expect(getUnitPrice("Kumis Del Hato 250ml", null)).toBeGreaterThan(0)
-  })
-
-  it("returns null for unknown Lácteos product with null presentation", () => {
-    expect(getUnitPrice("Avena Desconocida", null)).toBeNull()
-  })
-})
-
-// ──────────────────────────────────────────────
 // calculateOrderTotal
 // ──────────────────────────────────────────────
 describe("calculateOrderTotal", () => {
   it("calculates subtotal and no discount for < 10 units", () => {
     const items = [{ productType: "Pulpas", fruit: "Maracuyá", presentation: "120g" as const, quantity: 5 }]
-    const t = calculateOrderTotal(items)
-    expect(t.subtotal).toBe(2900 * 5)   // 14500
+    const t = calculateOrderTotal(items, mockResolvePrice)
+    expect(t.subtotal).toBe(2900 * 5)
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
     expect(t.total).toBe(14500)
@@ -100,8 +94,8 @@ describe("calculateOrderTotal", () => {
       { productType: "Pulpas", fruit: "Maracuyá", presentation: "300g" as const, quantity: 10 },
       { productType: "Pulpas", fruit: "Mora",      presentation: "300g" as const, quantity: 10 },
     ]
-    const t = calculateOrderTotal(items)
-    const expectedSubtotal = 4850 * 10 + 4400 * 10  // 48500 + 44000 = 92500
+    const t = calculateOrderTotal(items, mockResolvePrice)
+    const expectedSubtotal = 4850 * 10 + 4400 * 10
     expect(t.subtotal).toBe(expectedSubtotal)
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
@@ -111,17 +105,24 @@ describe("calculateOrderTotal", () => {
 
   it("hasPrice is false when fruit has no price", () => {
     const items = [{ productType: "Lácteos", fruit: "Avena", presentation: "120g" as const, quantity: 5 }]
-    const t = calculateOrderTotal(items)
+    const t = calculateOrderTotal(items, mockResolvePrice)
     expect(t.hasPrice).toBe(false)
   })
 
   it("keeps net total without volume discount for 50+ units", () => {
     const items = [{ productType: "Pulpas", fruit: "Mora", presentation: "120g" as const, quantity: 50 }]
-    const t = calculateOrderTotal(items)
-    expect(t.subtotal).toBe(2300 * 50)  // 115000
+    const t = calculateOrderTotal(items, mockResolvePrice)
+    expect(t.subtotal).toBe(2300 * 50)
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
     expect(t.total).toBe(2300 * 50)
+  })
+
+  it("returns hasPrice false and zero subtotal when no resolver provided", () => {
+    const items = [{ productType: "Pulpas", fruit: "Maracuyá", presentation: "120g" as const, quantity: 5 }]
+    const t = calculateOrderTotal(items)
+    expect(t.hasPrice).toBe(false)
+    expect(t.subtotal).toBe(0)
   })
 })
 

@@ -2,8 +2,6 @@ import type { OrderInput, OrderItem } from "@/lib/schemas/order"
 import { SITE_CONFIG } from "@/lib/config"
 
 type ClientProfile = "hogar" | "cafeteria" | "evento" | "distribucion"
-type DeliveryZone   = "bogota" | "medellin" | "cali" | "otra"
-type Urgency        = "hoy" | "manana" | "semana" | "sin_urgencia"
 
 export const PRODUCT_TYPE_OPTIONS = ["Pulpas", "Zumos", "Lácteos"] as const
 
@@ -70,66 +68,12 @@ export function getPresentationsForProduct(productType: string, fruit: string): 
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
 
-const ZONE_LABELS: Record<DeliveryZone, string> = {
-  bogota:    "Bogotá",
-  medellin:  "Medellín",
-  cali:      "Cali",
-  otra:      "Otra ciudad",
-}
-
-const URGENCY_LABELS: Record<Urgency, string> = {
-  hoy:          "Hoy",
-  manana:       "Mañana",
-  semana:       "Esta semana",
-  sin_urgencia: "Sin urgencia",
-}
-
-const PROFILE_LABELS: Record<ClientProfile, string> = {
-  hogar:        "Hogar",
-  cafeteria:    "Cafetería / Restaurante",
-  evento:       "Evento",
-  distribucion: "Distribución",
-}
-
-// Precios COP por producto lácteo (precio por unidad) — fuente: Otros/ListaPreciosZumos.jpeg
-const LACTEOS_PRICES: Record<string, number> = {
-  "Kumis Del Hato 250ml":  3700,
-  "Kumis Yolito 250ml":    3400,
-  "Yogurt Del Hato 250ml": 3700,
-}
-
-// Precios COP por fruta y presentación
-// Fuentes: Otros/Lista-Precios.md (pulpas) y Otros/ListaPreciosZumos.jpeg (zumos)
-const PRICES_COP: Record<string, Record<string, number>> = {
-  // Pulpas — Maracuyá cubre también el zumo (350ml, 1L, 2L)
-  "Maracuyá":         { "120g": 2900,  "300g": 4850,  "1000g": 15500, "350ml": 4800, "1L": 10000, "2L": 18000 },
-  "Mora":             { "120g": 2300,  "300g": 4400,  "1000g": 13000 },
-  "Mango":            { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
-  "Lulo":             { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
-  "Guanábana":        { "120g": 2900,  "300g": 4850,  "1000g": 15500 },
-  "Fresa":            { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
-  "Guayaba":          {               "300g": 4000,  "1000g": 12000 },
-  "Frutos Rojos":     { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
-  "Frutos Amarillos": { "120g": 2300,  "300g": 4200,  "1000g": 13000 },
-  "Tomate de árbol":  {               "300g": 4000,  "1000g": 12000 },
-  // Zumos
-  "Limón":               { "600ml": 5600,  "1L": 9000,  "2L": 16000, "5L": 36000 },
-  "Limonada con Cereza": { "350ml": 4800,  "1L": 10000, "2L": 18000 },
-  "Limonada con Coco":   { "350ml": 4800,  "1L": 10000, "2L": 18000 },
-}
-
 function getProductOptionsForProfile(profile: ClientProfile): string[] {
   return PRODUCT_OPTIONS_BY_PROFILE[profile]
 }
 
-export function getUnitPrice(fruit: string, presentation: string | null | undefined): number | null {
-  if (!presentation) return LACTEOS_PRICES[fruit] ?? null
-  return PRICES_COP[fruit]?.[presentation] ?? null
-}
-
 // Maps order-form fruit display names to Supabase product line slugs.
-// Used by the orders API route to resolve live prices from Supabase.
-export const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
+const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
   Pulpas: {
     "Maracuyá":         "pulpa-maracuya",
     "Mora":             "pulpa-mora",
@@ -150,9 +94,42 @@ export const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> =
   },
 }
 
-// A function that resolves the unit price for a given fruit + presentation.
-// When provided, replaces the static PRICES_COP lookup (e.g., with live Supabase data).
 export type PriceResolver = (fruit: string, presentation: string | null | undefined) => number | null
+
+/** Row shape returned by the Supabase `products` table price query. */
+export type PriceEntry = {
+  line:         string | null
+  name:         string | null
+  presentation: string | null
+  price:        number
+}
+
+/** Builds a PriceResolver from Supabase product rows. */
+export function buildPriceResolver(entries: PriceEntry[]): PriceResolver {
+  const byLinePresentation = new Map<string, number>()
+  const byName             = new Map<string, number>()
+  for (const p of entries) {
+    if (p.presentation && p.line) {
+      byLinePresentation.set(`${p.line}:${p.presentation}`, p.price)
+    } else if (p.name) {
+      byName.set(p.name, p.price)
+    }
+  }
+  return (fruit, presentation) => {
+    if (!presentation) return byName.get(fruit) ?? null
+    if (presentation.endsWith("g")) {
+      const line = FRUIT_TO_LINE.Pulpas[fruit]
+      return line ? (byLinePresentation.get(`${line}:${presentation}`) ?? null) : null
+    }
+    const zumoLine = FRUIT_TO_LINE.Zumos[fruit]
+    if (zumoLine) {
+      const price = byLinePresentation.get(`${zumoLine}:${presentation}`)
+      if (price != null) return price
+    }
+    const pulpaLine = FRUIT_TO_LINE.Pulpas[fruit]
+    return pulpaLine ? (byLinePresentation.get(`${pulpaLine}:${presentation}`) ?? null) : null
+  }
+}
 
 function getDiscountRate(_totalUnits: number): number {
   return 0
@@ -167,12 +144,12 @@ export type OrderTotals = {
   hasPrice:     boolean
 }
 
-export function calculateOrderTotal(items: OrderItem[], resolvePrice?: PriceResolver): OrderTotals {
+export function calculateOrderTotal(items: OrderItem[], resolvePrice: PriceResolver = () => null): OrderTotals {
   const totalUnits  = items.reduce((sum, item) => sum + item.quantity, 0)
   const discountRate = getDiscountRate(totalUnits)
   let subtotal  = 0
   let hasPrice  = items.length > 0
-  const lookup  = resolvePrice ?? getUnitPrice
+  const lookup  = resolvePrice
 
   for (const item of items) {
     const price = lookup(item.fruit, item.presentation)
@@ -231,8 +208,8 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;")
 }
 
-function buildItemsTableHtml(items: OrderItem[], resolvePrice?: PriceResolver): string {
-  const lookup = resolvePrice ?? getUnitPrice
+function buildItemsTableHtml(items: OrderItem[], resolvePrice: PriceResolver = () => null): string {
+  const lookup = resolvePrice
   const rows = items
     .map((item) => {
       const price     = lookup(item.fruit, item.presentation)

@@ -1,9 +1,14 @@
 // lib/config.ts — Fuente de verdad para datos de contacto y URLs del sitio.
 // Importar desde aquí. NO duplicar estos valores en otros archivos.
 
+const _whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
+if (!_whatsappNumber && process.env.NODE_ENV !== "test") {
+  console.warn("⚠️  NEXT_PUBLIC_WHATSAPP_NUMBER no configurada — los links de WhatsApp quedarán rotos.");
+}
+
 export const SITE_CONFIG = {
   /** Número de WhatsApp para links wa.me — sin +, sin espacios */
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
+  whatsappNumber: _whatsappNumber,
   /** Teléfono formateado para mostrar en UI */
   phoneDisplay: "+57 321 905 4984",
   /** Teléfono con guiones para JSON-LD y atributos tel: */

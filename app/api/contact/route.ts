@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { contactSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
+import esMessages from "@/messages/es.json";
+import enMessages from "@/messages/en.json";
 
 // Rate Limiting — sliding window, in-memory
 // 5 requests per IP per 60s. Resets on cold start — acceptable for a contact
@@ -180,7 +182,11 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const data = contactSchema.parse(body);
+    const referer = request.headers.get("referer") ?? "";
+    const validationMsgs = referer.includes("/en/")
+      ? enMessages.contact.validation
+      : esMessages.contact.validation;
+    const data = createContactSchema(validationMsgs).parse(body);
 
     const apiKey   = process.env.RESEND_API_KEY;
     const toEmail  = process.env.RESEND_TO_EMAIL;

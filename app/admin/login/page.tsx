@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
           onSubmit={handleSubmit}
           className="space-y-5 rounded-3xl border border-border-soft bg-surface-card p-7 shadow-[0_24px_70px_-34px_rgba(47,111,54,0.45)]"
         >
-          <div suppressHydrationWarning>
+          <div>
             <label htmlFor="admin-email" className="mb-1.5 block text-sm font-semibold text-text-sub">
               Email
             </label>
@@ -85,7 +85,7 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          <div suppressHydrationWarning>
+          <div>
             <label htmlFor="admin-password" className="mb-1.5 block text-sm font-semibold text-text-sub">
               Contraseña
             </label>

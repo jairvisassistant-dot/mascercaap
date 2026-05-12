@@ -30,5 +30,10 @@ export async function requireAdminSession() {
     redirect("/api/admin/auth/logout");
   }
 
+  // Defense-in-depth: token is valid but must belong to the configured admin email.
+  if (user.email !== process.env.ADMIN_EMAIL) {
+    redirect("/api/admin/auth/logout");
+  }
+
   return user;
 }
