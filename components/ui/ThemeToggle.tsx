@@ -40,6 +40,7 @@ export default function ThemeToggle({ labels }: ThemeToggleProps) {
     document.documentElement.setAttribute("data-theme", next);
     document.documentElement.style.colorScheme = next;
     try { localStorage.setItem("theme", next); } catch {}
+    try { document.cookie = `theme=${next};path=/;max-age=31536000;SameSite=Lax`; } catch {}
   };
 
   const isDark = theme === "dark";

@@ -13,8 +13,8 @@ export const GRADIENT_PRESETS = [
   { id: "teal",      label: "Teal",      tw: "from-teal-400 to-teal-700",        hex: ["#2dd4bf", "#0f766e"] },
 ] as const;
 
-export type GradientPresetId = typeof GRADIENT_PRESETS[number]["id"];
+type GradientPresetId = typeof GRADIENT_PRESETS[number]["id"];
 
-export function presetByTw(tw: string) {
+function presetByTw(tw: string) {
   return GRADIENT_PRESETS.find((p) => p.tw === tw);
 }
