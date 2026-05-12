@@ -1,4 +1,5 @@
 import "./globals.css";
+import Script from "next/script";
 import { headers } from "next/headers";
 
 // Applies saved theme before first paint to avoid flash of unstyled content.
@@ -11,10 +12,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={lang} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
-      <body>{children}</body>
+      <body>
+        <Script
+          id="theme-detector"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
