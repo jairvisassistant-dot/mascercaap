@@ -1,18 +1,18 @@
 import "./globals.css";
 import { headers } from "next/headers";
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches,s=t==='light'||t==='dark'?t:d?'dark':'light';document.documentElement.setAttribute('data-theme',s);document.documentElement.style.colorScheme=s;}catch(e){}})();`;
+// Applies saved theme before first paint to avoid flash of unstyled content.
+// Reads the `theme` cookie directly from document.cookie (client-side only).
+const THEME_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )theme=([^;]*)/);var t=m?m[1]:(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const hdrs = await headers();
-  const headerLang = hdrs.get("x-lang");
-  const lang = headerLang === "en" ? "en" : "es";
+  const lang = hdrs.get("x-lang") === "en" ? "en" : "es";
 
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
-        {/* Theme init before first paint to prevent FOUC — placed in <head> to avoid React 19 script warning */}
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>{children}</body>
     </html>
