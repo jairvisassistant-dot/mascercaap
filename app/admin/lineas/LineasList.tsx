@@ -279,8 +279,9 @@ function LineRow({
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Nombre *</label>
+            <label htmlFor={`${line.key}-nombre`} className="mb-1 block text-xs font-semibold text-text-sub">Nombre *</label>
             <input
+              id={`${line.key}-nombre`}
               type="text"
               autoFocus
               value={vals.label}
@@ -289,8 +290,9 @@ function LineRow({
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Emoji</label>
+            <label htmlFor={`${line.key}-emoji`} className="mb-1 block text-xs font-semibold text-text-sub">Emoji</label>
             <input
+              id={`${line.key}-emoji`}
               type="text"
               value={vals.icon_emoji}
               onChange={(e) => onSetEdit(line.key, { icon_emoji: e.target.value })}
@@ -299,8 +301,9 @@ function LineRow({
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Categoría</label>
+            <label htmlFor={`${line.key}-categoria`} className="mb-1 block text-xs font-semibold text-text-sub">Categoría</label>
             <select
+              id={`${line.key}-categoria`}
               value={vals.category_key ?? ""}
               onChange={(e) => onSetEdit(line.key, { category_key: e.target.value || null })}
               className="w-full rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -312,8 +315,9 @@ function LineRow({
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Descripción</label>
+            <label htmlFor={`${line.key}-descripcion`} className="mb-1 block text-xs font-semibold text-text-sub">Descripción</label>
             <textarea
+              id={`${line.key}-descripcion`}
               value={vals.description}
               onChange={(e) => onSetEdit(line.key, { description: e.target.value })}
               rows={2}

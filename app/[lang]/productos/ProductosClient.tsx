@@ -35,9 +35,11 @@ export default function ProductosClient({ products, productLines, categories }: 
       todas: productLines.map((l) => l.key),
     };
     for (const cat of categories) {
-      map[cat.key] = productLines
-        .filter((l) => l.categoryKey === cat.key)
-        .map((l) => l.key);
+      const keys: string[] = [];
+      for (const l of productLines) {
+        if (l.categoryKey === cat.key) keys.push(l.key);
+      }
+      map[cat.key] = keys;
     }
     return map;
   }, [productLines, categories]);
@@ -87,9 +89,13 @@ export default function ProductosClient({ products, productLines, categories }: 
       ? activeSubLines
       : (categoryLines[activeCategory] ?? []);
 
-    const sizes = products
-      .filter((p) => relevantLines.includes(p.line) && p.presentation !== "Próximamente")
-      .map((p) => p.presentation);
+    const relevantLineSet = new Set(relevantLines);
+    const sizes: string[] = [];
+    for (const p of products) {
+      if (relevantLineSet.has(p.line) && p.presentation !== "Próximamente") {
+        sizes.push(p.presentation);
+      }
+    }
 
     return Array.from(new Set(sizes)).sort((a, b) => {
       const toNum = (s: string) => s.endsWith("L") ? parseFloat(s) * 1000 : parseFloat(s);

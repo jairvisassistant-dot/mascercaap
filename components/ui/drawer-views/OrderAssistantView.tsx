@@ -231,7 +231,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                   {items.map((item, i) => {
                     const price = resolvePrice(item.fruit, item.presentation)
                     return (
-                      <div key={i} className="flex justify-between text-sm">
+                      <div key={`${i}-${item.fruit}-${item.presentation}`} className="flex justify-between text-sm">
                         <span className="text-text-sub">{item.fruit}{item.presentation ? ` ${item.presentation}` : ""} × {item.quantity} {t.unitsShort}</span>
                         <span className="text-text-muted">{price !== null ? formatCOP(price * item.quantity) : "—"}</span>
                       </div>
@@ -412,7 +412,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                     const price = resolvePrice(item.fruit, item.presentation)
                     return (
                       <div
-                        key={i}
+                        key={`${i}-${item.fruit}-${item.presentation}`}
                         className="flex items-center justify-between px-4 py-3 border-b border-border-soft last:border-0 bg-surface-card"
                       >
                         <div>

@@ -29,14 +29,17 @@ export function findAnswer(query: string): FAQMatch | null {
   for (const category of faqData.categories) {
     for (const question of category.questions) {
       let score = 0;
+      const normalizedKeywords = question.keywords.map(normalize);
+      const keywordSet = new Set(normalizedKeywords);
 
       for (const token of queryTokens) {
-        for (const keyword of question.keywords) {
-          const normalizedKeyword = normalize(keyword);
-          if (normalizedKeyword === token) {
-            score += 2;
-          } else if (normalizedKeyword.includes(token) || token.includes(normalizedKeyword)) {
-            score += 1;
+        if (keywordSet.has(token)) {
+          score += 2;
+        } else {
+          for (const nk of normalizedKeywords) {
+            if (nk.includes(token) || token.includes(nk)) {
+              score += 1;
+            }
           }
         }
       }
