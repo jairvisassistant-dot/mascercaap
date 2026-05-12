@@ -71,7 +71,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (err) {
+    console.error("Error en /api/leads:", err instanceof Error ? err.message : "unknown");
     return NextResponse.json({ error: "Error del servidor" }, { status: 500 });
   }
 }

@@ -7,7 +7,7 @@ export const orderItemSchema = z.object({
   quantity:     z.number().int().min(1).max(9999),
 })
 
-export type OrderValidationMessages = {
+type OrderValidationMessages = {
   contactRequired: string;
 };
 
@@ -15,7 +15,7 @@ const DEFAULT_MESSAGES: OrderValidationMessages = {
   contactRequired: "Se requiere email o número de WhatsApp",
 };
 
-export function createOrderSchema(msgs: OrderValidationMessages = DEFAULT_MESSAGES) {
+function createOrderSchema(msgs: OrderValidationMessages = DEFAULT_MESSAGES) {
   return z.object({
     nombre:          z.string().min(2).max(80),
     email:           z.string().email().max(254).optional().nullable(),

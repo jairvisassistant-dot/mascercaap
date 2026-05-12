@@ -121,7 +121,7 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
-    console.error("Error al enviar pedido:", error instanceof Error ? error.message : "unknown")
+    console.error("Error al enviar pedido:", error instanceof Error ? error.message.slice(0, 100) : "unknown")
     return NextResponse.json(
       { success: false, error: "Error al enviar el pedido" },
       { status: 500 }

@@ -11,7 +11,8 @@
     "themeDark": "Oscuro",
     "themeLight": "Claro",
     "themeActivateDark": "Activar modo oscuro",
-    "themeActivateLight": "Activar modo claro"
+    "themeActivateLight": "Activar modo claro",
+    "logoAlt": "Más Cerca AP"
   },
   "footer": {
     "description": "Nuestros productos son elaborados con altos estándares de calidad para que siempre disfrutes del sabor y el aroma de las frutas que más te gustan.",
@@ -193,7 +194,6 @@
       "label": "Clientes",
       "title": "Lo que dicen nuestros clientes",
       "subtitle": "Empresas y negocios que confían en Más Cerca AP para sus necesidades de jugos naturales.",
-      "goTo": "Ir a testimonio",
       "highlights": [
         "Restaurantes y cafeterías",
         "Aliados comerciales en Bogotá",
@@ -443,8 +443,7 @@
     },
     "cards": {
       "location": {
-        "title": "Ubicación",
-        "value": "Chía, Colombia"
+        "title": "Ubicación"
       },
       "email": {
         "title": "Email"

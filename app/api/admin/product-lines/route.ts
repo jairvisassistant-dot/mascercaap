@@ -2,6 +2,13 @@ import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import {
+  lineCreateSchema,
+  lineUpdateSchema,
+  reorderSchema,
+  keyOnlySchema,
+} from "@/lib/schemas/admin";
+
 function adminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,7 +42,6 @@ export async function GET() {
     .order("display_order");
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
   return NextResponse.json(data ?? []);
 }
 
@@ -43,13 +49,22 @@ export async function PATCH(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { key, direction } = (await req.json()) as { key: string; direction: "up" | "down" };
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
+  const parsed = reorderSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "key y direction son requeridos" }, { status: 400 });
+  }
+
+  const { key, direction } = parsed.data;
   const sb = adminClient();
   const { data: lines } = await sb
     .from("product_lines")
     .select("key, display_order")
-    .eq("active", true)          // ← solo líneas activas en el orden
+    .eq("active", true)
     .order("display_order");
 
   if (!lines) return NextResponse.json({ error: "Error al obtener líneas" }, { status: 500 });
@@ -76,21 +91,25 @@ export async function PUT(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { key, label, icon_emoji, description, category_key } = (await req.json()) as {
-    key: string;
-    label: string;
-    icon_emoji?: string;
-    description?: string;
-    category_key?: string | null;
-  };
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
-  if (!key || !label) {
+  const parsed = lineUpdateSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "key y label son requeridos" }, { status: 400 });
   }
 
+  const { key, label, icon_emoji, description, category_key } = parsed.data;
   const { data, error } = await adminClient()
     .from("product_lines")
-    .update({ label, icon_emoji: icon_emoji ?? "🛍️", description: description ?? "", category_key: category_key ?? null })
+    .update({
+      label,
+      icon_emoji: icon_emoji ?? "🛍️",
+      description: description ?? "",
+      category_key: category_key ?? null,
+    })
     .eq("key", key)
     .select()
     .single();
@@ -104,9 +123,17 @@ export async function DELETE(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { key } = (await req.json()) as { key: string };
-  if (!key) return NextResponse.json({ error: "key es requerido" }, { status: 400 });
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
+  const parsed = keyOnlySchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "key es requerido" }, { status: 400 });
+  }
+
+  const { key } = parsed.data;
   const sb = adminClient();
 
   const { count } = await sb
@@ -117,7 +144,7 @@ export async function DELETE(req: Request) {
 
   if (count && count > 0) {
     return NextResponse.json(
-      { error: `Esta línea tiene ${count} producto${count !== 1 ? "s" : ""} activo${count !== 1 ? "s" : ""}. Eliminá los productos antes de borrar la línea.` },
+      { error: `Esta línea tiene ${count} producto${count !== 1 ? "s" : ""} activo${count !== 1 ? "s" : ""}. Elimina los productos antes de borrar la línea.` },
       { status: 409 }
     );
   }
@@ -136,20 +163,17 @@ export async function POST(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
-  const { key, label, description, gradient, iconEmoji, categoryKey } = body as {
-    key: string;
-    label: string;
-    description?: string;
-    gradient?: string;
-    iconEmoji?: string;
-    categoryKey?: string | null;
-  };
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
-  if (!key || !label) {
+  const parsed = lineCreateSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "key y label son requeridos" }, { status: 400 });
   }
 
+  const { key, label, description, gradient, iconEmoji, categoryKey } = parsed.data;
   const sb = adminClient();
 
   const { data: last } = await sb

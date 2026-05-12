@@ -60,6 +60,4 @@ export function createContactSchema(msgs: ContactValidationMessages = DEFAULT_ME
   });
 }
 
-// Schema estático para inferir el tipo y para uso en la API route (server-side).
-export const contactSchema = createContactSchema();
-export type ContactFormData = z.infer<typeof contactSchema>;
+export type ContactFormData = z.infer<ReturnType<typeof createContactSchema>>;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export function createLeadSchema() {
+function createLeadSchema() {
   return z.object({
     nombre: z.string().min(2).max(80),
     email: z.string().email().max(254).optional().nullable(),
@@ -12,4 +12,4 @@ export function createLeadSchema() {
 
 export const leadSchema = createLeadSchema();
 
-export type LeadInput = z.infer<ReturnType<typeof createLeadSchema>>;
+type LeadInput = z.infer<ReturnType<typeof createLeadSchema>>;

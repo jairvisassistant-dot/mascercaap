@@ -11,7 +11,8 @@
     "themeDark": "Dark",
     "themeLight": "Light",
     "themeActivateDark": "Activate dark mode",
-    "themeActivateLight": "Activate light mode"
+    "themeActivateLight": "Activate light mode",
+    "logoAlt": "Más Cerca AP"
   },
   "footer": {
     "description": "100% natural juices, fruit pulps, and dairy drinks, made with hand-picked fruit straight from the farm. From farm to table in hours, no preservatives.",
@@ -193,7 +194,6 @@
       "label": "Clients",
       "title": "What Our Clients Say",
       "subtitle": "Businesses that trust Más Cerca AP for their natural juice needs.",
-      "goTo": "Go to testimonial",
       "highlights": [
         "Restaurants and cafés",
         "Commercial partners in Bogotá",
@@ -443,8 +443,7 @@
     },
     "cards": {
       "location": {
-        "title": "Location",
-        "value": "Chia, Colombia"
+        "title": "Location"
       },
       "email": {
         "title": "Email"

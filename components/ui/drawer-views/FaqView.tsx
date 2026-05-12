@@ -182,7 +182,8 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
         }),
       });
       leadSaved = res.ok;
-    } catch {
+    } catch (err) {
+      console.error("Error guardando lead:", err);
       // error de red — se abre WhatsApp sin marcar lead como guardado
     }
 

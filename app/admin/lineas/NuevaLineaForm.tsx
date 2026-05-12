@@ -25,7 +25,10 @@ export default function NuevaLineaForm() {
       .then((data: Category[]) => {
         if (Array.isArray(data)) setCategories(data);
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error("Error cargando categorías:", err);
+        setError("No se pudieron cargar las categorías. Recarga la página.");
+      })
       .finally(() => setLoadingCategories(false));
   }, []);
 

@@ -2,6 +2,12 @@ import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import {
+  categoryCreateSchema,
+  categoryUpdateSchema,
+  reorderSchema,
+  keyOnlySchema,
+} from "@/lib/schemas/admin";
 
 function adminClient() {
   return createClient(
@@ -42,13 +48,22 @@ export async function PATCH(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { key, direction } = (await req.json()) as { key: string; direction: "up" | "down" };
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
+  const parsed = reorderSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "key y direction son requeridos" }, { status: 400 });
+  }
+
+  const { key, direction } = parsed.data;
   const sb = adminClient();
   const { data: cats } = await sb
     .from("product_categories")
     .select("key, display_order")
-    .eq("active", true)          // ← solo categorías activas en el orden
+    .eq("active", true)
     .order("display_order");
 
   if (!cats) return NextResponse.json({ error: "Error al obtener categorías" }, { status: 500 });
@@ -75,16 +90,17 @@ export async function PUT(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { key, label, description } = (await req.json()) as {
-    key: string;
-    label: string;
-    description?: string;
-  };
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
-  if (!key || !label) {
+  const parsed = categoryUpdateSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "key y label son requeridos" }, { status: 400 });
   }
 
+  const { key, label, description } = parsed.data;
   const { data, error } = await adminClient()
     .from("product_categories")
     .update({ label, description: description ?? "" })
@@ -101,9 +117,17 @@ export async function DELETE(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { key } = (await req.json()) as { key: string };
-  if (!key) return NextResponse.json({ error: "key es requerido" }, { status: 400 });
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
+  const parsed = keyOnlySchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "key es requerido" }, { status: 400 });
+  }
+
+  const { key } = parsed.data;
   const sb = adminClient();
 
   const { count } = await sb
@@ -114,7 +138,7 @@ export async function DELETE(req: Request) {
 
   if (count && count > 0) {
     return NextResponse.json(
-      { error: `Esta categoría tiene ${count} línea${count !== 1 ? "s" : ""} asociada${count !== 1 ? "s" : ""}. Reasigná o eliminá las líneas antes de borrar la categoría.` },
+      { error: `Esta categoría tiene ${count} línea${count !== 1 ? "s" : ""} asociada${count !== 1 ? "s" : ""}. Reasigna o elimina las líneas antes de borrar la categoría.` },
       { status: 409 }
     );
   }
@@ -133,17 +157,17 @@ export async function POST(req: Request) {
   const user = await requireAuth();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
-  const { key, label, description } = body as {
-    key: string;
-    label: string;
-    description?: string;
-  };
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 });
+  }
 
-  if (!key || !label) {
+  const parsed = categoryCreateSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: "key y label son requeridos" }, { status: 400 });
   }
 
+  const { key, label, description } = parsed.data;
   const sb = adminClient();
   const { data: last } = await sb
     .from("product_categories")

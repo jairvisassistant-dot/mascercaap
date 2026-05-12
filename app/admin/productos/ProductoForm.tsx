@@ -118,7 +118,10 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           }
         }
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error("Error cargando catálogo:", err);
+        setError("No se pudo cargar el catálogo. Recarga la página.");
+      })
       .finally(() => setLoadingCatalog(false));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

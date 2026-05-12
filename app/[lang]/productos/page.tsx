@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
@@ -51,10 +52,12 @@ export default async function ProductosPage({ params }: Props) {
   ]);
 
   return (
-    <ProductosClient
-      products={products}
-      productLines={productLines}
-      categories={categories}
-    />
+    <Suspense>
+      <ProductosClient
+        products={products}
+        productLines={productLines}
+        categories={categories}
+      />
+    </Suspense>
   );
 }

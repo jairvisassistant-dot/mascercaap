@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { m, AnimatePresence, useMotionValue, useTransform, animate, useInView } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
@@ -68,6 +68,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 
   const [step, setStep] = useState<Step>(1)
   const cardRef = useRef<HTMLDivElement>(null)
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const visualRef = useRef<HTMLDivElement>(null)
   const visualInView = useInView(visualRef, { once: true, amount: 0.35 })
 
@@ -113,11 +114,12 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     }
   }
 
-  function scrollCard() {
-    setTimeout(() => {
+  const scrollCard = useCallback(() => {
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
+    scrollTimerRef.current = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
     }, 50)
-  }
+  }, [])
 
   function handleFruitSelect(value: FruitKey) {
     setSelectedFruit(value)
@@ -140,6 +142,12 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     setSelectedFruit(null)
     setSelectedPresentation(null)
   }
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
+    }
+  }, [])
 
   function handleBackToStep1() {
     setStep(1)

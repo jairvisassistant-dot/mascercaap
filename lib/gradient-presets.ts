@@ -12,9 +12,3 @@ export const GRADIENT_PRESETS = [
   { id: "ambar",     label: "Ámbar",     tw: "from-amber-300 to-amber-600",      hex: ["#fcd34d", "#d97706"] },
   { id: "teal",      label: "Teal",      tw: "from-teal-400 to-teal-700",        hex: ["#2dd4bf", "#0f766e"] },
 ] as const;
-
-type GradientPresetId = typeof GRADIENT_PRESETS[number]["id"];
-
-function presetByTw(tw: string) {
-  return GRADIENT_PRESETS.find((p) => p.tw === tw);
-}

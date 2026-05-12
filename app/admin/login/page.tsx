@@ -30,7 +30,8 @@ export default function AdminLoginPage() {
       }
 
       router.push("/admin/productos");
-    } catch {
+    } catch (err) {
+      console.error("Error en login admin:", err);
       setError("Error de conexión");
     } finally {
       setLoading(false);
