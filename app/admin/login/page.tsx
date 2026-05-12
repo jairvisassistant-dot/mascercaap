@@ -30,7 +30,8 @@ export default function AdminLoginPage() {
       }
 
       router.push("/admin/productos");
-    } catch {
+    } catch (err) {
+      console.error("Error en login admin:", err);
       setError("Error de conexión");
     } finally {
       setLoading(false);
@@ -61,7 +62,7 @@ export default function AdminLoginPage() {
             Administración
           </p>
           <h1 className="text-3xl font-bold tracking-tight text-text-main">Mas Cerca AP</h1>
-          <p className="mt-2 text-sm leading-relaxed text-text-muted">Ingresá para gestionar el catálogo de productos.</p>
+          <p className="mt-2 text-sm leading-relaxed text-text-muted">Ingrese para gestionar el catálogo de productos.</p>
         </div>
 
         <form

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
+export const revalidate = 3600;
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import ContactoPageContent from "@/components/sections/ContactoPageContent";
 import { SITE_CONFIG } from "@/lib/config";

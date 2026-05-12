@@ -1,21 +1,24 @@
 import { supabase } from "@/lib/supabase";
-import type { Product, Testimonial } from "@/types";
-import { products as staticProducts, featuredProducts as staticFeaturedProducts } from "@/data/products";
-import { testimonials as staticTestimonials } from "@/data/testimonials";
+import type { Product, ProductCategory, ProductLineConfig, Testimonial } from "@/types";
+
+function noClient(fn: string): never[] {
+  console.error(`Supabase not configured — ${fn} returned empty. Check env vars.`);
+  return [];
+}
 
 export async function getAllProducts(): Promise<Product[]> {
-  if (!supabase) return staticProducts;
+  if (!supabase) return noClient("getAllProducts");
   const { data, error } = await supabase
     .from("products")
     .select("*")
     .eq("active", true)
     .order("display_order");
-  if (error || !data) return staticProducts;
+  if (error || !data) return [];
   return data.map(mapRowToProduct);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  if (!supabase) return staticFeaturedProducts;
+  if (!supabase) return noClient("getFeaturedProducts");
   const { data, error } = await supabase
     .from("products")
     .select("*")
@@ -23,23 +26,52 @@ export async function getFeaturedProducts(): Promise<Product[]> {
     .eq("featured", true)
     .order("display_order")
     .limit(3);
-  if (error || !data) return staticFeaturedProducts;
+  if (error || !data) return [];
   return data.map(mapRowToProduct);
 }
 
 export async function getAllTestimonials(): Promise<Testimonial[]> {
-  if (!supabase) return staticTestimonials;
+  if (!supabase) return noClient("getAllTestimonials");
   const { data, error } = await supabase
     .from("testimonials")
     .select("*")
     .eq("active", true)
     .order("created_at");
-  if (error || !data) return staticTestimonials;
-  if (data.length >= staticTestimonials.length) return data;
+  if (error || !data) return [];
+  return data;
+}
 
-  const existingIds = new Set(data.map((testimonial) => testimonial.id));
-  const fallbackTestimonials = staticTestimonials.filter((testimonial) => !existingIds.has(testimonial.id));
-  return [...data, ...fallbackTestimonials].slice(0, staticTestimonials.length);
+export async function getAllProductLines(): Promise<ProductLineConfig[]> {
+  if (!supabase) return noClient("getAllProductLines");
+  const { data, error } = await supabase
+    .from("product_lines")
+    .select("*")
+    .eq("active", true)
+    .order("display_order");
+  if (error || !data) return [];
+  return data.map((row) => ({
+    key: row.key as string,
+    label: row.label as string,
+    description: row.description as string,
+    gradient: row.gradient as string,
+    iconEmoji: row.icon_emoji as string,
+    chipImage: (row.chip_image as string) ?? undefined,
+    categoryKey: (row.category_key as string | null) ?? null,
+  }));
+}
+
+export async function getAllProductCategories(): Promise<ProductCategory[]> {
+  if (!supabase) return noClient("getAllProductCategories");
+  const { data, error } = await supabase
+    .from("product_categories")
+    .select("key, label")
+    .eq("active", true)
+    .order("display_order");
+  if (error || !data) return [];
+  return data.map((row) => ({
+    key: row.key as string,
+    label: row.label as string,
+  }));
 }
 
 function mapRowToProduct(row: Record<string, unknown>): Product {

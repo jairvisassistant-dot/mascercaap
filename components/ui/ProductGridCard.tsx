@@ -128,16 +128,9 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
             {displayDescription}
           </p>
 
-          {product.price != null && (
-            <div className="mt-3 flex items-end justify-between gap-3">
-              <span className="whitespace-nowrap text-[1.02rem] font-bold leading-none tracking-[-0.03em] tabular-nums text-primary">
-                ${product.price.toLocaleString("es-CO")}
-              </span>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-text-faint">
-                {product.presentation}
-              </span>
-            </div>
-          )}
+          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-text-faint">
+            {product.presentation}
+          </p>
         </div>
       </button>
 

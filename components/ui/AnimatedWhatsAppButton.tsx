@@ -84,7 +84,8 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
       ([entry]) => {
         if (entry.isIntersecting && !aliveRef.current) {
           aliveRef.current = true;
-          runLoop();
+          // Defer to next animation frame so Framer Motion controls are connected to DOM
+          requestAnimationFrame(() => { if (aliveRef.current) runLoop(); });
         } else if (!entry.isIntersecting) {
           aliveRef.current = false;
           widthCtrl.stop();

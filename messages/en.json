@@ -11,7 +11,8 @@
     "themeDark": "Dark",
     "themeLight": "Light",
     "themeActivateDark": "Activate dark mode",
-    "themeActivateLight": "Activate light mode"
+    "themeActivateLight": "Activate light mode",
+    "logoAlt": "Más Cerca AP"
   },
   "footer": {
     "description": "100% natural juices, fruit pulps, and dairy drinks, made with hand-picked fruit straight from the farm. From farm to table in hours, no preservatives.",
@@ -28,10 +29,6 @@
     "copyright": "© 2026 Más Cerca AP. All rights reserved.",
     "madeWith": "Made with 🍋 and 🍊 in Colombia",
     "socialLabel": "Follow us on"
-  },
-  "whatsapp": {
-    "message": "Hi! I'd like information about your products.",
-    "ariaLabel": "Contact via WhatsApp"
   },
   "socialQr": {
     "facebook": {
@@ -197,9 +194,6 @@
       "label": "Clients",
       "title": "What Our Clients Say",
       "subtitle": "Businesses that trust Más Cerca AP for their natural juice needs.",
-      "goTo": "Go to testimonial",
-      "pause": "Pause testimonials",
-      "resume": "Resume testimonials",
       "highlights": [
         "Restaurants and cafés",
         "Commercial partners in Bogotá",
@@ -264,6 +258,7 @@
     "scrollPrev": "View previous products of",
     "scrollNext": "View more products of",
     "lightbox": {
+      "close": "Close",
       "ingredients": "Ingredients",
       "benefits": "Benefits"
     }
@@ -356,9 +351,6 @@
       "stepOf": "of",
       "title": "Our Process in Images",
       "subtitle": "A behind-the-scenes look at how we prepare every juice.",
-      "mobileHint": "Tap each image to learn about the process",
-      "pressMore": "Tap to learn more",
-      "pressBack": "Tap to go back",
       "cards": [
         {
           "title": "The origin is everything",
@@ -451,8 +443,7 @@
     },
     "cards": {
       "location": {
-        "title": "Location",
-        "value": "Chia, Colombia"
+        "title": "Location"
       },
       "email": {
         "title": "Email"
@@ -531,11 +522,11 @@
   "productLines": {
     "limon": {
       "label": "Lemon Juice",
-      "description": "Pure, fresh and additive-free. The classic that never fails."
+      "description": "Bold, unmistakable lemon flavor. The classic that never fails."
     },
     "limonada-cereza": {
       "label": "Cherry Lemonade",
-      "description": "The acidity of lemon with the natural sweetness of cherry."
+      "description": "The acidity of lemon with the irresistible sweet touch of cherry."
     },
     "limonada-coco": {
       "label": "Coconut Lemonade",
@@ -543,7 +534,7 @@
     },
     "maracuya": {
       "label": "Passion Fruit Juice",
-      "description": "Exotic and vibrant flavor straight from the Colombian countryside."
+      "description": "Exotic and vibrant flavor that awakens the senses."
     },
     "pulpa-maracuya": {
       "label": "Passion Fruit Pulp",
@@ -645,8 +636,6 @@
     "step3Label": "Which fruit or product?",
     "step4Label": "Which pack size?",
     "step5Label": "How many units?",
-    "step6Label": "Delivery zone?",
-    "step7Label": "When do you need it?",
     "step8Label": "Your contact details",
     "profiles": {
       "hogar": "Home",
@@ -659,22 +648,9 @@
       "Zumos": "Juices",
       "Lácteos": "Dairy"
     },
-    "zones": {
-      "bogota": "Bogotá",
-      "medellin": "Medellín",
-      "cali": "Cali",
-      "otra": "Other city"
-    },
-    "urgency": {
-      "hoy": "Today",
-      "manana": "Tomorrow",
-      "semana": "This week",
-      "sin_urgencia": "No rush"
-    },
     "customQtyLabel": "Custom",
     "customQtyPlaceholder": "Quantity",
     "waGreeting": "Hello, I'd like to place an order:",
-    "waClientType": "Client type",
     "waProducts": "Products",
     "waConfirm": "Can you confirm availability and price?",
     "nameLabel": "Full name",
@@ -712,7 +688,6 @@
     "welcome": "Hi! 👋 I'm the Más Cerca AP assistant. Select a category or type your question.",
     "placeholder": "Type your question...",
     "fallback": "I don't have information about that. Would you like to talk to our team?",
-    "talkToHuman": "Talk to a person",
     "advisorOffer": "Would you still like to speak with an advisor?",
     "talkToAdvisor": "Connect with advisor",
     "leadFormIntro": "To connect you with an advisor, I need a few quick details:",
@@ -732,19 +707,11 @@
     "leadConnectApp": "Open app",
     "leadConnectWeb": "Continue on WhatsApp Web",
     "leadConnectOr": "Or scan with your phone:",
-    "leadQrTitle": "Scan with your phone",
     "leadQrHint": "Open your phone camera and point it at the code to start a WhatsApp conversation.",
     "leadQrSaved": "✓ Your info was saved. The advisor will have context for your inquiry.",
     "whatsappQrAlt": "QR code to start a WhatsApp conversation",
-    "helpful": "Was this answer helpful?",
-    "yes": "Yes, thanks",
-    "no": "Not really",
-    "thankYou": "Thanks for your feedback!",
-    "notHelpful": "Got it, thanks for letting us know. You can contact us directly via WhatsApp for more help.",
     "backToCategories": "← Back to categories",
     "categories": "What would you like to know?",
-    "ariaOpen": "Open FAQ assistant",
-    "ariaClose": "Close assistant",
     "sendAriaLabel": "Send message",
     "inputLabel": "Type your question"
   },
@@ -759,15 +726,33 @@
     "step2Label": "Which fruit?",
     "step3Label": "Which pack size works best for you?",
     "customPlaceholder": "Number of cups",
-    "resultPacksNeeded": "You need {count} pack(s) of {fruit} {presentation}",
-    "resultCupsYield": "Yields approx. {cups} cups (16oz)",
-    "freshComparisonTitle": "Compared to fresh fruit:",
-    "freshKg": "~{kg} kg of fresh fruit",
-    "minutesSaved": "~{minutes} min of processing saved",
-    "noWaste": "Zero peel and seed waste",
     "ctaWhatsapp": "Place order",
     "disclaimer": "Approximate values based on standard preparation. May vary by recipe and intensity.",
-    "back": "Back"
+    "back": "Back",
+    "quickFlowLabel": "Quick flow",
+    "cups": "cups",
+    "resultHeroPrefix": "For {n} 16oz cups you need",
+    "pack": "pack",
+    "packs": "packs",
+    "calcAgain": "Calculate again",
+    "bestYield": "★ Best yield",
+    "noSurplus": "✓ No surplus",
+    "surplusLabel": "+{n} extra cups",
+    "packetsMetric": "Packs",
+    "cupsMetric": "16oz cups",
+    "freshEquivMetric": "Fresh fruit equiv.",
+    "timeSavedMetric": "Time saved",
+    "eachUnit": "each",
+    "totalCupsLabel": "total cups",
+    "wouldHaveNeeded": "you would have needed",
+    "hoursSaved": "hours saved",
+    "minSaved": "min saved",
+    "cupGridTitle": "Yield — cups you can prepare",
+    "cupsPerCycle": "~{n} 16oz cups per preparation cycle",
+    "comparisonTitle": "Preparation time comparison",
+    "freshFruitLabel": "🍋 Fresh fruit",
+    "masApLabel": "🧊 Más Cerca pulp",
+    "timeSavedResult": "⏱ You save {t} of processing per preparation"
   },
   "legal": {
     "lastUpdated": "Last updated",

@@ -1,12 +1,14 @@
 import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
+import { PriceProvider } from "@/lib/prices/PriceProvider";
+import { supabase } from "@/lib/supabase";
+import type { PriceEntry } from "@/lib/order-assistant";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
@@ -72,22 +74,24 @@ export default async function LangLayout({
   const dict = await getDictionary(lang);
   const jsonLd = getJsonLd(lang);
 
+  let prices: PriceEntry[] = [];
+  if (supabase) {
+    const { data } = await supabase
+      .from("products")
+      .select("line, name, presentation, price")
+      .not("price", "is", null);
+    if (data?.length) prices = data as PriceEntry[];
+  }
+
   return (
     <>
-      {/* Setea lang y tema antes del primer paint — usa next/script para evitar el warning de React 19 */}
-      <Script
-        id="theme-init"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{document.documentElement.lang="${lang}";var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme: dark)').matches,s=t==='light'||t==='dark'?t:d?'dark':'light';document.documentElement.setAttribute('data-theme',s);document.documentElement.style.colorScheme=s;}catch(e){}})();`,
-        }}
-      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className={`${poppins.variable} ${dmSerif.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
+          <PriceProvider prices={prices}>
           <DictionaryProvider dict={dict} lang={lang}>
             <HelpHubProvider>
               <a
@@ -103,6 +107,7 @@ export default async function LangLayout({
               <HelpHub />
             </HelpHubProvider>
           </DictionaryProvider>
+          </PriceProvider>
         </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />

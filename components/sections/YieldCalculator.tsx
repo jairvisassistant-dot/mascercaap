@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { m, AnimatePresence, useMotionValue, useTransform, animate, useInView } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
@@ -17,6 +17,7 @@ import {
 import { useHelpHub } from "@/lib/help-hub-context"
 import type { Dictionary } from "@/lib/i18n"
 
+type YDict = Dictionary["yieldCalculator"]
 type Step = 1 | 2 | 3 | "result"
 
 // ── Colores por fruta para los vasos animados ─────────────────────
@@ -67,6 +68,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 
   const [step, setStep] = useState<Step>(1)
   const cardRef = useRef<HTMLDivElement>(null)
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const visualRef = useRef<HTMLDivElement>(null)
   const visualInView = useInView(visualRef, { once: true, amount: 0.35 })
 
@@ -112,11 +114,12 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     }
   }
 
-  function scrollCard() {
-    setTimeout(() => {
+  const scrollCard = useCallback(() => {
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
+    scrollTimerRef.current = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
     }, 50)
-  }
+  }, [])
 
   function handleFruitSelect(value: FruitKey) {
     setSelectedFruit(value)
@@ -139,6 +142,12 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     setSelectedFruit(null)
     setSelectedPresentation(null)
   }
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
+    }
+  }, [])
 
   function handleBackToStep1() {
     setStep(1)
@@ -190,7 +199,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           </div>
 
           <div className="rounded-2xl border border-primary/20 bg-white/70 p-5 shadow-[0_22px_55px_-36px_rgba(43,92,49,0.48)] backdrop-blur-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-text-muted mb-3">flujo rapido</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-text-muted mb-3">{t.quickFlowLabel}</p>
             <div className="grid grid-cols-3 gap-2 text-center">
               <span className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs font-semibold text-primary">1. {t.prepLabel}</span>
               <span className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs font-semibold text-primary">2. {t.step2Label}</span>
@@ -351,7 +360,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
               <p className="text-sm font-semibold text-text-main flex flex-wrap items-center">
                 <span className="text-primary mr-2">1.</span>
                 <span className="text-text-muted font-normal">
-                  {selectedPrep === "jugo" ? t.prepJugo : t.prepFrappe} — {targetCups} vasos
+                  {selectedPrep === "jugo" ? t.prepJugo : t.prepFrappe} — {targetCups} {t.cups}
                 </span>
                 <BackLink label={t.back} onClick={handleBackToStep1} />
               </p>
@@ -400,6 +409,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   prep={selectedPrep}
                   fruit={selectedFruit}
                   onSelect={handlePresentationSelect}
+                  t={t}
                 />
               ) : (
                 <p className="text-text-muted text-sm flex flex-wrap items-center">
@@ -423,7 +433,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   {/* ── Idea 1: Héroe con odómetro ───────────────── */}
                   <div className="px-5 pt-6 pb-5 text-center border-b border-primary/10">
                     <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-                      Para {targetCups} vasos de 16oz necesitas
+                      {t.resultHeroPrefix.replace("{n}", String(targetCups))}
                     </p>
                     <div className="flex items-end justify-center gap-2 mb-2">
                       <AnimatedNumber
@@ -431,7 +441,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                         className="text-6xl font-bold text-primary leading-none tabular-nums"
                       />
                       <span className="text-xl font-semibold text-text-main pb-1.5">
-                        {packs === 1 ? "paquete" : "paquetes"}
+                        {packs === 1 ? t.pack : t.packs}
                       </span>
                     </div>
                     <p className="text-sm text-text-muted">
@@ -444,12 +454,13 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                     <CupGrid
                       totalCups={totalCupsFromPacks(packs, selectedPresentation, selectedPrep)}
                       fruit={selectedFruit}
+                      t={t}
                     />
                   </div>
 
                   {/* ── Idea 2: Timeline de preparación ─────────── */}
                   <div className="px-5 py-5">
-                    <PreparationTimeline minutesSaved={comparison.minutesSaved} />
+                    <PreparationTimeline minutesSaved={comparison.minutesSaved} t={t} />
                   </div>
                 </div>
 
@@ -469,7 +480,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                     onClick={handleReset}
                     className="inline-flex items-center justify-center min-h-[44px] px-4 text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors"
                   >
-                    Calcular de nuevo
+                    {t.calcAgain}
                   </button>
                 </div>
 
@@ -496,11 +507,13 @@ function PresentationComparison({
   prep,
   fruit,
   onSelect,
+  t,
 }: {
   targetCups: number
   prep: PrepType
   fruit: FruitKey
   onSelect: (value: Presentation) => void
+  t: YDict
 }) {
   const color = FRUIT_CUP_COLORS[fruit]
 
@@ -524,7 +537,6 @@ function PresentationComparison({
         const timeValue = fc.minutesSaved >= 60
           ? Math.round(fc.minutesSaved / 60)
           : fc.minutesSaved
-        const timeUnit  = fc.minutesSaved >= 60 ? "h ahorradas" : "min ahorrados"
 
         return (
           <m.button
@@ -548,17 +560,17 @@ function PresentationComparison({
                 <span className="text-xl font-black text-text-main tracking-tight">{pres}</span>
                 {isBest && (
                   <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-white uppercase tracking-widest bg-primary px-2.5 py-1 rounded-full shadow-sm shadow-primary/40">
-                    ★ Mayor rendimiento
+                    {t.bestYield}
                   </span>
                 )}
               </div>
               {extra === 0 ? (
                 <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/60 px-3 py-1 rounded-full text-xs font-bold shrink-0">
-                  ✓ Sin excedente
+                  {t.noSurplus}
                 </span>
               ) : (
                 <span className="inline-flex items-center bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-700/60 px-3 py-1 rounded-full text-xs font-bold shrink-0">
-                  +{extra} vasos extra
+                  {t.surplusLabel.replace("{n}", String(extra))}
                 </span>
               )}
             </div>
@@ -569,33 +581,33 @@ function PresentationComparison({
               {/* Métrica 1: Paquetes */}
               <div>
                 <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
-                  Paquetes
+                  {t.packetsMetric}
                 </p>
                 <AnimatedNumber
                   target={packs}
                   className="text-5xl font-black text-primary tabular-nums leading-none"
                 />
                 <p className="text-xs font-semibold text-primary/70 mt-1">
-                  {pres} c/u
+                  {pres} {t.eachUnit}
                 </p>
               </div>
 
               {/* Métrica 2: Vasos */}
               <div>
                 <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
-                  Vasos de 16oz
+                  {t.cupsMetric}
                 </p>
                 <AnimatedNumber
                   target={total}
                   className="text-5xl font-black text-text-main tabular-nums leading-none"
                 />
-                <p className="text-xs font-semibold text-text-muted mt-1">vasos totales</p>
+                <p className="text-xs font-semibold text-text-muted mt-1">{t.totalCupsLabel}</p>
               </div>
 
               {/* Métrica 3: Fruta fresca equivalente */}
               <div>
                 <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
-                  Fruta fresca equiv.
+                  {t.freshEquivMetric}
                 </p>
                 <div className="flex items-baseline gap-1 leading-none">
                   <AnimatedFloat
@@ -604,13 +616,13 @@ function PresentationComparison({
                   />
                   <span className="text-xl font-black text-amber-400">kg</span>
                 </div>
-                <p className="text-xs font-semibold text-amber-500/80 mt-1">habrías necesitado</p>
+                <p className="text-xs font-semibold text-amber-500/80 mt-1">{t.wouldHaveNeeded}</p>
               </div>
 
               {/* Métrica 4: Tiempo ahorrado */}
               <div>
                 <p className="text-[10px] font-extrabold uppercase tracking-widest text-text-muted mb-2">
-                  Tiempo ahorrado
+                  {t.timeSavedMetric}
                 </p>
                 <div className="flex items-baseline gap-1 leading-none">
                   <AnimatedNumber
@@ -621,7 +633,9 @@ function PresentationComparison({
                     {fc.minutesSaved >= 60 ? "h" : "min"}
                   </span>
                 </div>
-                <p className="text-xs font-semibold text-sky-500/80 mt-1">{timeUnit}</p>
+                <p className="text-xs font-semibold text-sky-500/80 mt-1">
+                  {fc.minutesSaved >= 60 ? t.hoursSaved : t.minSaved}
+                </p>
               </div>
             </div>
 
@@ -688,7 +702,7 @@ function AnimatedFloat({ target, className }: { target: number; className?: stri
 // ─────────────────────────────────────────────────────────────────
 const MAX_VISIBLE_CUPS = 20
 
-function CupGrid({ totalCups, fruit }: { totalCups: number; fruit: FruitKey }) {
+function CupGrid({ totalCups, fruit, t }: { totalCups: number; fruit: FruitKey; t: YDict }) {
   const color = FRUIT_CUP_COLORS[fruit]
   const visible = Math.min(totalCups, MAX_VISIBLE_CUPS)
   const overflow = totalCups - visible
@@ -696,7 +710,7 @@ function CupGrid({ totalCups, fruit }: { totalCups: number; fruit: FruitKey }) {
   return (
     <div>
       <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-        Rendimiento — vasos que preparás
+        {t.cupGridTitle}
       </p>
       <div className="flex flex-wrap gap-2 items-end mb-2">
         {Array.from({ length: visible }).map((_, i) => (
@@ -714,7 +728,7 @@ function CupGrid({ totalCups, fruit }: { totalCups: number; fruit: FruitKey }) {
         )}
       </div>
       <p className="text-xs text-text-muted">
-        ~{totalCups} vasos de 16oz por cada ciclo de preparación
+        {t.cupsPerCycle.replace("{n}", String(totalCups))}
       </p>
     </div>
   )
@@ -771,7 +785,7 @@ function formatTime(min: number): string {
   return `~${min} min`
 }
 
-function PreparationTimeline({ minutesSaved }: { minutesSaved: number }) {
+function PreparationTimeline({ minutesSaved, t }: { minutesSaved: number; t: YDict }) {
   const pulpaMin = 5
   const freshMin = minutesSaved + pulpaMin
   const pulpaPct = Math.max(5, (pulpaMin / freshMin) * 80)
@@ -779,12 +793,12 @@ function PreparationTimeline({ minutesSaved }: { minutesSaved: number }) {
   return (
     <div className="space-y-4">
       <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">
-        Tiempo de preparación comparado
+        {t.comparisonTitle}
       </p>
 
       <div className="space-y-1.5">
         <div className="flex justify-between text-xs">
-          <span className="text-text-muted">🍋 Fruta fresca</span>
+          <span className="text-text-muted">{t.freshFruitLabel}</span>
           <span className="text-amber-600 font-semibold">{formatTime(freshMin)}</span>
         </div>
         <div className="h-2.5 bg-white/60 rounded-full overflow-hidden border border-border-soft">
@@ -799,7 +813,7 @@ function PreparationTimeline({ minutesSaved }: { minutesSaved: number }) {
 
       <div className="space-y-1.5">
         <div className="flex justify-between text-xs">
-          <span className="text-text-muted">🧊 Pulpa Más Cerca</span>
+          <span className="text-text-muted">{t.masApLabel}</span>
           <span className="text-primary font-semibold">{formatTime(pulpaMin)}</span>
         </div>
         <div className="h-2.5 bg-white/60 rounded-full overflow-hidden border border-border-soft">
@@ -818,7 +832,7 @@ function PreparationTimeline({ minutesSaved }: { minutesSaved: number }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1.4, duration: 0.4 }}
       >
-        ⏱ Ahorrás {formatTime(minutesSaved)} de procesamiento por preparación
+        {t.timeSavedResult.replace("{t}", formatTime(minutesSaved))}
       </m.p>
     </div>
   )

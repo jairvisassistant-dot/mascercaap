@@ -24,8 +24,9 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isLoginPage = pathname === "/admin/login";
-  const isListPage  = pathname === "/admin/productos";
+  const isLoginPage   = pathname === "/admin/login";
+  const isListPage    = pathname === "/admin/productos";
+  const isOrderPage   = pathname === "/admin/categorias" || pathname === "/admin/lineas";
 
   return (
     <header
@@ -88,10 +89,51 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
             ) : isListPage ? (
               <>
                 <Link
+                  href="/admin/categorias"
+                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                >
+                  Categorías
+                </Link>
+                <Link
+                  href="/admin/lineas"
+                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                >
+                  Líneas
+                </Link>
+                <Link
                   href="/admin/productos/nuevo"
                   className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.85)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0"
                 >
                   + Nuevo producto
+                </Link>
+                <form action="/api/admin/auth/logout" method="POST">
+                  <button
+                    type="submit"
+                    className="rounded-xl px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
+                  >
+                    Salir
+                  </button>
+                </form>
+              </>
+            ) : isOrderPage ? (
+              <>
+                <Link
+                  href="/admin/categorias/nueva"
+                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                >
+                  + Nueva categoría
+                </Link>
+                <Link
+                  href="/admin/lineas/nueva"
+                  className="rounded-xl border border-primary/40 bg-surface-card px-4 py-2.5 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/8 active:translate-y-0"
+                >
+                  + Nueva línea
+                </Link>
+                <Link
+                  href="/admin/productos"
+                  className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
+                >
+                  ← Volver
                 </Link>
                 <form action="/api/admin/auth/logout" method="POST">
                   <button

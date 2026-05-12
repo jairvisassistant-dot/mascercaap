@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { Resend } from "resend"
 import { z } from "zod"
 import { orderSchema } from "@/lib/schemas/order"
-import { buildOrderEmailHtml, FRUIT_TO_LINE, type PriceResolver } from "@/lib/order-assistant"
+import { buildOrderEmailHtml, buildPriceResolver, type PriceEntry } from "@/lib/order-assistant"
 import { supabase } from "@/lib/supabase"
 
 const requestLog = new Map<string, number[]>()
@@ -70,42 +70,15 @@ export async function POST(request: Request) {
       }
     }
 
-    // Resolve live prices from Supabase — falls back to static PRICES_COP if unavailable
-    let resolvePrice: PriceResolver | undefined
+    // Resolve live prices from Supabase
+    let resolvePrice = buildPriceResolver([])
     if (supabase) {
       const { data: dbProducts } = await supabase
         .from("products")
         .select("line, name, presentation, price")
         .not("price", "is", null)
-
       if (dbProducts?.length) {
-        const byLinePresentation = new Map<string, number>()
-        const byName             = new Map<string, number>()
-
-        for (const p of dbProducts) {
-          if (p.price == null) continue
-          if (p.presentation) {
-            byLinePresentation.set(`${p.line}:${p.presentation}`, p.price)
-          } else {
-            byName.set(p.name, p.price)
-          }
-        }
-
-        resolvePrice = (fruit, presentation) => {
-          if (!presentation) return byName.get(fruit) ?? null
-          // Grams → pulpa line; ml/L → zumo line (Maracuyá exists in both, disambiguated by presentation format)
-          if (presentation.endsWith("g")) {
-            const line = FRUIT_TO_LINE.Pulpas[fruit]
-            return line ? (byLinePresentation.get(`${line}:${presentation}`) ?? null) : null
-          }
-          const zumoLine = FRUIT_TO_LINE.Zumos[fruit]
-          if (zumoLine) {
-            const price = byLinePresentation.get(`${zumoLine}:${presentation}`)
-            if (price != null) return price
-          }
-          const pulpaLine = FRUIT_TO_LINE.Pulpas[fruit]
-          return pulpaLine ? (byLinePresentation.get(`${pulpaLine}:${presentation}`) ?? null) : null
-        }
+        resolvePrice = buildPriceResolver(dbProducts as PriceEntry[])
       }
     }
 
@@ -148,7 +121,7 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
-    console.error("Error al enviar pedido:", error instanceof Error ? error.message : "unknown")
+    console.error("Error al enviar pedido:", error instanceof Error ? error.message.slice(0, 100) : "unknown")
     return NextResponse.json(
       { success: false, error: "Error al enviar el pedido" },
       { status: 500 }

@@ -1,21 +1,10 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { requireAdminSession } from "@/lib/admin-session";
 import ProductoForm from "../ProductoForm";
 
 export const dynamic = "force-dynamic";
 
 export default async function NuevoProductoPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_session")?.value;
-  if (!token) redirect("/admin/login");
-
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-  const { data: { user }, error } = await supabase.auth.getUser(token);
-  if (error || !user) redirect("/admin/login");
+  await requireAdminSession();
 
   return (
     <div className="min-h-[100dvh]">

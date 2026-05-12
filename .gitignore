@@ -37,10 +37,6 @@ yarn-error.log*
 # vercel
 .vercel
 
-# sanity
-.sanity/
-sanity-cors.json
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts

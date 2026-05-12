@@ -1,12 +1,13 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { requireAdminSession } from "@/lib/admin-session";
 import ProductoForm from "../ProductoForm";
 
 function adminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
   );
 }
 
@@ -15,16 +16,10 @@ export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ id: string }> };
 
 export default async function EditarProductoPage({ params }: Props) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_session")?.value;
-  if (!token) redirect("/admin/login");
-  const { data: { user }, error: authError } = await adminClient().auth.getUser(token);
-  if (authError || !user) redirect("/admin/login");
+  await requireAdminSession();
 
   const { id } = await params;
-  const supabase = adminClient();
-
-  const { data: product, error } = await supabase
+  const { data: product, error } = await adminClient()
     .from("products")
     .select("*")
     .eq("id", id)
@@ -33,7 +28,6 @@ export default async function EditarProductoPage({ params }: Props) {
   if (error || !product) notFound();
 
   const initial = {
-    id: product.id,
     name: product.name,
     line: product.line,
     presentation: product.presentation,

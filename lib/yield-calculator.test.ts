@@ -4,7 +4,6 @@ import {
   packsNeeded,
   totalCupsFromPacks,
   freshComparison,
-  buildWhatsappMessage,
 } from "./yield-calculator"
 
 // jugo:   120g/16oz (dato del productor)
@@ -125,62 +124,4 @@ describe("freshComparison — mango", () => {
   })
 })
 
-describe("buildWhatsappMessage", () => {
-  it("returns a wa.me URL with encoded message", () => {
-    const url = buildWhatsappMessage({
-      fruit: "maracuya",
-      presentation: "1000g",
-      targetCups: 50,
-      packsCount: 5,
-      whatsappNumber: "573001234567",
-      prepType: "jugo",
-    })
-    expect(url).toMatch(/^https:\/\/wa\.me\/573001234567/)
-    expect(url).toContain("Maracu")
-    expect(url).toContain("1000g")
-    expect(url).toContain("50")
-    expect(url).toContain("5")
-  })
 
-  it("message contains all required fields", () => {
-    const url = buildWhatsappMessage({
-      fruit: "mora",
-      presentation: "300g",
-      targetCups: 100,
-      packsCount: 34,
-      whatsappNumber: "573009876543",
-      prepType: "frappe",
-    })
-    const decoded = decodeURIComponent(url.split("?text=")[1] ?? "")
-    expect(decoded).toContain("Mora")
-    expect(decoded).toContain("300g")
-    expect(decoded).toContain("100 vasos")
-    expect(decoded).toContain("34 paquete")
-  })
-
-  it("message includes prep type for jugo", () => {
-    const url = buildWhatsappMessage({
-      fruit: "lulo",
-      presentation: "300g",
-      targetCups: 25,
-      packsCount: 9,
-      whatsappNumber: "573001234567",
-      prepType: "jugo",
-    })
-    const decoded = decodeURIComponent(url.split("?text=")[1] ?? "")
-    expect(decoded).toContain("Jugo")
-  })
-
-  it("message includes prep type for frappe", () => {
-    const url = buildWhatsappMessage({
-      fruit: "fresa",
-      presentation: "1000g",
-      targetCups: 50,
-      packsCount: 9,
-      whatsappNumber: "573001234567",
-      prepType: "frappe",
-    })
-    const decoded = decodeURIComponent(url.split("?text=")[1] ?? "")
-    expect(decoded).toContain("Frappe")
-  })
-})

@@ -38,12 +38,13 @@ export type ProductLineKey =
   | "pulpa-frutos-rojos"
   | "pulpa-frutos-amarillos"
   | "pulpa-tomate-arbol"
-  | "kumiss";
+  | "kumiss"
+  | (string & {}); // permite líneas dinámicas creadas desde el admin
 
 export type Product = {
   id: string;
   name: string;
-  line: ProductLineKey;
+  line: string;
   presentation: string;      // "350ml", "600ml", "1L", "2L", "5L"
   presentationOrder: number; // para ordenar de menor a mayor
   price?: number;
@@ -58,12 +59,18 @@ export type Product = {
 };
 
 export type ProductLineConfig = {
-  key: ProductLineKey;
+  key: string;
   label: string;
   description: string;
-  gradient: string;   // clases Tailwind
+  gradient: string;
   iconEmoji: string;
   chipImage?: string;
+  categoryKey?: string | null;
+};
+
+export type ProductCategory = {
+  key: string;
+  label: string;
 };
 
 export type Testimonial = {

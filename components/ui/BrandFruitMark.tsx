@@ -8,7 +8,6 @@ export default function BrandFruitMark({ className = "" }: BrandFruitMarkProps) 
   return (
     <EmojiIcon
       emoji="🍋"
-      label="Limón"
       decorative
       mirrored
       size="sm"

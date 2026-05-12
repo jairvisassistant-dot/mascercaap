@@ -1,7 +1,7 @@
 import { faqData } from "@/data/faq";
 import type { FAQQuestion, FAQCategory } from "@/types";
 
-export type FAQMatch = {
+type FAQMatch = {
   question: FAQQuestion;
   category: FAQCategory;
   score: number;

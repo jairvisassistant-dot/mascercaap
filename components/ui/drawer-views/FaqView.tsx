@@ -55,7 +55,8 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
 
   function addMessage(role: "bot" | "user", text: string) {
     nextMessageIdRef.current += 1;
-    setMessages((prev) => [...prev, { id: `msg-${nextMessageIdRef.current}`, role, text }]);
+    const id = `msg-${nextMessageIdRef.current}`;
+    setMessages((prev) => [...prev, { id, role, text }]);
   }
 
   function buildWhatsAppUrl(currentMessages: Message[], lead?: Partial<LeadData>): string | null {
@@ -181,7 +182,8 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
         }),
       });
       leadSaved = res.ok;
-    } catch {
+    } catch (err) {
+      console.error("Error guardando lead:", err);
       // error de red — se abre WhatsApp sin marcar lead como guardado
     }
 

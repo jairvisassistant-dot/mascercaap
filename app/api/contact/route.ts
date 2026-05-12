@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { contactSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { SITE_CONFIG } from "@/lib/config";
+import esMessages from "@/messages/es.json";
+import enMessages from "@/messages/en.json";
 
 // Rate Limiting — sliding window, in-memory
 // 5 requests per IP per 60s. Resets on cold start — acceptable for a contact
@@ -150,7 +153,7 @@ function buildEmailHtml(data: ContactFormData): string {
             <td style="background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #f0f0f0;">
               <p style="margin:0;font-size:12px;color:#9ca3af;">
                 Este mensaje fue enviado desde el formulario de contacto de
-                <strong style="color:#3f8f46;">mascercap.com</strong>
+                <strong style="color:#3f8f46;">${new URL(SITE_CONFIG.siteUrl).hostname}</strong>
               </p>
             </td>
           </tr>
@@ -179,7 +182,11 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const data = contactSchema.parse(body);
+    const referer = request.headers.get("referer") ?? "";
+    const validationMsgs = referer.includes("/en/")
+      ? enMessages.contact.validation
+      : esMessages.contact.validation;
+    const data = createContactSchema(validationMsgs).parse(body);
 
     const apiKey   = process.env.RESEND_API_KEY;
     const toEmail  = process.env.RESEND_TO_EMAIL;
@@ -220,7 +227,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    console.error("Error al enviar email:", error instanceof Error ? error.message : "unknown error");
+    console.error("Error al enviar email:", error instanceof Error ? error.message.slice(0, 100) : "unknown");
     return NextResponse.json(
       { success: false, error: "Error al enviar el mensaje" },
       { status: 500 }

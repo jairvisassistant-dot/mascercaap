@@ -1,5 +1,7 @@
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
+
+export const revalidate = 3600;
 import { termsAndConditions } from "@/data/legal";
 import { SITE_CONFIG } from "@/lib/config";
 import type { Locale } from "@/lib/i18n";

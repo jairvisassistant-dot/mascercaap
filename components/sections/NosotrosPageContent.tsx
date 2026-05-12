@@ -11,12 +11,12 @@ import { SITE_CONFIG } from "@/lib/config";
 const timelineIcons = ["🌱", "👀", "🚿", "🧃", "🫙", "📦"];
 
 const processSteps = [
-  { src: "/imgs/Naranja-Seleccion.webp", alt: "Selección de naranjas al amanecer", icon: "🌅" },
-  { src: "/imgs/Naranja-Compra.webp", alt: "Compra directa al campesino colombiano", icon: "🤝" },
-  { src: "/imgs/Naranja-Tiene-Juez.webp", alt: "Control de calidad e inspección de fruta", icon: "🔍" },
-  { src: "/imgs/Naranja-Frio.webp", alt: "Proceso artesanal de exprimido en frío", icon: "🧃" },
-  { src: "/imgs/Naranja-Frescuras.webp", alt: "Embotellado fresco de jugo de naranja", icon: "✨" },
-  { src: "/imgs/Naranja-Detras-Cada-Botella.webp", alt: "Fundadoras de Más Cerca AP trabajando", icon: "💚" },
+  { src: "/imgs/Naranja-Seleccion.webp", icon: "🌅" },
+  { src: "/imgs/Naranja-Compra.webp", icon: "🤝" },
+  { src: "/imgs/Naranja-Tiene-Juez.webp", icon: "🔍" },
+  { src: "/imgs/Naranja-Frio.webp", icon: "🧃" },
+  { src: "/imgs/Naranja-Frescuras.webp", icon: "✨" },
+  { src: "/imgs/Naranja-Detras-Cada-Botella.webp", icon: "💚" },
 ];
 
 const valuesMeta = [

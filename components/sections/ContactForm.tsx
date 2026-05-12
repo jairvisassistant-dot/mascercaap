@@ -66,7 +66,8 @@ export default function ContactForm() {
       } else {
         setSubmitStatus("error");
       }
-    } catch {
+    } catch (err) {
+      console.error("Error enviando formulario de contacto:", err);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);

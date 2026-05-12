@@ -15,8 +15,8 @@ export const faqData: FAQData = {
             en: "What products do you offer?",
           },
           answer: {
-            es: "Ofrecemos zumos naturales de limón, limonada con cereza, limonada con coco y maracuyá; pulpas congeladas de maracuyá, mora, fresa, mango, guanábana, lulo, guayaba, frutos rojos y tomate de árbol; y lácteos Del Hato como kumis y yogurt en presentación de 250ml.",
-            en: "We offer natural lemon juice, cherry lemonade, coconut lemonade and passion fruit juice; frozen pulps of passion fruit, blackberry, strawberry, mango, soursop, lulo, guava, mixed berries and tree tomato; and Del Hato dairy products such as kumis and yogurt in a 250ml presentation.",
+            es: "Ofrecemos zumos naturales de limón, limonada con cereza, limonada con coco y maracuyá; pulpas congeladas de maracuyá, mora, fresa, mango, guanábana, lulo, guayaba, frutos rojos, frutos amarillos y tomate de árbol; y lácteos Del Hato como kumis y yogurt en presentación de 250ml.",
+            en: "We offer natural lemon juice, cherry lemonade, coconut lemonade and passion fruit juice; frozen pulps of passion fruit, blackberry, strawberry, mango, soursop, lulo, guava, mixed berries, yellow fruit blend and tree tomato; and Del Hato dairy products such as kumis and yogurt in a 250ml presentation.",
           },
           keywords: [
             "productos",

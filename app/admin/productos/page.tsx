@@ -1,29 +1,31 @@
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { requireAdminSession } from "@/lib/admin-session";
 import ProductosAdminClient from "./ProductosAdminClient";
 
 function adminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
   );
 }
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminProductosPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_session")?.value;
-  if (!token) redirect("/admin/login");
-  const { data: { user }, error: authError } = await adminClient().auth.getUser(token);
-  if (authError || !user) redirect("/admin/login");
+  await requireAdminSession();
 
   const supabase = adminClient();
-  const { data: products, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("display_order");
+  const [
+    { data: products, error },
+    { data: linesData },
+    { data: categoriesData },
+  ] = await Promise.all([
+    supabase.from("products").select("*").order("display_order"),
+    supabase.from("product_lines").select("key, label, category_key").order("display_order"),
+    supabase.from("product_categories").select("key, label").eq("active", true).order("display_order"),
+  ]);
 
   if (error) {
     return (
@@ -35,9 +37,23 @@ export default async function AdminProductosPage() {
     );
   }
 
+  const lineLabels: Record<string, string> = {};
+  const lineCategories: Record<string, string> = {};
+  for (const l of linesData ?? []) {
+    lineLabels[l.key] = l.label;
+    if (l.category_key) lineCategories[l.key] = l.category_key;
+  }
+
+  const categories = (categoriesData ?? []).map((c) => ({ key: c.key, label: c.label }));
+
   return (
     <div className="min-h-[100dvh]">
-      <ProductosAdminClient initialProducts={products ?? []} />
+      <ProductosAdminClient
+        initialProducts={products ?? []}
+        lineLabels={lineLabels}
+        lineCategories={lineCategories}
+        categories={categories}
+      />
     </div>
   );
 }
