@@ -438,7 +438,7 @@
       "responseTime": "Respondemos en menos de 24 horas"
     },
     "whoWeAre": {
-      "label": "",
+      "label": "Quiénes somos",
       "text": "En Más Cerca AP cada mensaje se atiende personalmente, siempre nos preocupamos por darte lo mejor."
     },
     "cards": {
@@ -648,15 +648,6 @@
       "Pulpas": "Pulpas",
       "Zumos": "Zumos",
       "Lácteos": "Lácteos"
-    },
-    "zones": {
-      "bogota": "Bogotá",
-      "medellin": "Medellín"
-    },
-    "urgency": {
-      "manana": "Mañana",
-      "semana": "Esta semana",
-      "sin_urgencia": "Sin urgencia"
     },
     "customQtyLabel": "Personalizado",
     "customQtyPlaceholder": "Cantidad",

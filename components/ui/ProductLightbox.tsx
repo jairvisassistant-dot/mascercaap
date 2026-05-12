@@ -124,7 +124,7 @@ export default function ProductLightbox({ product, isOpen, onClose }: ProductLig
             onClick={onClose}
             className="mt-2 self-start rounded-xl border border-border-mid px-5 py-2.5 text-sm font-semibold text-text-sub transition hover:border-primary-light hover:bg-primary-light/15 hover:text-primary-dark"
           >
-            {lang === "es" ? "Cerrar" : "Close"}
+            {t.close}
           </button>
         </div>
       </div>

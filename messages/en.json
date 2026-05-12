@@ -649,15 +649,6 @@
       "Zumos": "Juices",
       "Lácteos": "Dairy"
     },
-    "zones": {
-      "bogota": "Bogotá",
-      "medellin": "Medellín"
-    },
-    "urgency": {
-      "manana": "Tomorrow",
-      "semana": "This week",
-      "sin_urgencia": "No rush"
-    },
     "customQtyLabel": "Custom",
     "customQtyPlaceholder": "Quantity",
     "waGreeting": "Hello, I'd like to place an order:",

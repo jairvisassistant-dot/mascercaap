@@ -679,11 +679,3 @@ export const products: Product[] = [
     benefits: ["Probióticos naturales", "Fuente de calcio", "Semidescremado"],
   },
 ];
-
-const featuredProductIds = new Set([
-  "limon-600",
-  "pulpa-maracuya-300",
-  "kumiss-yolito-250ml",
-]);
-
-export const featuredProducts = products.filter((p) => featuredProductIds.has(p.id));

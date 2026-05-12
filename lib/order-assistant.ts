@@ -135,7 +135,7 @@ function getDiscountRate(_totalUnits: number): number {
   return 0
 }
 
-export type OrderTotals = {
+type OrderTotals = {
   subtotal:     number
   totalUnits:   number
   discountRate: number
@@ -165,7 +165,7 @@ export function formatCOP(n: number): string {
   return `$${n.toLocaleString("es-CO")}`
 }
 
-export type WaMsgI18n = {
+type WaMsgI18n = {
   greeting?:     string
   clientType?:   string | null
   products?:     string

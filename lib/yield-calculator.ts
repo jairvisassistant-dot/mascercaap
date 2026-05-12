@@ -34,7 +34,7 @@ export const FRUIT_DATA: Record<FruitKey, FruitData> = {
   guanabana:    { label: "Guanábana",       freshKgPer1kgPulp: 2.5, processingMinPer1kg: 55 },
 }
 
-export const PACK_GRAMS: Record<Presentation, number> = {
+const PACK_GRAMS: Record<Presentation, number> = {
   "120g":  120,
   "300g":  300,
   "1000g": 1000,
@@ -42,7 +42,7 @@ export const PACK_GRAMS: Record<Presentation, number> = {
 
 // Fuente: productor — 120g pulpa rinde exactamente 1 vaso de 16oz (473ml) de jugo
 // Frappe: mezcla con leche/hielo, menos dilución → más pulpa por vaso → 150g/16oz
-export const GRAMS_PER_CUP: Record<PrepType, number> = {
+const GRAMS_PER_CUP: Record<PrepType, number> = {
   jugo:   120,
   frappe: 150,
 }

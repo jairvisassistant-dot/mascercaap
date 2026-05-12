@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useCallback } from "react";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "order";
 
-export type DrawerContext = {
+type DrawerContext = {
   product?: string;
 };
 
