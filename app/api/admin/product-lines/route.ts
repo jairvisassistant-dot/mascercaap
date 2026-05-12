@@ -2,8 +2,6 @@ import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { productLines as staticProductLines } from "@/data/products";
-
 function adminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,22 +34,9 @@ export async function GET() {
     .eq("active", true)
     .order("display_order");
 
-  if (error || !data || data.length === 0) {
-    return NextResponse.json(
-      staticProductLines.map((l, i) => ({
-        key: l.key,
-        label: l.label,
-        description: l.description,
-        gradient: l.gradient,
-        icon_emoji: l.iconEmoji,
-        chip_image: l.chipImage ?? null,
-        display_order: i,
-        active: true,
-      }))
-    );
-  }
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json(data);
+  return NextResponse.json(data ?? []);
 }
 
 export async function PATCH(req: Request) {
