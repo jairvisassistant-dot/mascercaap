@@ -1,85 +1,60 @@
 # Pendientes Post-Auditoría — 2026-05-11
-
-Hallazgos abiertos tras verificación de 4 commits correctivos (`920eab4`, `4053fcb`, `9267c03`, `f987b49`). 10/10 hallazgos nuevos y 8/12 previos fueron resueltos.
-
----
-
-## Persistentes desde auditorías originales (nunca tocados)
-
-### P-01 — Zod monolingüe (CR#11 · HIGH)
-- **Archivo:** `lib/schemas/contact.ts`
-- **Problema:** Mensajes de validación Zod hardcodeados en español. En locale `en` el usuario recibe errores en español.
-- **Fix:** Usar `messages/*.json` o función que resuelva idioma desde headers/lang.
-
-### P-02 — Overlines hardcodeados (CR#12 · LOW)
-- **Archivos:** WhyChooseUs, FeaturedProducts, galería, otras secciones
-- **Problema:** Textos de etiqueta/sección como "Por qué elegirnos" fuera del diccionario i18n.
-- **Fix:** Agregar claves `sectionLabel` al diccionario y consumirlas desde los componentes.
+> Actualizado: 2026-05-12 — todos los hallazgos accionables resueltos.
 
 ---
 
-## Persistentes desde verification_20260511_1950.md
+## Estado final de los 11 hallazgos
 
-### P-03 — DictionaryProvider alta superficie cliente (MED)
-- **Problema:** 40+ archivos con `"use client"` por usar Context de i18n. Sin migración estructural.
-- **Decisión del desarrollador:** Justificado (no hay plan de migración).
+| ID | Hallazgo | Severidad | Estado | Commit |
+|---|---|---|---|---|
+| P-01 | Zod monolingüe español | HIGH | ✅ Resuelto | `8febccf` |
+| P-02 | Overlines hardcodeados | LOW | ✅ Resuelto | `f987b49` |
+| P-03 | DictionaryProvider alta superficie | MED | ⏸️ Diferido | — |
+| P-04 | Doble fuente de verdad catálogo | MED | ✅ Resuelto | `11a0719` |
+| P-05 | SEC-07 — Admin sin validar ADMIN_EMAIL | HIGH | ✅ Resuelto | `8febccf` |
+| P-06 | OrderAssistant /en/ español | HIGH | ✅ Resuelto | `8febccf` |
+| P-07 | OrderAssistant catálogo paralelo | HIGH | ✅ Resuelto | `8febccf` |
+| P-08 | Bloque whatsapp JSON sin uso claro | MED | ✅ Resuelto | `8febccf` |
+| P-09 | label="Limón" hardcodeado | LOW | ✅ Resuelto | `8febccf` |
+| P-10 | whatsappNumber sin validación | LOW | ✅ Resuelto | `8febccf` |
+| P-11 | suppressHydrationWarning innecesario | LOW | ✅ Resuelto | `8febccf` |
 
-### P-04 — Doble fuente de verdad del catálogo (MED)
-- **Archivos:** `data/products.ts`, `lib/order-assistant.ts` (PRICES_COP)
-- **Problema:** `data/products.ts` con 47 productos y `PRICES_COP` coexisten con Supabase como fuente única.
-- **Decisión del desarrollador:** Diferido.
-
-### P-05 — SEC-07: Admin pages sin validar ADMIN_EMAIL (HIGH)
-- **Archivo:** `lib/admin-session.ts`
-- **Problema:** `requireAdminSession()` valida token JWT pero no que el email del usuario sea `ADMIN_EMAIL`. Defensa en profundidad incompleta.
-- **Fix:** Agregar `email === ADMIN_EMAIL` check.
-
-### P-06 — OrderAssistant /en/ parcialmente español (HIGH)
-- **Archivo:** `lib/order-assistant.ts:73-91`
-- **Problema:** `ZONE_LABELS`, `URGENCY_LABELS`, `PROFILE_LABELS` hardcodeados en español. Usuarios `/en/` ven zonas/urgencias/perfiles en español.
-- **Fix:** Mover al diccionario `messages/*.json`.
-
-### P-07 — OrderAssistant catálogo paralelo (HIGH)
-- **Archivo:** `lib/order-assistant.ts` (PRICES_COP, LACTEOS_PRICES)
-- **Problema:** Precios duplicados del catálogo como fuente paralela. Mejoraron (actualizados a valores reales) pero el patrón persiste.
+**10/11 resueltos — 1 diferido por decisión del desarrollador.**
 
 ---
 
-## Issues detectados en verification_20260511_1950.md (no corregidos)
+## Detalle por hallazgo
 
-### P-08 — Bloque `whatsapp` en JSON sin uso claro (MED)
-- **Archivos:** `messages/es.json`, `messages/en.json`
-- **Problema:** Clave `whatsapp.message` definida. Consumidores usan `t.whatsappMessage`/`t.whatsappMsg` — verificar si hay mapeo o está huérfano.
+### ✅ P-01 — Zod monolingüe (`8febccf`)
+`app/api/contact/route.ts` detecta el locale vía el header `Referer` y pasa los mensajes de `messages/es.json` o `messages/en.json` a `createContactSchema()`. Usuarios en `/en/` reciben errores de validación en inglés.
 
-### P-09 — `label="Limón"` hardcodeado en BrandFruitMark (LOW)
-- **Archivo:** `components/ui/BrandFruitMark.tsx:11`
-- **Problema:** Label accesible hardcodeado. En `/en/` sigue diciendo "Limón".
-- **Fix:** Recibir como prop o usar `productLines.limon.label`.
+### ✅ P-02 — Overlines hardcodeados (`f987b49`)
+`WhyChooseUs`, `FeaturedProducts`, `DailyOffer`, `ProductCategories`, `NosotrosPageContent` y `YieldCalculator` consumen `sectionLabel` desde el diccionario i18n.
 
-### P-10 — `whatsappNumber` sin validación (LOW)
-- **Archivo:** `lib/config.ts`
-- **Problema:** Si `NEXT_PUBLIC_WHATSAPP_NUMBER` falta, produce `""` y genera links rotos.
+### ⏸️ P-03 — DictionaryProvider alta superficie
+**Decisión: diferido indefinidamente.**
+De los 40 archivos con `"use client"`, solo 3 lo son únicamente por el contexto de i18n (`OrderAssistantCTA`, `HelpMenu`, `WhatsAppConnectView`). El resto serían clientes de todas formas por animaciones, hooks o routing. El costo de migrar supera el beneficio para el volumen actual del proyecto.
 
-### P-11 — `suppressHydrationWarning` innecesario (LOW)
-- **Archivo:** `app/admin/login/page.tsx`
-- **Problema:** 2 `<div>` con `suppressHydrationWarning` probablemente innecesarios.
+### ✅ P-04 — Doble fuente de verdad catálogo (`11a0719`)
+Eliminados todos los fallbacks a `data/products.ts` y `data/testimonials.ts` en `lib/supabase/queries.ts`. Las funciones `getAllProducts`, `getFeaturedProducts`, `getAllTestimonials`, `getAllProductLines` y `getAllProductCategories` leen exclusivamente de Supabase. `data/products.ts` queda como seed/referencia histórica sin uso en runtime.
 
----
+### ✅ P-05 — Admin sin validar ADMIN_EMAIL (`8febccf`)
+`lib/admin-session.ts` — añadido `user.email !== process.env.ADMIN_EMAIL` tras validar JWT. Cualquier usuario autenticado en Supabase que no sea el admin es redirigido a logout.
 
-## Resumen
+### ✅ P-06 — OrderAssistant /en/ español (`8febccf`)
+`ZONE_LABELS`, `URGENCY_LABELS`, `PROFILE_LABELS` eran dead code (nunca exportados ni llamados). Eliminados junto con los tipos huérfanos `DeliveryZone` y `Urgency`.
 
-| ID | Hallazgo | Severidad | Tipo |
-|---|---|---|---|
-| P-01 | Zod monolingüe español | HIGH | i18n |
-| P-02 | Overlines hardcodeados | LOW | i18n |
-| P-03 | DictionaryProvider alta superficie | MED | arquitectura |
-| P-04 | Doble fuente de verdad catálogo | MED | arquitectura |
-| P-05 | SEC-07 — Admin sin validar ADMIN_EMAIL | HIGH | seguridad |
-| P-06 | OrderAssistant /en/ español | HIGH | i18n |
-| P-07 | OrderAssistant catálogo paralelo | HIGH | arquitectura |
-| P-08 | Bloque whatsapp JSON sin uso claro | MED | dead-code |
-| P-09 | label="Limón" hardcodeado | LOW | a11y |
-| P-10 | whatsappNumber sin validación | LOW | robustness |
-| P-11 | suppressHydrationWarning innecesario | LOW | limpieza |
+### ✅ P-07 — OrderAssistant catálogo paralelo (`8febccf`)
+Eliminados `PRICES_COP`, `LACTEOS_PRICES` y `getUnitPrice` de `lib/order-assistant.ts`. Añadidos `PriceEntry` y `buildPriceResolver()` compartidos. `PriceProvider` (`lib/prices/PriceProvider.tsx`) carga precios de Supabase en el Server Component del layout y los distribuye por contexto. `OrderAssistantView` usa `usePrices()` — UI y email de confirmación usan la misma fuente.
 
-**3 HIGH**, **2 MED**, **6 LOW** — 11 pendientes en total. Progreso general: ~80% de hallazgos resueltos.
+### ✅ P-08 — Bloque whatsapp JSON huérfano (`8febccf`)
+Eliminado el bloque top-level `whatsapp.message` de `messages/es.json` y `messages/en.json`. Ningún componente lo consumía.
+
+### ✅ P-09 — `label="Limón"` hardcodeado (`8febccf`)
+Eliminado el prop `label="Limón"` de `BrandFruitMark.tsx`. Con `decorative={true}`, `EmojiIcon` aplica `aria-hidden` e ignora el label — el prop era dead code.
+
+### ✅ P-10 — `whatsappNumber` sin validación (`8febccf`)
+`lib/config.ts` emite `console.warn` en startup si `NEXT_PUBLIC_WHATSAPP_NUMBER` no está configurada (excepto en entorno `test`).
+
+### ✅ P-11 — `suppressHydrationWarning` innecesario (`8febccf`)
+Eliminados los dos `suppressHydrationWarning` en `app/admin/login/page.tsx`. Los `<div>` contenedores no tienen contenido dinámico entre servidor y cliente.
