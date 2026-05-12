@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 async function getProductCount(): Promise<number | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return null;
   const { count } = await createClient(url, key, { auth: { persistSession: false } })
     .from("products")

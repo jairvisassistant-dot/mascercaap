@@ -85,7 +85,7 @@ export default function NuevaLineaForm() {
           Paso 1 — Categoría principal
         </p>
         <p className="mb-4 text-xs text-text-muted">
-          Elegí a qué categoría pertenece esta línea antes de continuar.
+          Elige a qué categoría pertenece esta línea antes de continuar.
         </p>
         <Field label="Categoría *">
           <select
@@ -96,7 +96,7 @@ export default function NuevaLineaForm() {
             className={`${inputCls} border-primary/30`}
           >
             <option value="">
-              {loadingCategories ? "Cargando categorías..." : "— Seleccioná una categoría —"}
+              {loadingCategories ? "Cargando categorías..." : "— Selecciona una categoría —"}
             </option>
             {categories.map((c) => (
               <option key={c.key} value={c.key}>{c.label}</option>
@@ -136,8 +136,8 @@ export default function NuevaLineaForm() {
             empty={!categoryKey || !label.trim()}
             emptyHint={
               !categoryKey
-                ? "Seleccioná una categoría primero"
-                : "Escribí el nombre para generar el identificador"
+                ? "Selecciona una categoría primero"
+                : "Escribe el nombre para generar el identificador"
             }
           />
 

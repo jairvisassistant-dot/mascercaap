@@ -214,7 +214,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           Paso 1 — Categoría
         </p>
         <p className="mb-4 text-xs text-text-muted">
-          Elegí a qué categoría pertenece este producto.
+          Elige a qué categoría pertenece este producto.
         </p>
         <Field label="Categoría *">
           <select
@@ -224,7 +224,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             className={`${inputCls} border-primary/30`}
           >
             <option value="">
-              {loadingCatalog ? "Cargando categorías..." : "— Seleccioná una categoría —"}
+              {loadingCatalog ? "Cargando categorías..." : "— Selecciona una categoría —"}
             </option>
             {categories.map((c) => (
               <option key={c.key} value={c.key}>{c.label}</option>
@@ -249,7 +249,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <p className="mb-4 text-xs text-text-muted">
           {selectedCategory
             ? "Líneas disponibles para la categoría seleccionada."
-            : "Seleccioná primero una categoría para filtrar las líneas."}
+            : "Selecciona primero una categoría para filtrar las líneas."}
         </p>
         <Field label="Línea *">
           <select
@@ -326,9 +326,9 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
               empty={!generatedId}
               emptyHint={
                 !form.line
-                  ? "Seleccioná una línea primero"
+                  ? "Selecciona una línea primero"
                   : !form.name.trim()
-                    ? "Escribí el nombre para generar el ID"
+                    ? "Escribe el nombre para generar el ID"
                     : "—"
               }
             />

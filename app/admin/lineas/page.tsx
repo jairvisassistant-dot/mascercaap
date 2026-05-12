@@ -29,7 +29,7 @@ export default async function LineasPage() {
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text-main">Líneas de producto</h1>
             <p className="mt-1 text-sm text-text-muted">
-              Usá las flechas para cambiar el orden en que aparecen en la página de productos.
+              Usa las flechas para cambiar el orden en que aparecen en la página de productos.
             </p>
           </div>
           <Link
