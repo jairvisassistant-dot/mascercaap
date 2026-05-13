@@ -681,7 +681,10 @@
     "totalLabel": "Estimated total",
     "taxIncludedNote": "Displayed values already include VAT.",
     "priceNote": "* Estimate. Final price confirmed by the team.",
-    "unitsShort": "u."
+    "unitsShort": "u.",
+    "validation": {
+      "contactRequired": "An email or WhatsApp number is required"
+    }
   },
   "chatbot": {
     "title": "Frequently Asked Questions",
@@ -764,5 +767,11 @@
     "terms": {
       "ctaTitle": "Questions about these terms?"
     }
+  },
+  "cookieConsent": {
+    "text": "We use Google Analytics to improve your experience. You can accept or decline tracking.",
+    "accept": "Accept",
+    "decline": "Necessary only",
+    "learnMore": "View policies"
   }
 }

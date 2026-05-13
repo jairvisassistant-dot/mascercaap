@@ -15,7 +15,7 @@ const DEFAULT_MESSAGES: OrderValidationMessages = {
   contactRequired: "Se requiere email o número de WhatsApp",
 };
 
-function createOrderSchema(msgs: OrderValidationMessages = DEFAULT_MESSAGES) {
+export function createOrderSchema(msgs: OrderValidationMessages = DEFAULT_MESSAGES) {
   return z.object({
     nombre:          z.string().min(2).max(80),
     email:           z.string().email().max(254).optional().nullable(),

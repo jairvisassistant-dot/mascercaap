@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { leadSchema } from "@/lib/schemas/lead";
+import { createLeadSchema, ES_LEAD_MESSAGES, EN_LEAD_MESSAGES } from "@/lib/schemas/lead";
 import { supabase } from "@/lib/supabase";
 
 // Rate limiting — sliding window, in-memory
@@ -44,7 +44,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const parsed = leadSchema.safeParse(body);
+    const referer = req.headers.get("referer") ?? "";
+    const msgs = referer.includes("/en/") ? EN_LEAD_MESSAGES : ES_LEAD_MESSAGES;
+    const parsed = createLeadSchema(msgs).safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });

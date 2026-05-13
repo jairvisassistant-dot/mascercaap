@@ -454,9 +454,9 @@ export default function ProductosClient({ products, productLines, categories }: 
               <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase block mb-4">
                 {dict.products.cta.badge}
               </span>
-              <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
+              <h2 className="text-3xl font-bold text-white mb-4 leading-tight">
                 {dict.products.cta.title}
-              </h3>
+              </h2>
               <p className="text-gray-300 mb-8 leading-relaxed">
                 {dict.products.cta.text}
               </p>

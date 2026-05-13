@@ -1,6 +1,5 @@
 import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
@@ -13,6 +12,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
 import ScrollProgress from "@/components/ui/ScrollProgress";
+import CookieConsent from "@/components/ui/CookieConsent";
 import { SITE_CONFIG } from "@/lib/config";
 
 const poppins = Poppins({
@@ -112,7 +112,7 @@ export default async function LangLayout({
           </PriceProvider>
         </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} dict={dict} lang={lang} />
         )}
       </div>
     </>

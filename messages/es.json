@@ -681,7 +681,10 @@
     "totalLabel": "Total estimado",
     "taxIncludedNote": "Los valores mostrados ya tienen IVA incluido.",
     "priceNote": "* Estimación. El equipo confirma el precio final.",
-    "unitsShort": "u."
+    "unitsShort": "u.",
+    "validation": {
+      "contactRequired": "Se requiere email o número de WhatsApp"
+    }
   },
   "chatbot": {
     "title": "Preguntas Frecuentes",
@@ -764,5 +767,11 @@
     "terms": {
       "ctaTitle": "¿Tienes preguntas sobre estos términos?"
     }
+  },
+  "cookieConsent": {
+    "text": "Usamos Google Analytics para mejorar tu experiencia. Podés aceptar o rechazar el seguimiento.",
+    "accept": "Aceptar",
+    "decline": "Solo necesarias",
+    "learnMore": "Ver políticas"
   }
 }

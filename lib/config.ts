@@ -31,4 +31,6 @@ export const SITE_CONFIG = {
   addressCity: "Cundinamarca, Colombia",
   /** Link directo a la ubicación para acciones desde mobile */
   mapUrl: "https://www.google.com/maps/search/?api=1&query=Calle%2012a%20%23%2015-53%2C%20Chia%2C%20Cundinamarca%2C%20Colombia",
+  /** NIT de la empresa — completar con el número real antes de producción */
+  nit: "",
 } as const;
