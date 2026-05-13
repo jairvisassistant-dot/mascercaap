@@ -14,7 +14,8 @@ export default function LanguageSwitcher({ dict, lang }: LanguageSwitcherProps) 
 
   const switchLocale = () => {
     const targetLang = lang === "es" ? "en" : "es";
-    const newPath = pathname.replace(`/${lang}`, `/${targetLang}`);
+    const rest = pathname.startsWith(`/${lang}`) ? pathname.slice(`/${lang}`.length) : "";
+    const newPath = `/${targetLang}${rest}`;
     try { document.cookie = `NEXT_LOCALE=${targetLang};path=/;max-age=31536000`; } catch {}
     router.push(newPath);
   };

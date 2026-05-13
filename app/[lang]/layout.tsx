@@ -29,6 +29,8 @@ const dmSerif = DM_Serif_Display({
   preload: false,
 });
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }

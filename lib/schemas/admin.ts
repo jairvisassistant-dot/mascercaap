@@ -33,7 +33,7 @@ export const productPatchSchema = z
     active: z.boolean().optional(),
   })
   .refine((obj) => Object.keys(obj).length > 0, {
-    message: "Sin campos válidos para actualizar",
+    message: "No valid fields to update",
   });
 
 export const reorderSchema = z.object({
