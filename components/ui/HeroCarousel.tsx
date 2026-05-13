@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer, useState, useEffect, useRef } from "react";
+import { useReducer, useEffect, useRef } from "react";
 import Image from "next/image";
 import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import Link from "next/link";
@@ -200,7 +200,7 @@ export default function HeroCarousel() {
     currentSlide: 0,
     currentFrame: 0,
   });
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const isAutoPlayingRef = useRef(true);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
@@ -218,12 +218,12 @@ export default function HeroCarousel() {
   };
 
   useEffect(() => {
-    if (!isAutoPlaying || !isVisible || shouldReduceMotion) return;
+    if (!isVisible || shouldReduceMotion) return;
     const interval = setInterval(() => {
-      dispatch({ type: "nextSlide" });
+      if (isAutoPlayingRef.current) dispatch({ type: "nextSlide" });
     }, slide.duration);
     return () => clearInterval(interval);
-  }, [isAutoPlaying, isVisible, shouldReduceMotion, currentSlide, slide.duration]);
+  }, [isVisible, shouldReduceMotion, currentSlide, slide.duration]);
 
   useEffect(() => {
     if (frameCount <= 1 || !isVisible || shouldReduceMotion) return;
@@ -240,10 +240,10 @@ export default function HeroCarousel() {
   }, []);
 
   const pauseAndResume = () => {
-    setIsAutoPlaying(false);
+    isAutoPlayingRef.current = false;
     if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
     resumeTimerRef.current = setTimeout(
-      () => setIsAutoPlaying(true),
+      () => { isAutoPlayingRef.current = true; },
       RESUME_AFTER_INTERACTION_MS
     );
   };
@@ -298,7 +298,7 @@ export default function HeroCarousel() {
                   className="object-cover"
                   priority={currentSlide === 0 && currentFrame === 0}
                   loading={currentSlide === 0 && currentFrame > 0 ? "eager" : undefined}
-                  quality={80}
+                  quality={70}
                 />
               </m.div>
             </m.div>
@@ -390,7 +390,7 @@ export default function HeroCarousel() {
       <button
         type="button"
         onClick={prevSlide}
-        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 hidden sm:flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
+        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
         aria-label={dict.home.hero.prevSlide}
       >
         <svg className="h-4 w-4 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -400,7 +400,7 @@ export default function HeroCarousel() {
       <button
         type="button"
         onClick={nextSlide}
-        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 hidden sm:flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
+        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
         aria-label={dict.home.hero.nextSlide}
       >
         <svg className="h-4 w-4 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

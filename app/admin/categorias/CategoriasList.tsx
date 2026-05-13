@@ -127,8 +127,9 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
               </p>
               <div className="space-y-3">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-text-sub">Nombre *</label>
+                  <label htmlFor={`${cat.key}-nombre`} className="mb-1 block text-xs font-semibold text-text-sub">Nombre *</label>
                   <input
+                    id={`${cat.key}-nombre`}
                     type="text"
                     autoFocus
                     value={vals.label}
@@ -137,8 +138,9 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-text-sub">Descripción</label>
+                  <label htmlFor={`${cat.key}-descripcion`} className="mb-1 block text-xs font-semibold text-text-sub">Descripción</label>
                   <textarea
+                    id={`${cat.key}-descripcion`}
                     value={vals.description}
                     onChange={(e) => setEditValues((prev) => ({ ...prev, [cat.key]: { ...vals, description: e.target.value } }))}
                     rows={2}

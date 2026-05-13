@@ -4,6 +4,7 @@ import { SITE_CONFIG } from "@/lib/config";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import type { ProductCategory } from "@/types";
 
 const socialLinks = [
   {
@@ -38,14 +39,20 @@ const socialLinks = [
 interface FooterProps {
   dict: Dictionary;
   lang: Locale;
+  categories: ProductCategory[];
 }
 
-export default function Footer({ dict, lang }: FooterProps) {
+export default function Footer({ dict, lang, categories }: FooterProps) {
   const footerLinks = [
     { href: `/${lang}`, label: dict.nav.home },
     { href: `/${lang}/productos`, label: dict.nav.products },
     { href: `/${lang}/nosotros`, label: dict.nav.about },
     { href: `/${lang}/contacto`, label: dict.nav.contact },
+    {
+      href: "/admin/login",
+      label: "Admin",
+      className: "text-white/35 hover:text-white/55",
+    },
   ];
 
   return (
@@ -89,7 +96,7 @@ export default function Footer({ dict, lang }: FooterProps) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/62 hover:text-primary transition-colors"
+                    className={`transition-colors ${link.className ?? "text-white/62 hover:text-primary"}`}
                   >
                     {link.label}
                   </Link>
@@ -104,16 +111,20 @@ export default function Footer({ dict, lang }: FooterProps) {
               {dict.footer.productsTitle}
             </h3>
             <ul className="space-y-2">
-              {(["jugos", "pulpas", "lacteos"] as const).map((category) => (
-                <li key={category}>
-                  <Link
-                    href={`/${lang}/productos?categoria=${category}`}
-                    className="text-white/62 hover:text-primary transition-colors"
-                  >
-                    {dict.footer.productLines[category]}
-                  </Link>
-                </li>
-              ))}
+              {categories.map((cat) => {
+                const dictLabels = dict.footer.productLines as Record<string, string>;
+                const label = dictLabels[cat.key] ?? cat.label;
+                return (
+                  <li key={cat.key}>
+                    <Link
+                      href={`/${lang}/productos?categoria=${cat.key}`}
+                      className="text-white/62 hover:text-primary transition-colors"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -157,6 +168,14 @@ export default function Footer({ dict, lang }: FooterProps) {
                 {SITE_CONFIG.phoneDisplay}
                 </a>
               </li>
+              {SITE_CONFIG.nit && (
+                <li className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  <span>NIT: {SITE_CONFIG.nit}</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>

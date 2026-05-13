@@ -33,7 +33,7 @@ export const productPatchSchema = z
     active: z.boolean().optional(),
   })
   .refine((obj) => Object.keys(obj).length > 0, {
-    message: "Sin campos válidos para actualizar",
+    message: "No valid fields to update",
   });
 
 export const reorderSchema = z.object({
@@ -72,4 +72,10 @@ export const lineUpdateSchema = z.object({
   icon_emoji: z.string().max(4).optional(),
   description: z.string().max(200).optional(),
   category_key: z.string().nullable().optional(),
+});
+
+export const leadUpdateSchema = z.object({
+  id: z.string().min(1),
+  estado_seguimiento: z.enum(["nuevo", "contactado", "convertido", "perdido"]).optional(),
+  notas: z.string().max(2000).optional(),
 });

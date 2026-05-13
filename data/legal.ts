@@ -6,7 +6,7 @@ export const privacyPolicy: LegalDocument = {
     es: "Política de Privacidad y Tratamiento de Datos",
     en: "Privacy Policy and Data Treatment",
   },
-  lastUpdated: "2024-01-01",
+  lastUpdated: "2026-05-13",
   sections: [
     {
       title: { es: "1. Responsable del tratamiento", en: "1. Data Controller" },
@@ -72,7 +72,7 @@ export const termsAndConditions: LegalDocument = {
     es: "Términos y Condiciones de Uso",
     en: "Terms and Conditions of Use",
   },
-  lastUpdated: "2024-01-01",
+  lastUpdated: "2026-05-13",
   sections: [
     {
       title: { es: "1. Aceptación de los términos", en: "1. Acceptance of Terms" },

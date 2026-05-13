@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GRADIENT_PRESETS } from "@/lib/gradient-presets";
 import { generateLineKey } from "@/lib/id-generators";
@@ -108,9 +109,9 @@ export default function NuevaLineaForm() {
           {!loadingCategories && categories.length === 0 && (
             <p className="mt-1.5 text-xs text-text-muted">
               No hay categorías creadas aún.{" "}
-              <a href="/admin/categorias/nueva" className="font-semibold text-primary underline">
+              <Link href="/admin/categorias/nueva" className="font-semibold text-primary underline">
                 Crear una categoría
-              </a>
+              </Link>
             </p>
           )}
         </Field>

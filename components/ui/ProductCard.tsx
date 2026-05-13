@@ -167,9 +167,9 @@ export default function ProductCard({ product, accentGradient = "from-primary to
       <div className={`relative px-4 pb-4 pt-4.5 ${hasPackagingImage ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.96)_22%,#ffffff_100%)]" : "bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,#ffffff_100%)]"}`}>
         <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-white/90" />
         <div className="space-y-1.5">
-          <p className="line-clamp-1 text-[0.98rem] font-semibold leading-tight tracking-[-0.018em] text-text-main text-balance">
+          <h3 className="line-clamp-1 text-[0.98rem] font-semibold leading-tight tracking-[-0.018em] text-text-main text-balance">
             {displayName}
-          </p>
+          </h3>
           <p className="min-h-[2.55rem] line-clamp-2 text-[0.78rem] leading-[1.6] text-text-muted text-pretty">
             {displayDescription}
           </p>

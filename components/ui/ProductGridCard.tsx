@@ -121,9 +121,9 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
             <span>{displayLineLabel}</span>
           </div>
 
-          <p className="line-clamp-1 text-[0.95rem] font-semibold leading-tight tracking-[-0.018em] text-text-main text-balance">
+          <h3 className="line-clamp-1 text-[0.95rem] font-semibold leading-tight tracking-[-0.018em] text-text-main text-balance">
             {displayName}
-          </p>
+          </h3>
           <p className="mt-1 min-h-[2.45rem] line-clamp-2 text-[0.76rem] leading-[1.6] text-text-muted text-pretty">
             {displayDescription}
           </p>

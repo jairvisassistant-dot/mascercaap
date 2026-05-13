@@ -3,7 +3,30 @@
     "allow": [
       "mcp__plugin_engram_engram__mem_search",
       "mcp__plugin_engram_engram__mem_save",
-      "WebSearch"
+      "WebSearch",
+      "Bash(npm install *)",
+      "Bash(mkdir -p ~/.local/bin)",
+      "Bash(curl -sL \"https://github.com/cli/cli/releases/download/v2.72.0/gh_2.72.0_linux_amd64.tar.gz\" -o /tmp/gh.tar.gz)",
+      "Bash(tar -xzf /tmp/gh.tar.gz -C /tmp)",
+      "Bash(cp /tmp/gh_2.72.0_linux_amd64/bin/gh ~/.local/bin/gh)",
+      "Bash(export PATH=\"$HOME/.local/bin:$PATH\")",
+      "Bash(gh auth *)",
+      "Bash(npx tsx *)",
+      "Bash(git commit *)",
+      "Bash(supabase db query --linked --workdir /home/jilz/Escritorio/mas-cerca-ap/supabase ' *)",
+      "Bash(git add *)",
+      "Bash(node_modules/.bin/tsx *)",
+      "Bash(npm test *)",
+      "Bash(npx vitest *)",
+      "Bash(echo \"tsc_exit:$?\")",
+      "Bash(gh pr *)",
+      "Bash(curl -s http://localhost:3000/es)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/api/admin/products)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:3000/api/admin/products -H 'Content-Type: application/json' -d '{\"name\":\"test\"}')",
+      "Bash(curl -s -o /tmp/zod_resp.json -w '%{http_code}' -X POST http://localhost:3000/api/admin/products -H 'Content-Type: application/json' -H 'Cookie: admin_session=faketoken' -d '{\"name\":\"\"}')",
+      "Bash(sed -n '85,95p' /home/jilz/Escritorio/mas-cerca-ap/app/\\\\[lang\\\\]/layout.tsx)",
+      "Bash(sed -n '15,25p' /home/jilz/Escritorio/mas-cerca-ap/app/layout.tsx)",
+      "Bash(npx react-doctor@latest . --verbose)"
     ]
   }
 }

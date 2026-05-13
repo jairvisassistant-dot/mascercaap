@@ -7,6 +7,7 @@ import { m, AnimatePresence } from "framer-motion";
 import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { buildWhatsAppAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 
 export default function ContactForm() {
@@ -43,7 +44,7 @@ export default function ContactForm() {
       if (response.ok) {
         const wm = t.whatsappMsg;
         const tipoLabels = wm.tipoLabel as Record<string, string>;
-        const msg = [
+        const msg = buildWhatsAppMessage([
           wm.greeting,
           "",
           wm.intro.replace("{name}", data.nombre).replace("{reason}", tipoLabels[data.tipo] ?? data.tipo),
@@ -53,13 +54,11 @@ export default function ContactForm() {
           "",
           wm.message,
           data.mensaje,
-        ]
-          .filter(Boolean)
-          .join("\n");
+        ]);
 
         const waNumber = SITE_CONFIG.whatsappNumber;
         if (waNumber) {
-          setWhatsappUrl(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`);
+          setWhatsappUrl(buildWhatsAppAppUrl(waNumber, msg));
         }
         setSubmitStatus("success");
         reset();
@@ -222,12 +221,22 @@ export default function ContactForm() {
           >
             <div className="bg-green-50 px-5 py-4 flex items-start gap-3">
               <EmojiIcon emoji="✅" label={t.success.title} size="md" tone="success" decorative={false} />
-              <div>
+              <div className="flex-1">
                 <p className="font-semibold text-green-800">{t.success.title}</p>
                 <p className="text-sm text-green-700 mt-0.5">
                   {t.success.text}
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={() => setSubmitStatus(null)}
+                aria-label="Cerrar"
+                className="shrink-0 p-1 text-green-600 hover:text-green-800 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
             {whatsappUrl && (
               <div className="bg-surface-card px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
@@ -247,6 +256,11 @@ export default function ContactForm() {
                 </a>
               </div>
             )}
+            {!whatsappUrl && (
+              <div className="bg-surface-card px-5 py-4 border-t border-green-100">
+                <p className="text-sm text-text-muted">{t.success.noWhatsappFallback}</p>
+              </div>
+            )}
           </m.div>
         )}
         {submitStatus === "error" && (
@@ -259,7 +273,17 @@ export default function ContactForm() {
             className="mt-5 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3"
           >
             <EmojiIcon emoji="❌" label={t.error} size="sm" tone="danger" decorative={false} />
-            <p className="text-sm">{t.error}</p>
+            <p className="flex-1 text-sm">{t.error}</p>
+            <button
+              type="button"
+              onClick={() => setSubmitStatus(null)}
+              aria-label="Cerrar"
+              className="shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </m.div>
         )}
       </AnimatePresence>

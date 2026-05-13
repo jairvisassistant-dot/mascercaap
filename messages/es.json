@@ -224,7 +224,11 @@
       "all": "Todos",
       "clear": "Limpiar",
       "countLabel": "productos en",
-      "empty": "Sin productos en esta presentación"
+      "empty": "Sin productos en esta presentación",
+      "search": "Buscar en el catálogo",
+      "searchPlaceholder": "Buscar jugos, pulpas, lácteos...",
+      "searchEmpty": "Sin resultados para",
+      "searchCount": "resultados para"
     },
     "cta": {
       "badge": "Acompañamiento comercial",
@@ -488,7 +492,8 @@
         "title": "¡Mensaje enviado!",
         "text": "Te respondemos pronto. También puedes escribirnos directamente por WhatsApp.",
         "quickResponse": "¿Quieres una respuesta más rápida?",
-        "whatsappButton": "Continuar por WhatsApp"
+        "whatsappButton": "Continuar por WhatsApp",
+        "noWhatsappFallback": "Por ahora continuamos tu atención por email o teléfono porque WhatsApp no está configurado en este entorno."
       },
       "error": "Hubo un error al enviar. Por favor intenta de nuevo.",
       "whatsappMsg": {
@@ -633,7 +638,7 @@
     "wholesaleBannerButton": "Abrir formulario",
     "step1Label": "¿Qué tipo de producto?",
     "step2Label": "¿Qué fruta o producto?",
-    "step3Label": "¿Qué fruta o producto?",
+    "step3Label": "¿Cuál presentación?",
     "step4Label": "¿Qué presentación?",
     "step5Label": "¿Cuántas unidades?",
     "step8Label": "Tus datos de contacto",
@@ -666,6 +671,7 @@
     "sending": "Enviando...",
     "successTitle": "¡Pedido enviado!",
     "successText": "Te contactamos a la brevedad para confirmar disponibilidad.",
+    "successNoWhatsapp": "WhatsApp no está disponible en este entorno, así que el seguimiento continúa con los datos que dejaste.",
     "errorText": "Hubo un error al enviar. Intenta de nuevo o escríbenos por WhatsApp.",
     "back": "Volver",
     "resetLabel": "Empezar de nuevo",
@@ -681,11 +687,14 @@
     "totalLabel": "Total estimado",
     "taxIncludedNote": "Los valores mostrados ya tienen IVA incluido.",
     "priceNote": "* Estimación. El equipo confirma el precio final.",
-    "unitsShort": "u."
+    "unitsShort": "u.",
+    "validation": {
+      "contactRequired": "Se requiere email o número de WhatsApp"
+    }
   },
   "chatbot": {
     "title": "Preguntas Frecuentes",
-    "welcome": "Hola. 👋 Soy el asistente de Más Cerca AP. Selecciona una categoría o escribe tu pregunta.",
+    "welcome": "Hola. 👋 Soy el asistente automático de Más Cerca AP. Selecciona una categoría o escribe tu pregunta. Si prefieres hablar con una persona, elige «Conectar con asesor».",
     "placeholder": "Escribe tu pregunta...",
     "fallback": "No tengo información sobre eso. ¿Te gustaría hablar con nuestro equipo?",
     "advisorOffer": "¿Quieres hablar con un asesor?",
@@ -709,6 +718,8 @@
     "leadConnectOr": "O escanea con tu celular:",
     "leadQrHint": "Abre la cámara de tu celular y enfoca el código para iniciar la conversación en WhatsApp.",
     "leadQrSaved": "✓ Tus datos fueron guardados. El asesor tendrá el contexto de tu consulta.",
+    "whatsappUnavailableTitle": "WhatsApp no está disponible ahora",
+    "whatsappUnavailableText": "En este entorno no hay un número configurado para abrir la conversación. Puedes continuar desde el formulario de contacto o volver al menú de ayuda.",
     "whatsappQrAlt": "Código QR para iniciar conversación por WhatsApp",
     "backToCategories": "← Volver a categorías",
     "categories": "¿Sobre qué quieres consultar?",
@@ -764,5 +775,11 @@
     "terms": {
       "ctaTitle": "¿Tienes preguntas sobre estos términos?"
     }
+  },
+  "cookieConsent": {
+    "text": "Usamos Google Analytics para mejorar tu experiencia. Podés aceptar o rechazar el seguimiento.",
+    "accept": "Aceptar",
+    "decline": "Solo necesarias",
+    "learnMore": "Ver políticas"
   }
 }

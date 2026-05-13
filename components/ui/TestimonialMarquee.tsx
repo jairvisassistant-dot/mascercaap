@@ -4,6 +4,8 @@ import { useReducedMotion } from "framer-motion";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Testimonial } from "@/types";
 
+const MIN_ITEMS_PER_ROW = 6;
+
 interface TestimonialMarqueeProps {
   testimonials: Testimonial[];
   dict: Dictionary;
@@ -35,7 +37,7 @@ function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang
     lang !== "es" && testimonial.role_en ? testimonial.role_en : testimonial.role;
 
   return (
-    <div className="w-[300px] shrink-0 mr-4 bg-white/[0.07] border border-white/10 rounded-2xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <div className="w-[300px] shrink-0 bg-white/[0.07] border border-white/10 rounded-2xl p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
       <StarRating rating={testimonial.rating} />
       <p className="text-white/82 text-sm leading-relaxed mb-4 line-clamp-3">{text}</p>
       <div className="flex items-center gap-2.5 pt-3 border-t border-white/10">
@@ -53,6 +55,38 @@ function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang
   );
 }
 
+function repeatTestimonials(items: Testimonial[], minimum: number) {
+  if (items.length === 0) return [];
+
+  const repeated = [...items];
+  let cursor = 0;
+
+  while (repeated.length < minimum) {
+    repeated.push(items[cursor % items.length]);
+    cursor += 1;
+  }
+
+  return repeated;
+}
+
+function buildMarqueeRows(testimonials: Testimonial[]) {
+  const primaryRow = testimonials.filter((_, i) => i % 2 === 0);
+  const secondaryRow = testimonials.filter((_, i) => i % 2 !== 0);
+
+  const row1Source = primaryRow.length > 0 ? primaryRow : testimonials;
+  const row2Source =
+    secondaryRow.length > 0
+      ? secondaryRow
+      : testimonials.length > 1
+        ? [...testimonials.slice(1), testimonials[0]]
+        : testimonials;
+
+  return {
+    row1: repeatTestimonials(row1Source, MIN_ITEMS_PER_ROW),
+    row2: repeatTestimonials(row2Source, MIN_ITEMS_PER_ROW),
+  };
+}
+
 function MarqueeRow({
   items,
   direction,
@@ -65,9 +99,9 @@ function MarqueeRow({
   const doubled = [...items, ...items];
 
   return (
-    <div className="group flex overflow-hidden">
+    <div className="group overflow-hidden">
       <div
-        className={`flex shrink-0 will-change-transform ${
+        className={`flex min-w-max shrink-0 gap-4 will-change-transform ${
           direction === "left"
             ? "animate-marquee-left group-hover:[animation-play-state:paused]"
             : "animate-marquee-right group-hover:[animation-play-state:paused]"
@@ -90,8 +124,7 @@ export default function TestimonialMarquee({
 
   if (testimonials.length === 0) return null;
 
-  const row1 = testimonials.filter((_, i) => i % 2 === 0);
-  const row2 = testimonials.filter((_, i) => i % 2 !== 0);
+  const { row1, row2 } = buildMarqueeRows(testimonials);
 
   if (shouldReduceMotion) {
     return (

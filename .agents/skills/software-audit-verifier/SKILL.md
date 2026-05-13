@@ -42,10 +42,32 @@ Esta skill necesita contexto previo. Buscar en este orden:
    - `baseline_structure.txt` → estructura baseline, si existe
    - `audit_code_*.md` → auditorías de código
    - `audit_architecture_*.md` → auditorías de arquitectura
+   - `audit_product_*.md` → auditorías de producto
+   - `audit_consolidated_*.md` → reporte consolidado del orquestador, si existe
    - `Respuesta-audit_code_*.md` → respuesta del desarrollador a código
    - `Respuesta-audit_architecture_*.md` → respuesta del desarrollador a arquitectura
+   - `Respuesta-audit_product_*.md` → respuesta del desarrollador a producto
    - `verification_*.md` → verificaciones previas, si existen
 3. **Git state actual** → commits, working tree y diff contra baseline
+
+---
+
+## Input Contextual (ejecución vía orquestador)
+
+Si esta skill es ejecutada post-pipeline por `software-audit-orchestrator`:
+
+| Contexto | Valor |
+|---|---|
+| `SKIP_PASO_0` | `true` (el orquestador ya ejecutó el shared) |
+| `CONTEXTO_RESUELTO` | baseline hash, diff mode, working tree, commits |
+| `HALLAZGOS_CODE` | hallazgos de `software-code-auditor` |
+| `HALLAZGOS_ARCH` | hallazgos de `software-architecture-auditor` |
+| `HALLAZGOS_PROD` | hallazgos de `software-product-auditor` |
+| `AUDIT_CONSOLIDATED` | reporte consolidado del orquestador |
+
+Usar estos contextos para verificar fixes de las 3 dimensiones en una sola ejecución.
+
+**Si se ejecuta standalone**, leer los artefactos del Input Requerido estándar.
 
 ---
 
@@ -398,7 +420,8 @@ Si durante la verificación se detectan:
 
 - **Regresiones críticas** → sugerir auditoría de código completa
 - **Nuevos issues de seguridad** → sugerir auditoría de seguridad inmediata
-- **Más de 30% de hallazgos persistentes** → sugerir re-auditoría en 1 semana
+- **Nuevos issues de producto** → sugerir auditoría de producto vía `software-product-auditor`
+- **Más de 30% de hallazgos persistentes** → sugerir re-auditoría completa vía `software-audit-orchestrator`
 - **Muchos parciales en fixes “supuestamente cerrados”** → sugerir revisión de criterio de aceptación del equipo
 
 ---

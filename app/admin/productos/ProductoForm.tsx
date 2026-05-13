@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { generateProductId } from "@/lib/id-generators";
 
@@ -236,9 +237,9 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           {!loadingCatalog && categories.length === 0 && (
             <p className="mt-1.5 text-xs text-text-muted">
               No hay categorías creadas.{" "}
-              <a href="/admin/categorias/nueva" className="font-semibold text-primary underline">
+              <Link href="/admin/categorias/nueva" className="font-semibold text-primary underline">
                 Crear categoría
-              </a>
+              </Link>
             </p>
           )}
         </Field>
@@ -275,9 +276,9 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           {!loadingCatalog && selectedCategory && filteredLines.length === 0 && (
             <p className="mt-1.5 text-xs text-text-muted">
               No hay líneas en esta categoría.{" "}
-              <a href="/admin/lineas/nueva" className="font-semibold text-primary underline">
+              <Link href="/admin/lineas/nueva" className="font-semibold text-primary underline">
                 Crear línea
-              </a>
+              </Link>
             </p>
           )}
         </Field>
@@ -414,7 +415,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Ingredientes</h2>
         <div className="mb-3 space-y-2">
           {form.ingredients.map((ing, i) => (
-            <div key={i} className="flex items-center gap-2">
+            <div key={`${i}-${ing}`} className="flex items-center gap-2">
               <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">
                 {ing}
               </span>
@@ -465,7 +466,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Beneficios</h2>
         <div className="mb-3 space-y-2">
           {form.benefits.map((b, i) => (
-            <div key={i} className="flex items-center gap-2">
+            <div key={`${i}-${b}`} className="flex items-center gap-2">
               <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">
                 {b}
               </span>

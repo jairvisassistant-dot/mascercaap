@@ -82,13 +82,13 @@ export default function AdminLoginPage() {
               autoFocus
               autoComplete="email"
               className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="admin@ejemplo.com"
+              placeholder="admin@example.com"
             />
           </div>
 
           <div>
             <label htmlFor="admin-password" className="mb-1.5 block text-sm font-semibold text-text-sub">
-              Contraseña
+              Password
             </label>
             <input
               id="admin-password"

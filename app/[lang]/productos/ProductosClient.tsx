@@ -13,6 +13,10 @@ import type { Product, ProductCategory, ProductLineConfig, ProductLineKey } from
 
 const DEFAULT_CATEGORY = "todas";
 
+function normalizeStr(s: string): string {
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
 const PULPA_KEYS = new Set<ProductLineKey>([
   "pulpa-maracuya", "pulpa-mora", "pulpa-fresa", "pulpa-mango",
   "pulpa-guanabana", "pulpa-lulo", "pulpa-guayaba",
@@ -35,9 +39,11 @@ export default function ProductosClient({ products, productLines, categories }: 
       todas: productLines.map((l) => l.key),
     };
     for (const cat of categories) {
-      map[cat.key] = productLines
-        .filter((l) => l.categoryKey === cat.key)
-        .map((l) => l.key);
+      const keys: string[] = [];
+      for (const l of productLines) {
+        if (l.categoryKey === cat.key) keys.push(l.key);
+      }
+      map[cat.key] = keys;
     }
     return map;
   }, [productLines, categories]);
@@ -58,9 +64,8 @@ export default function ProductosClient({ products, productLines, categories }: 
   }, [categories, dict]);
 
   // Nivel 1 — siempre hay una categoría activa, default "todas"
-  const [activeCategory, setActiveCategory] = useState<string>(() => {
-    return searchParams.get("categoria") ?? DEFAULT_CATEGORY;
-  });
+  const catFromUrl = searchParams.get("categoria") ?? DEFAULT_CATEGORY;
+  const [activeCategory, setActiveCategory] = useState<string>(catFromUrl);
 
   // Nivel 2 — sub-líneas seleccionadas dentro de la categoría activa
   const [activeSubLines, setActiveSubLines] = useState<ProductLineKey[]>([]);
@@ -68,9 +73,18 @@ export default function ProductosClient({ products, productLines, categories }: 
   // El nivel 2 solo aparece después de que el usuario interactúa con un botón de categoría
   const [hasInteracted, setHasInteracted] = useState(false);
 
+  const [searchQuery, setSearchQuery] = useState<string>(() => searchParams.get("q") ?? "");
   const [activeSize, setActiveSize] = useState<string>("todos");
   const [isSticky, setIsSticky] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Sync URL param changes to local state during render (derived state, NOT effect)
+  if (catFromUrl !== activeCategory) {
+    setActiveCategory(catFromUrl);
+    setActiveSubLines([]);
+    setActiveSize("todos");
+    setHasInteracted(false);
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -87,15 +101,19 @@ export default function ProductosClient({ products, productLines, categories }: 
       ? activeSubLines
       : (categoryLines[activeCategory] ?? []);
 
-    const sizes = products
-      .filter((p) => relevantLines.includes(p.line) && p.presentation !== "Próximamente")
-      .map((p) => p.presentation);
+    const relevantLineSet = new Set(relevantLines);
+    const sizes: string[] = [];
+    for (const p of products) {
+      if (relevantLineSet.has(p.line) && p.presentation !== "Próximamente") {
+        sizes.push(p.presentation);
+      }
+    }
 
     return Array.from(new Set(sizes)).sort((a, b) => {
       const toNum = (s: string) => s.endsWith("L") ? parseFloat(s) * 1000 : parseFloat(s);
       return toNum(a) - toNum(b);
     });
-  }, [products, activeCategory, activeSubLines]);
+  }, [products, activeCategory, activeSubLines, categoryLines]);
 
   const selectCategory = (cat: string) => {
     if (activeCategory !== cat) {
@@ -103,7 +121,7 @@ export default function ProductosClient({ products, productLines, categories }: 
       setActiveSubLines([]);
       setActiveSize("todos");
     }
-    setHasInteracted(cat !== "todas");
+    setHasInteracted(true);
   };
 
   const toggleSubLine = (key: ProductLineKey) => {
@@ -170,7 +188,7 @@ export default function ProductosClient({ products, productLines, categories }: 
       .filter((p) => p.line === lineKey && (activeSize === "todos" || p.presentation === activeSize))
       .sort((a, b) => a.presentationOrder - b.presentationOrder);
 
-  const hasActiveFilters = hasInteracted || activeCategory !== DEFAULT_CATEGORY || activeSubLines.length > 0 || activeSize !== "todos";
+  const hasActiveFilters = hasInteracted || searchQuery !== "" || activeCategory !== DEFAULT_CATEGORY || activeSubLines.length > 0 || activeSize !== "todos";
 
   const sizeFilteredItems = useMemo(() => {
     if (activeSize === "todos") return [];
@@ -183,6 +201,29 @@ export default function ProductosClient({ products, productLines, categories }: 
   }, [activeSize, visibleLines, products]);
 
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
+
+  const searchResults = useMemo<{ product: Product; line: ProductLineConfig }[] | null>(() => {
+    const q = searchQuery.trim();
+    if (!q) return null;
+    const nq = normalizeStr(q);
+    return products
+      .filter((p) => {
+        const line = productLines.find((l) => l.key === p.line);
+        const lineLabel = pl[p.line]?.label ?? line?.label ?? "";
+        const lineDes = pl[p.line]?.description ?? line?.description ?? "";
+        return (
+          normalizeStr(p.name).includes(nq) ||
+          normalizeStr(lineLabel).includes(nq) ||
+          normalizeStr(lineDes).includes(nq)
+        );
+      })
+      .sort((a, b) => a.presentationOrder - b.presentationOrder)
+      .map((p) => ({
+        product: p,
+        line: productLines.find((l) => l.key === p.line)!,
+      }))
+      .filter((item) => item.line !== undefined);
+  }, [searchQuery, products, productLines, pl]);
 
   return (
     <div className="pt-20">
@@ -220,15 +261,63 @@ export default function ProductosClient({ products, productLines, categories }: 
           >
             {dict.products.hero.subtitle}
           </m.p>
+
+          <m.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18 }}
+            className="relative max-w-md mx-auto mt-7"
+          >
+            <label htmlFor="catalog-search" className="sr-only">
+              {dict.products.filters.search}
+            </label>
+            <div className="relative">
+              <svg
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/55 pointer-events-none"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 1116.65 16.65z" />
+              </svg>
+              <input
+                id="catalog-search"
+                type="search"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setActiveCategory(DEFAULT_CATEGORY);
+                  setActiveSubLines([]);
+                  setActiveSize("todos");
+                  setHasInteracted(false);
+                }}
+                placeholder={dict.products.filters.searchPlaceholder}
+                className="w-full pl-11 pr-10 py-3 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white placeholder:text-white/55 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/20 text-sm font-medium transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  aria-label={dict.products.filters.clear}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center bg-white/20 hover:bg-white/35 text-white transition-all"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </m.div>
         </div>
       </section>
 
       <div ref={sentinelRef} className="h-px" />
 
       {/* Filtros sticky — jerarquía de 2 niveles */}
-      <div className={`sticky top-[92px] z-40 border-b transition-all duration-500 ${
-        isSticky ? "bg-primary-light border-primary-light shadow-md" : "bg-surface-page border-border-soft shadow-sm"
-      }`}>
+      <div
+        className={`sticky z-40 border-b transition-all duration-500 ${
+          isSticky ? "bg-primary-light border-primary-light shadow-md" : "bg-surface-page border-border-soft shadow-sm"
+        }`}
+        style={{ top: "var(--navbar-h, 92px)" }}
+      >
 
         {/* Nivel 1 — solo categorías */}
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-center gap-2 flex-wrap">
@@ -262,7 +351,7 @@ export default function ProductosClient({ products, productLines, categories }: 
           {hasActiveFilters && (
             <button
               type="button"
-              onClick={() => { setActiveCategory(DEFAULT_CATEGORY); setActiveSubLines([]); setActiveSize("todos"); setHasInteracted(false); }}
+              onClick={() => { setActiveCategory(DEFAULT_CATEGORY); setActiveSubLines([]); setActiveSize("todos"); setHasInteracted(false); setSearchQuery(""); }}
               aria-label={dict.products.filters.clear}
               className="w-7 h-7 rounded-full flex items-center justify-center bg-surface-page hover:bg-red-50 text-text-faint hover:text-red-500 transition-all duration-200 hover:scale-110 ml-1 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
             >
@@ -317,7 +406,7 @@ export default function ProductosClient({ products, productLines, categories }: 
                   )}
 
                   {/* Tamaños — anclado a la derecha, nunca baja */}
-                  {availableSizes.length > 0 && activeSubLines.length !== 1 && activeCategory !== "todas" && (
+                  {availableSizes.length > 0 && activeSubLines.length !== 1 && (
                     <div className="flex max-w-full items-center gap-2 overflow-x-auto pb-1 md:shrink-0 md:self-start md:overflow-visible md:pb-0">
                       <span className={`text-[10px] font-semibold uppercase tracking-wide shrink-0 transition-colors duration-500 ${isSticky ? "text-primary-dark/70" : "text-text-faint"}`}>
                         {dict.products.filters.size}
@@ -354,8 +443,40 @@ export default function ProductosClient({ products, productLines, categories }: 
       <section className="py-10 bg-surface-page min-h-[50vh]">
         <div className="max-w-7xl mx-auto px-4">
 
-          {/* Grid flat cuando hay filtro de tamaño activo */}
-          {activeSize !== "todos" ? (
+          {/* Resultados de búsqueda por texto — override de categoría/tamaño */}
+          {searchResults !== null ? (
+            <m.div
+              key={`search-${searchQuery}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              {searchResults.length > 0 ? (
+                <>
+                  <p className="text-xs font-semibold text-text-faint uppercase tracking-widest mb-5">
+                    {searchResults.length} {dict.products.filters.searchCount} &ldquo;{searchQuery}&rdquo;
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+                    {searchResults.map(({ product, line }, index) => (
+                      <ProductGridCard
+                        key={product.id}
+                        product={product}
+                        line={line}
+                        priority={index < 5}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <EmojiIcon emoji="🔍" label="" size="xl" tone="neutral" decorative className="mb-4" />
+                  <p className="text-text-muted text-base font-medium">
+                    {dict.products.filters.searchEmpty} &ldquo;{searchQuery}&rdquo;
+                  </p>
+                </div>
+              )}
+            </m.div>
+          ) : activeSize !== "todos" ? (
             <m.div
               key={`grid-${activeSize}`}
               initial={{ opacity: 0, y: 20 }}
@@ -402,6 +523,8 @@ export default function ProductosClient({ products, productLines, categories }: 
                       <PulpaFruitGrid
                         pulpaLines={seg.lines}
                         products={products.filter((p) => PULPA_KEYS.has(p.line))}
+                        pl={pl}
+                        pulpaGridDict={dict.products.pulpaGrid}
                       />
                     </m.div>
                   );
@@ -448,9 +571,9 @@ export default function ProductosClient({ products, productLines, categories }: 
               <span className="text-xs font-bold tracking-widest text-emerald-400 uppercase block mb-4">
                 {dict.products.cta.badge}
               </span>
-              <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
+              <h2 className="text-3xl font-bold text-white mb-4 leading-tight">
                 {dict.products.cta.title}
-              </h3>
+              </h2>
               <p className="text-gray-300 mb-8 leading-relaxed">
                 {dict.products.cta.text}
               </p>

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
 import { z } from "zod"
-import { orderSchema } from "@/lib/schemas/order"
+import { createOrderSchema, type OrderItem } from "@/lib/schemas/order"
+import esMessages from "@/messages/es.json"
+import enMessages from "@/messages/en.json"
 import { buildOrderEmailHtml, buildPriceResolver, type PriceEntry } from "@/lib/order-assistant"
 import { supabase } from "@/lib/supabase"
 
@@ -47,12 +49,16 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const data = orderSchema.parse(body)
+    const referer = request.headers.get("referer") ?? ""
+    const validationMsgs = referer.includes("/en/")
+      ? enMessages.orderAssistant.validation
+      : esMessages.orderAssistant.validation
+    const data = createOrderSchema(validationMsgs).parse(body)
 
     // Guardar lead en Supabase para marketing (ignorar error — no bloquear el pedido)
     if (supabase) {
       const productoInteres = data.items
-        .map((item) => `${item.fruit} ${item.presentation} ×${item.quantity}`)
+        .map((item: OrderItem) => `${item.fruit} ${item.presentation} ×${item.quantity}`)
         .join(", ")
 
       const { error: dbError } = await supabase.from("leads").insert({

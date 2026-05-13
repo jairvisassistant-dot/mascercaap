@@ -20,6 +20,34 @@ export type FAQData = {
   fallback: { es: string; en: string };
 };
 
+export type FAQQuestionRow = {
+  id: string;
+  category_id: string;
+  question_es: string;
+  question_en: string;
+  answer_es: string;
+  answer_en: string;
+  keywords: string[];
+  display_order: number;
+  active: boolean;
+};
+
+export type FAQCategoryRow = {
+  id: string;
+  label_es: string;
+  label_en: string;
+  icon: string;
+  display_order: number;
+  active: boolean;
+  faq_questions: FAQQuestionRow[];
+};
+
+export type FAQConfigRow = {
+  id: number;
+  fallback_es: string;
+  fallback_en: string;
+};
+
 // ── Product lines translation ──────────────────────────────────────────────
 export type ProductLineTranslation = { label: string; description: string };
 
@@ -87,6 +115,23 @@ export type Testimonial = {
 // ContactFormData: inferida desde Zod (fuente de verdad), re-exportada aquí para
 // que types/index.ts siga siendo el punto de importación único del proyecto.
 export type { ContactFormData } from "@/lib/schemas/contact";
+
+// ── Leads / Consultas ────────────────────────────────────────────────────────
+export type LeadRow = {
+  id: string;
+  nombre: string;
+  email: string | null;
+  tipo: string;
+  producto_interes: string | null;
+  preguntas_bot: string[];
+  resumen_handoff: string | null;
+  fuente: string;
+  whatsapp_number: string | null;
+  consent_accepted: boolean;
+  created_at: string;
+  estado_seguimiento: string;
+  notas: string | null;
+};
 
 // ── Legal documents ────────────────────────────────────────────────────────
 export type LegalSection = {
