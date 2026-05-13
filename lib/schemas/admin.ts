@@ -73,3 +73,9 @@ export const lineUpdateSchema = z.object({
   description: z.string().max(200).optional(),
   category_key: z.string().nullable().optional(),
 });
+
+export const leadUpdateSchema = z.object({
+  id: z.string().min(1),
+  estado_seguimiento: z.enum(["nuevo", "contactado", "convertido", "perdido"]).optional(),
+  notas: z.string().max(2000).optional(),
+});

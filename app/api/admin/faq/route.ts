@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 import { requireAdminAuth } from "@/lib/admin-auth";
 
 function adminClient() {
@@ -8,6 +9,11 @@ function adminClient() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { persistSession: false } }
   );
+}
+
+function revalidateFAQSurfaces() {
+  revalidatePath("/[lang]", "layout");
+  revalidatePath("/admin/faq", "page");
 }
 
 // ── GET (sin cambios) ────────────────────────────────────────────
@@ -73,6 +79,7 @@ export async function POST(req: Request) {
       if (error.code === "23505") return NextResponse.json({ error: "Ya existe una categoría con ese ID" }, { status: 409 });
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 
@@ -103,6 +110,7 @@ export async function POST(req: Request) {
     });
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidateFAQSurfaces();
     return NextResponse.json({ id, success: true });
   }
 
@@ -154,6 +162,7 @@ export async function PATCH(req: Request) {
       .eq("id", neighbor.id);
     if (e2) return NextResponse.json({ error: e2.message }, { status: 500 });
 
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 
@@ -194,6 +203,7 @@ export async function PATCH(req: Request) {
       .eq("id", neighbor.id);
     if (e2) return NextResponse.json({ error: e2.message }, { status: 500 });
 
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 
@@ -219,6 +229,7 @@ export async function PUT(req: Request) {
 
     const { error } = await supabase.from("faq_categories").update(updates).eq("id", body.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 
@@ -234,6 +245,7 @@ export async function PUT(req: Request) {
 
     const { error } = await supabase.from("faq_questions").update(updates).eq("id", body.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 
@@ -244,6 +256,7 @@ export async function PUT(req: Request) {
 
     const { error } = await supabase.from("faq_config").update(updates).eq("id", 1);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 
@@ -267,6 +280,7 @@ export async function DELETE(req: Request) {
       .update({ active: false })
       .eq("id", body.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 
@@ -278,6 +292,7 @@ export async function DELETE(req: Request) {
       .update({ active: false })
       .eq("id", body.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidateFAQSurfaces();
     return NextResponse.json({ success: true });
   }
 

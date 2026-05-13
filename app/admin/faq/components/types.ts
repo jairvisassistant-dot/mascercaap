@@ -17,6 +17,13 @@ export type NewQuestion = {
   answer_en: string;
 };
 
+export type NewCategory = {
+  id: string;
+  label_es: string;
+  label_en: string;
+  icon: string;
+};
+
 export type ConfigForm = { fallback_es: string; fallback_en: string };
 
 export type Mode = "view" | "edit" | "confirm-delete";

@@ -180,14 +180,36 @@ A continuación, el detalle de cada cambio ya implementado en el código base, c
 
 **Funcionalidad**:
 - Listado de categorías con orden por drag (up/down).
+- Creación de categorías desde UI admin (id, label ES/EN, icono).
 - Edición inline de categorías (label ES/EN, icono).
 - Soft delete de categorías y preguntas (`active: false`).
 - Creación de preguntas dentro de una categoría.
 - Edición de preguntas (ES/EN + keywords separadas por coma).
 - Configuración del mensaje de fallback sin deploy.
 - Estados optimísticos en reordenamiento.
+- Revalidación explícita de superficies FAQ tras cada mutación admin.
 
-**Justificación**: El negocio puede gestionar FAQ sin intervención técnica. Elimina la barrera de tener que editar código para cambiar contenido de ayuda.
+**Justificación**: El negocio puede gestionar FAQ sin intervención técnica. Elimina la barrera de tener que editar código para cambiar contenido de ayuda. La revalidación explícita evita depender solo del ciclo natural de ISR y asegura que HelpHub, layout y panel admin reflejen los cambios de FAQ de forma coherente después de crear, editar, reordenar o desactivar contenido.
+
+---
+
+### 11. Handoff con contexto real
+
+**Qué cambió**: Antes de abrir WhatsApp desde el flujo de asesor en HelpHub, ahora se construye un resumen legible del handoff, se guarda junto al lead y se dispara una notificación interna por email al equipo.
+
+**Archivos**:
+- `lib/handoff-summary.ts` — utilidad compartida para resumir el contexto del handoff.
+- `lib/schemas/lead.ts` — extiende el schema con `resumen_handoff`.
+- `components/ui/drawer-views/FaqView.tsx` — envía el resumen junto al lead antes del handoff.
+- `app/api/leads/route.ts` — guarda el resumen en Supabase y envía notificación interna fail-safe.
+
+**Funcionalidad**:
+- Resume nombre, tipo, producto de interés, cantidad de consultas y última pregunta del usuario.
+- Persiste el resumen junto al lead para trazabilidad futura.
+- Envía email interno usando el patrón existente de Resend.
+- Si la notificación falla, el lead igual se guarda y WhatsApp se abre normalmente.
+
+**Justificación**: El handoff deja de ser un simple “abrir wa.me” y pasa a tener contexto operativo útil. Esto mejora tiempos de respuesta, evita que el asesor llegue “a ciegas” y deja una base concreta para el futuro inbox interno de consultas.
 
 ## Fase 2 — Maduración funcional
 
@@ -287,11 +309,50 @@ Esta rama implementó la totalidad del plan de maduración (Fase 1 + Fase 2 + í
 - No tocar más de lo necesario por iteración.
 - No duplicar otra vez la lógica de WhatsApp en nuevos archivos.
 
-## Próximo paso
+## Próximo paso — Pendiente de activación externa
 
-La rama ya implementó Fase 1, Fase 2 e ítems de Fase 3. Pendiente para próxima iteración:
+La rama implementó Fase 1, Fase 2 y la mayoría de Fase 3. El siguiente paso requiere gestión externa:
 
-- **Handoff con contexto real** (Fase 2 #9): guardar lead + resumen de conversación antes de abrir WhatsApp, notificar internamente.
-- **Inbox interno de consultas** (Fase 3 #11): vista admin para leads, pedidos y consultas.
-- **Ciclo de atención** (Fase 3 #12): estados `nuevo | contactado | convertido | perdido`.
-- **WhatsApp bidireccional** (Fase 3 #13): evaluar integración con WhatsApp Business API.
+- **WhatsApp bidireccional** (Fase 3 #13): la infraestructura mínima está preparada (`app/api/webhooks/whatsapp/route.ts` y variable `WHATSAPP_WEBHOOK_VERIFY_TOKEN` en entorno). Para activarlo se necesita:
+  1. Número de teléfono verificado en WhatsApp Business.
+  2. Cuenta de Meta Business verificada (documentación, días a semanas).
+  3. Contratar un BSP (Business Solution Provider: Twilio, WATI, 360dialog, etc.).
+  4. Configurar el webhook apuntando a `{SITE_URL}/api/webhooks/whatsapp`.
+  5. Crear y aprobar plantillas de mensaje en Meta.
+  
+  **Costo estimado**: USD 0–59/mes según proveedor. Mensajes de servicio (consultas entrantes) son gratis. Costo real para el volumen actual del proyecto: marginal.
+
+---
+
+## Implementado recientemente
+
+### 12. Inbox interno de consultas + ciclo de atención
+
+**Qué cambió**: Se implementó la vista admin de consultas en `/admin/consultas` con filtros, listado de leads y gestión del ciclo de atención.
+
+**Columnas agregadas a `leads`**:
+- `estado_seguimiento text not null default 'nuevo'`
+- `notas text`
+
+**API**:
+- `GET /api/admin/leads` — lista leads con filtros por `tipo`, `fuente`, `estado`
+- `PATCH /api/admin/leads` — actualiza `estado_seguimiento` y/o `notas` de un lead por `id`
+
+**Archivos creados**:
+- `supabase/migrations/20260513000003_leads_add_seguimiento.sql` — migración con las columnas nuevas, policy RLS y trigger updated_at
+- `app/api/admin/leads/route.ts` — API REST para leads admin (GET con filtros + PATCH)
+- `app/admin/consultas/page.tsx` — server component que protege con `requireAdminSession()`, carga leads desde Supabase y pasa al client component
+- `app/admin/consultas/ConsultasList.tsx` — client component con filtros por tipo/fuente/estado, listado de cards expandibles, cambio inline de estado de seguimiento y edición de notas
+
+**Archivos modificados**:
+- `lib/schemas/admin.ts` — agregado `leadUpdateSchema` (Zod)
+- `components/layout/AdminNavbar.tsx` — agregado link a "Consultas" en la barra de navegación admin y sección `isConsultaPage` con botón ← Volver
+- `types/index.ts` — agregado tipo `LeadRow`
+
+**Funcionalidad**:
+- Filtros combinables por tipo (pedido, mayoreo, consulta), fuente (chatbot_web, order_assistant) y estado de seguimiento
+- Cards con info resumida: nombre, email, tipo, fuente, producto, fecha, estado actual
+- Expansión para ver preguntas realizadas, resumen de handoff y datos adicionales
+- Cambio de estado con menú desplegable inline (nuevo → contactado → convertido → perdido)
+- Edición de notas internas con guardado inline
+- Estados optimísticos en actualizaciones, revalidación tras cada mutación

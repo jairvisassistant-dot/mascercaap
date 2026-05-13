@@ -3,8 +3,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { FAQCategoryRow, FAQConfigRow } from "@/types";
-import type { CategoryEdit, QuestionEdit, NewQuestion, ConfigForm, Mode } from "./components/types";
+import type { CategoryEdit, QuestionEdit, NewCategory, NewQuestion, ConfigForm, Mode } from "./components/types";
 import CategoryEditForm from "./components/CategoryEditForm";
+import NewCategoryForm from "./components/NewCategoryForm";
 import QuestionEditForm from "./components/QuestionEditForm";
 import NewQuestionForm from "./components/NewQuestionForm";
 import ConfigSection from "./components/ConfigSection";
@@ -31,6 +32,12 @@ export default function FAQAdminClient({
   const [moving, setMoving] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [, startTransition] = useTransition();
+
+  // Formulario de nueva categoría
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCat, setNewCat] = useState<NewCategory>({
+    id: "", label_es: "", label_en: "", icon: "❓",
+  });
 
   // Formulario de nueva pregunta
   const [newQuestionFor, setNewQuestionFor] = useState<string | null>(null);
@@ -334,6 +341,35 @@ export default function FAQAdminClient({
     setBusy(null);
   }
 
+  // ── Nueva categoría ────────────────────────────────────────
+  async function submitNewCategory() {
+    if (!newCat.id.trim() || !newCat.label_es.trim() || !newCat.label_en.trim()) return;
+    setBusy("new-category");
+    setError("");
+
+    const res = await fetch("/api/admin/faq", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        _type: "category",
+        id: newCat.id.trim(),
+        label_es: newCat.label_es.trim(),
+        label_en: newCat.label_en.trim(),
+        icon: newCat.icon.trim() || "❓",
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error ?? "Error al crear categoría");
+    } else {
+      setShowNewCategory(false);
+      setNewCat({ id: "", label_es: "", label_en: "", icon: "❓" });
+      startTransition(() => router.refresh());
+    }
+    setBusy(null);
+  }
+
   // ── Guardar config ─────────────────────────────────────────
   async function saveConfig() {
     setBusy("config");
@@ -370,9 +406,31 @@ export default function FAQAdminClient({
         </p>
       )}
 
+      {/* ── Nueva categoría ── */}
+      {showNewCategory ? (
+        <NewCategoryForm
+          busy={busy === "new-category"}
+          newCat={newCat}
+          onChange={setNewCat}
+          onSubmit={submitNewCategory}
+          onCancel={() => {
+            setShowNewCategory(false);
+            setNewCat({ id: "", label_es: "", label_en: "", icon: "❓" });
+          }}
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowNewCategory(true)}
+          className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border-mid px-3 py-2 text-xs font-semibold text-text-muted transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+        >
+          + Nueva categoría
+        </button>
+      )}
+
       {categories.length === 0 ? (
         <p className="py-8 text-center text-sm text-text-muted">
-          No hay categorías FAQ aún. Se pueden crear desde Supabase.
+          No hay categorías FAQ aún. Usá el botón de arriba para crear una.
         </p>
       ) : (
         categories.map((cat, catIdx) => {

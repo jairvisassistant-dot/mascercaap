@@ -9,6 +9,7 @@ import { findAnswer } from "@/lib/faq-matcher";
 import { SITE_CONFIG } from "@/lib/config";
 import { trackHelpHubEvent } from "@/lib/help-hub-analytics";
 import { buildWhatsAppLinks, buildWhatsAppMessage } from "@/lib/whatsapp";
+import { buildHandoffSummary } from "@/lib/handoff-summary";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Locale } from "@/lib/i18n";
 
@@ -287,6 +288,12 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
           preguntas_bot: messages
             .filter((m) => m.role === "user" && m.id !== "welcome")
             .map((m) => m.text),
+          resumen_handoff: buildHandoffSummary(messages, {
+            nombre: leadData.nombre.trim(),
+            email: leadData.email.trim() || null,
+            tipo: leadData.tipo,
+            producto_interes: drawerContext?.product ?? null,
+          }),
         }),
       });
       leadSaved = res.ok;

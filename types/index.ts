@@ -116,6 +116,23 @@ export type Testimonial = {
 // que types/index.ts siga siendo el punto de importación único del proyecto.
 export type { ContactFormData } from "@/lib/schemas/contact";
 
+// ── Leads / Consultas ────────────────────────────────────────────────────────
+export type LeadRow = {
+  id: string;
+  nombre: string;
+  email: string | null;
+  tipo: string;
+  producto_interes: string | null;
+  preguntas_bot: string[];
+  resumen_handoff: string | null;
+  fuente: string;
+  whatsapp_number: string | null;
+  consent_accepted: boolean;
+  created_at: string;
+  estado_seguimiento: string;
+  notas: string | null;
+};
+
 // ── Legal documents ────────────────────────────────────────────────────────
 export type LegalSection = {
   title: { es: string; en: string };

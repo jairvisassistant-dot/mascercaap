@@ -22,6 +22,7 @@ export function createLeadSchema(msgs: LeadValidationMessages = EN_LEAD_MESSAGES
     tipo: z.enum(["pedido", "negocio", "consulta"]),
     producto_interes: z.string().max(120).optional().nullable(),
     preguntas_bot: z.array(z.string().max(500)).max(20).optional(),
+    resumen_handoff: z.string().max(1000).optional(),
   });
 }
 

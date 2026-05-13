@@ -33,4 +33,6 @@ export const SITE_CONFIG = {
   mapUrl: "https://www.google.com/maps/search/?api=1&query=Calle%2012a%20%23%2015-53%2C%20Chia%2C%20Cundinamarca%2C%20Colombia",
   /** NIT de la empresa — completar con el número real antes de producción */
   nit: "",
+  /** Token de verificación para webhook de WhatsApp Business API */
+  whatsappWebhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN ?? "mascercaap-webhook-dev",
 } as const;
