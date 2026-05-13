@@ -269,6 +269,12 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                 </a>
               )}
 
+              {!waUrl && (
+                <p className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
+                  {t.successNoWhatsapp}
+                </p>
+              )}
+
               <button
                 type="button"
                 onClick={handleReset}

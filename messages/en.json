@@ -224,7 +224,11 @@
       "all": "All",
       "clear": "Clear",
       "countLabel": "products in",
-      "empty": "No products in this size"
+      "empty": "No products in this size",
+      "search": "Search catalog",
+      "searchPlaceholder": "Search juices, pulps, dairy...",
+      "searchEmpty": "No results for",
+      "searchCount": "results for"
     },
     "cta": {
       "badge": "Custom orders",
@@ -488,7 +492,8 @@
         "title": "Message sent!",
         "text": "We'll get back to you soon. You can also write to us directly on WhatsApp.",
         "quickResponse": "Want a faster response?",
-        "whatsappButton": "Continue on WhatsApp"
+        "whatsappButton": "Continue on WhatsApp",
+        "noWhatsappFallback": "For now we'll continue your follow-up by email or phone because WhatsApp is not configured in this environment."
       },
       "error": "There was an error sending your message. Please try again.",
       "whatsappMsg": {
@@ -666,6 +671,7 @@
     "sending": "Sending...",
     "successTitle": "Order sent!",
     "successText": "We'll contact you shortly to confirm availability.",
+    "successNoWhatsapp": "WhatsApp is not available in this environment, so follow-up will continue using the contact details you shared.",
     "errorText": "There was an error sending. Try again or message us on WhatsApp.",
     "back": "Back",
     "resetLabel": "Start over",
@@ -688,7 +694,7 @@
   },
   "chatbot": {
     "title": "Frequently Asked Questions",
-    "welcome": "Hi! 👋 I'm the Más Cerca AP assistant. Select a category or type your question.",
+    "welcome": "Hi! 👋 I'm the Más Cerca AP automated assistant. Select a category or type your question. If you'd prefer to speak with a person, choose «Connect with advisor».",
     "placeholder": "Type your question...",
     "fallback": "I don't have information about that. Would you like to talk to our team?",
     "advisorOffer": "Would you still like to speak with an advisor?",
@@ -712,6 +718,8 @@
     "leadConnectOr": "Or scan with your phone:",
     "leadQrHint": "Open your phone camera and point it at the code to start a WhatsApp conversation.",
     "leadQrSaved": "✓ Your info was saved. The advisor will have context for your inquiry.",
+    "whatsappUnavailableTitle": "WhatsApp is not available right now",
+    "whatsappUnavailableText": "There is no configured number in this environment to open the conversation. You can continue through the contact form or go back to the help menu.",
     "whatsappQrAlt": "QR code to start a WhatsApp conversation",
     "backToCategories": "← Back to categories",
     "categories": "What would you like to know?",

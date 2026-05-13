@@ -12,8 +12,38 @@ import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries"
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
 import OrderAssistantCTA from "@/components/sections/OrderAssistantCTA";
 import { SITE_CONFIG } from "@/lib/config";
+import { testimonials as fallbackTestimonials } from "@/data/testimonials";
+import type { Testimonial } from "@/types";
 
 export const revalidate = 3600;
+
+const MIN_HOME_TESTIMONIALS = 10;
+
+function ensureHomeTestimonials(items: Testimonial[]) {
+  const merged: Testimonial[] = [];
+  const seenIds = new Set<string>();
+
+  for (const testimonial of [...items, ...fallbackTestimonials]) {
+    if (seenIds.has(testimonial.id)) continue;
+    seenIds.add(testimonial.id);
+    merged.push(testimonial);
+  }
+
+  if (merged.length === 0) return [];
+
+  let cloneIndex = 0;
+
+  while (merged.length < MIN_HOME_TESTIMONIALS) {
+    const source = merged[cloneIndex % merged.length];
+    merged.push({
+      ...source,
+      id: `${source.id}-backup-${cloneIndex + 1}`,
+    });
+    cloneIndex += 1;
+  }
+
+  return merged;
+}
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -53,10 +83,12 @@ export default async function HomePage({ params }: Props) {
 
   const dict = await getDictionary(lang);
 
-  const [featuredProducts, testimonials] = await Promise.all([
+  const [featuredProducts, fetchedTestimonials] = await Promise.all([
     getFeaturedProducts(),
     getAllTestimonials(),
   ]);
+
+  const testimonials = ensureHomeTestimonials(fetchedTestimonials);
 
   return (
     <>

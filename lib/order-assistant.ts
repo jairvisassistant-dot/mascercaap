@@ -1,16 +1,8 @@
 import type { OrderInput, OrderItem } from "@/lib/schemas/order"
 import { SITE_CONFIG } from "@/lib/config"
-
-type ClientProfile = "hogar" | "cafeteria" | "evento" | "distribucion"
+import { buildWhatsAppAppUrl, buildWhatsAppMessage as buildSharedWhatsAppMessage } from "@/lib/whatsapp"
 
 export const PRODUCT_TYPE_OPTIONS = ["Pulpas", "Zumos", "Lácteos"] as const
-
-const PRODUCT_OPTIONS_BY_PROFILE: Record<ClientProfile, string[]> = {
-  hogar:        [...PRODUCT_TYPE_OPTIONS],
-  cafeteria:    [...PRODUCT_TYPE_OPTIONS],
-  evento:       [...PRODUCT_TYPE_OPTIONS],
-  distribucion: [...PRODUCT_TYPE_OPTIONS],
-}
 
 const PULPA_FRUITS = [
   "Maracuyá",
@@ -67,10 +59,6 @@ export function getPresentationsForProduct(productType: string, fruit: string): 
 }
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
-
-function getProductOptionsForProfile(profile: ClientProfile): string[] {
-  return PRODUCT_OPTIONS_BY_PROFILE[profile]
-}
 
 // Maps order-form fruit display names to Supabase product line slugs.
 const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
@@ -131,10 +119,6 @@ export function buildPriceResolver(entries: PriceEntry[]): PriceResolver {
   }
 }
 
-function getDiscountRate(_totalUnits: number): number {
-  return 0
-}
-
 type OrderTotals = {
   subtotal:     number
   totalUnits:   number
@@ -146,7 +130,7 @@ type OrderTotals = {
 
 export function calculateOrderTotal(items: OrderItem[], resolvePrice: PriceResolver = () => null): OrderTotals {
   const totalUnits  = items.reduce((sum, item) => sum + item.quantity, 0)
-  const discountRate = getDiscountRate(totalUnits)
+  const discountRate = 0
   let subtotal  = 0
   let hasPrice  = items.length > 0
   const lookup  = resolvePrice
@@ -196,7 +180,8 @@ export function buildWhatsappMessage(order: OrderInput, waNumber: string, i18n: 
     "",
     confirm,
   ]
-  return `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.filter((line) => line !== null).join("\n"))}`
+
+  return buildWhatsAppAppUrl(waNumber, buildSharedWhatsAppMessage(lines)) ?? ""
 }
 
 function escapeHtml(str: string): string {

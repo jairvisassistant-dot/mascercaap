@@ -27,5 +27,3 @@ export function createLeadSchema(msgs: LeadValidationMessages = EN_LEAD_MESSAGES
 
 export const leadSchema = createLeadSchema();
 export { ES_LEAD_MESSAGES, EN_LEAD_MESSAGES };
-
-type LeadInput = z.infer<ReturnType<typeof createLeadSchema>>;

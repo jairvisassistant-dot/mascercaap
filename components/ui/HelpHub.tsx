@@ -20,7 +20,7 @@ export default function HelpHub() {
         transition={{ delay: 1, duration: 0.4, ease: "easeOut" }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.97 }}
-        onClick={() => openDrawer("menu")}
+        onClick={() => openDrawer("menu", undefined, { restoreSession: true })}
         aria-label={t.trigger}
         className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 bg-primary text-white p-3 sm:pl-3 sm:pr-4 sm:py-3 rounded-full shadow-lg hover:shadow-xl transition-shadow"
       >

@@ -101,6 +101,12 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                   Líneas
                 </Link>
                 <Link
+                  href="/admin/faq"
+                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                >
+                  FAQ
+                </Link>
+                <Link
                   href="/admin/productos/nuevo"
                   className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.85)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0"
                 >

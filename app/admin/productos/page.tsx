@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import { redirect } from "next/navigation";
 import { requireAdminSession } from "@/lib/admin-session";
 import ProductosAdminClient from "./ProductosAdminClient";
 

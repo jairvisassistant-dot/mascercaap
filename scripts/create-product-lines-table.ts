@@ -2,16 +2,10 @@
  * Crea la tabla product_lines usando la función exec_sql via RPC de Supabase.
  * Si no funciona el RPC, ejecuta el SQL manualmente en Supabase SQL Editor.
  */
-import { createClient } from "@supabase/supabase-js";
 import * as dotenv from "dotenv";
 import { resolve } from "path";
 
 dotenv.config({ path: resolve(process.cwd(), ".env.local") });
-
-const sb = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 const DDL = `
 CREATE TABLE IF NOT EXISTS public.product_lines (
@@ -33,7 +27,7 @@ async function main() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-  const res = await fetch(`${url}/rest/v1/`, {
+  await fetch(`${url}/rest/v1/`, {
     method: "GET",
     headers: { apikey: key, Authorization: `Bearer ${key}` },
   });

@@ -20,6 +20,34 @@ export type FAQData = {
   fallback: { es: string; en: string };
 };
 
+export type FAQQuestionRow = {
+  id: string;
+  category_id: string;
+  question_es: string;
+  question_en: string;
+  answer_es: string;
+  answer_en: string;
+  keywords: string[];
+  display_order: number;
+  active: boolean;
+};
+
+export type FAQCategoryRow = {
+  id: string;
+  label_es: string;
+  label_en: string;
+  icon: string;
+  display_order: number;
+  active: boolean;
+  faq_questions: FAQQuestionRow[];
+};
+
+export type FAQConfigRow = {
+  id: number;
+  fallback_es: string;
+  fallback_en: string;
+};
+
 // ── Product lines translation ──────────────────────────────────────────────
 export type ProductLineTranslation = { label: string; description: string };
 

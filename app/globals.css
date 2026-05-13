@@ -216,8 +216,8 @@ body {
   to   { transform: translate3d(0, 0, 0); }
 }
 @utility animate-marquee-left {
-  animation: marquee-left 74s linear infinite;
+  animation: marquee-left 84s linear infinite;
 }
 @utility animate-marquee-right {
-  animation: marquee-right 74s linear infinite;
+  animation: marquee-right 84s linear infinite;
 }

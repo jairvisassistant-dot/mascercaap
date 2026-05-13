@@ -36,9 +36,6 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
   const getMode = (key: string): Mode => rowMode[key] ?? "view";
   const anyBusy = busy !== null || moving !== null;
 
-  const catLabel = (key: string | null) =>
-    key ? (categories.find((c) => c.key === key)?.label ?? key) : "Sin categoría";
-
   function startEdit(line: Line) {
     setEditValues((prev) => ({
       ...prev,
