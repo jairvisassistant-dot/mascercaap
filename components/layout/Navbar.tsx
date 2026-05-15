@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { m } from "framer-motion";
 // m solo se usa para el menú mobile animado — el header no usa animaciones
 import Link from "next/link";
@@ -16,6 +16,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
   const { dict, lang } = useDictionary();
   const { openDrawer } = useHelpHub();
 
@@ -46,6 +47,16 @@ export default function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => {
+      document.documentElement.style.setProperty("--navbar-h", `${el.offsetHeight}px`);
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const isActive = (href: string) => {
     if (href === `/${lang}`) return pathname === `/${lang}` || pathname === `/${lang}/`;
     return pathname.startsWith(href);
@@ -53,7 +64,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-surface-page/90 backdrop-blur-md shadow-sm border-b border-border-soft"
           : "bg-surface-page shadow-md"

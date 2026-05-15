@@ -22,7 +22,7 @@ export default function HelpHub() {
         whileTap={{ scale: 0.97 }}
         onClick={() => openDrawer("menu", undefined, { restoreSession: true })}
         aria-label={t.trigger}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 bg-primary text-white p-3 sm:pl-3 sm:pr-4 sm:py-3 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+        className="fixed bottom-24 right-4 z-40 flex items-center gap-2.5 bg-primary text-white p-3 sm:bottom-6 sm:right-6 sm:pl-3 sm:pr-4 sm:py-3 rounded-full shadow-lg hover:shadow-xl transition-shadow"
       >
         <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />

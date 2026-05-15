@@ -1,4 +1,4 @@
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 
 import { termsAndConditions } from "@/data/legal";
@@ -6,6 +6,10 @@ import { SITE_CONFIG } from "@/lib/config";
 import type { Locale } from "@/lib/i18n";
 import type { Metadata } from "next";
 import Link from "next/link";
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;

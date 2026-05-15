@@ -1,6 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 /**
  * Validates the admin_session cookie in a Server Component.
@@ -18,11 +18,11 @@ export async function requireAdminSession() {
     redirect("/admin/login");
   }
 
-  const { data: { user }, error } = await createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  ).auth.getUser(token);
+  if (!supabase) {
+    redirect("/admin/login");
+  }
+
+  const { data: { user }, error } = await supabase.auth.getUser(token);
 
   if (error || !user) {
     // Can't delete cookies in a Server Component — delegate to the Route

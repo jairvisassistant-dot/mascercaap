@@ -390,7 +390,7 @@ export default function HeroCarousel() {
       <button
         type="button"
         onClick={prevSlide}
-        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
+        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-3 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5"
         aria-label={dict.home.hero.prevSlide}
       >
         <svg className="h-4 w-4 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

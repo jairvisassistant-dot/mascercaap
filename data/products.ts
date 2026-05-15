@@ -93,7 +93,7 @@ export const productLines: ProductLineConfig[] = [
     label: "Pulpa de Frutos Amarillos",
     description: "Mix tropical de frutas amarillas, dulce y vibrante.",
     gradient: "from-[#f4d77a] to-[#d79a3b]",
-    iconEmoji: "💛",
+    iconEmoji: "🍍",
     chipImage: "/imgs/pulpaPortada-frutos-amarillos.webp",
   },
   {

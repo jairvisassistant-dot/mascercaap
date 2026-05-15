@@ -156,7 +156,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              sandbox="allow-scripts allow-same-origin allow-popups"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
               title={t.map.iframeTitle}
             />
           </AnimateInView>

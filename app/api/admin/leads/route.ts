@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { leadUpdateSchema } from "@/lib/schemas/admin";
+import { requireAdminAuth } from "@/lib/admin-auth";
 
 function adminClient() {
   return createClient(
@@ -11,20 +11,11 @@ function adminClient() {
   );
 }
 
-async function requireAuth() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_session")?.value;
-  if (!token) return null;
-  const { data: { user }, error } = await adminClient().auth.getUser(token);
-  if (error || !user) return null;
-  return user;
-}
-
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const user = await requireAuth();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
 
   const url = new URL(req.url);
   const tipo = url.searchParams.get("tipo");
@@ -46,8 +37,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: Request) {
-  const user = await requireAuth();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
 
   let body: unknown;
   try { body = await req.json(); } catch {

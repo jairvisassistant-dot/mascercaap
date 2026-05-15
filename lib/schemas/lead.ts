@@ -15,7 +15,7 @@ const EN_LEAD_MESSAGES: LeadValidationMessages = {
   emailInvalid: "Enter a valid email",
 };
 
-export function createLeadSchema(msgs: LeadValidationMessages = EN_LEAD_MESSAGES) {
+export function createLeadSchema(msgs: LeadValidationMessages = ES_LEAD_MESSAGES) {
   return z.object({
     nombre: z.string().min(2, msgs.nameMin).max(80),
     email: z.string().email(msgs.emailInvalid).max(254).optional().nullable(),

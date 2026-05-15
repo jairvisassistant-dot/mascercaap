@@ -5,6 +5,7 @@ import { createOrderSchema, type OrderItem } from "@/lib/schemas/order"
 import esMessages from "@/messages/es.json"
 import enMessages from "@/messages/en.json"
 import { buildOrderEmailHtml, buildPriceResolver, type PriceEntry } from "@/lib/order-assistant"
+import { sanitizeSubject } from "@/lib/sanitize"
 import { supabase } from "@/lib/supabase"
 
 const requestLog = new Map<string, number[]>()
@@ -28,10 +29,6 @@ function checkRateLimit(ip: string): boolean {
   }
 
   return true
-}
-
-function sanitizeSubject(str: string): string {
-  return str.replace(/[\r\n\x00-\x1f\x7f]+/g, " ").slice(0, 80).trim()
 }
 
 export async function POST(request: Request) {

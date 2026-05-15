@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useReducedMotion } from "framer-motion";
 
 export default function ScrollProgress() {
   const [progress, setProgress] = useState(0);
+  const shouldReduce = useReducedMotion();
 
   useEffect(() => {
     const update = () => {
@@ -20,7 +22,10 @@ export default function ScrollProgress() {
     <div className="fixed top-0 left-0 right-0 z-50 h-[3px] pointer-events-none">
       <div
         className="h-full bg-accent"
-        style={{ width: `${progress}%`, transition: "width 80ms linear" }}
+        style={{
+          width: `${progress}%`,
+          transition: shouldReduce ? "none" : "width 80ms linear",
+        }}
       />
     </div>
   );

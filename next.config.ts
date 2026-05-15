@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
       "img-src 'self' data: blob: https://images.unsplash.com https://api.qrserver.com https://*.supabase.co",
       "font-src 'self' data:",
       "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
+      "frame-src https://maps.google.com https://www.google.com",
       "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",

@@ -496,6 +496,8 @@
         "noWhatsappFallback": "Por ahora continuamos tu atención por email o teléfono porque WhatsApp no está configurado en este entorno."
       },
       "error": "Hubo un error al enviar. Por favor intenta de nuevo.",
+      "consentLabel": "Acepto el tratamiento de mis datos personales según la Política de Privacidad",
+      "consentRequired": "Debes aceptar la política de privacidad para enviar el formulario.",
       "whatsappMsg": {
         "greeting": "Hola Más Cerca AP! 👋",
         "intro": "Mi nombre es *{name}* y me contacté por el formulario web para {reason}.",
@@ -777,7 +779,7 @@
     }
   },
   "cookieConsent": {
-    "text": "Usamos Google Analytics para mejorar tu experiencia. Podés aceptar o rechazar el seguimiento.",
+    "text": "Usamos Google Analytics, almacenamiento local del navegador y datos de sesión para mejorar tu experiencia. Puedes aceptar o rechazar el seguimiento analítico.",
     "accept": "Aceptar",
     "decline": "Solo necesarias",
     "learnMore": "Ver políticas"

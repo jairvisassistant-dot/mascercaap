@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { m, AnimatePresence } from "framer-motion";
@@ -16,6 +17,8 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
+  const [consented, setConsented] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
   useEffect(() => {
     if (!submitStatus) return;
@@ -33,6 +36,11 @@ export default function ContactForm() {
   });
 
   const onSubmit = async (data: ContactFormData) => {
+    if (!consented) {
+      setConsentError(true);
+      return;
+    }
+    setConsentError(false);
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/contact", {
@@ -196,6 +204,34 @@ export default function ContactForm() {
           />
           {errors.mensaje && (
             <p className="text-red-500 text-sm mt-1">{errors.mensaje.message}</p>
+          )}
+        </div>
+
+        {/* Consentimiento de privacidad — requerido por Ley 1581/2012 Colombia */}
+        <div>
+          <label className="flex items-start gap-2.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={consented}
+              onChange={(e) => {
+                setConsented(e.target.checked);
+                if (e.target.checked) setConsentError(false);
+              }}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-border-mid accent-primary focus:ring-2 focus:ring-primary"
+            />
+            <span className="text-sm text-text-sub">
+              {t.consentLabel}{" "}
+              <Link
+                href="/politicas"
+                target="_blank"
+                className="text-primary underline underline-offset-2 hover:text-primary-dark"
+              >
+                (ver política)
+              </Link>
+            </span>
+          </label>
+          {consentError && (
+            <p className="text-red-500 text-sm mt-1">{t.consentRequired}</p>
           )}
         </div>
 

@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // y dispara re-indexación innecesaria en Google Search Console.
   // CHECKLIST DE RELEASE: actualizar esta fecha cuando cambie contenido estructural
   // (nuevas rutas, nuevas páginas de producto, cambios de URL). No actualizar para edits de copy.
-  const now = new Date("2026-04-19");
+  const now = new Date("2026-05-13");
 
   const staticPages = [
     { path: "", priority: 1, changefreq: "weekly" as const },

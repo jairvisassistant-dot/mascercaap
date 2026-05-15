@@ -496,6 +496,8 @@
         "noWhatsappFallback": "For now we'll continue your follow-up by email or phone because WhatsApp is not configured in this environment."
       },
       "error": "There was an error sending your message. Please try again.",
+      "consentLabel": "I accept the processing of my personal data as per the Privacy Policy",
+      "consentRequired": "You must accept the privacy policy to send the form.",
       "whatsappMsg": {
         "greeting": "Hi Más Cerca AP! 👋",
         "intro": "My name is *{name}* and I reached out via the web form to {reason}.",
@@ -777,7 +779,7 @@
     }
   },
   "cookieConsent": {
-    "text": "We use Google Analytics to improve your experience. You can accept or decline tracking.",
+    "text": "We use Google Analytics, local browser storage, and session data to improve your experience. You can accept or decline analytical tracking.",
     "accept": "Accept",
     "decline": "Necessary only",
     "learnMore": "View policies"

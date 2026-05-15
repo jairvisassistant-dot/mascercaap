@@ -51,13 +51,39 @@ export default async function ProductosPage({ params }: Props) {
     getAllProductCategories(),
   ]);
 
+  const isEs = lang === "es";
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: isEs ? "Inicio" : "Home",
+        item: `${SITE_CONFIG.siteUrl}/${lang}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: isEs ? "Productos" : "Products",
+        item: `${SITE_CONFIG.siteUrl}/${lang}/productos`,
+      },
+    ],
+  };
+
   return (
-    <Suspense>
-      <ProductosClient
-        products={products}
-        productLines={productLines}
-        categories={categories}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-    </Suspense>
+      <Suspense>
+        <ProductosClient
+          products={products}
+          productLines={productLines}
+          categories={categories}
+        />
+      </Suspense>
+    </>
   );
 }

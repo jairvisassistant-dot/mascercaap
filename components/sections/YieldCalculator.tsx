@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { m, AnimatePresence, useMotionValue, useTransform, animate, useInView } from "framer-motion"
+import { m, AnimatePresence, useMotionValue, useTransform, animate, useInView, useReducedMotion } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
   cupsPerPack,
@@ -71,6 +71,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const visualRef = useRef<HTMLDivElement>(null)
   const visualInView = useInView(visualRef, { once: true, amount: 0.35 })
+  const shouldReduce = useReducedMotion()
 
   const [selectedPrep, setSelectedPrep] = useState<PrepType | null>(null)
   const [targetCups, setTargetCups] = useState<number | null>(null)
@@ -212,21 +213,18 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           <m.div
             className="pointer-events-none absolute -inset-x-6 -inset-y-4 rounded-[1.9rem] bg-[radial-gradient(circle_at_50%_50%,rgba(63,143,70,0.24)_0%,rgba(63,143,70,0.12)_34%,rgba(63,143,70,0.02)_64%,transparent_82%)] blur-2xl"
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={visualInView ? { opacity: [0.18, 0.34, 0.18], scale: [0.98, 1.03, 0.98] } : { opacity: 0, scale: 0.9 }}
-            transition={{ duration: 6.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+            animate={visualInView ? (shouldReduce ? { opacity: 0.26, scale: 1 } : { opacity: [0.18, 0.34, 0.18], scale: [0.98, 1.03, 0.98] }) : { opacity: 0, scale: 0.9 }}
+            transition={shouldReduce ? {} : { duration: 6.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
           />
           <m.div
             className="pointer-events-none absolute -inset-1.5 rounded-[1.12rem]"
             initial={{ opacity: 0, rotate: 0 }}
             animate={
               visualInView
-                ? {
-                    opacity: [0.3, 0.64, 0.3],
-                    rotate: 360,
-                  }
+                ? (shouldReduce ? { opacity: 0.3, rotate: 0 } : { opacity: [0.3, 0.64, 0.3], rotate: 360 })
                 : { opacity: 0, rotate: 0 }
             }
-            transition={{
+            transition={shouldReduce ? {} : {
               opacity: { duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
               rotate: { duration: 9.5, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
             }}
@@ -244,8 +242,8 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           <m.div
             className="pointer-events-none absolute -inset-x-2 -inset-y-2 rounded-[1.6rem] opacity-85 [background-image:linear-gradient(to_right,rgba(63,143,70,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(63,143,70,0.12)_1px,transparent_1px)] [background-size:22px_22px]"
             initial={{ opacity: 0 }}
-            animate={visualInView ? { opacity: [0.56, 0.85, 0.56], backgroundPosition: ["0px 0px", "22px 11px", "0px 0px"] } : { opacity: 0 }}
-            transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+            animate={visualInView ? (shouldReduce ? { opacity: 0.7 } : { opacity: [0.56, 0.85, 0.56], backgroundPosition: ["0px 0px", "22px 11px", "0px 0px"] }) : { opacity: 0 }}
+            transition={shouldReduce ? {} : { duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
           />
           <m.div
             className="pointer-events-none absolute -inset-x-8 -bottom-12 h-28 rounded-full bg-primary/30 blur-3xl"

@@ -430,7 +430,7 @@ export default function FAQAdminClient({
 
       {categories.length === 0 ? (
         <p className="py-8 text-center text-sm text-text-muted">
-          No hay categorías FAQ aún. Usá el botón de arriba para crear una.
+          No hay categorías FAQ aún. Usa el botón de arriba para crear una.
         </p>
       ) : (
         categories.map((cat, catIdx) => {

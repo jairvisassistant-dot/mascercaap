@@ -52,11 +52,13 @@ export async function POST(req: NextRequest) {
 
   const { email, password } = parsed.data;
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { auth: { persistSession: false } }
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return NextResponse.json({ error: "Servicio no configurado" }, { status: 503 });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false } });
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 

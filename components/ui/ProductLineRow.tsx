@@ -11,8 +11,6 @@ interface ProductLineRowProps {
   firstLine?: boolean;
 }
 
-const SCROLL_AMOUNT = 254; // card width (234) + gap (20)
-
 export default function ProductLineRow({ line, products, firstLine = false }: ProductLineRowProps) {
   const { dict } = useDictionary();
   const pl = dict.productLines as Record<string, { label: string }>;
@@ -41,11 +39,15 @@ export default function ProductLineRow({ line, products, firstLine = false }: Pr
   }, [updateArrows, products]);
 
   const scrollLeft = () => {
-    scrollRef.current?.scrollBy({ left: -SCROLL_AMOUNT, behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: -(el.clientWidth * 0.75), behavior: "smooth" });
   };
 
   const scrollRight = () => {
-    scrollRef.current?.scrollBy({ left: SCROLL_AMOUNT, behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: el.clientWidth * 0.75, behavior: "smooth" });
   };
 
   return (

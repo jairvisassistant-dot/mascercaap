@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import {
   lineCreateSchema,
@@ -8,6 +7,7 @@ import {
   reorderSchema,
   keyOnlySchema,
 } from "@/lib/schemas/admin";
+import { requireAdminAuth } from "@/lib/admin-auth";
 
 function adminClient() {
   return createClient(
@@ -17,22 +17,13 @@ function adminClient() {
   );
 }
 
-async function requireAuth() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_session")?.value;
-  if (!token) return null;
-  const { data: { user }, error } = await adminClient().auth.getUser(token);
-  if (error || !user) return null;
-  return user;
-}
-
 function revalidateProductos() {
   revalidatePath("/[lang]/productos", "page");
 }
 
-export async function GET() {
-  const user = await requireAuth();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function GET(req: NextRequest) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
 
   const sb = adminClient();
   const { data, error } = await sb
@@ -46,8 +37,8 @@ export async function GET() {
 }
 
 export async function PATCH(req: Request) {
-  const user = await requireAuth();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
 
   let body: unknown;
   try { body = await req.json(); } catch {
@@ -88,8 +79,8 @@ export async function PATCH(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  const user = await requireAuth();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
 
   let body: unknown;
   try { body = await req.json(); } catch {
@@ -120,8 +111,8 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const user = await requireAuth();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
 
   let body: unknown;
   try { body = await req.json(); } catch {
@@ -160,8 +151,8 @@ export async function DELETE(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const user = await requireAuth();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
 
   let body: unknown;
   try { body = await req.json(); } catch {

@@ -3,9 +3,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/config";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 
-export const metadata: Metadata = { robots: { index: false, follow: false } };
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  if (!hasLocale(lang)) return {};
+  const dict = await getDictionary(lang);
+  const t = dict.socialQr.tiktok;
+  return {
+    title: t.eyebrow,
+    description: t.description,
+    robots: { index: false, follow: false },
+    openGraph: { title: t.eyebrow, description: t.description, type: "website", url: `${SITE_CONFIG.siteUrl}/${lang}/tiktok` },
+  };
+}
 
 export default async function TikTokPage({
   params,

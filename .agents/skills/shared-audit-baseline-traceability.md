@@ -26,15 +26,18 @@ Antes de emitir cualquier hallazgo, revisar SIEMPRE en este orden:
 
 1. **LECCIONES_APRENDIDAS.md** → causas raíz, deuda conocida y convenciones del proyecto
 2. **Otros/Info_Auditorias/** → artefactos previos:
-   - `baseline_info.txt`
-   - `baseline_structure.txt`
-   - `baseline_dependencies.txt`
-   - `audit_code_*.md`, `audit_architecture_*.md`, `audit_product_*.md`
-   - `Respuesta-audit_code_*.md`, `Respuesta-audit_architecture_*.md`, `Respuesta-audit_product_*.md`
-   - `audit_consolidated_*.md` (si existe del orquestador)
-   - `verification_*.md`
-3. **Estado Git actual**: branch, tracking remoto, commits, working tree, diff contra baseline
-4. **Docs locales del framework** cuando un hallazgo dependa de una convención versionada
+    - `baseline_info.txt`
+    - `baseline_structure.txt`
+    - `baseline_dependencies.txt`
+    - `audit_code_*.md`, `audit_architecture_*.md`, `audit_product_*.md`
+    - `audit_code_*.json`, `audit_architecture_*.json`, `audit_product_*.json`
+    - `Respuesta-audit_code_*.md`, `Respuesta-audit_architecture_*.md`, `Respuesta-audit_product_*.md`
+    - `audit_consolidated_*.md` (si existe del orquestador)
+    - `audit_consolidated_*.json`
+    - `verification_*.md`
+3. **Contexto compartido**: `.opencode/audit-context.json` (generado por orquestador)
+4. **Estado Git actual**: branch, tracking remoto, commits, working tree, diff contra baseline
+5. **Docs locales del framework** cuando un hallazgo dependa de una convención versionada
 
 **Regla:** si existe historial en `Otros/Info_Auditorias/` y no se leyó, la conclusión queda incompleta.
 
@@ -60,7 +63,31 @@ Objetivo: no reabrir hallazgos ya aceptados como deuda, no reciclar falsos posit
 
 **Regla:** si existe `Otros/Info_Auditorias/` y no se leyó, la auditoría está incompleta.
 
-### 0B — Resolver el Baseline
+### 0B — Verificación de Build y Tests (OBLIGATORIO)
+
+**Antes de emitir CUALQUIER hallazgo, ejecutar:**
+
+```bash
+# Si falla, es el hallazgo #1 del reporte consolidado
+npm run build 2>&1 | tail -30
+BUILD_EXIT=$?
+
+npm test 2>&1 | tail -30
+TEST_EXIT=$?
+
+npm run lint 2>&1 | tail -30
+LINT_EXIT=$?
+```
+
+| Comando | Si falla | Acción |
+|---------|----------|--------|
+| `npm run build` | Pipeline se detiene | Hallazgo CRIT: "Build roto" en consolidado |
+| `npm test` | Se registra | Hallazgo HIGH: "Tests fallando" |
+| `npm run lint` | Se registra | Hallazgo MED: "Lint warnings" |
+
+**Regla:** Si el build no compila, no tiene sentido auditar código roto. El pipeline se detiene y el primer hallazgo consolidado es "EL BUILD ESTÁ ROTO".
+
+### 0C — Resolver el Baseline
 
 Resolver baseline con esta prioridad:
 
@@ -72,18 +99,10 @@ Resolver baseline con esta prioridad:
 4. Heurística por historial git (`audit\|baseline`) como último recurso
 
 ```bash
-git status --short --branch
-
-BASELINE_HASH=$(cat /home/server/Escritorio/mascercaap/mas-cerca-ap/Otros/Info_Auditorias/baseline_info.txt 2>/dev/null | grep BASELINE_COMMIT | cut -d'=' -f2)
-
-# Fallback: parsear hash desde auditorías/respuestas previas
-# Buscar patrones como:
-# - Commit auditado: `abc123`
-# - Snapshot de referencia: `abc123`
-
-if [ -z "$BASELINE_HASH" ]; then
-  BASELINE_HASH=$(git log --oneline --all | grep -i "audit\|baseline" | head -1 | awk '{print $1}')
-fi
+# Usar script compartido (portable)
+source .agents/skills/shared/scripts/resolve-baseline.sh
+echo "Baseline: $BASELINE_HASH (fuente: $BASELINE_SOURCE)"
+echo "Modo: $DIFF_MODE"
 ```
 
 **Regla:** si el baseline no viene de `baseline_info.txt`, declarar la fuente en el reporte.
@@ -100,8 +119,9 @@ No asumir que todos los cambios están comiteados.
 | Sin baseline confiable | auditoría full del estado actual + advertencia explícita |
 
 ```bash
+# El script resolve-baseline.sh ya ejecuta esto
+# Verificar adicionalmente:
 git status --short --branch
-
 if [ -n "$BASELINE_HASH" ]; then
   git log --oneline "$BASELINE_HASH"..HEAD
   git diff --name-only "$BASELINE_HASH"

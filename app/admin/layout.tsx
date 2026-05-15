@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import AdminNavbar from "@/components/layout/AdminNavbar";
 
 export const metadata: Metadata = {
@@ -8,10 +8,8 @@ export const metadata: Metadata = {
 };
 
 async function getProductCount(): Promise<number | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return null;
-  const { count } = await createClient(url, key, { auth: { persistSession: false } })
+  if (!supabase) return null;
+  const { count } = await supabase
     .from("products")
     .select("*", { count: "exact", head: true });
   return count;

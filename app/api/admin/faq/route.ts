@@ -114,7 +114,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ id, success: true });
   }
 
-  return NextResponse.json({ error: 'Tipo no válido. Usá _type: "category" o "question"' }, { status: 400 });
+  return NextResponse.json({ error: 'Tipo no válido. Usa _type: "category" o "question"' }, { status: 400 });
 }
 
 // ── PATCH: reordenar ────────────────────────────────────────────
@@ -207,7 +207,7 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ success: true });
   }
 
-  return NextResponse.json({ error: 'Tipo no válido. Usá _type: "category" o "question"' }, { status: 400 });
+  return NextResponse.json({ error: 'Tipo no válido. Usa _type: "category" o "question"' }, { status: 400 });
 }
 
 // ── PUT: editar ─────────────────────────────────────────────────
@@ -260,7 +260,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ success: true });
   }
 
-  return NextResponse.json({ error: 'Tipo no válido. Usá _type: "category", "question" o "config"' }, { status: 400 });
+  return NextResponse.json({ error: 'Tipo no válido. Usa _type: "category", "question" o "config"' }, { status: 400 });
 }
 
 // ── DELETE: desactivar (soft delete) ────────────────────────────
@@ -296,5 +296,5 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ success: true });
   }
 
-  return NextResponse.json({ error: 'Tipo no válido. Usá _type: "category" o "question"' }, { status: 400 });
+  return NextResponse.json({ error: 'Tipo no válido. Usa _type: "category" o "question"' }, { status: 400 });
 }

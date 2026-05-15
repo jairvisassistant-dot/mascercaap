@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
+import { escapeHtml, sanitizeSubject } from "@/lib/sanitize";
 import esMessages from "@/messages/es.json";
 import enMessages from "@/messages/en.json";
 
@@ -40,19 +41,7 @@ const tipoLabel: Record<string, string> = {
   otro: "Otro",
 };
 
-/** Escapa caracteres HTML especiales para prevenir inyección en el email (SEC-06) */
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
-function sanitizeSubject(str: string): string {
-  return str.replace(/[\r\n\u0000-\u001f\u007f]+/g, " ").slice(0, 80).trim();
-}
 
 function buildEmailHtml(data: ContactFormData): string {
   // Escapar todos los datos de usuario antes de interpolar en HTML
