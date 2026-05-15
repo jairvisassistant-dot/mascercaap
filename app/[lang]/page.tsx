@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import type { Metadata } from "next";
-import HeroCarousel from "@/components/ui/HeroCarousel";
+import dynamic from "next/dynamic";
+const HeroCarousel = dynamic(() => import("@/components/ui/HeroCarousel"), { ssr: true });
 import ProductCategories from "@/components/sections/ProductCategories";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import YieldCalculator from "@/components/sections/YieldCalculator";

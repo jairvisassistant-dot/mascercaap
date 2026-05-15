@@ -294,7 +294,7 @@ export default function HeroCarousel() {
                   src={frame.image}
                   alt={slideText.title.replace("\n", " ")}
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                   className="object-cover"
                   priority={currentSlide === 0 && currentFrame === 0}
                   loading={currentSlide === 0 && currentFrame > 0 ? "eager" : undefined}

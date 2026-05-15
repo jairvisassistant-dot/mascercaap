@@ -15,6 +15,8 @@ async function getProductCount(): Promise<number | null> {
   return count;
 }
 
+// TODO(infra): Admin should be deployed separately (subdomain/standalone) to reduce attack surface.
+// Current mitigation: requireAdminAuth() on every admin route + session validation.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const productCount = await getProductCount();
 

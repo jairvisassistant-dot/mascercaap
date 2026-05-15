@@ -77,7 +77,7 @@ export default async function ProductosPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <Suspense>
+      <Suspense fallback={<div className="min-h-screen animate-pulse bg-surface-warm" />}>
         <ProductosClient
           products={products}
           productLines={productLines}

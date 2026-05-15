@@ -1,6 +1,9 @@
 import type { FAQData } from "@/types";
 import { SITE_CONFIG } from "@/lib/config";
 
+// Static fallback data — consumed by lib/faq-data.ts when Supabase is unavailable.
+// Do not treat this as the source of truth; editable FAQ lives in Supabase.
+
 export const faqData: FAQData = {
   categories: [
     {
