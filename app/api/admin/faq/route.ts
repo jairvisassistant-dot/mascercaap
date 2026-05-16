@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { requireAdminAuth } from "@/lib/admin-auth";
+import { faqPostSchema, faqReorderSchema, faqPutSchema, faqDeleteSchema } from "@/lib/schemas/admin";
 
 function adminClient() {
   return createClient(
@@ -51,14 +52,22 @@ export async function POST(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
 
+  let rawBody: unknown;
+  try {
+    rawBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Body inválido" }, { status: 400 });
+  }
+
+  const parsed = faqPostSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Datos inválidos" }, { status: 400 });
+  }
+
+  const body = parsed.data;
   const supabase = adminClient();
-  const body = await req.json();
 
   if (body._type === "category") {
-    if (!body.id || !body.label_es || !body.label_en) {
-      return NextResponse.json({ error: "Faltan campos requeridos (id, label_es, label_en)" }, { status: 400 });
-    }
-
     const { data: maxOrder } = await supabase
       .from("faq_categories")
       .select("display_order")
@@ -83,38 +92,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   }
 
-  if (body._type === "question") {
-    if (!body.category_id || !body.question_es || !body.question_en || !body.answer_es || !body.answer_en) {
-      return NextResponse.json({ error: "Faltan campos requeridos" }, { status: 400 });
-    }
+  // _type === "question"
+  const { data: maxOrder } = await supabase
+    .from("faq_questions")
+    .select("display_order")
+    .eq("category_id", body.category_id)
+    .order("display_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-    const { data: maxOrder } = await supabase
-      .from("faq_questions")
-      .select("display_order")
-      .eq("category_id", body.category_id)
-      .order("display_order", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+  const id = `faq-q-${Date.now()}`;
+  const { error } = await supabase.from("faq_questions").insert({
+    id,
+    category_id: body.category_id,
+    question_es: body.question_es,
+    question_en: body.question_en,
+    answer_es: body.answer_es,
+    answer_en: body.answer_en,
+    keywords: body.keywords ?? [],
+    display_order: (maxOrder?.display_order ?? 0) + 1,
+    active: true,
+  });
 
-    const id = `faq-q-${Date.now()}`;
-    const { error } = await supabase.from("faq_questions").insert({
-      id,
-      category_id: body.category_id,
-      question_es: body.question_es,
-      question_en: body.question_en,
-      answer_es: body.answer_es,
-      answer_en: body.answer_en,
-      keywords: body.keywords ?? [],
-      display_order: (maxOrder?.display_order ?? 0) + 1,
-      active: true,
-    });
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    revalidateFAQSurfaces();
-    return NextResponse.json({ id, success: true });
-  }
-
-  return NextResponse.json({ error: 'Tipo no válido. Usa _type: "category" o "question"' }, { status: 400 });
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateFAQSurfaces();
+  return NextResponse.json({ id, success: true });
 }
 
 // ── PATCH: reordenar ────────────────────────────────────────────
@@ -123,13 +125,22 @@ export async function PATCH(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
 
+  let rawBody: unknown;
+  try {
+    rawBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Body inválido" }, { status: 400 });
+  }
+
+  const parsed = faqReorderSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Datos inválidos" }, { status: 400 });
+  }
+
+  const body = parsed.data;
   const supabase = adminClient();
-  const body = await req.json();
 
   if (body._type === "category") {
-    if (!body.id || !body.direction) {
-      return NextResponse.json({ error: "Faltan campos requeridos" }, { status: 400 });
-    }
 
     const { data: current, error: curErr } = await supabase
       .from("faq_categories")
@@ -216,12 +227,22 @@ export async function PUT(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
 
+  let rawBody: unknown;
+  try {
+    rawBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Body inválido" }, { status: 400 });
+  }
+
+  const parsed = faqPutSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Datos inválidos" }, { status: 400 });
+  }
+
+  const body = parsed.data;
   const supabase = adminClient();
-  const body = await req.json();
 
   if (body._type === "category") {
-    if (!body.id) return NextResponse.json({ error: "Falta el ID" }, { status: 400 });
-
     const updates: Record<string, unknown> = {};
     if (body.label_es !== undefined) updates.label_es = body.label_es;
     if (body.label_en !== undefined) updates.label_en = body.label_en;
@@ -234,7 +255,6 @@ export async function PUT(req: Request) {
   }
 
   if (body._type === "question") {
-    if (!body.id) return NextResponse.json({ error: "Falta el ID" }, { status: 400 });
 
     const updates: Record<string, unknown> = {};
     if (body.question_es !== undefined) updates.question_es = body.question_es;
@@ -269,8 +289,20 @@ export async function DELETE(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
 
+  let rawBody: unknown;
+  try {
+    rawBody = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Body inválido" }, { status: 400 });
+  }
+
+  const parsed = faqDeleteSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Datos inválidos" }, { status: 400 });
+  }
+
+  const body = parsed.data;
   const supabase = adminClient();
-  const body = await req.json();
 
   if (body._type === "category") {
     if (!body.id) return NextResponse.json({ error: "Falta el ID" }, { status: 400 });

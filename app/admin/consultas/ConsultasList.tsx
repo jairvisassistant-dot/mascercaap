@@ -2,24 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-
-// ── Tipos locales ────────────────────────────────────────────────────────────
-
-type LeadRow = {
-  id: string;
-  nombre: string;
-  email: string | null;
-  tipo: string;
-  producto_interes: string | null;
-  preguntas_bot: string[];
-  resumen_handoff: string | null;
-  fuente: string;
-  whatsapp_number: string | null;
-  consent_accepted: boolean;
-  created_at: string;
-  estado_seguimiento: string;
-  notas: string | null;
-};
+import type { LeadRow } from "@/types";
 
 // ── Constantes ───────────────────────────────────────────────────────────────
 

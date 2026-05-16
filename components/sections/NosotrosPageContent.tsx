@@ -55,7 +55,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="font-dm-serif text-4xl md:text-6xl mb-4 leading-tight"
+            className="text-4xl md:text-6xl mb-4 leading-tight font-bold"
           >
             {t.hero.title}
           </m.h1>
@@ -236,7 +236,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
             <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
               {t.gallery.sectionLabel}
             </span>
-            <h2 className="font-dm-serif text-3xl md:text-4xl text-primary mb-4">{t.gallery.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t.gallery.title}</h2>
             <p className="text-text-muted max-w-xl mx-auto">{t.gallery.subtitle}</p>
           </m.div>
 
@@ -289,7 +289,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                       <span className="inline-block text-[10px] font-bold tracking-widest text-primary/60 uppercase mb-2">
                         {`${t.gallery.stepLabel} ${index + 1} ${t.gallery.stepOf} ${processSteps.length}`}
                       </span>
-                      <h3 className="font-dm-serif text-2xl md:text-[1.6rem] text-text-main mb-3 leading-snug">
+                      <h3 className="text-2xl md:text-[1.6rem] font-bold text-text-main mb-3 leading-snug">
                         {cardText.title}
                       </h3>
                       <p className="text-text-muted leading-relaxed text-sm md:text-base">

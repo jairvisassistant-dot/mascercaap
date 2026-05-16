@@ -24,7 +24,7 @@ function getLocale(request: NextRequest): string {
   return defaultLocale;
 }
 
-export default function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Redirigir rutas admin con locale prefix → sin locale

@@ -66,6 +66,8 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [leadData, setLeadData] = useState<LeadData>({ nombre: "", email: "", tipo: "" });
   const [leadConsent, setLeadConsent] = useState(false);
+  const [leadSaveError, setLeadSaveError] = useState(false);
+  const [pendingWhatsApp, setPendingWhatsApp] = useState<{ appUrl: string | null; webUrl: string | null } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
 
@@ -272,6 +274,8 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!leadConsent || !leadData.nombre.trim() || !leadData.tipo) return;
+    setLeadSaveError(false);
+    setPendingWhatsApp(null);
 
     const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages, leadData));
 
@@ -311,7 +315,9 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
         tipo: leadData.tipo,
         has_email: Boolean(leadData.email.trim()),
       });
-      // error de red — se abre WhatsApp sin marcar lead como guardado
+      setLeadSaveError(true);
+      setPendingWhatsApp({ appUrl, webUrl });
+      return;
     }
 
     setShowLeadForm(false);
@@ -327,6 +333,26 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
       lead_saved: leadSaved,
     });
     onWhatsAppConnect(appUrl, webUrl, leadSaved);
+  }
+
+  function handleLeadContinueAnyway() {
+    if (!pendingWhatsApp) return;
+    const { appUrl, webUrl } = pendingWhatsApp;
+    setShowLeadForm(false);
+    setLeadSaveError(false);
+    setPendingWhatsApp(null);
+    persistFaqSession({
+      showLeadForm: false,
+      showAdvisorButton: false,
+      showFallbackActions: false,
+    });
+    trackHelpHubEvent("helphub_whatsapp_opened", {
+      source: "lead_submit_error_continue",
+      locale,
+      destination: appUrl ? "app" : webUrl ? "web" : "unavailable",
+      lead_saved: false,
+    });
+    onWhatsAppConnect(appUrl, webUrl, false);
   }
 
   function handleLeadSkip() {
@@ -479,6 +505,27 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
                     </a>
                   </span>
                 </label>
+
+                {/* Error de red al guardar lead */}
+                {leadSaveError && (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 space-y-2">
+                    <p className="text-xs text-amber-800">
+                      {lang === "es"
+                        ? "No pudimos guardar tu información por un error de red."
+                        : "We couldn't save your info due to a network error."}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleLeadContinueAnyway}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-green-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
+                    >
+                      <svg className="h-3.5 w-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        {WA_ICON}
+                      </svg>
+                      {lang === "es" ? "Continuar a WhatsApp de todas formas" : "Continue to WhatsApp anyway"}
+                    </button>
+                  </div>
+                )}
 
                 {/* Acciones */}
                 <div className="flex items-center gap-2 pt-1">

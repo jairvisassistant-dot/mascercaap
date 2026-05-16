@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         en: `${SITE_CONFIG.siteUrl}/en/nosotros`,
       },
     },
+    robots: { index: true, follow: true },
   };
 }
 

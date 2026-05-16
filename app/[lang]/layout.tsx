@@ -1,4 +1,4 @@
-import { Poppins, DM_Serif_Display } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -24,15 +24,7 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-const dmSerif = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-dm-serif",
-  preload: false,
-});
-
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -136,7 +128,7 @@ export default async function LangLayout({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <div className={`${poppins.variable} ${dmSerif.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
+      <div className={`${poppins.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
           <PriceProvider prices={prices}>
           <DictionaryProvider dict={dict} lang={lang}>

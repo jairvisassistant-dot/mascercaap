@@ -162,7 +162,7 @@ export default function Navbar() {
                 href={link.href}
                 aria-current={isActive(link.href) ? "page" : undefined}
                 onClick={() => setIsOpen(false)}
-                className={`block font-medium py-2 border-l-2 pl-3 transition-colors ${
+                className={`block font-medium py-2 min-h-[44px] flex items-center border-l-2 pl-3 transition-colors ${
                   isActive(link.href)
                     ? "text-primary border-accent"
                     : "text-text-muted border-transparent hover:text-primary hover:border-accent"

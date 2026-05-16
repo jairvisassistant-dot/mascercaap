@@ -92,7 +92,15 @@ export default function ProductCard({ product, accentGradient = "from-primary to
             onClick={() => setLightboxOpen(true)}
             className="absolute inset-0 z-[5] w-full h-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
             aria-label={`${dict.products.card.viewImage} ${displayName} ${product.presentation}`}
-          />
+          >
+            <span className="pointer-events-none absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white">
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5} aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 11h6M11 8v6" />
+              </svg>
+            </span>
+          </button>
         )}
 
         {product.image ? (

@@ -26,7 +26,7 @@
     },
     "contact": "Contact",
     "location": "Chia, Colombia",
-    "copyright": "© 2026 Más Cerca AP. All rights reserved.",
+    "copyright": "Más Cerca AP. All rights reserved.",
     "madeWith": "Made with 🍋 and 🍊 in Colombia",
     "socialLabel": "Follow us on"
   },
@@ -643,7 +643,7 @@
     "step3Label": "Which presentation?",
     "step4Label": "Which pack size?",
     "step5Label": "How many units?",
-    "step8Label": "Your contact details",
+    "step6Label": "Your contact details",
     "profiles": {
       "hogar": "Home",
       "cafeteria": "Café / Restaurant",

@@ -8,9 +8,9 @@ import esMessages from "@/messages/es.json";
 import enMessages from "@/messages/en.json";
 
 // Rate Limiting — sliding window, in-memory
-// 5 requests per IP per 60s. Resets on cold start — acceptable for a contact
-// form. Upgrade to @upstash/ratelimit + Vercel KV for cross-instance persistence
-// if spam volume justifies the operational cost.
+// 5 requests per IP per 60s. Resets on server restart — acceptable for a contact
+// form on a single-instance deployment. Upgrade to @upstash/ratelimit + Redis
+// if multi-instance load balancing is ever configured.
 const requestLog = new Map<string, number[]>();
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 60_000;

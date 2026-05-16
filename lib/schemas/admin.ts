@@ -33,7 +33,7 @@ export const productPatchSchema = z
     active: z.boolean().optional(),
   })
   .refine((obj) => Object.keys(obj).length > 0, {
-    message: "No valid fields to update",
+    message: "No hay campos válidos para actualizar",
   });
 
 export const reorderSchema = z.object({
@@ -79,3 +79,61 @@ export const leadUpdateSchema = z.object({
   estado_seguimiento: z.enum(["nuevo", "contactado", "convertido", "perdido"]).optional(),
   notas: z.string().max(2000).optional(),
 });
+
+// FAQ schemas
+export const faqCategoryCreateSchema = z.object({
+  _type: z.literal("category"),
+  id: z.string().min(1).max(80),
+  label_es: z.string().min(1).max(120),
+  label_en: z.string().min(1).max(120),
+  icon: z.string().max(8).optional(),
+});
+
+export const faqQuestionCreateSchema = z.object({
+  _type: z.literal("question"),
+  category_id: z.string().min(1).max(80),
+  question_es: z.string().min(1).max(300),
+  question_en: z.string().min(1).max(300),
+  answer_es: z.string().min(1).max(2000),
+  answer_en: z.string().min(1).max(2000),
+  keywords: z.array(z.string().max(80)).max(20).optional(),
+});
+
+export const faqPostSchema = z.discriminatedUnion("_type", [
+  faqCategoryCreateSchema,
+  faqQuestionCreateSchema,
+]);
+
+export const faqReorderSchema = z.discriminatedUnion("_type", [
+  z.object({ _type: z.literal("category"), id: z.string().min(1), direction: z.enum(["up", "down"]) }),
+  z.object({ _type: z.literal("question"), id: z.string().min(1), direction: z.enum(["up", "down"]) }),
+]);
+
+export const faqPutSchema = z.discriminatedUnion("_type", [
+  z.object({
+    _type: z.literal("category"),
+    id: z.string().min(1),
+    label_es: z.string().min(1).max(120).optional(),
+    label_en: z.string().min(1).max(120).optional(),
+    icon: z.string().max(8).optional(),
+  }),
+  z.object({
+    _type: z.literal("question"),
+    id: z.string().min(1),
+    question_es: z.string().min(1).max(300).optional(),
+    question_en: z.string().min(1).max(300).optional(),
+    answer_es: z.string().min(1).max(2000).optional(),
+    answer_en: z.string().min(1).max(2000).optional(),
+    keywords: z.array(z.string().max(80)).max(20).optional(),
+  }),
+  z.object({
+    _type: z.literal("config"),
+    fallback_es: z.string().max(500).optional(),
+    fallback_en: z.string().max(500).optional(),
+  }),
+]);
+
+export const faqDeleteSchema = z.discriminatedUnion("_type", [
+  z.object({ _type: z.literal("category"), id: z.string().min(1) }),
+  z.object({ _type: z.literal("question"), id: z.string().min(1) }),
+]);

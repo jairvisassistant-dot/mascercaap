@@ -75,7 +75,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
                 const internalSocialHref = social.name === "Facebook" ? `/${lang}/facebook` : social.name === "Instagram" ? `/${lang}/instagram` : social.name === "TikTok" ? `/${lang}/tiktok` : undefined;
                 const href = internalSocialHref ?? social.href;
                 if (!href) return null;
-                const cls = `w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                const cls = `w-11 h-11 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
                   index === 1 ? "bg-accent hover:bg-accent/90" : "bg-primary hover:bg-primary/90"
                 }`;
                 const label = `${dict.footer.socialLabel} ${social.name}`;
@@ -192,7 +192,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
         </div>
 
         <div className="border-t border-white/10 pt-8 text-center text-white/58">
-          <p>{dict.footer.copyright}</p>
+          <p>© {new Date().getFullYear()} {dict.footer.copyright}</p>
           <p className="mt-2 text-sm">{dict.footer.madeWith}</p>
         </div>
       </div>

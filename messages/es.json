@@ -26,7 +26,7 @@
     },
     "contact": "Contacto",
     "location": "Chía, Colombia",
-    "copyright": "© 2026 Más Cerca AP. Todos los derechos reservados.",
+    "copyright": "Más Cerca AP. Todos los derechos reservados.",
     "madeWith": "Hecho con 🍋 y 🍊 en Colombia",
     "socialLabel": "Síguenos en"
   },
@@ -84,7 +84,7 @@
           "title": "Servimos con amor,\nhonestidad y fe\nen cada entrega.",
           "subtitle": "MÁS CERCA AP — TU ALIADO COMERCIAL",
           "description": "Más que distribuidores, somos el puente que acerca los mejores productos colombianos a tu negocio.",
-          "cta": "Conocer nuestra historia"
+          "cta": "Ver productos"
         },
         {
           "title": "Pide hoy.\nLo tienes mañana en tu negocio.",
@@ -643,7 +643,7 @@
     "step3Label": "¿Cuál presentación?",
     "step4Label": "¿Qué presentación?",
     "step5Label": "¿Cuántas unidades?",
-    "step8Label": "Tus datos de contacto",
+    "step6Label": "Tus datos de contacto",
     "profiles": {
       "hogar": "Hogar",
       "cafeteria": "Cafetería / Restaurante",

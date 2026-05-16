@@ -3,7 +3,6 @@ import { cache } from "react";
 
 export const locales = ["es", "en"] as const;
 export type Locale = (typeof locales)[number];
-export const defaultLocale: Locale = "es";
 
 export const hasLocale = (locale: string): locale is Locale =>
   locales.includes(locale as Locale);

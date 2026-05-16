@@ -3,9 +3,9 @@
  * Isomorphic — safe for both client and server.
  */
 
-export type HandoffMessage = { id: string; role: "bot" | "user"; text: string };
+type HandoffMessage = { id: string; role: "bot" | "user"; text: string };
 
-export type HandoffLeadInfo = {
+type HandoffLeadInfo = {
   nombre: string;
   email?: string | null;
   tipo: string;

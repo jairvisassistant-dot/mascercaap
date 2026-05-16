@@ -67,11 +67,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid payload shape" }, { status: 400 });
     }
 
-    const entryCount = result.data.entry?.length ?? 0;
-    console.log(
-      `[whatsapp-webhook] received: object=${result.data.object} entries=${entryCount}`
-    );
-
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error(

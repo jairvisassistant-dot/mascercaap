@@ -6,9 +6,9 @@ import { SITE_CONFIG } from "@/lib/config";
 import { escapeHtml, sanitizeSubject } from "@/lib/sanitize";
 
 // Rate limiting — sliding window, in-memory
-// 10 requests per IP per 60s. Resets on cold start — acceptable for a chatbot
-// lead capture flow. Upgrade to @upstash/ratelimit + Vercel KV for cross-instance
-// persistence if spam volume justifies the operational cost.
+// 10 requests per IP per 60s. Resets on server restart — acceptable for a chatbot
+// lead capture flow on a single-instance deployment. Upgrade to @upstash/ratelimit
+// + Redis if multi-instance load balancing is ever configured.
 const requestLog = new Map<string, number[]>();
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_MS = 60_000;

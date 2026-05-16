@@ -134,7 +134,7 @@ export type LeadRow = {
 };
 
 // ── Legal documents ────────────────────────────────────────────────────────
-export type LegalSection = {
+type LegalSection = {
   title: { es: string; en: string };
   content: { es: string; en: string };
 };
