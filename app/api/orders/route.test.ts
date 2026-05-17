@@ -38,7 +38,7 @@ async function loadPost(
 
   vi.resetModules()
   vi.spyOn(global, "fetch").mockImplementation(fetchMock)
-  vi.doMock("@/lib/supabase", () => ({ supabase: mockSupabase }))
+  vi.doMock("@/lib/supabase", () => ({ supabasePublic: mockSupabase }))
 
   const route = await import("./route")
   return { POST: route.POST, fetchMock, supabaseInsert, mockSupabase }
