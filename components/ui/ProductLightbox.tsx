@@ -4,16 +4,17 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { Product } from "@/types";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
 
 interface ProductLightboxProps {
   product: Product;
   isOpen: boolean;
   onClose: () => void;
+  dict: Dictionary;
+  lang: string;
 }
 
-export default function ProductLightbox({ product, isOpen, onClose }: ProductLightboxProps) {
-  const { dict, lang } = useDictionary();
+export default function ProductLightbox({ product, isOpen, onClose, dict, lang }: ProductLightboxProps) {
   const t = dict.products.lightbox;
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
@@ -66,6 +67,7 @@ export default function ProductLightbox({ product, isOpen, onClose }: ProductLig
         {/* Image panel */}
         <div className="flex min-h-[260px] flex-shrink-0 items-center justify-center bg-surface-warm p-8 sm:min-h-0 sm:w-[44%] sm:p-10">
           <div className="relative h-56 w-56 sm:h-64 sm:w-64">
+            {/* alt: displayName comes from i18n dict; presentation (e.g. "120g") is a universal technical value — no translation needed */}
             <Image
               src={product.image}
               alt={`${displayName} ${product.presentation}`}

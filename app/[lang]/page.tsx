@@ -1,19 +1,53 @@
 import { notFound } from "next/navigation";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Metadata } from "next";
-import HeroCarousel from "@/components/ui/HeroCarousel";
+import dynamic from "next/dynamic";
+const HeroCarousel = dynamic(() => import("@/components/ui/HeroCarousel"), { ssr: true });
 import ProductCategories from "@/components/sections/ProductCategories";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
-import YieldCalculator from "@/components/sections/YieldCalculator";
+const YieldCalculator = dynamic(() => import("@/components/sections/YieldCalculator"), { ssr: true });
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
 import TestimonialMarquee from "@/components/ui/TestimonialMarquee";
 import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
-import OrderAssistantCTA from "@/components/sections/OrderAssistantCTA";
 import { SITE_CONFIG } from "@/lib/config";
+import { testimonials as fallbackTestimonials } from "@/data/testimonials";
+import type { Testimonial } from "@/types";
 
-export const revalidate = 3600;
+export const revalidate = 60;
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
+
+const MIN_HOME_TESTIMONIALS = 10;
+
+function ensureHomeTestimonials(items: Testimonial[]) {
+  const merged: Testimonial[] = [];
+  const seenIds = new Set<string>();
+
+  for (const testimonial of [...items, ...fallbackTestimonials]) {
+    if (seenIds.has(testimonial.id)) continue;
+    seenIds.add(testimonial.id);
+    merged.push(testimonial);
+  }
+
+  if (merged.length === 0) return [];
+
+  let cloneIndex = 0;
+
+  while (merged.length < MIN_HOME_TESTIMONIALS) {
+    const source = merged[cloneIndex % merged.length];
+    merged.push({
+      ...source,
+      id: `${source.id}-backup-${cloneIndex + 1}`,
+    });
+    cloneIndex += 1;
+  }
+
+  return merged;
+}
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -44,6 +78,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         en: `${SITE_CONFIG.siteUrl}/en`,
       },
     },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -53,10 +88,12 @@ export default async function HomePage({ params }: Props) {
 
   const dict = await getDictionary(lang);
 
-  const [featuredProducts, testimonials] = await Promise.all([
+  const [featuredProducts, fetchedTestimonials] = await Promise.all([
     getFeaturedProducts(),
     getAllTestimonials(),
   ]);
+
+  const testimonials = ensureHomeTestimonials(fetchedTestimonials);
 
   return (
     <>
@@ -67,8 +104,6 @@ export default async function HomePage({ params }: Props) {
       <WhyChooseUs dict={dict} />
 
       <DailyOffer dict={dict} />
-
-      <YieldCalculator dict={dict} />
 
       <section className="py-24 bg-[#233746] relative overflow-hidden">
         {/* Glow decorativo */}
@@ -105,7 +140,7 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <OrderAssistantCTA />
+      <YieldCalculator dict={dict} />
 
       <section className="py-20 bg-gradient-to-br from-[#3a7f45] via-[#438b4d] to-[#347640] relative overflow-hidden">
         {/* Textura de puntos */}

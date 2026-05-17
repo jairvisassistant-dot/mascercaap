@@ -1,0 +1,4 @@
+# Custom hooks live here.
+# Context hooks (useDictionary, useHelpHub, useFAQData, usePrices) stay co-located with
+# their providers in lib/ — only move a hook here if it is used in 2+ unrelated components
+# and has no direct coupling to a single context provider.

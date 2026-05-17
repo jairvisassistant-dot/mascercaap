@@ -20,13 +20,9 @@ function createRequest(body: unknown, ip = "198.51.100.10") {
 }
 
 async function loadPost(
-  resendSend     = vi.fn().mockResolvedValue({ id: "email_123" }),
+  fetchMock     = vi.fn().mockResolvedValue(new Response("{}", { status: 200 })),
   supabaseInsert = vi.fn().mockResolvedValue({ error: null })
 ) {
-  const Resend = vi.fn(function Resend(this: { emails: { send: typeof resendSend } }) {
-    this.emails = { send: resendSend }
-  })
-
   const mockSupabase = {
     from: vi.fn((table: string) => {
       if (table === "products") {
@@ -41,16 +37,15 @@ async function loadPost(
   }
 
   vi.resetModules()
-  vi.doMock("resend", () => ({ Resend }))
-  vi.doMock("@/lib/supabase", () => ({ supabase: mockSupabase }))
+  vi.spyOn(global, "fetch").mockImplementation(fetchMock)
+  vi.doMock("@/lib/supabase", () => ({ supabasePublic: mockSupabase }))
 
   const route = await import("./route")
-  return { POST: route.POST, Resend, resendSend, supabaseInsert, mockSupabase }
+  return { POST: route.POST, fetchMock, supabaseInsert, mockSupabase }
 }
 
 describe("POST /api/orders", () => {
   afterEach(() => {
-    vi.doUnmock("resend")
     vi.doUnmock("@/lib/supabase")
     vi.unstubAllEnvs()
     vi.restoreAllMocks()
@@ -59,14 +54,14 @@ describe("POST /api/orders", () => {
   it("returns 400 for invalid payload (item quantity 0)", async () => {
     vi.stubEnv("RESEND_API_KEY", "test-key")
     vi.stubEnv("RESEND_TO_EMAIL", "ventas@example.com")
-    const { POST, Resend } = await loadPost()
+    const { POST, fetchMock } = await loadPost()
 
     const badOrder = { ...validOrder, items: [{ ...validOrder.items[0], quantity: 0 }] }
     const res = await POST(createRequest(badOrder))
     expect(res.status).toBe(400)
     const body = await res.json()
     expect(body.success).toBe(false)
-    expect(Resend).not.toHaveBeenCalled()
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it("returns 400 when items array is empty", async () => {
@@ -97,16 +92,16 @@ describe("POST /api/orders", () => {
     expect(res.status).toBe(503)
   })
 
-  it("returns dev success without Resend when key missing outside production", async () => {
+  it("returns dev success without fetch when key missing outside production", async () => {
     vi.stubEnv("NODE_ENV", "development")
     vi.stubEnv("RESEND_API_KEY", "")
     vi.stubEnv("RESEND_TO_EMAIL", "ventas@example.com")
-    const { POST, Resend } = await loadPost()
+    const { POST, fetchMock } = await loadPost()
 
     const res = await POST(createRequest(validOrder))
     expect(res.status).toBe(200)
     await expect(res.json()).resolves.toEqual({ success: true, dev: true })
-    expect(Resend).not.toHaveBeenCalled()
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it("inserts lead in Supabase with tipo:pedido and fuente:order_assistant", async () => {
@@ -143,15 +138,19 @@ describe("POST /api/orders", () => {
   it("sends email with name in subject", async () => {
     vi.stubEnv("RESEND_API_KEY", "test-key")
     vi.stubEnv("RESEND_TO_EMAIL", "ventas@example.com")
-    const { POST, resendSend } = await loadPost()
+    const { POST, fetchMock } = await loadPost()
 
     await POST(createRequest(validOrder))
-    expect(resendSend).toHaveBeenCalledWith(
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.resend.com/emails",
       expect.objectContaining({
-        to:      ["ventas@example.com"],
-        subject: expect.stringContaining("Carlos Ruiz"),
+        method: "POST",
+        body: expect.stringContaining("Carlos Ruiz"),
       })
     )
+    const callBody = JSON.parse(fetchMock.mock.calls[0][1].body)
+    expect(callBody.to).toEqual(["ventas@example.com"])
+    expect(callBody.subject).toContain("Carlos Ruiz")
   })
 
   it("returns 200 and success:true on happy path", async () => {

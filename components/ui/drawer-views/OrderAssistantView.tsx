@@ -231,7 +231,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                   {items.map((item, i) => {
                     const price = resolvePrice(item.fruit, item.presentation)
                     return (
-                      <div key={i} className="flex justify-between text-sm">
+                      <div key={`${i}-${item.fruit}-${item.presentation}`} className="flex justify-between text-sm">
                         <span className="text-text-sub">{item.fruit}{item.presentation ? ` ${item.presentation}` : ""} × {item.quantity} {t.unitsShort}</span>
                         <span className="text-text-muted">{price !== null ? formatCOP(price * item.quantity) : "—"}</span>
                       </div>
@@ -267,6 +267,12 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                   </svg>
                   {t.ctaWhatsapp}
                 </a>
+              )}
+
+              {!waUrl && (
+                <p className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
+                  {t.successNoWhatsapp}
+                </p>
               )}
 
               <button
@@ -412,7 +418,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                     const price = resolvePrice(item.fruit, item.presentation)
                     return (
                       <div
-                        key={i}
+                        key={`${i}-${item.fruit}-${item.presentation}`}
                         className="flex items-center justify-between px-4 py-3 border-b border-border-soft last:border-0 bg-surface-card"
                       >
                         <div>
@@ -486,7 +492,7 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                     transition={{ duration: 0.3 }}
                   >
                     <p className="text-sm font-semibold text-text-main mb-4">
-                      <span className="text-primary mr-2">5.</span>{t.step8Label}
+                      <span className="text-primary mr-2">5.</span>{t.step6Label}
                     </p>
 
                     <div className="space-y-3">

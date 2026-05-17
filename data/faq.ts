@@ -1,6 +1,9 @@
 import type { FAQData } from "@/types";
 import { SITE_CONFIG } from "@/lib/config";
 
+// Static fallback data — consumed by lib/faq-data.ts when Supabase is unavailable.
+// Do not treat this as the source of truth; editable FAQ lives in Supabase.
+
 export const faqData: FAQData = {
   categories: [
     {
@@ -140,8 +143,8 @@ export const faqData: FAQData = {
             en: "What sizes are available?",
           },
           answer: {
-            es: "El zumo de limón viene en 600ml, 1L, 2L y 5L. Los zumos de cereza, coco y maracuyá están disponibles en 350ml, 1L y 2L. Las pulpas congeladas vienen en 120g, 300g y 1000g. Los lácteos Del Hato vienen en 250ml. Para pedidos al por mayor hay presentaciones especiales.",
-            en: "Lemon juice comes in 600ml, 1L, 2L, and 5L. Cherry, coconut, and passion fruit juices are available in 350ml, 1L, and 2L. Frozen pulps come in 120g, 300g, and 1000g packs. Del Hato dairy products come in 250ml. For wholesale orders, special sizes are available.",
+            es: "El zumo de limón viene en 600ml, 1L, 2L y 5L. Los zumos de cereza, coco y maracuyá están disponibles en 350ml, 1L y 2L. La mayoría de pulpas congeladas vienen en 120g, 300g y 1000g; guayaba y tomate de árbol solo en 300g y 1000g. Los lácteos Del Hato vienen en 250ml. Para pedidos al por mayor hay presentaciones especiales.",
+            en: "Lemon juice comes in 600ml, 1L, 2L, and 5L. Cherry, coconut, and passion fruit juices are available in 350ml, 1L, and 2L. Most frozen pulps come in 120g, 300g, and 1000g; guayaba and tree tomato are available in 300g and 1000g only. Del Hato dairy products come in 250ml. For wholesale orders, special sizes are available.",
           },
           keywords: [
             "tamaños",

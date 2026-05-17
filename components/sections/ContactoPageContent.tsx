@@ -50,9 +50,9 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
             {/* Columna izquierda — identidad + datos de contacto */}
             <AnimateInView direction="left" className="space-y-8">
               <div className="rounded-2xl bg-gradient-to-br from-primary/8 to-accent/5 border border-primary/10 p-6">
-                <p className="text-xs font-bold tracking-widest text-primary uppercase mb-3">
+                <h2 className="text-xs font-bold tracking-widest text-primary uppercase mb-3">
                   {dict.contact.whoWeAre.label}
-                </p>
+                </h2>
                 <p className="text-text-sub leading-relaxed text-sm">
                   {dict.contact.whoWeAre.text}
                 </p>
@@ -69,7 +69,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.location.title}</p>
+                    <h3 className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.location.title}</h3>
                     <a
                       href={SITE_CONFIG.mapUrl}
                       target="_blank"
@@ -90,7 +90,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.email.title}</p>
+                    <h3 className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.email.title}</h3>
                     <a href={`mailto:${SITE_CONFIG.emailContact}`} className="font-semibold text-text-sub hover:text-primary transition-colors">
                       {SITE_CONFIG.emailContact}
                     </a>
@@ -105,7 +105,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.phone.title}</p>
+                    <h3 className="text-xs font-semibold text-text-faint uppercase tracking-wide mb-1">{t.cards.phone.title}</h3>
                     <a
                       href={`tel:${SITE_CONFIG.phoneTel}`}
                       className="font-semibold text-text-sub transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
@@ -125,7 +125,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
 
             {/* Columna derecha — formulario */}
             <AnimateInView direction="right">
-              <ContactForm />
+              <ContactForm dict={dict} />
             </AnimateInView>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              sandbox="allow-scripts allow-same-origin allow-popups"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
               title={t.map.iframeTitle}
             />
           </AnimateInView>

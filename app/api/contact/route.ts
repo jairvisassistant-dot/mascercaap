@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import { z } from "zod";
 import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
+import { escapeHtml, sanitizeSubject } from "@/lib/sanitize";
 import esMessages from "@/messages/es.json";
 import enMessages from "@/messages/en.json";
 
 // Rate Limiting — sliding window, in-memory
-// 5 requests per IP per 60s. Resets on cold start — acceptable for a contact
-// form. Upgrade to @upstash/ratelimit + Vercel KV for cross-instance persistence
-// if spam volume justifies the operational cost.
+// 5 requests per IP per 60s. Resets on server restart — acceptable for a contact
+// form on a single-instance deployment. Upgrade to @upstash/ratelimit + Redis
+// if multi-instance load balancing is ever configured.
 const requestLog = new Map<string, number[]>();
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -40,19 +40,7 @@ const tipoLabel: Record<string, string> = {
   otro: "Otro",
 };
 
-/** Escapa caracteres HTML especiales para prevenir inyección en el email (SEC-06) */
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
-function sanitizeSubject(str: string): string {
-  return str.replace(/[\r\n\u0000-\u001f\u007f]+/g, " ").slice(0, 80).trim();
-}
 
 function buildEmailHtml(data: ContactFormData): string {
   // Escapar todos los datos de usuario antes de interpolar en HTML
@@ -208,15 +196,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Configuración incompleta" }, { status: 500 });
     }
 
-    const resend = new Resend(apiKey);
-
-    await resend.emails.send({
-      from: `Más Cerca AP <${fromEmail}>`,
-      to: [toEmail],
-      replyTo: data.email,
-      subject: `📩 Nuevo mensaje: ${tipoLabel[data.tipo]} — ${sanitizeSubject(data.nombre)}`,
-      html: buildEmailHtml(data),
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `Más Cerca AP <${fromEmail}>`,
+        to: [toEmail],
+        reply_to: data.email,
+        subject: `📩 Nuevo mensaje: ${tipoLabel[data.tipo]} — ${sanitizeSubject(data.nombre)}`,
+        html: buildEmailHtml(data),
+      }),
     });
+    if (!res.ok) throw new Error(await res.text());
 
     return NextResponse.json({ success: true }, { status: 200 });
 

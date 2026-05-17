@@ -4,17 +4,29 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import ProductCard from "@/components/ui/ProductCard";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig, ProductLineKey, ProductLineTranslation } from "@/types";
+import type { Dictionary } from "@/lib/i18n";
 
-function FruitImage({ slug, name, chipImage }: { slug: string; name: string; chipImage?: string }) {
+type PulpaGridDict = {
+  title: string;
+  subtitle: string;
+  presentation: string;
+  presentations: string;
+  available: string;
+  availablePlural: string;
+  scrollPrev: string;
+  scrollNext: string;
+  disclaimer: string;
+};
+
+function FruitImage({ slug, label, chipImage }: { slug: string; label: string; chipImage?: string }) {
   return (
     <Image
       src={chipImage ?? `/imgs/pulpaPortada-${slug}.webp`}
-      alt={name}
+      alt={label}
       fill
       className="object-cover"
-      sizes="80px"
+      sizes="(max-width: 640px) 64px, 80px"
     />
   );
 }
@@ -22,16 +34,23 @@ function FruitImage({ slug, name, chipImage }: { slug: string; name: string; chi
 interface PulpaFruitGridProps {
   pulpaLines: ProductLineConfig[];
   products: Product[];
+  pl: Record<string, ProductLineTranslation>;
+  pulpaGridDict: PulpaGridDict;
+  dict: Dictionary;
+  lang: string;
 }
 
-export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridProps) {
-  const { dict } = useDictionary();
+export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict, dict, lang }: PulpaFruitGridProps) {
   const [selectedKey, setSelectedKey] = useState<ProductLineKey | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [showHint, setShowHint] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const pl = dict.productLines as Record<string, ProductLineTranslation>;
+  useEffect(() => {
+    const t = setTimeout(() => setShowHint(false), 3000);
+    return () => clearTimeout(t);
+  }, []);
 
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -66,12 +85,12 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
     <div>
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-xl shadow-sm">
+        <div aria-hidden="true" className="w-11 h-11 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-xl shadow-sm">
           🫐
         </div>
         <div>
-          <h2 className="text-xl font-bold text-text-main">{dict.products.pulpaGrid.title}</h2>
-          <p className="text-sm text-text-muted">{dict.products.pulpaGrid.subtitle}</p>
+          <h2 className="text-xl font-bold text-text-main">{pulpaGridDict.title}</h2>
+          <p className="text-sm text-text-muted">{pulpaGridDict.subtitle}</p>
         </div>
       </div>
 
@@ -81,7 +100,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
         <button
           type="button"
           onClick={() => scroll("left")}
-          aria-label={dict.products.pulpaGrid.scrollPrev}
+          aria-label={pulpaGridDict.scrollPrev}
           className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollLeft ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
@@ -97,18 +116,19 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
           onScroll={checkScroll}
           className="flex gap-2 overflow-x-auto scrollbar-none flex-1 py-1 px-1"
         >
-          {pulpaLines.map((line) => {
+          {pulpaLines.map((line, lineIndex) => {
             const isSelected = selectedKey === line.key;
             const fruitSlug = line.key.replace("pulpa-", "");
-            const fruitName = (pl[line.key]?.label ?? line.label).replace(/Pulpa de |Pulp$/gi, "").trim();
+            const fruitLabel = pl[line.key]?.label ?? line.label;
+            const fruitName = fruitLabel.replace(/Pulpa de |Pulp$/gi, "").trim();
+            const isFirstAndHinting = lineIndex === 0 && showHint && !isSelected;
 
             return (
               <button
                 type="button"
                 key={line.key}
                 onClick={() => handleSelect(line.key)}
-                style={{ width: 96 }}
-                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page shrink-0 ${
+                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page shrink-0 w-20 sm:w-24 ${
                   isSelected
                     ? "bg-primary/8 ring-2 ring-primary ring-offset-1"
                     : "hover:bg-surface-page"
@@ -117,12 +137,11 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 aria-label={fruitName}
               >
                 <div
-                  style={{ width: 80, height: 80 }}
-                  className={`relative rounded-full overflow-hidden border-2 transition-all shadow-sm ${
+                  className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 transition-all shadow-sm ${
                     isSelected ? "border-primary shadow-md" : "border-border-soft"
-                  }`}
+                  } ${isFirstAndHinting ? "animate-pulse" : ""}`}
                 >
-                  <FruitImage slug={fruitSlug} name={fruitName} chipImage={line.chipImage} />
+                  <FruitImage slug={fruitSlug} label={fruitLabel} chipImage={line.chipImage} />
                 </div>
                 <span
                   className={`text-xs font-medium text-center leading-tight transition-colors ${
@@ -140,7 +159,7 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
         <button
           type="button"
           onClick={() => scroll("right")}
-          aria-label={dict.products.pulpaGrid.scrollNext}
+          aria-label={pulpaGridDict.scrollNext}
           className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollRight ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
@@ -173,11 +192,11 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                 <p className="text-xs text-text-muted">
                   {selectedProducts.length}{" "}
                   {selectedProducts.length !== 1
-                    ? dict.products.pulpaGrid.presentations
-                    : dict.products.pulpaGrid.presentation}{" "}
+                    ? pulpaGridDict.presentations
+                    : pulpaGridDict.presentation}{" "}
                   {selectedProducts.length !== 1
-                    ? dict.products.pulpaGrid.availablePlural
-                    : dict.products.pulpaGrid.available}
+                    ? pulpaGridDict.availablePlural
+                    : pulpaGridDict.available}
                 </p>
               </div>
             </div>
@@ -189,13 +208,15 @@ export default function PulpaFruitGrid({ pulpaLines, products }: PulpaFruitGridP
                     key={product.id}
                     product={product}
                     accentGradient={selectedLine.gradient}
+                    dict={dict}
+                    lang={lang}
                   />
                 ))}
               </div>
             </div>
 
             <p className="mt-4 text-xs text-text-faint text-center leading-relaxed">
-              📷 {dict.products.pulpaGrid.disclaimer}
+              <span aria-hidden="true">📷</span> {pulpaGridDict.disclaimer}
             </p>
           </m.div>
         )}

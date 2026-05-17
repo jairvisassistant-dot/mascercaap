@@ -1,0 +1,20 @@
+/**
+ * Shared sanitization utilities for API routes.
+ * Centralizes PII handling and HTML escaping — do NOT duplicate in individual routes.
+ */
+
+/** Escapes HTML special characters to prevent injection in email bodies. */
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/** Strips control characters and newlines — prevents email header injection. */
+export function sanitizeSubject(str: string): string {
+  return str.replace(/[\u0000-\u001f\u007f]+/g, " ").slice(0, 80).trim();
+}
+

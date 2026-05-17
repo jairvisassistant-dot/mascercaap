@@ -4,13 +4,15 @@ import { useState } from "react";
 import Image from "next/image";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Product, ProductLineConfig } from "@/types";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary } from "@/lib/i18n";
 import ProductLightbox from "./ProductLightbox";
 
 interface ProductGridCardProps {
   product: Product;
   line: ProductLineConfig;
   priority?: boolean;
+  dict: Dictionary;
+  lang: string;
 }
 
 const CARD_GRADIENTS: Record<string, string> = {
@@ -18,8 +20,7 @@ const CARD_GRADIENTS: Record<string, string> = {
   "pulpa-guayaba":   "from-fuchsia-950 via-pink-900 to-rose-950",
 };
 
-export default function ProductGridCard({ product, line, priority = false }: ProductGridCardProps) {
-  const { dict, lang } = useDictionary();
+export default function ProductGridCard({ product, line, priority = false, dict, lang }: ProductGridCardProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const isComingSoon = product.presentation === "Próximamente";
   const isSoldOut = product.isSoldOut === true;
@@ -57,6 +58,7 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
           )}
 
           {product.image ? (
+            // alt: displayName comes from i18n dict; presentation (e.g. "120g") is a universal technical value — no translation needed
             <Image
               src={product.image}
               alt={`${displayName} ${product.presentation}`}
@@ -121,9 +123,9 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
             <span>{displayLineLabel}</span>
           </div>
 
-          <p className="line-clamp-1 text-[0.95rem] font-semibold leading-tight tracking-[-0.018em] text-text-main text-balance">
+          <h3 className="line-clamp-1 text-[0.95rem] font-semibold leading-tight tracking-[-0.018em] text-text-main text-balance">
             {displayName}
-          </p>
+          </h3>
           <p className="mt-1 min-h-[2.45rem] line-clamp-2 text-[0.76rem] leading-[1.6] text-text-muted text-pretty">
             {displayDescription}
           </p>
@@ -138,6 +140,8 @@ export default function ProductGridCard({ product, line, priority = false }: Pro
         product={product}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
+        dict={dict}
+        lang={lang}
       />
     </>
   );

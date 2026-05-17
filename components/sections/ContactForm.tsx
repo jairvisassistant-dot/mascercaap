@@ -1,17 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
-import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { createContactSchema } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import { buildWhatsAppAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
 import EmojiIcon from "@/components/ui/EmojiIcon";
+import type { Dictionary } from "@/lib/i18n";
 
-export default function ContactForm() {
-  const { dict } = useDictionary();
+type FormFields = {
+  nombre: string;
+  empresa: string;
+  email: string;
+  telefono: string;
+  tipo: string;
+  mensaje: string;
+};
+
+type FieldErrors = Partial<Record<keyof FormFields, string>>;
+
+const EMPTY: FormFields = { nombre: "", empresa: "", email: "", telefono: "", tipo: "", mensaje: "" };
+
+interface ContactFormProps {
+  dict: Dictionary;
+}
+
+export default function ContactForm({ dict }: ContactFormProps) {
   const t = dict.contact.form;
+  const [fields, setFields] = useState<FormFields>(EMPTY);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [consented, setConsented] = useState(false);
+  const [consentError, setConsentError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
@@ -22,17 +42,38 @@ export default function ContactForm() {
     return () => clearTimeout(timer);
   }, [submitStatus]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<ContactFormData>({
-    resolver: zodResolver(createContactSchema(dict.contact.validation)),
-  });
+  function update(key: keyof FormFields) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      setFields((prev) => ({ ...prev, [key]: e.target.value }));
+      setFieldErrors((prev) => ({ ...prev, [key]: undefined }));
+    };
+  }
 
-  const onSubmit = async (data: ContactFormData) => {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!consented) {
+      setConsentError(true);
+      return;
+    }
+    setConsentError(false);
+
+    const schema = createContactSchema(dict.contact.validation);
+    const result = schema.safeParse(fields);
+
+    if (!result.success) {
+      const errs: FieldErrors = {};
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as keyof FormFields;
+        if (key && !errs[key]) errs[key] = issue.message;
+      }
+      setFieldErrors(errs);
+      return;
+    }
+
+    const data = result.data;
     setIsSubmitting(true);
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -43,7 +84,7 @@ export default function ContactForm() {
       if (response.ok) {
         const wm = t.whatsappMsg;
         const tipoLabels = wm.tipoLabel as Record<string, string>;
-        const msg = [
+        const msg = buildWhatsAppMessage([
           wm.greeting,
           "",
           wm.intro.replace("{name}", data.nombre).replace("{reason}", tipoLabels[data.tipo] ?? data.tipo),
@@ -53,16 +94,14 @@ export default function ContactForm() {
           "",
           wm.message,
           data.mensaje,
-        ]
-          .filter(Boolean)
-          .join("\n");
+        ]);
 
         const waNumber = SITE_CONFIG.whatsappNumber;
-        if (waNumber) {
-          setWhatsappUrl(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`);
-        }
+        if (waNumber) setWhatsappUrl(buildWhatsAppAppUrl(waNumber, msg));
         setSubmitStatus("success");
-        reset();
+        setFields(EMPTY);
+        setFieldErrors({});
+        setConsented(false);
       } else {
         setSubmitStatus("error");
       }
@@ -72,7 +111,7 @@ export default function ContactForm() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
   return (
     <div className="bg-surface-card rounded-2xl shadow-lg p-8">
@@ -83,7 +122,7 @@ export default function ContactForm() {
         {t.helper}
       </p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {/* Nombre */}
         <div>
           <label htmlFor="nombre" className="block text-sm font-medium text-text-sub mb-1">
@@ -93,14 +132,15 @@ export default function ContactForm() {
             id="nombre"
             type="text"
             autoComplete="name"
-            {...register("nombre")}
+            value={fields.nombre}
+            onChange={update("nombre")}
             className={`w-full px-4 py-3 rounded-lg border ${
-              errors.nombre ? "border-red-500" : "border-border-mid"
+              fieldErrors.nombre ? "border-red-500" : "border-border-mid"
             } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
             placeholder={t.placeholders.name}
           />
-          {errors.nombre && (
-            <p className="text-red-500 text-sm mt-1">{errors.nombre.message}</p>
+          {fieldErrors.nombre && (
+            <p className="text-red-500 text-sm mt-1">{fieldErrors.nombre}</p>
           )}
         </div>
 
@@ -113,7 +153,8 @@ export default function ContactForm() {
             id="empresa"
             type="text"
             autoComplete="organization"
-            {...register("empresa")}
+            value={fields.empresa}
+            onChange={update("empresa")}
             className="w-full px-4 py-3 rounded-lg border border-border-mid focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main"
             placeholder={t.placeholders.company}
           />
@@ -129,14 +170,15 @@ export default function ContactForm() {
               id="email"
               type="email"
               autoComplete="email"
-              {...register("email")}
+              value={fields.email}
+              onChange={update("email")}
               className={`w-full px-4 py-3 rounded-lg border ${
-                errors.email ? "border-red-500" : "border-border-mid"
+                fieldErrors.email ? "border-red-500" : "border-border-mid"
               } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
               placeholder={t.placeholders.email}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            {fieldErrors.email && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
             )}
           </div>
           <div>
@@ -147,14 +189,15 @@ export default function ContactForm() {
               id="telefono"
               type="tel"
               autoComplete="tel"
-              {...register("telefono")}
+              value={fields.telefono}
+              onChange={update("telefono")}
               className={`w-full px-4 py-3 rounded-lg border ${
-                errors.telefono ? "border-red-500" : "border-border-mid"
+                fieldErrors.telefono ? "border-red-500" : "border-border-mid"
               } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
               placeholder={t.placeholders.phone}
             />
-            {errors.telefono && (
-              <p className="text-red-500 text-sm mt-1">{errors.telefono.message}</p>
+            {fieldErrors.telefono && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.telefono}</p>
             )}
           </div>
         </div>
@@ -166,9 +209,10 @@ export default function ContactForm() {
           </label>
           <select
             id="tipo"
-            {...register("tipo")}
+            value={fields.tipo}
+            onChange={update("tipo")}
             className={`w-full px-4 py-3 rounded-lg border ${
-              errors.tipo ? "border-red-500" : "border-border-mid"
+              fieldErrors.tipo ? "border-red-500" : "border-border-mid"
             } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
           >
             <option value="">{t.options.default}</option>
@@ -176,8 +220,8 @@ export default function ContactForm() {
             <option value="distribucion">{t.options.distribution}</option>
             <option value="otro">{t.options.other}</option>
           </select>
-          {errors.tipo && (
-            <p className="text-red-500 text-sm mt-1">{errors.tipo.message}</p>
+          {fieldErrors.tipo && (
+            <p className="text-red-500 text-sm mt-1">{fieldErrors.tipo}</p>
           )}
         </div>
 
@@ -188,15 +232,45 @@ export default function ContactForm() {
           </label>
           <textarea
             id="mensaje"
-            {...register("mensaje")}
+            value={fields.mensaje}
+            onChange={update("mensaje")}
             rows={4}
             className={`w-full px-4 py-3 rounded-lg border ${
-              errors.mensaje ? "border-red-500" : "border-border-mid"
+              fieldErrors.mensaje ? "border-red-500" : "border-border-mid"
             } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
             placeholder={t.placeholders.message}
           />
-          {errors.mensaje && (
-            <p className="text-red-500 text-sm mt-1">{errors.mensaje.message}</p>
+          {fieldErrors.mensaje && (
+            <p className="text-red-500 text-sm mt-1">{fieldErrors.mensaje}</p>
+          )}
+        </div>
+
+        {/* Consentimiento — requerido por Ley 1581/2012 Colombia */}
+        <div>
+          <label className="flex items-start gap-2.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={consented}
+              onChange={(e) => {
+                setConsented(e.target.checked);
+                if (e.target.checked) setConsentError(false);
+              }}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-border-mid accent-primary focus:ring-2 focus:ring-primary"
+            />
+            <span className="text-sm text-text-sub">
+              {t.consentLabel}{" "}
+              <Link
+                href="/politicas"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:text-primary-dark"
+              >
+                (ver política)
+              </Link>
+            </span>
+          </label>
+          {consentError && (
+            <p className="text-red-500 text-sm mt-1">{t.consentRequired}</p>
           )}
         </div>
 
@@ -209,7 +283,6 @@ export default function ContactForm() {
         </button>
       </form>
 
-      {/* Notificaciones con auto-cierre a los 8s */}
       <AnimatePresence>
         {submitStatus === "success" && (
           <m.div
@@ -222,18 +295,24 @@ export default function ContactForm() {
           >
             <div className="bg-green-50 px-5 py-4 flex items-start gap-3">
               <EmojiIcon emoji="✅" label={t.success.title} size="md" tone="success" decorative={false} />
-              <div>
+              <div className="flex-1">
                 <p className="font-semibold text-green-800">{t.success.title}</p>
-                <p className="text-sm text-green-700 mt-0.5">
-                  {t.success.text}
-                </p>
+                <p className="text-sm text-green-700 mt-0.5">{t.success.text}</p>
               </div>
+              <button
+                type="button"
+                onClick={() => setSubmitStatus(null)}
+                aria-label="Cerrar"
+                className="shrink-0 p-1 text-green-600 hover:text-green-800 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
             {whatsappUrl && (
               <div className="bg-surface-card px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
-                <p className="text-sm text-text-muted">
-                  {t.success.quickResponse}
-                </p>
+                <p className="text-sm text-text-muted">{t.success.quickResponse}</p>
                 <a
                   href={whatsappUrl}
                   target="_blank"
@@ -245,6 +324,11 @@ export default function ContactForm() {
                   </svg>
                   {t.success.whatsappButton}
                 </a>
+              </div>
+            )}
+            {!whatsappUrl && (
+              <div className="bg-surface-card px-5 py-4 border-t border-green-100">
+                <p className="text-sm text-text-muted">{t.success.noWhatsappFallback}</p>
               </div>
             )}
           </m.div>
@@ -259,7 +343,17 @@ export default function ContactForm() {
             className="mt-5 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-3"
           >
             <EmojiIcon emoji="❌" label={t.error} size="sm" tone="danger" decorative={false} />
-            <p className="text-sm">{t.error}</p>
+            <p className="flex-1 text-sm">{t.error}</p>
+            <button
+              type="button"
+              onClick={() => setSubmitStatus(null)}
+              aria-label="Cerrar"
+              className="shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </m.div>
         )}
       </AnimatePresence>

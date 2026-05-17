@@ -6,7 +6,7 @@ export const privacyPolicy: LegalDocument = {
     es: "Política de Privacidad y Tratamiento de Datos",
     en: "Privacy Policy and Data Treatment",
   },
-  lastUpdated: "2024-01-01",
+  lastUpdated: "2026-05-13",
   sections: [
     {
       title: { es: "1. Responsable del tratamiento", en: "1. Data Controller" },
@@ -37,10 +37,10 @@ export const privacyPolicy: LegalDocument = {
       },
     },
     {
-      title: { es: "5. Derechos del titular", en: "5. Data Subject Rights" },
+      title: { es: "5. Derechos ARCO del titular", en: "5. Data Subject Rights (ARCO)" },
       content: {
-        es: `El titular de los datos tiene derecho a conocer, actualizar, rectificar y suprimir sus datos, así como a revocar el consentimiento. Para ejercer estos derechos, puede escribirnos a ${SITE_CONFIG.emailContact}.`,
-        en: `The data subject has the right to access, update, rectify, and delete their data, as well as to withdraw consent. To exercise these rights, you may write to us at ${SITE_CONFIG.emailContact}.`,
+        es: `El titular de los datos personales tiene derecho a Acceder, Rectificar, Cancelar y Oponerse al tratamiento de sus datos (derechos ARCO), así como a revocar la autorización otorgada en cualquier momento. Para ejercer cualquiera de estos derechos, puede escribirnos a ${SITE_CONFIG.emailContact}. Atenderemos su solicitud en los plazos establecidos por la Ley 1581 de 2012.`,
+        en: `The data subject has the right to Access, Rectify, Cancel, and Object to the processing of their personal data (ARCO rights), as well as to withdraw consent at any time. To exercise any of these rights, you may write to us at ${SITE_CONFIG.emailContact}. We will respond to your request within the deadlines established by Law 1581 of 2012.`,
       },
     },
     {
@@ -64,6 +64,13 @@ export const privacyPolicy: LegalDocument = {
         en: "We may update this policy periodically. Any changes will be posted on this page with the update date. We recommend reviewing it regularly.",
       },
     },
+    {
+      title: { es: "9. Terceros proveedores de servicios", en: "9. Third-Party Service Providers" },
+      content: {
+        es: "Para operar este sitio web, utilizamos los siguientes proveedores externos que pueden procesar o almacenar datos personales: (a) Google Analytics (Google LLC): herramienta de analítica web que recopila datos de navegación anonimizados (páginas visitadas, duración de sesión, dispositivo). Puede optar por no ser rastreado en analytics.google.com/analytics/optout. (b) Supabase: plataforma de base de datos donde se almacenan los datos enviados a través del formulario de contacto. Opera bajo estándares de seguridad SOC 2. (c) Resend: servicio de envío de correos electrónicos utilizado para el envío de confirmaciones y notificaciones derivadas de sus solicitudes. Cada proveedor actúa como encargado del tratamiento y está sujeto a sus propias políticas de privacidad y a los acuerdos de tratamiento de datos suscritos con Más Cerca AP.",
+        en: "To operate this website, we use the following external providers who may process or store personal data: (a) Google Analytics (Google LLC): a web analytics tool that collects anonymized browsing data (pages visited, session duration, device type). You may opt out at analytics.google.com/analytics/optout. (b) Supabase: a database platform where data submitted through the contact form is stored. It operates under SOC 2 security standards. (c) Resend: an email delivery service used to send confirmations and notifications related to your requests. Each provider acts as a data processor and is subject to their own privacy policies and the data processing agreements entered into with Más Cerca AP.",
+      },
+    },
   ],
 };
 
@@ -72,7 +79,7 @@ export const termsAndConditions: LegalDocument = {
     es: "Términos y Condiciones de Uso",
     en: "Terms and Conditions of Use",
   },
-  lastUpdated: "2024-01-01",
+  lastUpdated: "2026-05-13",
   sections: [
     {
       title: { es: "1. Aceptación de los términos", en: "1. Acceptance of Terms" },
@@ -105,8 +112,8 @@ export const termsAndConditions: LegalDocument = {
     {
       title: { es: "5. Pedidos y disponibilidad", en: "5. Orders and Availability" },
       content: {
-        es: "Los productos mostrados en el sitio están sujetos a disponibilidad. Más Cerca AP se reserva el derecho de modificar precios, cantidades mínimas de pedido y zonas de distribución sin previo aviso.",
-        en: "Products shown on the site are subject to availability. Más Cerca AP reserves the right to modify prices, minimum order quantities, and distribution areas without prior notice.",
+        es: "Los productos mostrados en el sitio están sujetos a disponibilidad. Más Cerca AP se reserva el derecho de modificar precios, cantidades mínimas de pedido y zonas de distribución, notificando a los clientes con al menos 15 días de antelación a través de los canales de comunicación registrados.",
+        en: "Products shown on the site are subject to availability. Más Cerca AP reserves the right to modify prices, minimum order quantities, and distribution areas, with at least 15 days' prior notice to customers through their registered communication channels.",
       },
     },
     {

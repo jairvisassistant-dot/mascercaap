@@ -1,18 +1,21 @@
-import { Poppins, DM_Serif_Display } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { notFound } from "next/navigation";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
+import { FAQProvider } from "@/lib/faq-provider";
 import { PriceProvider } from "@/lib/prices/PriceProvider";
-import { supabase } from "@/lib/supabase";
+import { supabasePublic as supabase } from "@/lib/supabase";
+import { getFAQData } from "@/lib/faq-data";
+import { getAllProductCategories } from "@/lib/supabase/queries";
 import type { PriceEntry } from "@/lib/order-assistant";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
 import ScrollProgress from "@/components/ui/ScrollProgress";
+import CookieConsent from "@/components/ui/CookieConsent";
 import { SITE_CONFIG } from "@/lib/config";
 
 const poppins = Poppins({
@@ -21,19 +24,13 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-const dmSerif = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-dm-serif",
-  preload: false,
-});
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
 
-function getJsonLd(lang: Locale) {
+function getOrganizationJsonLd(lang: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -60,6 +57,44 @@ function getJsonLd(lang: Locale) {
   };
 }
 
+function getWebSiteJsonLd(lang: Locale) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Más Cerca AP",
+    url: SITE_CONFIG.siteUrl,
+    inLanguage: lang === "es" ? "es-CO" : "en-US",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_CONFIG.siteUrl}/${lang}/productos?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+function getFaqJsonLd(faqData: Awaited<ReturnType<typeof getFAQData>>, lang: Locale) {
+  const questions = faqData.categories
+    .flatMap((cat) => cat.questions)
+    .slice(0, 6)
+    .map((q) => ({
+      "@type": "Question",
+      name: q.question[lang],
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: q.answer[lang],
+      },
+    }));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: questions,
+  };
+}
+
 export default async function LangLayout({
   children,
   params,
@@ -72,7 +107,10 @@ export default async function LangLayout({
   if (!hasLocale(lang)) notFound();
 
   const dict = await getDictionary(lang);
-  const jsonLd = getJsonLd(lang);
+  const faqData = await getFAQData();
+  const organizationJsonLd = getOrganizationJsonLd(lang);
+  const webSiteJsonLd = getWebSiteJsonLd(lang);
+  const faqJsonLd = getFaqJsonLd(faqData, lang);
 
   let prices: PriceEntry[] = [];
   if (supabase) {
@@ -83,16 +121,18 @@ export default async function LangLayout({
     if (data?.length) prices = data as PriceEntry[];
   }
 
+  const categories = await getAllProductCategories();
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <div className={`${poppins.variable} ${dmSerif.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <div className={`${poppins.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
           <PriceProvider prices={prices}>
           <DictionaryProvider dict={dict} lang={lang}>
+            <FAQProvider data={faqData}>
             <HelpHubProvider>
               <a
                 href="#main-content"
@@ -103,14 +143,15 @@ export default async function LangLayout({
               <ScrollProgress />
               <Navbar />
               <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
-              <Footer dict={dict} lang={lang} />
+              <Footer dict={dict} lang={lang} categories={categories} />
               <HelpHub />
             </HelpHubProvider>
+            </FAQProvider>
           </DictionaryProvider>
           </PriceProvider>
         </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} dict={dict} lang={lang} />
         )}
       </div>
     </>

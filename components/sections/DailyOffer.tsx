@@ -28,7 +28,7 @@ function SealBadge({
       whileHover={{ scale: 1.08, rotate: 3 }}
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay, type: "spring", bounce: 0.45 }}
-      style={{ cursor: "default" }}
+      style={{ cursor: "pointer" }}
     >
       <svg
         viewBox="0 0 200 200"

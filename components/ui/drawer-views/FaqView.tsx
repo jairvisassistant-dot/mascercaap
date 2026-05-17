@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, startTransition } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { useHelpHub } from "@/lib/help-hub-context";
-import { faqData } from "@/data/faq";
+import { useFAQData } from "@/lib/faq-provider";
 import { findAnswer } from "@/lib/faq-matcher";
 import { SITE_CONFIG } from "@/lib/config";
+import { trackHelpHubEvent } from "@/lib/help-hub-analytics";
+import { buildWhatsAppLinks, buildWhatsAppMessage } from "@/lib/whatsapp";
+import { buildHandoffSummary } from "@/lib/handoff-summary";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Locale } from "@/lib/i18n";
 
@@ -20,6 +23,22 @@ type Props = {
   onWhatsAppConnect: (appUrl: string | null, webUrl: string | null, leadSaved: boolean) => void;
 };
 
+const FAQ_SESSION_KEY = "helphub:faq-session:v1";
+
+type FaqSessionState = {
+  locale: Locale;
+  messages: Message[];
+  chatView: ChatView;
+  selectedCategoryId: string | null;
+  showFallbackActions: boolean;
+  showAdvisorButton: boolean;
+  showLeadForm: boolean;
+  leadData: LeadData;
+  leadConsent: boolean;
+};
+
+type FaqSessionOverrides = Partial<Omit<FaqSessionState, "locale">>;
+
 const WA_ICON = (
   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
 );
@@ -27,6 +46,7 @@ const WA_ICON = (
 export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
   const { dict, lang } = useDictionary();
   const { drawerContext } = useHelpHub();
+  const faqData = useFAQData();
   const locale = lang as Locale;
   const t = dict.chatbot;
   const th = dict.helpHub;
@@ -46,12 +66,97 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [leadData, setLeadData] = useState<LeadData>({ nombre: "", email: "", tipo: "" });
   const [leadConsent, setLeadConsent] = useState(false);
+  const [leadSaveError, setLeadSaveError] = useState(false);
+  const [pendingWhatsApp, setPendingWhatsApp] = useState<{ appUrl: string | null; webUrl: string | null } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
+
+  function persistFaqSession(overrides: FaqSessionOverrides = {}) {
+    if (drawerContext?.product) {
+      window.sessionStorage.removeItem(FAQ_SESSION_KEY);
+      return;
+    }
+
+    const session: FaqSessionState = {
+      locale,
+      messages,
+      chatView,
+      selectedCategoryId,
+      showFallbackActions,
+      showAdvisorButton,
+      showLeadForm,
+      leadData,
+      leadConsent,
+      ...overrides,
+    };
+
+    window.sessionStorage.setItem(FAQ_SESSION_KEY, JSON.stringify(session));
+  }
+
+  useEffect(() => {
+    if (drawerContext?.product) return;
+
+    const raw = window.sessionStorage.getItem(FAQ_SESSION_KEY);
+    if (!raw) return;
+
+    try {
+      const session = JSON.parse(raw) as FaqSessionState;
+      if (session.locale !== locale || session.messages.length === 0) return;
+
+      startTransition(() => {
+        setMessages(session.messages);
+        setChatView(session.chatView);
+        setSelectedCategoryId(session.selectedCategoryId);
+        setShowFallbackActions(session.showFallbackActions);
+        setShowAdvisorButton(session.showAdvisorButton);
+        setShowLeadForm(session.showLeadForm);
+        setLeadData(session.leadData);
+        setLeadConsent(session.leadConsent);
+      });
+      nextMessageIdRef.current = session.messages.reduce((max, message) => {
+        const numeric = Number.parseInt(message.id.replace("msg-", ""), 10);
+        return Number.isNaN(numeric) ? max : Math.max(max, numeric);
+      }, 0);
+    } catch {
+      window.sessionStorage.removeItem(FAQ_SESSION_KEY);
+    }
+  }, [drawerContext?.product, locale]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, showLeadForm]);
+
+  useEffect(() => {
+    if (drawerContext?.product) {
+      window.sessionStorage.removeItem(FAQ_SESSION_KEY);
+      return;
+    }
+
+    const session: FaqSessionState = {
+      locale,
+      messages,
+      chatView,
+      selectedCategoryId,
+      showFallbackActions,
+      showAdvisorButton,
+      showLeadForm,
+      leadData,
+      leadConsent,
+    };
+
+    window.sessionStorage.setItem(FAQ_SESSION_KEY, JSON.stringify(session));
+  }, [
+    chatView,
+    drawerContext?.product,
+    leadConsent,
+    leadData,
+    locale,
+    messages,
+    selectedCategoryId,
+    showAdvisorButton,
+    showFallbackActions,
+    showLeadForm,
+  ]);
 
   function addMessage(role: "bot" | "user", text: string) {
     nextMessageIdRef.current += 1;
@@ -59,8 +164,7 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
     setMessages((prev) => [...prev, { id, role, text }]);
   }
 
-  function buildWhatsAppUrl(currentMessages: Message[], lead?: Partial<LeadData>): string | null {
-    if (!SITE_CONFIG.whatsappNumber) return null;
+  function buildWhatsAppMessageText(currentMessages: Message[], lead?: Partial<LeadData>): string {
     const lines: string[] = ["Hola! Vine del chatbot de su página web."];
 
     if (lead?.nombre) lines.push(`\nNombre: *${lead.nombre}*`);
@@ -86,7 +190,7 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
 
     if (conversation) lines.push(`\nConversación:\n${conversation}`);
     lines.push("\n¿Me pueden ayudar?");
-    return `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(lines.join(""))}`;
+    return buildWhatsAppMessage(lines);
   }
 
   function handleCategoryClick(categoryId: string) {
@@ -126,19 +230,24 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
     addMessage("user", query);
 
     if (isAdvisorIntent(query)) {
-      handleAdvisorClick();
+      handleAdvisorClick("direct_intent");
       setChatView("categories");
       setSelectedCategoryId(null);
       return;
     }
 
-    const match = findAnswer(query);
+    const match = findAnswer(query, locale, faqData);
     if (match) {
       addMessage("bot", match.question.answer[locale]);
       setShowFallbackActions(false);
       setShowAdvisorButton(true);
     } else {
       addMessage("bot", t.fallback);
+      trackHelpHubEvent("helphub_faq_no_match", {
+        locale,
+        query_length: query.length,
+        has_product_context: Boolean(drawerContext?.product),
+      });
       setShowFallbackActions(true);
       setShowAdvisorButton(false);
     }
@@ -146,25 +255,29 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
     setSelectedCategoryId(null);
   }
 
-  function handleAdvisorClick() {
+  function handleAdvisorClick(source: "advisor_pill" | "fallback_whatsapp" | "direct_intent") {
+    trackHelpHubEvent("helphub_advisor_cta_clicked", {
+      source,
+      locale,
+      has_product_context: Boolean(drawerContext?.product),
+    });
     addMessage("bot", t.leadFormIntro);
     setShowLeadForm(true);
     setShowAdvisorButton(false);
     setShowFallbackActions(false);
   }
 
-  function buildConnectUrls(waUrl: string | null) {
-    const webUrl = waUrl && SITE_CONFIG.whatsappNumber
-      ? `https://web.whatsapp.com/send?phone=${SITE_CONFIG.whatsappNumber}&text=${waUrl.split("?text=")[1] ?? ""}`
-      : null;
-    return { appUrl: waUrl, webUrl };
+  function buildConnectUrls(message: string) {
+    return buildWhatsAppLinks(SITE_CONFIG.whatsappNumber, message);
   }
 
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!leadConsent || !leadData.nombre.trim() || !leadData.tipo) return;
+    setLeadSaveError(false);
+    setPendingWhatsApp(null);
 
-    const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppUrl(messages, leadData));
+    const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages, leadData));
 
     let leadSaved = false;
     try {
@@ -179,21 +292,83 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
           preguntas_bot: messages
             .filter((m) => m.role === "user" && m.id !== "welcome")
             .map((m) => m.text),
+          resumen_handoff: buildHandoffSummary(messages, {
+            nombre: leadData.nombre.trim(),
+            email: leadData.email.trim() || null,
+            tipo: leadData.tipo,
+            producto_interes: drawerContext?.product ?? null,
+          }),
         }),
       });
       leadSaved = res.ok;
+      trackHelpHubEvent("helphub_lead_submit_result", {
+        locale,
+        result: res.ok ? "success" : "error",
+        tipo: leadData.tipo,
+        has_email: Boolean(leadData.email.trim()),
+      });
     } catch (err) {
       console.error("Error guardando lead:", err);
-      // error de red — se abre WhatsApp sin marcar lead como guardado
+      trackHelpHubEvent("helphub_lead_submit_result", {
+        locale,
+        result: "network_error",
+        tipo: leadData.tipo,
+        has_email: Boolean(leadData.email.trim()),
+      });
+      setLeadSaveError(true);
+      setPendingWhatsApp({ appUrl, webUrl });
+      return;
     }
 
     setShowLeadForm(false);
+    persistFaqSession({
+      showLeadForm: false,
+      showAdvisorButton: false,
+      showFallbackActions: false,
+    });
+    trackHelpHubEvent("helphub_whatsapp_opened", {
+      source: "lead_submit",
+      locale,
+      destination: appUrl ? "app" : webUrl ? "web" : "unavailable",
+      lead_saved: leadSaved,
+    });
     onWhatsAppConnect(appUrl, webUrl, leadSaved);
   }
 
-  function handleLeadSkip() {
-    const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppUrl(messages));
+  function handleLeadContinueAnyway() {
+    if (!pendingWhatsApp) return;
+    const { appUrl, webUrl } = pendingWhatsApp;
     setShowLeadForm(false);
+    setLeadSaveError(false);
+    setPendingWhatsApp(null);
+    persistFaqSession({
+      showLeadForm: false,
+      showAdvisorButton: false,
+      showFallbackActions: false,
+    });
+    trackHelpHubEvent("helphub_whatsapp_opened", {
+      source: "lead_submit_error_continue",
+      locale,
+      destination: appUrl ? "app" : webUrl ? "web" : "unavailable",
+      lead_saved: false,
+    });
+    onWhatsAppConnect(appUrl, webUrl, false);
+  }
+
+  function handleLeadSkip() {
+    const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages));
+    setShowLeadForm(false);
+    persistFaqSession({
+      showLeadForm: false,
+      showAdvisorButton: false,
+      showFallbackActions: false,
+    });
+    trackHelpHubEvent("helphub_whatsapp_opened", {
+      source: "lead_skip",
+      locale,
+      destination: appUrl ? "app" : webUrl ? "web" : "unavailable",
+      lead_saved: false,
+    });
     onWhatsAppConnect(appUrl, webUrl, false);
   }
 
@@ -331,6 +506,27 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
                   </span>
                 </label>
 
+                {/* Error de red al guardar lead */}
+                {leadSaveError && (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 space-y-2">
+                    <p className="text-xs text-amber-800">
+                      {lang === "es"
+                        ? "No pudimos guardar tu información por un error de red."
+                        : "We couldn't save your info due to a network error."}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleLeadContinueAnyway}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-green-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
+                    >
+                      <svg className="h-3.5 w-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        {WA_ICON}
+                      </svg>
+                      {lang === "es" ? "Continuar a WhatsApp de todas formas" : "Continue to WhatsApp anyway"}
+                    </button>
+                  </div>
+                )}
+
                 {/* Acciones */}
                 <div className="flex items-center gap-2 pt-1">
                   <button
@@ -369,7 +565,7 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
               <span className="text-xs text-text-faint">{t.advisorOffer}</span>
               <button
                 type="button"
-                onClick={handleAdvisorClick}
+                onClick={() => handleAdvisorClick("advisor_pill")}
                 className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-green-500 text-green-600 hover:bg-green-500 hover:text-white transition-colors font-medium shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
               >
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
@@ -393,7 +589,7 @@ export default function FaqView({ onContactClick, onWhatsAppConnect }: Props) {
               <p className="text-xs text-text-muted font-medium">{th.contactOptions}</p>
               <button
                 type="button"
-                onClick={handleAdvisorClick}
+                onClick={() => handleAdvisorClick("fallback_whatsapp")}
                 className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl bg-green-500 text-white hover:bg-green-600 transition-colors font-medium w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

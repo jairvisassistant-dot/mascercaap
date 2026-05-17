@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import AdminNavbar from "@/components/layout/AdminNavbar";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Admin — Mas Cerca AP",
@@ -8,15 +10,15 @@ export const metadata: Metadata = {
 };
 
 async function getProductCount(): Promise<number | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return null;
-  const { count } = await createClient(url, key, { auth: { persistSession: false } })
+  if (!supabase) return null;
+  const { count } = await supabase
     .from("products")
     .select("*", { count: "exact", head: true });
   return count;
 }
 
+// TODO(infra): Admin should be deployed separately (subdomain/standalone) to reduce attack surface.
+// Current mitigation: requireAdminAuth() on every admin route + session validation.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const productCount = await getProductCount();
 

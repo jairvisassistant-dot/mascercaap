@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
 import { getAllProducts, getAllProductLines, getAllProductCategories } from "@/lib/supabase/queries";
 
 export const revalidate = 60;
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -38,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         en: `${SITE_CONFIG.siteUrl}/en/productos`,
       },
     },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -51,13 +56,39 @@ export default async function ProductosPage({ params }: Props) {
     getAllProductCategories(),
   ]);
 
+  const isEs = lang === "es";
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: isEs ? "Inicio" : "Home",
+        item: `${SITE_CONFIG.siteUrl}/${lang}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: isEs ? "Productos" : "Products",
+        item: `${SITE_CONFIG.siteUrl}/${lang}/productos`,
+      },
+    ],
+  };
+
   return (
-    <Suspense>
-      <ProductosClient
-        products={products}
-        productLines={productLines}
-        categories={categories}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-    </Suspense>
+      <Suspense fallback={<div className="min-h-screen animate-pulse bg-surface-warm" />}>
+        <ProductosClient
+          products={products}
+          productLines={productLines}
+          categories={categories}
+        />
+      </Suspense>
+    </>
   );
 }

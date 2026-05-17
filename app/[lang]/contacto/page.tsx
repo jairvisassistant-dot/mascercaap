@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export const revalidate = 3600;
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import ContactoPageContent from "@/components/sections/ContactoPageContent";
 import { SITE_CONFIG } from "@/lib/config";
 
 type Props = { params: Promise<{ lang: string }> };
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
@@ -20,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: dict.metadata.contact.description,
       type: "website",
       locale: lang === "es" ? "es_CO" : "en_US",
-      images: [{ url: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.ogImagePath}`, width: 1536, height: 1024, alt: "Mas Cerca AP - contacto" }],
+      images: [{ url: `${SITE_CONFIG.siteUrl}/imgs/Naranja-Compra.webp`, width: 1600, height: 900, alt: "Mas Cerca AP - contacto y pedidos" }],
     },
     twitter: {
       card: "summary_large_image",
@@ -34,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         en: `${SITE_CONFIG.siteUrl}/en/contacto`,
       },
     },
+    robots: { index: true, follow: true },
   };
 }
 

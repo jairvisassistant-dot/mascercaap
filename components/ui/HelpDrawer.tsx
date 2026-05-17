@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { useHelpHub } from "@/lib/help-hub-context";
@@ -12,6 +12,7 @@ import WhatsAppConnectView from "./drawer-views/WhatsAppConnectView";
 import OrderAssistantView from "./drawer-views/OrderAssistantView";
 import { privacyPolicy, termsAndConditions } from "@/data/legal";
 import { SITE_CONFIG } from "@/lib/config";
+import { buildWhatsAppLinks } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
@@ -20,13 +21,42 @@ type WhatsAppState = { appUrl: string | null; webUrl: string | null; leadSaved: 
 
 type Props = { onClose: () => void };
 
+// Reducer to avoid setState-in-effect lint errors
+type DrawerAction =
+  | { type: "SET_VIEW"; view: View }
+  | { type: "SET_WHATSAPP"; whatsAppState: WhatsAppState | null };
+
+function drawerReducer(state: { view: View; whatsAppState: WhatsAppState | null }, action: DrawerAction) {
+  switch (action.type) {
+    case "SET_VIEW":
+      return { ...state, view: action.view };
+    case "SET_WHATSAPP":
+      return { ...state, whatsAppState: action.whatsAppState };
+    default:
+      return state;
+  }
+}
+
+const DRAWER_SESSION_KEY = "helphub:drawer-session:v1";
+
+type DrawerSessionState = {
+  view: Exclude<View, "order">;
+  whatsAppState: WhatsAppState | null;
+};
+
+function buildDefaultWhatsAppState(message: string): WhatsAppState {
+  return {
+    ...buildWhatsAppLinks(SITE_CONFIG.whatsappNumber, message),
+    leadSaved: false,
+  };
+}
+
 export default function HelpDrawer({ onClose }: Props) {
   const { dict, lang } = useDictionary();
   const locale = lang as Locale;
   const t = dict.helpHub;
-  const { initialView } = useHelpHub();
-  const [view, setView] = useState<View>(initialView);
-  const [whatsAppState, setWhatsAppState] = useState<WhatsAppState | null>(null);
+  const { initialView, shouldRestoreSession } = useHelpHub();
+  const [{ view, whatsAppState }, dispatch] = useReducer(drawerReducer, { view: initialView, whatsAppState: null });
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -58,20 +88,50 @@ export default function HelpDrawer({ onClose }: Props) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  function navigateToWhatsApp(state?: WhatsAppState) {
-    if (state) {
-      setWhatsAppState(state);
-    } else {
-      const encoded = encodeURIComponent(t.whatsappMessage);
-      const appUrl = SITE_CONFIG.whatsappNumber
-        ? `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encoded}`
-        : null;
-      const webUrl = SITE_CONFIG.whatsappNumber
-        ? `https://web.whatsapp.com/send?phone=${SITE_CONFIG.whatsappNumber}&text=${encoded}`
-        : null;
-      setWhatsAppState({ appUrl, webUrl, leadSaved: false });
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldRestoreSession || initialView !== "menu") return;
+
+    const raw = window.sessionStorage.getItem(DRAWER_SESSION_KEY);
+    if (!raw) return;
+
+    try {
+      const session = JSON.parse(raw) as DrawerSessionState;
+      dispatch({ type: "SET_VIEW", view: session.view });
+      dispatch({ type: "SET_WHATSAPP", whatsAppState: session.view === "whatsapp" ? session.whatsAppState : null });
+    } catch {
+      window.sessionStorage.removeItem(DRAWER_SESSION_KEY);
     }
-    setView("whatsapp");
+  }, [initialView, shouldRestoreSession]);
+
+  useEffect(() => {
+    if (initialView !== "whatsapp") return;
+    dispatch({ type: "SET_WHATSAPP", whatsAppState: buildDefaultWhatsAppState(t.whatsappMessage) });
+    dispatch({ type: "SET_VIEW", view: "whatsapp" });
+  }, [initialView, t.whatsappMessage]);
+
+  useEffect(() => {
+    if (view === "order") return;
+
+    const session: DrawerSessionState = {
+      view,
+      whatsAppState: view === "whatsapp" ? whatsAppState : null,
+    };
+
+    window.sessionStorage.setItem(DRAWER_SESSION_KEY, JSON.stringify(session));
+  }, [view, whatsAppState]);
+
+  function navigateToWhatsApp(state?: WhatsAppState) {
+    dispatch({ type: "SET_WHATSAPP", whatsAppState: state ?? buildDefaultWhatsAppState(t.whatsappMessage) });
+    dispatch({ type: "SET_VIEW", view: "whatsapp" });
   }
 
   function getTitle(): string {
@@ -104,7 +164,7 @@ export default function HelpDrawer({ onClose }: Props) {
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 28, stiffness: 280 }}
-        className="fixed top-0 right-0 h-full z-50 flex flex-col bg-surface-card shadow-2xl w-[90vw] sm:w-[45vw] max-w-[560px]"
+        className="fixed top-0 right-0 h-full z-50 flex flex-col bg-surface-card shadow-2xl w-[90vw] min-w-[280px] sm:w-[45vw] max-w-[560px]"
         role="dialog"
         aria-modal="true"
         aria-label={t.title}
@@ -114,7 +174,7 @@ export default function HelpDrawer({ onClose }: Props) {
           {view !== "menu" && (
             <button
               type="button"
-              onClick={() => setView("menu")}
+              onClick={() => dispatch({ type: "SET_VIEW", view: "menu" })}
               className="text-white/80 hover:text-white transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
               aria-label={t.back}
             >
@@ -158,11 +218,11 @@ export default function HelpDrawer({ onClose }: Props) {
               className="flex-1 flex flex-col overflow-hidden"
             >
               {view === "menu" && (
-                <HelpMenu onNavigate={(v) => v === "whatsapp" ? navigateToWhatsApp() : setView(v)} />
+                <HelpMenu onNavigate={(v) => v === "whatsapp" ? navigateToWhatsApp() : dispatch({ type: "SET_VIEW", view: v })} />
               )}
               {view === "faq" && (
                 <FaqView
-                  onContactClick={() => setView("contact")}
+                  onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })}
                   onWhatsAppConnect={(appUrl, webUrl, leadSaved) =>
                     navigateToWhatsApp({ appUrl, webUrl, leadSaved })
                   }
@@ -185,7 +245,7 @@ export default function HelpDrawer({ onClose }: Props) {
                 />
               )}
               {view === "order" && (
-                <OrderAssistantView onContactClick={() => setView("contact")} />
+                <OrderAssistantView onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
               )}
             </m.div>
           </AnimatePresence>

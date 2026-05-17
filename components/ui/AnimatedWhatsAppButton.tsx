@@ -3,6 +3,7 @@
 import { memo, useEffect, useRef } from "react";
 import { m, useAnimation, useReducedMotion } from "framer-motion";
 import { useHelpHub } from "@/lib/help-hub-context";
+import { trackHelpHubEvent } from "@/lib/help-hub-analytics";
 
 interface Props {
   label: string;
@@ -107,7 +108,12 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
     <div ref={sectionRef} className="flex justify-center">
       <button
         type="button"
-        onClick={() => openDrawer("faq")}
+        onClick={() => {
+          trackHelpHubEvent("helphub_whatsapp_cta_clicked", {
+            source: "floating_whatsapp_button",
+          });
+          openDrawer("whatsapp");
+        }}
         aria-label={label}
         className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
       >

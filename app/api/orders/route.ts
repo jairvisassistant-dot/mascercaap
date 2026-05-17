@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server"
-import { Resend } from "resend"
 import { z } from "zod"
-import { orderSchema } from "@/lib/schemas/order"
+import { createOrderSchema, type OrderItem } from "@/lib/schemas/order"
+import esMessages from "@/messages/es.json"
+import enMessages from "@/messages/en.json"
 import { buildOrderEmailHtml, buildPriceResolver, type PriceEntry } from "@/lib/order-assistant"
-import { supabase } from "@/lib/supabase"
+import { sanitizeSubject } from "@/lib/sanitize"
+import { supabasePublic as supabase } from "@/lib/supabase"
 
 const requestLog = new Map<string, number[]>()
 const RATE_LIMIT_MAX = 5
@@ -28,10 +30,6 @@ function checkRateLimit(ip: string): boolean {
   return true
 }
 
-function sanitizeSubject(str: string): string {
-  return str.replace(/[\r\n\x00-\x1f\x7f]+/g, " ").slice(0, 80).trim()
-}
-
 export async function POST(request: Request) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
@@ -47,12 +45,16 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const data = orderSchema.parse(body)
+    const referer = request.headers.get("referer") ?? ""
+    const validationMsgs = referer.includes("/en/")
+      ? enMessages.orderAssistant.validation
+      : esMessages.orderAssistant.validation
+    const data = createOrderSchema(validationMsgs).parse(body)
 
     // Guardar lead en Supabase para marketing (ignorar error — no bloquear el pedido)
     if (supabase) {
       const productoInteres = data.items
-        .map((item) => `${item.fruit} ${item.presentation} ×${item.quantity}`)
+        .map((item: OrderItem) => `${item.fruit} ${item.presentation} ×${item.quantity}`)
         .join(", ")
 
       const { error: dbError } = await supabase.from("leads").insert({
@@ -102,15 +104,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Configuración incompleta" }, { status: 500 })
     }
 
-    const resend = new Resend(apiKey)
-
-    await resend.emails.send({
-      from:    `Más Cerca AP <${fromEmail}>`,
-      to:      [toEmail],
-      replyTo: data.email ?? undefined,
-      subject: `🛒 Nuevo pedido — ${sanitizeSubject(data.nombre)} — ${data.items.length} producto${data.items.length !== 1 ? "s" : ""}`,
-      html:    buildOrderEmailHtml(data, resolvePrice),
+    const emailRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from:     `Más Cerca AP <${fromEmail}>`,
+        to:       [toEmail],
+        reply_to: data.email ?? undefined,
+        subject:  `🛒 Nuevo pedido — ${sanitizeSubject(data.nombre)} — ${data.items.length} producto${data.items.length !== 1 ? "s" : ""}`,
+        html:     buildOrderEmailHtml(data, resolvePrice),
+      }),
     })
+    if (!emailRes.ok) {
+      const text = await emailRes.text()
+      throw new Error(`Resend error: ${text}`)
+    }
 
     return NextResponse.json({ success: true }, { status: 200 })
 

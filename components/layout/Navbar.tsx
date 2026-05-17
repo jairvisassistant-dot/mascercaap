@@ -1,23 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { m } from "framer-motion";
 // m solo se usa para el menú mobile animado — el header no usa animaciones
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
-import { useHelpHub } from "@/lib/help-hub-context";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
+import { buildWhatsAppLinks } from "@/lib/whatsapp";
+import { SITE_CONFIG } from "@/lib/config";
+
+const ORDER_MESSAGE = "Hola, quiero hacer un pedido";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
   const { dict, lang } = useDictionary();
-  const { openDrawer } = useHelpHub();
+
+  const { appUrl: waAppUrl, webUrl: waWebUrl } = buildWhatsAppLinks(
+    SITE_CONFIG.whatsappNumber,
+    ORDER_MESSAGE,
+  );
+  const whatsappHref = waAppUrl ?? waWebUrl ?? "#";
 
   const navLinks = [
     { href: `/${lang}`, label: dict.nav.home },
@@ -46,6 +55,16 @@ export default function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => {
+      document.documentElement.style.setProperty("--navbar-h", `${el.offsetHeight}px`);
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const isActive = (href: string) => {
     if (href === `/${lang}`) return pathname === `/${lang}` || pathname === `/${lang}/`;
     return pathname.startsWith(href);
@@ -53,7 +72,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-surface-page/90 backdrop-blur-md shadow-sm border-b border-border-soft"
           : "bg-surface-page shadow-md"
@@ -90,20 +109,21 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
-              <button
-                type="button"
-                onClick={() => openDrawer("order")}
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
-              </button>
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden text-primary p-2"
+              className="md:hidden text-primary p-2.5"
               aria-label={dict.nav.menuAriaLabel}
               aria-expanded={isOpen}
               aria-controls="mobile-nav"
@@ -151,7 +171,7 @@ export default function Navbar() {
                 href={link.href}
                 aria-current={isActive(link.href) ? "page" : undefined}
                 onClick={() => setIsOpen(false)}
-                className={`block font-medium py-2 border-l-2 pl-3 transition-colors ${
+                className={`block font-medium py-2 min-h-[44px] flex items-center border-l-2 pl-3 transition-colors ${
                   isActive(link.href)
                     ? "text-primary border-accent"
                     : "text-text-muted border-transparent hover:text-primary hover:border-accent"
@@ -163,13 +183,15 @@ export default function Navbar() {
             <div className="flex items-center gap-3 pt-2">
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
-              <button
-                type="button"
-                onClick={() => { setIsOpen(false); openDrawer("order"); }}
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
                 className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
-              </button>
+              </a>
             </div>
           </div>
         </m.div>
