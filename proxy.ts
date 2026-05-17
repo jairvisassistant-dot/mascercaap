@@ -27,39 +27,20 @@ function getLocale(request: NextRequest): string {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Redirigir rutas admin con locale prefix → sin locale
-  // Ej: /es/admin/login → /admin/login
-  for (const locale of locales) {
-    if (pathname.startsWith(`/${locale}/admin`)) {
-      const withoutLocale = pathname.slice(locale.length + 1);
-      return NextResponse.redirect(new URL(withoutLocale, request.url));
-    }
-  }
-
-  // If a separate admin deployment is configured, redirect all /admin traffic there (308 = permanent).
-  const adminAppUrl = process.env.ADMIN_APP_URL;
-  if (adminAppUrl && pathname.startsWith("/admin")) {
-    return NextResponse.redirect(
-      new URL(pathname + request.nextUrl.search, adminAppUrl),
-      { status: 308 }
+  // Admin is a standalone app. Strip locale prefix then redirect to ADMIN_APP_URL.
+  if (pathname.startsWith("/admin") || locales.some((l) => pathname.startsWith(`/${l}/admin`))) {
+    const adminPath = locales.reduce(
+      (p, l) => (p.startsWith(`/${l}/admin`) ? p.slice(l.length + 1) : p),
+      pathname,
     );
-  }
-
-  // Admin routes — cookie check only (JWT validation en los Server Components)
-  if (pathname.startsWith("/admin")) {
-    const isLoginPage = pathname === "/admin/login";
-    const hasSession = !!request.cookies.get("admin_session")?.value;
-
-    if (!hasSession) {
-      if (isLoginPage) return NextResponse.next();
-      return NextResponse.redirect(new URL("/admin/login", request.url));
+    const adminAppUrl = process.env.ADMIN_APP_URL;
+    if (adminAppUrl) {
+      return NextResponse.redirect(
+        new URL(adminPath + request.nextUrl.search, adminAppUrl),
+        { status: 308 },
+      );
     }
-
-    if (isLoginPage) {
-      return NextResponse.redirect(new URL("/admin/productos", request.url));
-    }
-
-    return NextResponse.next();
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Skip _next/data and any static files not caught by the matcher

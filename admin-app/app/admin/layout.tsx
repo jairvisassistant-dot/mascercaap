@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import AdminNavbar from "@/components/layout/AdminNavbar";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Admin — Mas Cerca AP",
+  robots: { index: false, follow: false },
+};
 
 async function getProductCount(): Promise<number | null> {
   if (!supabase) return null;
