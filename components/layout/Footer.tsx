@@ -72,7 +72,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social, index) => {
-                const internalSocialHref = social.name === "Facebook" ? `/${lang}/facebook` : social.name === "Instagram" ? `/${lang}/instagram` : social.name === "TikTok" ? `/${lang}/tiktok` : undefined;
+                const internalSocialHref = social.name === "Facebook" ? `/${lang}/social/facebook` : social.name === "Instagram" ? `/${lang}/social/instagram` : social.name === "TikTok" ? `/${lang}/social/tiktok` : undefined;
                 const href = internalSocialHref ?? social.href;
                 if (!href) return null;
                 const cls = `w-11 h-11 rounded-full flex items-center justify-center transition-all hover:scale-110 ${

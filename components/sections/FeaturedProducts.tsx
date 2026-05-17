@@ -147,9 +147,9 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                   className={`group w-full max-w-[360px] rounded-[2rem] p-2 ring-1 shadow-[0_24px_70px_rgba(35,45,30,0.12)] ${style.shell}`}
                 >
                   {canFlip && !reducedMotion ? (
-                    <div className="relative min-h-[470px] [perspective:1200px]">
-                      <div className="relative min-h-[470px] w-full rounded-[1.5rem] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-focus-within:[transform:rotateY(180deg)]">
-                        <div className={`absolute inset-0 flex min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] transition-opacity duration-300 [backface-visibility:hidden] group-hover:opacity-0 group-focus-within:opacity-0`}>
+                    <div className="relative min-h-[380px] sm:min-h-[470px] [perspective:1200px]">
+                      <div className="relative min-h-[380px] sm:min-h-[470px] w-full rounded-[1.5rem] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] group-focus-within:[transform:rotateY(180deg)]">
+                        <div className={`absolute inset-0 flex min-h-[380px] sm:min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] transition-opacity duration-300 [backface-visibility:hidden] group-hover:opacity-0 group-focus-within:opacity-0`}>
                           <div className="relative z-10 flex items-start justify-between gap-4">
                             <span className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] shadow-sm ${style.badge}`}>
                               {hook.badge}
@@ -181,7 +181,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                           </div>
                         </div>
 
-                        <div className={`absolute inset-0 flex min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] opacity-0 transition-opacity duration-300 [backface-visibility:hidden] [transform:rotateY(180deg)] group-hover:opacity-100 group-focus-within:opacity-100`}>
+                        <div className={`absolute inset-0 flex min-h-[380px] sm:min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] opacity-0 transition-opacity duration-300 [backface-visibility:hidden] [transform:rotateY(180deg)] group-hover:opacity-100 group-focus-within:opacity-100`}>
                           <div className="relative z-10 flex items-start justify-between gap-4">
                             <span className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] shadow-sm ${style.badge}`}>
                               {hook.badge}
@@ -198,7 +198,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                             <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
                               {product.name}
                             </h3>
-                            <p className="mt-4 min-h-[8rem] text-sm leading-relaxed text-gray-500">
+                            <p className="mt-4 min-h-[5rem] sm:min-h-[8rem] text-sm leading-relaxed text-gray-500">
                               {hook.text}
                             </p>
                           </div>
@@ -219,7 +219,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                       </div>
                     </div>
                   ) : (
-                    <div className={`relative flex min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]`}>
+                    <div className={`relative flex min-h-[380px] sm:min-h-[470px] flex-col overflow-hidden rounded-[1.5rem] bg-gradient-to-b ${style.core} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]`}>
                       <div className="relative z-10 flex items-start justify-between gap-4">
                         <span className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] shadow-sm ${style.badge}`}>
                           {hook.badge}

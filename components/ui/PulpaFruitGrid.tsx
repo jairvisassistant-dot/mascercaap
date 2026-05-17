@@ -5,6 +5,7 @@ import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import ProductCard from "@/components/ui/ProductCard";
 import type { Product, ProductLineConfig, ProductLineKey, ProductLineTranslation } from "@/types";
+import type { Dictionary } from "@/lib/i18n";
 
 type PulpaGridDict = {
   title: string;
@@ -35,13 +36,21 @@ interface PulpaFruitGridProps {
   products: Product[];
   pl: Record<string, ProductLineTranslation>;
   pulpaGridDict: PulpaGridDict;
+  dict: Dictionary;
+  lang: string;
 }
 
-export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict }: PulpaFruitGridProps) {
+export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict, dict, lang }: PulpaFruitGridProps) {
   const [selectedKey, setSelectedKey] = useState<ProductLineKey | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [showHint, setShowHint] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowHint(false), 3000);
+    return () => clearTimeout(t);
+  }, []);
 
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -107,11 +116,12 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
           onScroll={checkScroll}
           className="flex gap-2 overflow-x-auto scrollbar-none flex-1 py-1 px-1"
         >
-          {pulpaLines.map((line) => {
+          {pulpaLines.map((line, lineIndex) => {
             const isSelected = selectedKey === line.key;
             const fruitSlug = line.key.replace("pulpa-", "");
             const fruitLabel = pl[line.key]?.label ?? line.label;
             const fruitName = fruitLabel.replace(/Pulpa de |Pulp$/gi, "").trim();
+            const isFirstAndHinting = lineIndex === 0 && showHint && !isSelected;
 
             return (
               <button
@@ -129,7 +139,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
                 <div
                   className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 transition-all shadow-sm ${
                     isSelected ? "border-primary shadow-md" : "border-border-soft"
-                  }`}
+                  } ${isFirstAndHinting ? "animate-pulse" : ""}`}
                 >
                   <FruitImage slug={fruitSlug} label={fruitLabel} chipImage={line.chipImage} />
                 </div>
@@ -198,6 +208,8 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
                     key={product.id}
                     product={product}
                     accentGradient={selectedLine.gradient}
+                    dict={dict}
+                    lang={lang}
                   />
                 ))}
               </div>

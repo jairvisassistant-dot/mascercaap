@@ -1,10 +1,13 @@
 "use client"
 
-import { useDictionary } from "@/lib/i18n/DictionaryProvider"
 import { useHelpHub } from "@/lib/help-hub-context"
+import type { Dictionary } from "@/lib/i18n"
 
-export default function OrderAssistantCTA() {
-  const { dict } = useDictionary()
+interface OrderAssistantCTAProps {
+  dict: Dictionary
+}
+
+export default function OrderAssistantCTA({ dict }: OrderAssistantCTAProps) {
   const t = dict.orderAssistant
   const { openDrawer } = useHelpHub()
 

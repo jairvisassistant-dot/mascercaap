@@ -5,9 +5,9 @@ import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import { createContactSchema } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { buildWhatsAppAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
 import EmojiIcon from "@/components/ui/EmojiIcon";
+import type { Dictionary } from "@/lib/i18n";
 
 type FormFields = {
   nombre: string;
@@ -22,8 +22,11 @@ type FieldErrors = Partial<Record<keyof FormFields, string>>;
 
 const EMPTY: FormFields = { nombre: "", empresa: "", email: "", telefono: "", tipo: "", mensaje: "" };
 
-export default function ContactForm() {
-  const { dict } = useDictionary();
+interface ContactFormProps {
+  dict: Dictionary;
+}
+
+export default function ContactForm({ dict }: ContactFormProps) {
   const t = dict.contact.form;
   const [fields, setFields] = useState<FormFields>(EMPTY);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});

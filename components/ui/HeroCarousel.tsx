@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer, useEffect, useRef } from "react";
+import { useReducer, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import Link from "next/link";
@@ -93,7 +93,7 @@ const slides: SlideStructure[] = [
     id: 2,
     ctaHref: "/productos",
     ctaColor: "bg-primary hover:bg-primary-dark",
-    duration: 9000,
+    duration: 12000,
     frames: [
       {
         image: "/imgs/Slide2.1.webp",
@@ -122,7 +122,7 @@ const slides: SlideStructure[] = [
     id: 3,
     ctaHref: "/productos?categoria=pulpas",
     ctaColor: "bg-accent hover:bg-accent-dark",
-    duration: 8000,
+    duration: 12000,
     frames: [
       {
         image: "/imgs/Slide3.1.webp",
@@ -173,7 +173,7 @@ const slides: SlideStructure[] = [
     id: 5,
     ctaHref: "__whatsapp__",
     ctaColor: "bg-primary hover:bg-primary-dark",
-    duration: 8000,
+    duration: 12000,
     frames: [
       {
         image: "/imgs/Slide5.1.webp",
@@ -204,7 +204,18 @@ export default function HeroCarousel() {
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
-  const shouldReduceMotion = useReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const shouldReduceMotion = prefersReducedMotion || isMobile;
 
   const slide = slides[currentSlide];
   const slideText = dict.home.hero.slides[currentSlide];
@@ -313,7 +324,7 @@ export default function HeroCarousel() {
                 initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: shouldReduceMotion ? 0 : 0.2, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className="mb-5 inline-flex max-w-full items-center rounded-none border-l-2 border-accent bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm md:text-xs"
+                className="mb-5 inline-flex max-w-full items-center rounded-none border-l-2 border-accent bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm"
               >
                 {slideText.subtitle}
               </m.p>

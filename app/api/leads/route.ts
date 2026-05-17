@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { createLeadSchema, ES_LEAD_MESSAGES, EN_LEAD_MESSAGES } from "@/lib/schemas/lead";
 import { supabase } from "@/lib/supabase";
 import { SITE_CONFIG } from "@/lib/config";
@@ -191,14 +190,24 @@ async function sendLeadNotification(data: {
   }
 
   try {
-    const resend = new Resend(apiKey);
-    await resend.emails.send({
-      from:    `Más Cerca AP <${fromEmail}>`,
-      to:      [toEmail],
-      replyTo: data.email ?? undefined,
-      subject: `💬 Lead chatbot — ${sanitizeSubject(data.nombre)} — ${TIPO_EMAIL_LABELS[data.tipo] ?? data.tipo}`,
-      html:    buildLeadEmailHtml(data),
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from:     `Más Cerca AP <${fromEmail}>`,
+        to:       [toEmail],
+        reply_to: data.email ?? undefined,
+        subject:  `💬 Lead chatbot — ${sanitizeSubject(data.nombre)} — ${TIPO_EMAIL_LABELS[data.tipo] ?? data.tipo}`,
+        html:     buildLeadEmailHtml(data),
+      }),
     });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Resend error: ${text}`);
+    }
   } catch (err) {
     // Fail-safe: notification errors never bubble up to the caller
     console.error("Error al notificar lead (no crítico):", err instanceof Error ? err.message.slice(0, 120) : "unknown");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 import Link from "next/link";
 import type { Dictionary, Locale } from "@/lib/i18n";
 
@@ -39,7 +39,22 @@ export default function CookieConsent({ gaId, dict, lang }: CookieConsentProps) 
 
   return (
     <>
-      {consent === "accepted" && <GoogleAnalytics gaId={gaId} />}
+      {consent === "accepted" && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaId}');
+            `}
+          </Script>
+        </>
+      )}
       {consent === null && (
         <div
           role="dialog"

@@ -125,7 +125,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
 
             {/* Columna derecha — formulario */}
             <AnimateInView direction="right">
-              <ContactForm />
+              <ContactForm dict={dict} />
             </AnimateInView>
           </div>
         </div>

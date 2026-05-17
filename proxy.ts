@@ -24,7 +24,7 @@ function getLocale(request: NextRequest): string {
   return defaultLocale;
 }
 
-export default function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Redirigir rutas admin con locale prefix → sin locale
@@ -53,15 +53,8 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Skip internal paths, API routes, and static files
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/sitemap") ||
-    pathname.startsWith("/robots") ||
-    pathname.startsWith("/favicon") ||
-    pathname.includes(".")
-  ) {
+  // Skip _next/data and any static files not caught by the matcher
+  if (pathname.startsWith("/_next") || pathname.includes(".")) {
     return;
   }
 

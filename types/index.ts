@@ -144,3 +144,7 @@ export type LegalDocument = {
   lastUpdated: string;
   sections: LegalSection[];
 };
+
+// ── Order / Pricing (re-exported from lib sources of truth) ────────────────
+export type { PriceEntry, PriceResolver } from "@/lib/order-assistant";
+export type { OrderItem, OrderInput } from "@/lib/schemas/order";

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import { z } from "zod";
 import { createContactSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
@@ -197,15 +196,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Configuración incompleta" }, { status: 500 });
     }
 
-    const resend = new Resend(apiKey);
-
-    await resend.emails.send({
-      from: `Más Cerca AP <${fromEmail}>`,
-      to: [toEmail],
-      replyTo: data.email,
-      subject: `📩 Nuevo mensaje: ${tipoLabel[data.tipo]} — ${sanitizeSubject(data.nombre)}`,
-      html: buildEmailHtml(data),
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `Más Cerca AP <${fromEmail}>`,
+        to: [toEmail],
+        reply_to: data.email,
+        subject: `📩 Nuevo mensaje: ${tipoLabel[data.tipo]} — ${sanitizeSubject(data.nombre)}`,
+        html: buildEmailHtml(data),
+      }),
     });
+    if (!res.ok) throw new Error(await res.text());
 
     return NextResponse.json({ success: true }, { status: 200 });
 

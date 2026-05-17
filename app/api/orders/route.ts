@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { Resend } from "resend"
 import { z } from "zod"
 import { createOrderSchema, type OrderItem } from "@/lib/schemas/order"
 import esMessages from "@/messages/es.json"
@@ -105,15 +104,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Configuración incompleta" }, { status: 500 })
     }
 
-    const resend = new Resend(apiKey)
-
-    await resend.emails.send({
-      from:    `Más Cerca AP <${fromEmail}>`,
-      to:      [toEmail],
-      replyTo: data.email ?? undefined,
-      subject: `🛒 Nuevo pedido — ${sanitizeSubject(data.nombre)} — ${data.items.length} producto${data.items.length !== 1 ? "s" : ""}`,
-      html:    buildOrderEmailHtml(data, resolvePrice),
+    const emailRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from:     `Más Cerca AP <${fromEmail}>`,
+        to:       [toEmail],
+        reply_to: data.email ?? undefined,
+        subject:  `🛒 Nuevo pedido — ${sanitizeSubject(data.nombre)} — ${data.items.length} producto${data.items.length !== 1 ? "s" : ""}`,
+        html:     buildOrderEmailHtml(data, resolvePrice),
+      }),
     })
+    if (!emailRes.ok) {
+      const text = await emailRes.text()
+      throw new Error(`Resend error: ${text}`)
+    }
 
     return NextResponse.json({ success: true }, { status: 200 })
 

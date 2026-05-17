@@ -5,35 +5,66 @@ import { notFound } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/config";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 
-export function generateStaticParams() {
-  return locales.map((lang) => ({ lang }));
+const PLATFORMS = ["instagram", "facebook", "tiktok"] as const;
+type Platform = (typeof PLATFORMS)[number];
+
+function isPlatform(value: string): value is Platform {
+  return PLATFORMS.includes(value as Platform);
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params;
-  if (!hasLocale(lang)) return {};
+function getSocialUrl(platform: Platform): string {
+  switch (platform) {
+    case "instagram":
+      return SITE_CONFIG.socialInstagram;
+    case "facebook":
+      return SITE_CONFIG.socialFacebook;
+    case "tiktok":
+      return SITE_CONFIG.socialTikTok;
+  }
+}
+
+export function generateStaticParams() {
+  return locales.flatMap((lang) =>
+    PLATFORMS.map((platform) => ({ lang, platform }))
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string; platform: string }>;
+}): Promise<Metadata> {
+  const { lang, platform } = await params;
+  if (!hasLocale(lang) || !isPlatform(platform)) return {};
   const dict = await getDictionary(lang);
-  const t = dict.socialQr.tiktok;
+  const t = dict.socialQr[platform];
   return {
     title: t.eyebrow,
     description: t.description,
     robots: { index: false, follow: false },
-    openGraph: { title: t.eyebrow, description: t.description, type: "website", url: `${SITE_CONFIG.siteUrl}/${lang}/tiktok` },
+    openGraph: {
+      title: t.eyebrow,
+      description: t.description,
+      type: "website",
+      url: `${SITE_CONFIG.siteUrl}/${lang}/social/${platform}`,
+    },
   };
 }
 
-export default async function TikTokPage({
+export default async function SocialPlatformPage({
   params,
 }: {
-  params: Promise<{ lang: string }>;
+  params: Promise<{ lang: string; platform: string }>;
 }) {
-  const { lang } = await params;
+  const { lang, platform } = await params;
 
   if (!hasLocale(lang)) notFound();
+  if (!isPlatform(platform)) notFound();
 
   const dict = await getDictionary(lang);
-  const t = dict.socialQr.tiktok;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=16&data=${encodeURIComponent(SITE_CONFIG.socialTikTok)}`;
+  const t = dict.socialQr[platform];
+  const socialUrl = getSocialUrl(platform);
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=16&data=${encodeURIComponent(socialUrl)}`;
 
   return (
     <div className="grid min-h-[calc(100svh-88px)] place-items-center bg-surface-warm px-4 py-24 sm:py-28">
@@ -50,7 +81,7 @@ export default async function TikTokPage({
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href={SITE_CONFIG.socialTikTok}
+              href={socialUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-accent-dark"
@@ -81,7 +112,7 @@ export default async function TikTokPage({
             {t.scanHint}
           </p>
           <p className="mt-3 break-all rounded-xl bg-surface-soft px-4 py-3 text-xs text-text-muted ring-1 ring-border-soft">
-            {SITE_CONFIG.socialTikTok}
+            {socialUrl}
           </p>
         </div>
       </section>

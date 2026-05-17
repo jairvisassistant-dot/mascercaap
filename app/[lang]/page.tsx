@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 const HeroCarousel = dynamic(() => import("@/components/ui/HeroCarousel"), { ssr: true });
@@ -11,12 +11,15 @@ import DailyOffer from "@/components/sections/DailyOffer";
 import TestimonialMarquee from "@/components/ui/TestimonialMarquee";
 import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
-import OrderAssistantCTA from "@/components/sections/OrderAssistantCTA";
 import { SITE_CONFIG } from "@/lib/config";
 import { testimonials as fallbackTestimonials } from "@/data/testimonials";
 import type { Testimonial } from "@/types";
 
 export const revalidate = 60;
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 const MIN_HOME_TESTIMONIALS = 10;
 
@@ -138,8 +141,6 @@ export default async function HomePage({ params }: Props) {
       </section>
 
       <YieldCalculator dict={dict} />
-
-      <OrderAssistantCTA />
 
       <section className="py-20 bg-gradient-to-br from-[#3a7f45] via-[#438b4d] to-[#347640] relative overflow-hidden">
         {/* Textura de puntos */}

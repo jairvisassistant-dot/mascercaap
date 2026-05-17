@@ -2,17 +2,18 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import ProductCard from "@/components/ui/ProductCard";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductLineConfig } from "@/types";
+import type { Dictionary } from "@/lib/i18n";
 
 interface ProductLineRowProps {
   line: ProductLineConfig;
   products: Product[];
   firstLine?: boolean;
+  dict: Dictionary;
+  lang: string;
 }
 
-export default function ProductLineRow({ line, products, firstLine = false }: ProductLineRowProps) {
-  const { dict } = useDictionary();
+export default function ProductLineRow({ line, products, firstLine = false, dict, lang }: ProductLineRowProps) {
   const pl = dict.productLines as Record<string, { label: string }>;
   const displayLineLabel = pl[line.key]?.label ?? line.label;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -92,6 +93,8 @@ export default function ProductLineRow({ line, products, firstLine = false }: Pr
               product={product}
               accentGradient={line.gradient}
               priority={firstLine && index === 0}
+              dict={dict}
+              lang={lang}
             />
           ))}
         </div>

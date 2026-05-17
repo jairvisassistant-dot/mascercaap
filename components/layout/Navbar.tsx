@@ -7,10 +7,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
-import { useHelpHub } from "@/lib/help-hub-context";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
+import { buildWhatsAppLinks } from "@/lib/whatsapp";
+import { SITE_CONFIG } from "@/lib/config";
+
+const ORDER_MESSAGE = "Hola, quiero hacer un pedido";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +21,12 @@ export default function Navbar() {
   const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
   const { dict, lang } = useDictionary();
-  const { openDrawer } = useHelpHub();
+
+  const { appUrl: waAppUrl, webUrl: waWebUrl } = buildWhatsAppLinks(
+    SITE_CONFIG.whatsappNumber,
+    ORDER_MESSAGE,
+  );
+  const whatsappHref = waAppUrl ?? waWebUrl ?? "#";
 
   const navLinks = [
     { href: `/${lang}`, label: dict.nav.home },
@@ -101,20 +109,21 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
-              <button
-                type="button"
-                onClick={() => openDrawer("order")}
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-accent hover:bg-accent-dark text-white font-semibold py-2 px-6 rounded-full transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
-              </button>
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden text-primary p-2"
+              className="md:hidden text-primary p-2.5"
               aria-label={dict.nav.menuAriaLabel}
               aria-expanded={isOpen}
               aria-controls="mobile-nav"
@@ -174,13 +183,15 @@ export default function Navbar() {
             <div className="flex items-center gap-3 pt-2">
               <ThemeToggle labels={themeLabels} />
               <LanguageSwitcher dict={dict} lang={lang} />
-              <button
-                type="button"
-                onClick={() => { setIsOpen(false); openDrawer("order"); }}
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
                 className="flex-1 bg-accent text-white font-semibold py-3 px-6 rounded-full text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
-              </button>
+              </a>
             </div>
           </div>
         </m.div>

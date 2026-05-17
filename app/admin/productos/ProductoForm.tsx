@@ -82,12 +82,14 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/admin/product-lines").then((r) => r.json()),
-      fetch("/api/admin/categories").then((r) => r.json()),
-      mode === "create" ? fetch("/api/admin/products").then((r) => r.json()) : Promise.resolve([]),
-    ])
-      .then(([linesData, catsData, productsData]) => {
+    async function loadCatalog() {
+      try {
+        const [linesData, catsData, productsData] = await Promise.all([
+          fetch("/api/admin/product-lines").then((r) => r.json()),
+          fetch("/api/admin/categories").then((r) => r.json()),
+          mode === "create" ? fetch("/api/admin/products").then((r) => r.json()) : Promise.resolve([]),
+        ]);
+
         const mappedLines: LineOption[] =
           Array.isArray(linesData) && linesData.length > 0
             ? linesData.map((l: Record<string, unknown>) => ({
@@ -118,12 +120,14 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             if (firstLine.categoryKey) setSelectedCategory(firstLine.categoryKey);
           }
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error cargando catálogo:", err);
         setError("No se pudo cargar el catálogo. Recarga la página.");
-      })
-      .finally(() => setLoadingCatalog(false));
+      } finally {
+        setLoadingCatalog(false);
+      }
+    }
+    void loadCatalog();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filteredLines = selectedCategory

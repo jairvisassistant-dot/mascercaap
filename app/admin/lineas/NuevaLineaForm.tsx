@@ -21,16 +21,19 @@ export default function NuevaLineaForm() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/categories")
-      .then((r) => r.json())
-      .then((data: Category[]) => {
+    async function loadCategories() {
+      try {
+        const r = await fetch("/api/admin/categories");
+        const data: Category[] = await r.json();
         if (Array.isArray(data)) setCategories(data);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error cargando categorías:", err);
         setError("No se pudieron cargar las categorías. Recarga la página.");
-      })
-      .finally(() => setLoadingCategories(false));
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+    void loadCategories();
   }, []);
 
   const generatedKey = useMemo(

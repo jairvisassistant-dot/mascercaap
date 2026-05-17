@@ -258,6 +258,7 @@ function buildItemsTableHtml(items: OrderItem[], resolvePrice: PriceResolver = (
   `
 }
 
+// Email is intentionally in Spanish — server-side, sent to internal team only
 export function buildOrderEmailHtml(data: OrderInput, resolvePrice?: PriceResolver): string {
   const nombre   = escapeHtml(data.nombre)
   const email    = data.email           ? escapeHtml(data.email)            : "—"

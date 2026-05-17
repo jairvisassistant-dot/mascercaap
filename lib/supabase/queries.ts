@@ -3,7 +3,9 @@ import { supabase } from "@/lib/supabase";
 import type { Product, ProductCategory, ProductLineConfig, Testimonial } from "@/types";
 
 function noClient(fn: string): never[] {
-  console.error(`Supabase not configured — ${fn} returned empty. Check env vars.`);
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(`Supabase not configured — ${fn} returned empty. Check env vars.`);
+  }
   return [];
 }
 
@@ -19,7 +21,7 @@ export const getAllProducts = unstable_cache(
     return data.map(mapRowToProduct);
   },
   ["all-products"],
-  { revalidate: 3600, tags: ["products"] }
+  { revalidate: 300, tags: ["products"] }
 );
 
 export const getFeaturedProducts = unstable_cache(
@@ -36,7 +38,7 @@ export const getFeaturedProducts = unstable_cache(
     return data.map(mapRowToProduct);
   },
   ["featured-products"],
-  { revalidate: 3600, tags: ["products"] }
+  { revalidate: 300, tags: ["products"] }
 );
 
 export const getAllTestimonials = unstable_cache(
@@ -51,7 +53,7 @@ export const getAllTestimonials = unstable_cache(
     return data;
   },
   ["all-testimonials"],
-  { revalidate: 3600, tags: ["testimonials"] }
+  { revalidate: 300, tags: ["testimonials"] }
 );
 
 export const getAllProductLines = unstable_cache(
@@ -74,7 +76,7 @@ export const getAllProductLines = unstable_cache(
     }));
   },
   ["all-product-lines"],
-  { revalidate: 3600, tags: ["product-lines"] }
+  { revalidate: 300, tags: ["product-lines"] }
 );
 
 export const getAllProductCategories = unstable_cache(
@@ -92,7 +94,7 @@ export const getAllProductCategories = unstable_cache(
     }));
   },
   ["all-product-categories"],
-  { revalidate: 3600, tags: ["categories"] }
+  { revalidate: 300, tags: ["categories"] }
 );
 
 function mapRowToProduct(row: Record<string, unknown>): Product {

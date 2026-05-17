@@ -25,16 +25,20 @@ export const productCreateSchema = z.object({
 
 export const productUpdateSchema = productCreateSchema.omit({ id: true });
 
-export const productPatchSchema = z
-  .object({
-    featured: z.boolean().optional(),
-    is_sold_out: z.boolean().optional(),
-    is_best_seller: z.boolean().optional(),
-    active: z.boolean().optional(),
-  })
-  .refine((obj) => Object.keys(obj).length > 0, {
-    message: "No hay campos válidos para actualizar",
-  });
+export function createProductPatchSchema(msgs?: { noValidFields?: string }) {
+  return z
+    .object({
+      featured: z.boolean().optional(),
+      is_sold_out: z.boolean().optional(),
+      is_best_seller: z.boolean().optional(),
+      active: z.boolean().optional(),
+    })
+    .refine((obj) => Object.keys(obj).length > 0, {
+      message: msgs?.noValidFields ?? "No valid fields to update",
+    });
+}
+
+export const productPatchSchema = createProductPatchSchema();
 
 export const reorderSchema = z.object({
   key: z.string().min(1).max(120),
@@ -81,7 +85,7 @@ export const leadUpdateSchema = z.object({
 });
 
 // FAQ schemas
-export const faqCategoryCreateSchema = z.object({
+const faqCategoryCreateSchema = z.object({
   _type: z.literal("category"),
   id: z.string().min(1).max(80),
   label_es: z.string().min(1).max(120),
@@ -89,7 +93,7 @@ export const faqCategoryCreateSchema = z.object({
   icon: z.string().max(8).optional(),
 });
 
-export const faqQuestionCreateSchema = z.object({
+const faqQuestionCreateSchema = z.object({
   _type: z.literal("question"),
   category_id: z.string().min(1).max(80),
   question_es: z.string().min(1).max(300),

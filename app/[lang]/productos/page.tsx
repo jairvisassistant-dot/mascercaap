@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
 import { getAllProducts, getAllProductLines, getAllProductCategories } from "@/lib/supabase/queries";
 
 export const revalidate = 60;
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 type Props = {
   params: Promise<{ lang: string }>;

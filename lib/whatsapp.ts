@@ -9,7 +9,7 @@ export function buildWhatsAppAppUrl(phoneNumber: string | null | undefined, mess
   return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 }
 
-export function buildWhatsAppWebUrl(phoneNumber: string | null | undefined, message: string): string | null {
+function buildWhatsAppWebUrl(phoneNumber: string | null | undefined, message: string): string | null {
   if (!phoneNumber) return null;
   return `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
 }
