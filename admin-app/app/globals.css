@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+/* dark: activa cuando <html data-theme="dark"> */
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Safelist: degradados de líneas de producto (valores dinámicos desde Supabase) */
+@source inline("bg-gradient-to-br from-lime-400 to-green-500 from-rose-400 to-red-600 from-cyan-400 to-teal-600 from-yellow-400 to-orange-500 from-purple-400 to-purple-700 from-blue-400 to-blue-700 from-pink-400 to-pink-700 from-orange-400 to-red-500 from-emerald-400 to-emerald-700 from-violet-400 to-violet-700 from-amber-300 to-amber-600 from-teal-400 to-teal-700");
+
+/* Variables de identidad visual del cliente */
+:root {
+  color-scheme: light;
+
+  /* Colores de marca */
+  --primary: #3f8f46;
+  --primary-dark: #2f6f36;
+  --primary-light: #b8d4b5;
+  --accent: #e58a22;
+  --accent-dark: #c97016;
+  --accent-light: #f1c78f;
+
+  /* Tokens semánticos — tema claro */
+  --surface-page: #ffffff;
+  --surface-soft: #fff8eb;
+  --surface-card: #ffffff;
+  --surface-warm: #f7f1e6;
+  --text-main: #171717;
+  --text-sub: #374151;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --border-soft: rgba(23, 23, 23, 0.08);
+  --border-mid: rgba(23, 23, 23, 0.15);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Tokens semánticos — tema oscuro (charcoal verde-oscuro, no negro puro) */
+  --surface-page: #0f1a12;
+  --surface-soft: #121e15;
+  --surface-card: #172019;
+  --surface-warm: #1b2b1e;
+  --text-main: #f0f4ee;
+  --text-sub: #c8d5c6;
+  --text-muted: #8fa88d;
+  --text-faint: #5a7058;
+  --border-soft: rgba(240, 244, 238, 0.08);
+  --border-mid: rgba(240, 244, 238, 0.14);
+}
+
+/* Configuración de tipografía y tokens de diseño */
+@theme inline {
+  /* Marca */
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-light: var(--accent-light);
+
+  /* Superficies — bg-surface-page, bg-surface-soft, etc. */
+  --color-surface-page: var(--surface-page);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-card: var(--surface-card);
+  --color-surface-warm: var(--surface-warm);
+
+  /* Textos — text-text-main, text-text-muted, etc. */
+  --color-text-main: var(--text-main);
+  --color-text-sub: var(--text-sub);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+
+  /* Bordes — border-border-soft, border-border-mid */
+  --color-border-soft: var(--border-soft);
+  --color-border-mid: var(--border-mid);
+
+  --font-poppins: 'Poppins', sans-serif;
+}
+
+body {
+  background: var(--surface-page);
+  color: var(--text-main);
+  font-family: var(--font-poppins);
+}
+
+/* Estilos base definidos por el cliente */
+.product-card {
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.hero-overlay {
+  background:
+    radial-gradient(circle at 78% 28%, rgba(76, 175, 80, 0.13) 0%, transparent 34%),
+    linear-gradient(
+      90deg,
+      rgba(11, 31, 18, 0.9) 0%,
+      rgba(11, 31, 18, 0.7) 42%,
+      rgba(11, 31, 18, 0.18) 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.14) 58%,
+      rgba(0, 0, 0, 0.08) 100%
+    );
+}
+
+@media (max-width: 767px) {
+  .hero-overlay {
+    background:
+      linear-gradient(
+        to top,
+        rgba(8, 24, 14, 0.86) 0%,
+        rgba(8, 24, 14, 0.58) 52%,
+        rgba(8, 24, 14, 0.2) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(8, 24, 14, 0.64) 0%,
+        rgba(8, 24, 14, 0.2) 100%
+      );
+  }
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Link activo en navbar — underline naranja permanente */
+.nav-link-active::after {
+  width: 100%;
+}
+
+/* 3D flip card styles */
+.perspective-container {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Shimmer glare effect for product cards */
+.card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.card-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 70%
+  );
+  transform: skewX(-14deg);
+  pointer-events: none;
+}
+.card-shimmer:hover::after {
+  animation: card-shimmer-sweep 0.58s ease-in-out forwards;
+}
+@keyframes card-shimmer-sweep {
+  from { left: -80%; }
+  to   { left: 160%; }
+}
+
+/* Entrada suave para heroes y secciones sin JS (reemplaza framer-motion animate) */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up {
+  animation: fade-in-up 0.5s ease both;
+}
+
+/* Marquee de testimonios — dos filas en sentidos contrarios */
+@keyframes marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes marquee-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+@utility animate-marquee-left {
+  animation: marquee-left 84s linear infinite;
+}
+@utility animate-marquee-right {
+  animation: marquee-right 84s linear infinite;
+}

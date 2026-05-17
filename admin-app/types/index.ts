@@ -1,0 +1,150 @@
+// Tipos para el sitio web de Mas Cerca Ap
+
+// ── FAQ / Chatbot ──────────────────────────────────────────────────────────
+export type FAQQuestion = {
+  id: string;
+  question: { es: string; en: string };
+  answer: { es: string; en: string };
+  keywords: string[];
+};
+
+export type FAQCategory = {
+  id: string;
+  label: { es: string; en: string };
+  icon: string;
+  questions: FAQQuestion[];
+};
+
+export type FAQData = {
+  categories: FAQCategory[];
+  fallback: { es: string; en: string };
+};
+
+export type FAQQuestionRow = {
+  id: string;
+  category_id: string;
+  question_es: string;
+  question_en: string;
+  answer_es: string;
+  answer_en: string;
+  keywords: string[];
+  display_order: number;
+  active: boolean;
+};
+
+export type FAQCategoryRow = {
+  id: string;
+  label_es: string;
+  label_en: string;
+  icon: string;
+  display_order: number;
+  active: boolean;
+  faq_questions: FAQQuestionRow[];
+};
+
+export type FAQConfigRow = {
+  id: number;
+  fallback_es: string;
+  fallback_en: string;
+};
+
+// ── Product lines translation ──────────────────────────────────────────────
+export type ProductLineTranslation = { label: string; description: string };
+
+export type ProductLineKey =
+  | "limon"
+  | "limonada-cereza"
+  | "limonada-coco"
+  | "maracuya"
+  | "pulpa-maracuya"
+  | "pulpa-mora"
+  | "pulpa-fresa"
+  | "pulpa-mango"
+  | "pulpa-guanabana"
+  | "pulpa-lulo"
+  | "pulpa-guayaba"
+  | "pulpa-frutos-rojos"
+  | "pulpa-frutos-amarillos"
+  | "pulpa-tomate-arbol"
+  | "kumiss"
+  | (string & {}); // permite líneas dinámicas creadas desde el admin
+
+export type Product = {
+  id: string;
+  name: string;
+  line: string;
+  presentation: string;      // "350ml", "600ml", "1L", "2L", "5L"
+  presentationOrder: number; // para ordenar de menor a mayor
+  price?: number;
+  image: string;
+  description: string;
+  ingredients?: string[];
+  benefits?: string[];
+  // Campos de estado — gestionados desde /admin
+  isSoldOut?: boolean;
+  isBestSeller?: boolean;
+  featured?: boolean;
+};
+
+export type ProductLineConfig = {
+  key: string;
+  label: string;
+  description: string;
+  gradient: string;
+  iconEmoji: string;
+  chipImage?: string;
+  categoryKey?: string | null;
+};
+
+export type ProductCategory = {
+  key: string;
+  label: string;
+};
+
+export type Testimonial = {
+  id: string;
+  name: string;
+  role: string;
+  text: string;
+  text_en?: string;
+  role_en?: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+};
+
+
+// ContactFormData: inferida desde Zod (fuente de verdad), re-exportada aquí para
+// que types/index.ts siga siendo el punto de importación único del proyecto.
+export type { ContactFormData } from "@/lib/schemas/contact";
+
+// ── Leads / Consultas ────────────────────────────────────────────────────────
+export type LeadRow = {
+  id: string;
+  nombre: string;
+  email: string | null;
+  tipo: string;
+  producto_interes: string | null;
+  preguntas_bot: string[];
+  resumen_handoff: string | null;
+  fuente: string;
+  whatsapp_number: string | null;
+  consent_accepted: boolean;
+  created_at: string;
+  estado_seguimiento: string;
+  notas: string | null;
+};
+
+// ── Legal documents ────────────────────────────────────────────────────────
+type LegalSection = {
+  title: { es: string; en: string };
+  content: { es: string; en: string };
+};
+
+export type LegalDocument = {
+  title: { es: string; en: string };
+  lastUpdated: string;
+  sections: LegalSection[];
+};
+
+// ── Order / Pricing (re-exported from lib sources of truth) ────────────────
+export type { PriceEntry, PriceResolver } from "@/lib/order-assistant";
+export type { OrderItem, OrderInput } from "@/lib/schemas/order";

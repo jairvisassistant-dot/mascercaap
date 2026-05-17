@@ -36,6 +36,15 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  // If a separate admin deployment is configured, redirect all /admin traffic there (308 = permanent).
+  const adminAppUrl = process.env.ADMIN_APP_URL;
+  if (adminAppUrl && pathname.startsWith("/admin")) {
+    return NextResponse.redirect(
+      new URL(pathname + request.nextUrl.search, adminAppUrl),
+      { status: 308 }
+    );
+  }
+
   // Admin routes — cookie check only (JWT validation en los Server Components)
   if (pathname.startsWith("/admin")) {
     const isLoginPage = pathname === "/admin/login";
