@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createLeadSchema, ES_LEAD_MESSAGES, EN_LEAD_MESSAGES } from "@/lib/schemas/lead";
-import { supabase } from "@/lib/supabase";
+import { supabasePublic as supabase } from "@/lib/supabase";
 import { SITE_CONFIG } from "@/lib/config";
 import { escapeHtml, sanitizeSubject } from "@/lib/sanitize";
 

@@ -5,7 +5,7 @@ import esMessages from "@/messages/es.json"
 import enMessages from "@/messages/en.json"
 import { buildOrderEmailHtml, buildPriceResolver, type PriceEntry } from "@/lib/order-assistant"
 import { sanitizeSubject } from "@/lib/sanitize"
-import { supabase } from "@/lib/supabase"
+import { supabasePublic as supabase } from "@/lib/supabase"
 
 const requestLog = new Map<string, number[]>()
 const RATE_LIMIT_MAX = 5

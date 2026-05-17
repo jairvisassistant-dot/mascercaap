@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { supabase } from "@/lib/supabase";
+import { supabasePublic as supabase } from "@/lib/supabase";
 import type { Product, ProductCategory, ProductLineConfig, Testimonial } from "@/types";
 
 function noClient(fn: string): never[] {

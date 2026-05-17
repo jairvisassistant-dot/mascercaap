@@ -7,7 +7,7 @@ import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
 import { FAQProvider } from "@/lib/faq-provider";
 import { PriceProvider } from "@/lib/prices/PriceProvider";
-import { supabase } from "@/lib/supabase";
+import { supabasePublic as supabase } from "@/lib/supabase";
 import { getFAQData } from "@/lib/faq-data";
 import { getAllProductCategories } from "@/lib/supabase/queries";
 import type { PriceEntry } from "@/lib/order-assistant";

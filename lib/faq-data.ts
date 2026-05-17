@@ -1,6 +1,6 @@
 import "server-only";
 
-import { supabase } from "@/lib/supabase";
+import { supabasePublic as supabase } from "@/lib/supabase";
 import { faqData as fallbackFAQData } from "@/data/faq";
 import type { FAQData, FAQCategoryRow, FAQConfigRow, FAQQuestionRow } from "@/types";
 
