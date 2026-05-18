@@ -1,32 +1,8 @@
-"use client";
-
-import { m } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 56, scale: 0.94 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.65,
-      delay: i * 0.14,
-      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-    },
-  }),
-  hover: {
-    y: -10,
-    transition: { type: "spring" as const, stiffness: 320, damping: 22 },
-  },
-  tap: {
-    scale: 0.975,
-    transition: { type: "spring" as const, stiffness: 400, damping: 28 },
-  },
-};
 
 type CategoryStructure = {
   key: string;
@@ -72,13 +48,7 @@ export default function ProductCategories({ dict, lang }: { dict: Dictionary; la
   return (
     <section className="py-20 bg-surface-page">
       <div className="max-w-7xl mx-auto px-4">
-        <m.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
+        <div className="fade-in-up text-center mb-14">
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="h-px w-10 bg-primary/40 rounded-full" />
             <span className="text-xs font-bold tracking-[0.22em] text-primary uppercase">
@@ -92,19 +62,14 @@ export default function ProductCategories({ dict, lang }: { dict: Dictionary; la
           <p className="text-text-muted max-w-2xl mx-auto">
             {dict.home.categories.subtitle}
           </p>
-        </m.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {CATEGORIES.map((category, index) => (
-            <m.div
+            <div
               key={category.key}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              whileHover={category.comingSoon ? undefined : "hover"}
-              whileTap={category.comingSoon ? undefined : "tap"}
-              custom={index}
-              viewport={{ once: true }}
+              className="fade-in-up transition-transform duration-300 hover:-translate-y-2.5 active:scale-[0.975]"
+              style={{ animationDelay: `${index * 0.14}s` }}
             >
               <CategoryCard
                 category={category}
@@ -114,7 +79,7 @@ export default function ProductCategories({ dict, lang }: { dict: Dictionary; la
                 lang={lang}
                 priority={index === 0}
               />
-            </m.div>
+            </div>
           ))}
         </div>
       </div>

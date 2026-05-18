@@ -170,7 +170,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                               alt={`${displayName} ${product.presentation}`}
                               fill
                               sizes="(max-width: 768px) 80vw, 320px"
-                              priority={index === 0}
+                              priority
                               className="relative z-10 object-contain drop-shadow-[0_24px_34px_rgba(30,30,20,0.24)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                             />
                           </div>
@@ -240,7 +240,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                           alt={`${displayName} ${product.presentation}`}
                           fill
                           sizes="(max-width: 768px) 80vw, 320px"
-                          priority={index === 0}
+                          priority
                           className="relative z-10 object-contain drop-shadow-[0_24px_34px_rgba(30,30,20,0.24)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                         />
                       </div>

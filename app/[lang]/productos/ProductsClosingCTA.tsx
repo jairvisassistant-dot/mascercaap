@@ -1,6 +1,3 @@
-"use client"
-
-import { m } from "framer-motion"
 import Link from "next/link"
 import type { Dictionary } from "@/lib/i18n"
 
@@ -37,17 +34,14 @@ export function ProductsClosingCTA({ dict, lang }: Props) {
 
           <div className="grid grid-cols-2 gap-4">
             {dict.products.cta.stats.map((stat, i) => (
-              <m.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="bg-white/5 border border-white/10 rounded-xl p-5 text-center"
+                className="fade-in-up bg-white/5 border border-white/10 rounded-xl p-5 text-center"
+                style={{ animationDelay: `${i * 0.08}s` }}
               >
                 <span className="text-3xl font-bold text-primary block mb-1">{stat.value}</span>
                 <span className="text-gray-400 text-xs leading-snug">{stat.label}</span>
-              </m.div>
+              </div>
             ))}
           </div>
         </div>

@@ -1,6 +1,3 @@
-"use client";
-
-import { m } from "framer-motion";
 import type { Dictionary } from "@/lib/i18n";
 
 const icons = [
@@ -33,13 +30,7 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
     <section className="py-24 bg-surface-page">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid gap-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
-          <m.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="max-w-xl"
-          >
+          <div className="fade-in-up max-w-xl">
             <div className="flex items-center gap-3 mb-4">
               <span className="h-px w-10 bg-primary/40 rounded-full" />
               <span className="text-xs font-bold tracking-[0.22em] text-primary uppercase">
@@ -52,17 +43,14 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
             <p className="text-text-muted max-w-[58ch] leading-relaxed">
               {dict.home.whyChooseUs.subtitle}
             </p>
-          </m.div>
+          </div>
 
           <div className="border-y border-border-mid divide-y divide-border-mid bg-surface-page/60">
             {pillars.map((pillar, index) => (
-              <m.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="group grid gap-5 py-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start"
+                className="fade-in-up group grid gap-5 py-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start"
+                style={{ animationDelay: `${index * 0.08}s` }}
               >
                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${accentColors[index]} text-white shadow-sm transition-transform duration-300 group-hover:scale-105`}>
                   {icons[index]}
@@ -71,7 +59,7 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
                   <h3 className="text-lg font-bold text-text-main mb-2">{pillar.title}</h3>
                   <p className="text-sm leading-relaxed text-text-muted">{pillar.description}</p>
                 </div>
-              </m.div>
+              </div>
             ))}
           </div>
         </div>
