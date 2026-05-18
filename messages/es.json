@@ -499,6 +499,8 @@
         "order": "Realizar un pedido",
         "queryOrder": "Consultar pedido",
         "availability": "Validar disponibilidad de producto",
+        "petition": "Petición",
+        "complaintClaim": "Queja y reclamo",
         "contact": "Solicitud de contacto",
         "other": "Otro"
       },
@@ -525,6 +527,8 @@
           "pedido": "realizar un pedido",
           "consulta-pedido": "consultar un pedido",
           "disponibilidad": "validar disponibilidad de producto",
+          "peticion": "una petición",
+          "queja-reclamo": "una queja o reclamo",
           "contacto": "una solicitud de contacto",
           "otro": "otro motivo"
         }

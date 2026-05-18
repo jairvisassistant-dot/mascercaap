@@ -55,7 +55,7 @@ export function createContactSchema(msgs: ContactValidationMessages = DEFAULT_ME
       .min(7, msgs.phoneMin)
       .max(30, msgs.phoneMax)
       .regex(NO_SUBJECT_CONTROL_CHARS, msgs.controlChars),
-    tipo: z.enum(["pedido", "consulta-pedido", "disponibilidad", "contacto", "otro"], {
+    tipo: z.enum(["pedido", "consulta-pedido", "disponibilidad", "peticion", "queja-reclamo", "contacto", "otro"], {
       message: msgs.typeRequired,
     }),
     motivoOtro: z.string().trim()

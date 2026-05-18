@@ -229,6 +229,8 @@ export default function ContactForm({ dict }: ContactFormProps) {
             <option value="pedido">{t.options.order}</option>
             <option value="consulta-pedido">{t.options.queryOrder}</option>
             <option value="disponibilidad">{t.options.availability}</option>
+            <option value="peticion">{t.options.petition}</option>
+            <option value="queja-reclamo">{t.options.complaintClaim}</option>
             <option value="contacto">{t.options.contact}</option>
             <option value="otro">{t.options.other}</option>
           </select>

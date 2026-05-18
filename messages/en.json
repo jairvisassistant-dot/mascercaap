@@ -499,6 +499,8 @@
         "order": "Place an order",
         "queryOrder": "Check an order",
         "availability": "Check product availability",
+        "petition": "Petition",
+        "complaintClaim": "Complaint & claim",
         "contact": "Contact request",
         "other": "Other"
       },
@@ -525,6 +527,8 @@
           "pedido": "place an order",
           "consulta-pedido": "check an order",
           "disponibilidad": "check product availability",
+          "peticion": "a petition",
+          "queja-reclamo": "a complaint or claim",
           "contacto": "a contact request",
           "otro": "another reason"
         }

@@ -38,6 +38,8 @@ const tipoLabel: Record<string, string> = {
   pedido: "Realizar un pedido",
   "consulta-pedido": "Consultar pedido",
   disponibilidad: "Validar disponibilidad de producto",
+  peticion: "Petición",
+  "queja-reclamo": "Queja y reclamo",
   contacto: "Solicitud de contacto",
   otro: "Otro",
 };
