@@ -2,9 +2,16 @@ import { SITE_CONFIG } from "@/lib/config";
 import ContactForm from "@/components/sections/ContactForm";
 import { AnimateInView } from "@/components/ui/motion/AnimateInView";
 import type { Dictionary } from "@/lib/i18n";
+import { getAllProductLines, getAllProducts, getAllProductCategories } from "@/lib/supabase/queries";
 
-export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
+export default async function ContactoPageContent({ dict }: { dict: Dictionary }) {
   const t = dict.contact;
+  const [productLines, products, allCategories] = await Promise.all([
+    getAllProductLines(),
+    getAllProducts(),
+    getAllProductCategories(),
+  ]);
+  const categories = allCategories.filter((c) => c.key !== "todas");
 
   return (
     <div className="pt-20">
@@ -125,7 +132,7 @@ export default function ContactoPageContent({ dict }: { dict: Dictionary }) {
 
             {/* Columna derecha — formulario */}
             <AnimateInView direction="right">
-              <ContactForm dict={dict} />
+              <ContactForm dict={dict} lines={productLines} products={products} categories={categories} />
             </AnimateInView>
           </div>
         </div>

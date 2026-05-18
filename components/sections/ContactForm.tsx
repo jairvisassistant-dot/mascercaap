@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import { createContactSchema } from "@/lib/schemas/contact";
@@ -8,6 +8,7 @@ import { SITE_CONFIG } from "@/lib/config";
 import { buildWhatsAppAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
+import type { Product, ProductCategory, ProductLineConfig } from "@/types";
 
 type FormFields = {
   nombre: string;
@@ -22,13 +23,69 @@ type FormFields = {
 type FieldErrors = Partial<Record<keyof FormFields, string>>;
 
 const EMPTY: FormFields = { nombre: "", empresa: "", email: "", telefono: "", tipo: "", motivoOtro: "", mensaje: "" };
+type AvailabilityCopy = {
+  title: string;
+  description: string;
+  categoryLabel: string;
+  categoryHint: string;
+  categoryPlaceholder: string;
+  categoryRequired: string;
+  linesLabel: string;
+  productsLabel: string;
+  linesHint: string;
+  emptyLinesHint: string;
+  productsHint: string;
+  emptyProductsHint: string;
+  linePlaceholder: string;
+  productPlaceholder: string;
+  templateTitle: string;
+  templateCategoryLabel: string;
+  templateLineLabel: string;
+  templateProductLabel: string;
+  additionalInfoLabel: string;
+  lineRequired: string;
+  productRequired: string;
+};
 
 interface ContactFormProps {
   dict: Dictionary;
+  lines?: ProductLineConfig[];
+  products?: Product[];
+  categories?: ProductCategory[];
 }
 
-export default function ContactForm({ dict }: ContactFormProps) {
+function stripAvailabilityTemplate(message: string, additionalInfoLabel: string) {
+  const marker = `${additionalInfoLabel}:`;
+  const markerIndex = message.indexOf(marker);
+  if (markerIndex === -1) return message;
+
+  return message.slice(markerIndex + marker.length).trimStart();
+}
+
+function buildAvailabilityTemplate(params: {
+  categoryLabel: string;
+  lineLabel: string;
+  productLabel: string;
+  copy: AvailabilityCopy;
+  existingMessage: string;
+}) {
+  const { categoryLabel, lineLabel, productLabel, copy, existingMessage } = params;
+  const customMessage = stripAvailabilityTemplate(existingMessage, copy.additionalInfoLabel);
+
+  return [
+    copy.templateTitle,
+    `${copy.templateCategoryLabel}: ${categoryLabel}`,
+    `${copy.templateLineLabel}: ${lineLabel}`,
+    `${copy.templateProductLabel}: ${productLabel}`,
+    "",
+    `${copy.additionalInfoLabel}:`,
+    customMessage,
+  ].join("\n").trimEnd();
+}
+
+export default function ContactForm({ dict, lines = [], products = [], categories = [] }: ContactFormProps) {
   const t = dict.contact.form;
+  const availability = t.availabilityAssistant as AvailabilityCopy;
   const [fields, setFields] = useState<FormFields>(EMPTY);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [consented, setConsented] = useState(false);
@@ -36,12 +93,71 @@ export default function ContactForm({ dict }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
+  const [selectedCategoryKey, setSelectedCategoryKey] = useState("");
+  const [selectedLineKey, setSelectedLineKey] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [availabilityError, setAvailabilityError] = useState<string | null>(null);
+
+  const linesByKey = useMemo(
+    () => new Map(lines.map((line) => [line.key, line])),
+    [lines]
+  );
+
+  const visibleLines = useMemo(
+    () => lines.filter((line) => line.categoryKey === selectedCategoryKey),
+    [lines, selectedCategoryKey]
+  );
+
+  const visibleProducts = useMemo(
+    () => products.filter((product) => product.line === selectedLineKey),
+    [products, selectedLineKey]
+  );
+
+  const selectedCategory = useMemo(
+    () => categories.find((c) => c.key === selectedCategoryKey) ?? null,
+    [categories, selectedCategoryKey]
+  );
+
+  const selectedLine = useMemo(
+    () => linesByKey.get(selectedLineKey) ?? null,
+    [linesByKey, selectedLineKey]
+  );
+
+  const selectedProduct = useMemo(
+    () => products.find((product) => product.id === selectedProductId) ?? null,
+    [products, selectedProductId]
+  );
 
   useEffect(() => {
     if (!submitStatus) return;
     const timer = setTimeout(() => setSubmitStatus(null), 8000);
     return () => clearTimeout(timer);
   }, [submitStatus]);
+
+  useEffect(() => {
+    if (fields.tipo !== "disponibilidad") return;
+
+    if (!selectedCategory || !selectedLine || !selectedProduct) {
+      setFields((prev) => {
+        const nextMessage = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
+        return nextMessage === prev.mensaje ? prev : { ...prev, mensaje: nextMessage };
+      });
+      return;
+    }
+
+    setFields((prev) => ({
+      ...prev,
+      mensaje: buildAvailabilityTemplate({
+        categoryLabel: selectedCategory.label,
+        lineLabel: selectedLine.label,
+        productLabel: `${selectedProduct.name} (${selectedProduct.presentation})`,
+        copy: availability,
+        existingMessage: prev.mensaje,
+      }),
+    }));
+    setAvailabilityError(null);
+    setFieldErrors((prev) => ({ ...prev, mensaje: undefined }));
+  }, [availability, fields.tipo, selectedCategory, selectedLine, selectedProduct]);
 
   function update(key: keyof FormFields) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -52,6 +168,23 @@ export default function ContactForm({ dict }: ContactFormProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (fields.tipo === "disponibilidad") {
+      if (!selectedCategoryKey) {
+        setAvailabilityError(availability.categoryRequired);
+        return;
+      }
+
+      if (!selectedLineKey) {
+        setAvailabilityError(availability.lineRequired);
+        return;
+      }
+
+      if (!selectedProductId) {
+        setAvailabilityError(availability.productRequired);
+        return;
+      }
+    }
 
     if (!consented) {
       setConsentError(true);
@@ -104,6 +237,9 @@ export default function ContactForm({ dict }: ContactFormProps) {
         if (waNumber) setWhatsappUrl(buildWhatsAppAppUrl(waNumber, msg));
         setSubmitStatus("success");
         setFields(EMPTY);
+        setSelectedLineKey("");
+        setSelectedProductId("");
+        setAvailabilityError(null);
         setFieldErrors({});
         setConsented(false);
       } else {
@@ -216,6 +352,12 @@ export default function ContactForm({ dict }: ContactFormProps) {
             value={fields.tipo}
             onChange={(e) => {
               update("tipo")(e);
+              if (e.target.value !== "disponibilidad") {
+                setSelectedCategoryKey("");
+                setSelectedLineKey("");
+                setSelectedProductId("");
+                setAvailabilityError(null);
+              }
               if (e.target.value !== "otro") {
                 setFields((prev) => ({ ...prev, motivoOtro: "" }));
                 setFieldErrors((prev) => ({ ...prev, motivoOtro: undefined }));
@@ -238,6 +380,89 @@ export default function ContactForm({ dict }: ContactFormProps) {
             <p className="text-red-500 text-sm mt-1">{fieldErrors.tipo}</p>
           )}
         </div>
+
+        {fields.tipo === "disponibilidad" && (
+          <div className="space-y-4 rounded-2xl border border-border-soft bg-surface-soft p-4">
+            <p className="text-sm font-semibold text-text-main">{availability.title}</p>
+
+            {/* Paso 1 — Categoría */}
+            <div>
+              <label htmlFor="availability-category" className="block text-sm font-medium text-text-sub mb-1">
+                {availability.categoryLabel}
+              </label>
+              <select
+                id="availability-category"
+                value={selectedCategoryKey}
+                onChange={(e) => {
+                  setSelectedCategoryKey(e.target.value);
+                  setSelectedLineKey("");
+                  setSelectedProductId("");
+                  setAvailabilityError(null);
+                }}
+                className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
+              >
+                <option value="">{availability.categoryPlaceholder}</option>
+                {categories.map((cat) => (
+                  <option key={cat.key} value={cat.key}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Paso 2 — Línea */}
+            <div>
+              <label htmlFor="availability-line" className="block text-sm font-medium text-text-sub mb-1">
+                {availability.linesLabel}
+              </label>
+              <select
+                id="availability-line"
+                value={selectedLineKey}
+                disabled={!selectedCategoryKey}
+                onChange={(e) => {
+                  setSelectedLineKey(e.target.value);
+                  setSelectedProductId("");
+                  setAvailabilityError(null);
+                }}
+                className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <option value="">{availability.linePlaceholder}</option>
+                {visibleLines.map((line) => (
+                  <option key={line.key} value={line.key}>
+                    {line.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="availability-product" className="block text-sm font-medium text-text-sub mb-1">
+                {availability.productsLabel}
+              </label>
+              <select
+                id="availability-product"
+                value={selectedProductId}
+                onChange={(e) => {
+                  setSelectedProductId(e.target.value);
+                  setAvailabilityError(null);
+                }}
+                disabled={!selectedLineKey}
+                className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <option value="">{availability.productPlaceholder}</option>
+                {visibleProducts.map((product) => (
+                  <option key={product.id} value={product.id}>
+                    {product.name} ({product.presentation})
+                  </option>
+                ))}
+              </select>
+
+              {availabilityError && (
+                <p className="mt-2 text-sm text-red-500">{availabilityError}</p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Motivo — visible solo cuando tipo es "otro" */}
         {fields.tipo === "otro" && (
@@ -275,7 +500,7 @@ export default function ContactForm({ dict }: ContactFormProps) {
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.mensaje ? "border-red-500" : "border-border-mid"
             } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
-            placeholder={t.placeholders.message}
+            placeholder={fields.tipo === "disponibilidad" ? availability.additionalInfoLabel : t.placeholders.message}
           />
           {fieldErrors.mensaje && (
             <p className="text-red-500 text-sm mt-1">{fieldErrors.mensaje}</p>
