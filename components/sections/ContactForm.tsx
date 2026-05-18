@@ -15,12 +15,13 @@ type FormFields = {
   email: string;
   telefono: string;
   tipo: string;
+  motivoOtro: string;
   mensaje: string;
 };
 
 type FieldErrors = Partial<Record<keyof FormFields, string>>;
 
-const EMPTY: FormFields = { nombre: "", empresa: "", email: "", telefono: "", tipo: "", mensaje: "" };
+const EMPTY: FormFields = { nombre: "", empresa: "", email: "", telefono: "", tipo: "", motivoOtro: "", mensaje: "" };
 
 interface ContactFormProps {
   dict: Dictionary;
@@ -84,10 +85,13 @@ export default function ContactForm({ dict }: ContactFormProps) {
       if (response.ok) {
         const wm = t.whatsappMsg;
         const tipoLabels = wm.tipoLabel as Record<string, string>;
+        const reason = data.tipo === "otro" && data.motivoOtro
+          ? data.motivoOtro
+          : (tipoLabels[data.tipo] ?? data.tipo);
         const msg = buildWhatsAppMessage([
           wm.greeting,
           "",
-          wm.intro.replace("{name}", data.nombre).replace("{reason}", tipoLabels[data.tipo] ?? data.tipo),
+          wm.intro.replace("{name}", data.nombre).replace("{reason}", reason),
           data.empresa ? wm.company.replace("{company}", data.empresa) : null,
           wm.email.replace("{email}", data.email),
           wm.phone.replace("{phone}", data.telefono),
@@ -210,20 +214,51 @@ export default function ContactForm({ dict }: ContactFormProps) {
           <select
             id="tipo"
             value={fields.tipo}
-            onChange={update("tipo")}
+            onChange={(e) => {
+              update("tipo")(e);
+              if (e.target.value !== "otro") {
+                setFields((prev) => ({ ...prev, motivoOtro: "" }));
+                setFieldErrors((prev) => ({ ...prev, motivoOtro: undefined }));
+              }
+            }}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.tipo ? "border-red-500" : "border-border-mid"
             } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
           >
             <option value="">{t.options.default}</option>
             <option value="pedido">{t.options.order}</option>
-            <option value="distribucion">{t.options.distribution}</option>
+            <option value="consulta-pedido">{t.options.queryOrder}</option>
+            <option value="disponibilidad">{t.options.availability}</option>
+            <option value="contacto">{t.options.contact}</option>
             <option value="otro">{t.options.other}</option>
           </select>
           {fieldErrors.tipo && (
             <p className="text-red-500 text-sm mt-1">{fieldErrors.tipo}</p>
           )}
         </div>
+
+        {/* Motivo — visible solo cuando tipo es "otro" */}
+        {fields.tipo === "otro" && (
+          <div>
+            <label htmlFor="motivoOtro" className="block text-sm font-medium text-text-sub mb-1">
+              {t.labels.otherReason}
+            </label>
+            <input
+              id="motivoOtro"
+              type="text"
+              value={fields.motivoOtro}
+              onChange={update("motivoOtro")}
+              maxLength={200}
+              className={`w-full px-4 py-3 rounded-lg border ${
+                fieldErrors.motivoOtro ? "border-red-500" : "border-border-mid"
+              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+              placeholder={t.placeholders.otherReason}
+            />
+            {fieldErrors.motivoOtro && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.motivoOtro}</p>
+            )}
+          </div>
+        )}
 
         {/* Mensaje */}
         <div>

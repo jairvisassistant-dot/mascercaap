@@ -15,6 +15,8 @@ export type ContactValidationMessages = {
   messageMin: string;
   messageMax: string;
   controlChars: string;
+  motivoOtroRequired: string;
+  motivoOtroMax: string;
 };
 
 // Mensajes por defecto en español — usados en el servidor (API route).
@@ -30,6 +32,8 @@ const DEFAULT_MESSAGES: ContactValidationMessages = {
   messageMin: "El mensaje debe tener al menos 10 caracteres",
   messageMax: "El mensaje no puede superar 1200 caracteres",
   controlChars: "El campo contiene caracteres no permitidos",
+  motivoOtroRequired: "Indica el motivo de tu consulta",
+  motivoOtroMax: "El motivo no puede superar 200 caracteres",
 };
 
 const NO_SUBJECT_CONTROL_CHARS = /^[^\r\n\u0000-\u001f\u007f]*$/;
@@ -51,12 +55,23 @@ export function createContactSchema(msgs: ContactValidationMessages = DEFAULT_ME
       .min(7, msgs.phoneMin)
       .max(30, msgs.phoneMax)
       .regex(NO_SUBJECT_CONTROL_CHARS, msgs.controlChars),
-    tipo: z.enum(["pedido", "distribucion", "otro"], {
+    tipo: z.enum(["pedido", "consulta-pedido", "disponibilidad", "contacto", "otro"], {
       message: msgs.typeRequired,
     }),
+    motivoOtro: z.string().trim()
+      .max(200, msgs.motivoOtroMax)
+      .optional(),
     mensaje: z.string().trim()
       .min(10, msgs.messageMin)
       .max(1200, msgs.messageMax),
+  }).superRefine((data, ctx) => {
+    if (data.tipo === "otro" && !data.motivoOtro?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: msgs.motivoOtroRequired,
+        path: ["motivoOtro"],
+      });
+    }
   });
 }
 

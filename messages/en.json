@@ -236,10 +236,22 @@
       "text": "Contact us directly. We have more varieties and can build custom orders for your business.",
       "button": "Talk to us",
       "stats": [
-        { "value": "43+", "label": "Products in catalog" },
-        { "value": "<24h", "label": "Commercial response" },
-        { "value": "3", "label": "Product lines" },
-        { "value": "WhatsApp", "label": "Direct support" }
+        {
+          "value": "43+",
+          "label": "Products in catalog"
+        },
+        {
+          "value": "<24h",
+          "label": "Commercial response"
+        },
+        {
+          "value": "3",
+          "label": "Product lines"
+        },
+        {
+          "value": "WhatsApp",
+          "label": "Direct support"
+        }
       ]
     },
     "pulpaGrid": {
@@ -464,26 +476,30 @@
     },
     "form": {
       "title": "Send Us a Message",
-      "helper": "Use this form for orders, distribution, or business inquiries. We'll reply by email or WhatsApp depending on your request.",
+      "helper": "Use this form for orders, inquiries, or commercial information. We'll reply by email or WhatsApp depending on your request.",
       "labels": {
         "name": "Full name *",
         "company": "Company / Business (optional)",
         "email": "Email *",
         "phone": "Phone *",
         "type": "Inquiry type *",
-        "message": "Message *"
+        "message": "Message *",
+        "otherReason": "Reason *"
       },
       "placeholders": {
         "name": "Your name",
         "company": "Your company name",
         "email": "you@email.com",
         "phone": "300 123 4567",
-        "message": "Tell us how we can help you..."
+        "message": "Tell us how we can help you...",
+        "otherReason": "Briefly tell us the reason for your inquiry"
       },
       "options": {
         "default": "Select an option",
         "order": "Place an order",
-        "distribution": "Distributor / Wholesale",
+        "queryOrder": "Check an order",
+        "availability": "Check product availability",
+        "contact": "Contact request",
         "other": "Other"
       },
       "submit": "Send message",
@@ -507,8 +523,10 @@
         "message": "💬 Message:",
         "tipoLabel": {
           "pedido": "place an order",
-          "distribucion": "become a distributor / wholesale",
-          "otro": "make an inquiry"
+          "consulta-pedido": "check an order",
+          "disponibilidad": "check product availability",
+          "contacto": "a contact request",
+          "otro": "another reason"
         }
       }
     },
@@ -523,7 +541,9 @@
       "typeRequired": "Select an inquiry type",
       "messageMin": "Message must be at least 10 characters",
       "messageMax": "Message cannot exceed 1200 characters",
-      "controlChars": "This field contains unsupported characters"
+      "controlChars": "This field contains unsupported characters",
+      "motivoOtroRequired": "Please indicate the reason for your inquiry",
+      "motivoOtroMax": "The reason cannot exceed 200 characters"
     }
   },
   "productLines": {

@@ -36,7 +36,9 @@ function checkRateLimit(ip: string): boolean {
 
 const tipoLabel: Record<string, string> = {
   pedido: "Realizar un pedido",
-  distribucion: "Distribuidor / Mayoreo",
+  "consulta-pedido": "Consultar pedido",
+  disponibilidad: "Validar disponibilidad de producto",
+  contacto: "Solicitud de contacto",
   otro: "Otro",
 };
 
@@ -44,12 +46,13 @@ const tipoLabel: Record<string, string> = {
 
 function buildEmailHtml(data: ContactFormData): string {
   // Escapar todos los datos de usuario antes de interpolar en HTML
-  const nombre   = escapeHtml(data.nombre);
-  const empresa  = data.empresa ? escapeHtml(data.empresa) : null;
-  const email    = escapeHtml(data.email);
-  const telefono = escapeHtml(data.telefono);
-  const mensaje  = escapeHtml(data.mensaje);
-  const tipo     = escapeHtml(tipoLabel[data.tipo] ?? data.tipo);
+  const nombre     = escapeHtml(data.nombre);
+  const empresa    = data.empresa ? escapeHtml(data.empresa) : null;
+  const email      = escapeHtml(data.email);
+  const telefono   = escapeHtml(data.telefono);
+  const mensaje    = escapeHtml(data.mensaje);
+  const tipo       = escapeHtml(tipoLabel[data.tipo] ?? data.tipo);
+  const motivoOtro = data.motivoOtro ? escapeHtml(data.motivoOtro) : null;
 
   return `
 <!DOCTYPE html>
@@ -102,6 +105,14 @@ function buildEmailHtml(data: ContactFormData): string {
                   <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
                     <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Empresa / Negocio</p>
                     <p style="margin:4px 0 0;font-size:16px;font-weight:600;color:#111827;">${empresa}</p>
+                  </td>
+                </tr>` : ""}
+
+                ${motivoOtro ? `
+                <tr>
+                  <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                    <p style="margin:0;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;">Motivo</p>
+                    <p style="margin:4px 0 0;font-size:16px;font-weight:600;color:#111827;">${motivoOtro}</p>
                   </td>
                 </tr>` : ""}
 
