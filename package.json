@@ -6,7 +6,8 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "concurrently --names main,admin --prefix-colors cyan,yellow \"next dev --webpack\" \"npm --prefix admin-app run dev\"",
+    "dev:main": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -30,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.2",
+    "concurrently": "^9.2.1",
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "^16.2.6",
