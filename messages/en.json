@@ -549,19 +549,19 @@
   "productLines": {
     "limon": {
       "label": "Lemon Juice",
-      "description": "Bold, unmistakable lemon flavor. The classic that never fails."
+      "description": "Concentrate for preparing fresh lemonade. The classic that never fails."
     },
     "limonada-cereza": {
       "label": "Cherry Lemonade",
-      "description": "The acidity of lemon with the irresistible sweet touch of cherry."
+      "description": "Concentrate for preparing lemonade with a sweet cherry twist."
     },
     "limonada-coco": {
       "label": "Coconut Lemonade",
-      "description": "Refreshing tropical combination with a creamy touch."
+      "description": "Concentrate for preparing a refreshing tropical lemonade with coconut."
     },
     "maracuya": {
       "label": "Passion Fruit Juice",
-      "description": "Exotic and vibrant flavor that awakens the senses."
+      "description": "Concentrate for preparing vibrant passion fruit drinks."
     },
     "pulpa-maracuya": {
       "label": "Passion Fruit Pulp",
