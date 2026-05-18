@@ -20,7 +20,7 @@
     "productsTitle": "Products",
     "productLines": {
       "todas": "All",
-      "jugos": "Juices & Lemonades",
+      "zumos": "Juices & Lemonades",
       "pulpas": "Fruit Pulps",
       "lacteos": "Dairy"
     },
@@ -584,7 +584,7 @@
       "description": "Ideal for natural juices and sauces, low in calories."
     },
     "kumiss": {
-      "label": "Dairy",
+      "label": "Kumis Yolito",
       "description": "Fermented dairy drink, tradition and flavor in every sip."
     }
   },
@@ -738,6 +738,7 @@
     "step1Label": "How many cups?",
     "step2Label": "Which fruit?",
     "step3Label": "Which pack size works best for you?",
+    "customLabel": "Custom",
     "customPlaceholder": "Number of cups",
     "ctaWhatsapp": "Place order",
     "disclaimer": "Approximate values based on standard preparation. May vary by recipe and intensity.",

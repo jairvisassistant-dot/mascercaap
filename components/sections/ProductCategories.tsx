@@ -41,9 +41,9 @@ type CategoryStructure = {
 
 const CATEGORIES: CategoryStructure[] = [
   {
-    key: "jugos",
+    key: "zumos",
     image: "/imgs/SKU_Limon-Portada.webp",
-    href: "/productos?categoria=jugos",
+    href: "/productos?categoria=zumos",
     gradient: "from-[#dcefc5] via-[#8fbd68] to-[#3f7f4a]",
     glowColor: "bg-lime-100/24",
     emoji: "🍋",

@@ -20,7 +20,7 @@
     "productsTitle": "Productos",
     "productLines": {
       "todas": "Todas",
-      "jugos": "Zumos & Limonadas",
+      "zumos": "Zumos y Limonadas",
       "pulpas": "Pulpas de Frutas",
       "lacteos": "Lácteos"
     },
@@ -738,6 +738,7 @@
     "step1Label": "¿Para cuántos vasos?",
     "step2Label": "¿Qué fruta?",
     "step3Label": "¿Cuál presentación te conviene más?",
+    "customLabel": "Personalizado",
     "customPlaceholder": "Cantidad de vasos",
     "ctaWhatsapp": "Hacer pedido",
     "disclaimer": "Valores aproximados según preparación estándar. Puede variar según receta e intensidad.",
