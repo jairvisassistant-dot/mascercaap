@@ -69,7 +69,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
 
   const cupChipOptions = [
     ...CUP_OPTIONS.map((v) => ({ value: v, label: String(v) })),
-    { value: CUSTOM_VALUE, label: "Personalizado" },
+    { value: CUSTOM_VALUE, label: t.customLabel },
   ]
 
   function advanceStep1IfReady(prep: PrepType | null, cups: number | null) {

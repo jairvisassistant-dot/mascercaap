@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Image from "next/image";
 import { useHelpHub } from "@/lib/help-hub-context";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product } from "@/types";
 import type { Dictionary } from "@/lib/i18n";
 
@@ -59,6 +60,8 @@ const cardStyles = [
 export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
   const hooks = dict.home.featured.productHooks;
   const { openDrawer } = useHelpHub();
+  const { lang } = useDictionary();
+  const pl = dict.productLines as Record<string, { label: string }>;
   const [canFlip, setCanFlip] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -133,6 +136,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
             {products.map((product, index) => {
               const hook = hooks[index] ?? hooks[hooks.length - 1];
               const style = cardStyles[index % cardStyles.length];
+              const displayName = lang === "en" ? (pl[product.line]?.label ?? product.name) : product.name;
 
               return (
                 <m.article
@@ -163,10 +167,10 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                             <div className={`absolute h-44 w-44 rounded-full blur-3xl ${style.imageGlow}`} />
                             <Image
                               src={product.image}
-                              alt={`${product.name} ${product.presentation}`}
+                              alt={`${displayName} ${product.presentation}`}
                               fill
                               sizes="(max-width: 768px) 80vw, 320px"
-                              priority={index === 0}
+                              priority
                               className="relative z-10 object-contain drop-shadow-[0_24px_34px_rgba(30,30,20,0.24)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                             />
                           </div>
@@ -176,7 +180,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                               {hook.kicker}
                             </p>
                             <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
-                              {product.name}
+                              {displayName}
                             </h3>
                           </div>
                         </div>
@@ -196,7 +200,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                               {hook.kicker}
                             </p>
                             <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
-                              {product.name}
+                              {displayName}
                             </h3>
                             <p className="mt-4 min-h-[5rem] sm:min-h-[8rem] text-sm leading-relaxed text-gray-500">
                               {hook.text}
@@ -233,10 +237,10 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                         <div className={`absolute h-44 w-44 rounded-full blur-3xl ${style.imageGlow}`} />
                         <Image
                           src={product.image}
-                          alt={`${product.name} ${product.presentation}`}
+                          alt={`${displayName} ${product.presentation}`}
                           fill
                           sizes="(max-width: 768px) 80vw, 320px"
-                          priority={index === 0}
+                          priority
                           className="relative z-10 object-contain drop-shadow-[0_24px_34px_rgba(30,30,20,0.24)] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                         />
                       </div>
@@ -246,7 +250,7 @@ export default function FeaturedProducts({ products, dict }: FeaturedProductsPro
                           {hook.kicker}
                         </p>
                         <h3 className="text-2xl font-bold leading-tight tracking-[-0.035em] text-gray-900">
-                          {product.name}
+                          {displayName}
                         </h3>
                         <p className="mt-3 min-h-[3.75rem] text-sm leading-relaxed text-gray-500">
                           {hook.text}

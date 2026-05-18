@@ -14,6 +14,11 @@ interface ProductLightboxProps {
   lang: string;
 }
 
+const PREPARATION_NOTICE = {
+  es: "Producto no listo para consumo directo. Debe diluirse antes de consumir. Ideal para jugos, coctelería, repostería y bebidas refrescantes. Elaborado bajo altos estándares y rigurosos controles de calidad. Hecho en Colombia.",
+  en: "Not ready for direct consumption. Must be diluted before drinking. Ideal for juices, cocktails, baking, and refreshing beverages. Made under high standards and rigorous quality controls. Made in Colombia.",
+} as const
+
 export default function ProductLightbox({ product, isOpen, onClose, dict, lang }: ProductLightboxProps) {
   const t = dict.products.lightbox;
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
@@ -22,6 +27,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
     lang !== "es"
       ? (pl[product.line]?.description ?? product.description)
       : product.description;
+  const preparationNotice = lang === "es" ? PREPARATION_NOTICE.es : PREPARATION_NOTICE.en;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -51,7 +57,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
       />
 
       {/* Card */}
-      <div className="relative z-10 flex w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-surface-card shadow-[0_32px_80px_rgba(15,23,42,0.28)] ring-1 ring-border-soft sm:flex-row">
+      <div className="relative z-10 flex w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-surface-card shadow-[0_32px_80px_rgba(15,23,42,0.28)] ring-1 ring-border-soft sm:max-h-[90vh] sm:flex-row">
 
         {/* Close button */}
         <button
@@ -80,7 +86,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
         </div>
 
         {/* Info panel */}
-        <div className="flex flex-1 flex-col justify-center gap-4 p-7 sm:p-9">
+        <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-6 sm:p-8">
           <div>
             <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">
               {pl[product.line]?.label ?? product.line}
@@ -95,14 +101,9 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
             <p className="text-sm leading-relaxed text-text-sub">{displayDescription}</p>
           )}
 
-          {lang === "es" && product.ingredients && product.ingredients.length > 0 && (
-            <div>
-              <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-text-muted">
-                {t.ingredients}
-              </p>
-              <p className="text-sm text-text-sub">{product.ingredients.join(", ")}</p>
-            </div>
-          )}
+          <p className="rounded-xl border border-primary/20 bg-primary/8 px-3 py-2 text-xs leading-relaxed text-text-sub">
+            {preparationNotice}
+          </p>
 
           {lang === "es" && product.benefits && product.benefits.length > 0 && (
             <div>

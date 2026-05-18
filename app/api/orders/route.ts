@@ -3,7 +3,7 @@ import { z } from "zod"
 import { createOrderSchema, type OrderItem } from "@/lib/schemas/order"
 import esMessages from "@/messages/es.json"
 import enMessages from "@/messages/en.json"
-import { buildOrderEmailHtml, buildPriceResolver, type PriceEntry } from "@/lib/order-assistant"
+import { buildOrderEmailHtml, buildPriceResolver, is120gPackPresentation, type PriceEntry } from "@/lib/order-assistant"
 import { sanitizeSubject } from "@/lib/sanitize"
 import { supabasePublic as supabase } from "@/lib/supabase"
 
@@ -54,7 +54,11 @@ export async function POST(request: Request) {
     // Guardar lead en Supabase para marketing (ignorar error — no bloquear el pedido)
     if (supabase) {
       const productoInteres = data.items
-        .map((item: OrderItem) => `${item.fruit} ${item.presentation} ×${item.quantity}`)
+        .map((item: OrderItem) =>
+          is120gPackPresentation(item.presentation)
+            ? `${item.fruit} ${item.presentation} ×${item.quantity} paq`
+            : `${item.fruit} ${item.presentation} ×${item.quantity}`
+        )
         .join(", ")
 
       const { error: dbError } = await supabase.from("leads").insert({

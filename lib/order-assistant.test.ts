@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest"
 import {
   getProductOptionsForType,
+  calculateItemLineTotal,
   calculateOrderTotal,
+  getDeliveryBenefit,
   buildWhatsappMessage,
   buildOrderEmailHtml,
 } from "./order-assistant"
@@ -79,13 +81,13 @@ describe("getProductOptionsForType", () => {
 // calculateOrderTotal
 // ──────────────────────────────────────────────
 describe("calculateOrderTotal", () => {
-  it("calculates subtotal and no discount for < 10 units", () => {
+  it("calculates subtotal for 120g using pack-of-10 logic", () => {
     const items = [{ productType: "Pulpas", fruit: "Maracuyá", presentation: "120g" as const, quantity: 5 }]
     const t = calculateOrderTotal(items, mockResolvePrice)
-    expect(t.subtotal).toBe(2900 * 5)
+    expect(t.subtotal).toBe(2900 * 50)
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
-    expect(t.total).toBe(14500)
+    expect(t.total).toBe(145000)
     expect(t.hasPrice).toBe(true)
   })
 
@@ -109,13 +111,13 @@ describe("calculateOrderTotal", () => {
     expect(t.hasPrice).toBe(false)
   })
 
-  it("keeps net total without volume discount for 50+ units", () => {
+  it("keeps net total without volume discount for 50 packs of 120g", () => {
     const items = [{ productType: "Pulpas", fruit: "Mora", presentation: "120g" as const, quantity: 50 }]
     const t = calculateOrderTotal(items, mockResolvePrice)
-    expect(t.subtotal).toBe(2300 * 50)
+    expect(t.subtotal).toBe(2300 * 500)
     expect(t.discountRate).toBe(0)
     expect(t.discount).toBe(0)
-    expect(t.total).toBe(2300 * 50)
+    expect(t.total).toBe(2300 * 500)
   })
 
   it("returns hasPrice false and zero subtotal when no resolver provided", () => {
@@ -123,6 +125,39 @@ describe("calculateOrderTotal", () => {
     const t = calculateOrderTotal(items)
     expect(t.hasPrice).toBe(false)
     expect(t.subtotal).toBe(0)
+  })
+})
+
+describe("calculateItemLineTotal", () => {
+  it("uses packs for 120g and units for other presentations", () => {
+    const line120 = calculateItemLineTotal(
+      { fruit: "Mora", presentation: "120g", quantity: 3 },
+      mockResolvePrice
+    )
+    const line300 = calculateItemLineTotal(
+      { fruit: "Mora", presentation: "300g", quantity: 3 },
+      mockResolvePrice
+    )
+
+    expect(line120).toBe(2300 * 30)
+    expect(line300).toBe(4400 * 3)
+  })
+})
+
+// ──────────────────────────────────────────────
+// getDeliveryBenefit
+// ──────────────────────────────────────────────
+describe("getDeliveryBenefit", () => {
+  it("qualifies for free delivery at 60.000 or more", () => {
+    const benefit = getDeliveryBenefit(60000)
+    expect(benefit.qualifiesFreeDelivery).toBe(true)
+    expect(benefit.missingAmount).toBe(0)
+  })
+
+  it("returns remaining amount when below threshold", () => {
+    const benefit = getDeliveryBenefit(48500)
+    expect(benefit.qualifiesFreeDelivery).toBe(false)
+    expect(benefit.missingAmount).toBe(11500)
   })
 })
 

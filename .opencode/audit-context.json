@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "generated_at": "2026-05-16T22:52:24Z",
+    "project_root": "/home/jilz/Escritorio/mas-cerca-ap"
+  },
+  "baseline": {
+    "hash": "05e591d",
+    "source": "heurística git (audit|baseline)",
+    "branch": "feat/help-hub-maturation",
+    "worktree": "modificado",
+    "commits_since": 0,
+    "diff_mode": "05e591d..HEAD + working tree modificado"
+  },
+  "project": {
+    "framework": "Next.js ^16.2.6",
+    "total_source_files": 107,
+    "tsx_components": 84,
+    "ts_modules": 23,
+    "use_client_files": ["components/sections/DailyOffer.tsx", "components/sections/NosotrosPageContent.tsx", "components/sections/FeaturedProducts.tsx", "components/sections/YieldCalculator.tsx", "components/sections/ContactForm.tsx", "components/sections/WhyChooseUs.tsx", "components/sections/ProductCategories.tsx", "components/sections/OrderAssistantCTA.tsx", "components/sections/MisionVisionTabs.tsx", "components/layout/Navbar.tsx", "components/layout/AdminNavbar.tsx", "components/ui/TestimonialMarquee.tsx", "components/ui/ChipSelector.tsx", "components/ui/ProductGridCard.tsx", "components/ui/ProductLineRow.tsx", "components/ui/ProductCard.tsx", "components/ui/HeroCarousel.tsx", "components/ui/drawer-views/LegalView.tsx", "components/ui/drawer-views/ContactView.tsx", "components/ui/drawer-views/HelpMenu.tsx", "components/ui/drawer-views/FaqView.tsx", "components/ui/drawer-views/OrderAssistantView.tsx", "components/ui/drawer-views/WhatsAppConnectView.tsx", "components/ui/LanguageSwitcher.tsx", "components/ui/PulpaFruitGrid.tsx", "components/ui/CookieConsent.tsx", "components/ui/HelpHub.tsx", "components/ui/ScrollProgress.tsx", "components/ui/ThemeToggle.tsx", "components/ui/HelpDrawer.tsx", "components/ui/ProductLightbox.tsx", "components/ui/motion/AnimateInView.tsx", "components/ui/AnimatedWhatsAppButton.tsx", "app/[lang]/productos/ProductosClient.tsx", "app/admin/categorias/CategoriasList.tsx", "app/admin/categorias/NuevaCategoriaForm.tsx", "app/admin/lineas/NuevaLineaForm.tsx", "app/admin/lineas/LineasList.tsx", "app/admin/productos/ProductosAdminClient.tsx", "app/admin/productos/ProductoForm.tsx", "app/admin/login/page.tsx", "app/admin/faq/components/NewQuestionForm.tsx", "app/admin/faq/components/FAQCategoryCard.tsx", "app/admin/faq/components/FAQQuestionItem.tsx", "app/admin/faq/components/ConfigSection.tsx", "app/admin/faq/components/QuestionEditForm.tsx", "app/admin/faq/components/NewCategoryForm.tsx", "app/admin/faq/components/ConfirmDeleteBox.tsx", "app/admin/faq/components/CategoryEditForm.tsx", "app/admin/faq/FAQAdminClient.tsx", "app/admin/consultas/ConsultasList.tsx"]
+  },
+  "i18n": {
+    "languages": ["es", "en"],
+    "es_keys_count": 15,
+    "en_keys_count": 15,
+    "symmetry": true
+  },
+  "dependencies": {
+    "prod_count": 9,
+    "dev_count": 14,
+    "next": "^16.2.6",
+    "framer_motion": "^12.38.0",
+    "zod": "^4.4.3"
+  },
+  "config": {
+    "remote_patterns": ["images.unsplash.com", "api.qrserver.com", "*.supabase.co"]
+  }
+}

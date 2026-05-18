@@ -20,14 +20,14 @@
     "productsTitle": "Products",
     "productLines": {
       "todas": "All",
-      "jugos": "Juices & Lemonades",
+      "zumos": "Juices & Lemonades",
       "pulpas": "Fruit Pulps",
       "lacteos": "Dairy"
     },
     "contact": "Contact",
     "location": "Chia, Colombia",
     "copyright": "Más Cerca AP. All rights reserved.",
-    "madeWith": "Made with 🍋 and 🍊 in Colombia",
+    "madeWith": "Made in Colombia",
     "socialLabel": "Follow us on"
   },
   "socialQr": {
@@ -236,10 +236,22 @@
       "text": "Contact us directly. We have more varieties and can build custom orders for your business.",
       "button": "Talk to us",
       "stats": [
-        { "value": "43+", "label": "Products in catalog" },
-        { "value": "<24h", "label": "Commercial response" },
-        { "value": "3", "label": "Product lines" },
-        { "value": "WhatsApp", "label": "Direct support" }
+        {
+          "value": "43+",
+          "label": "Products in catalog"
+        },
+        {
+          "value": "<24h",
+          "label": "Commercial response"
+        },
+        {
+          "value": "3",
+          "label": "Product lines"
+        },
+        {
+          "value": "WhatsApp",
+          "label": "Direct support"
+        }
       ]
     },
     "pulpaGrid": {
@@ -251,7 +263,8 @@
       "availablePlural": "available",
       "scrollPrev": "View previous flavors",
       "scrollNext": "View more flavors",
-      "disclaimer": "Images shown are for catalog reference only. Packaging, presentation, and product format may vary without prior notice; we work with packaging and formats that may change based on availability, without affecting quality."
+      "disclaimer": "Images shown are for catalog reference only. Packaging, presentation, and product format may vary without prior notice; we work with packaging and formats that may change based on availability, without affecting quality.",
+      "pack120gNote": "Note: The 120g presentation is sold in packs of 10 units."
     },
     "card": {
       "soldOut": "Sold Out",
@@ -263,7 +276,6 @@
     "scrollNext": "View more products of",
     "lightbox": {
       "close": "Close",
-      "ingredients": "Ingredients",
       "benefits": "Benefits"
     }
   },
@@ -464,26 +476,30 @@
     },
     "form": {
       "title": "Send Us a Message",
-      "helper": "Use this form for orders, distribution, or business inquiries. We'll reply by email or WhatsApp depending on your request.",
+      "helper": "Use this form for orders, inquiries, or commercial information. We'll reply by email or WhatsApp depending on your request.",
       "labels": {
         "name": "Full name *",
         "company": "Company / Business (optional)",
         "email": "Email *",
         "phone": "Phone *",
         "type": "Inquiry type *",
-        "message": "Message *"
+        "message": "Message *",
+        "otherReason": "Reason *"
       },
       "placeholders": {
         "name": "Your name",
         "company": "Your company name",
         "email": "you@email.com",
         "phone": "300 123 4567",
-        "message": "Tell us how we can help you..."
+        "message": "Tell us how we can help you...",
+        "otherReason": "Briefly tell us the reason for your inquiry"
       },
       "options": {
         "default": "Select an option",
         "order": "Place an order",
-        "distribution": "Distributor / Wholesale",
+        "queryOrder": "Check an order",
+        "availability": "Check product availability",
+        "contact": "Contact request",
         "other": "Other"
       },
       "submit": "Send message",
@@ -507,8 +523,10 @@
         "message": "💬 Message:",
         "tipoLabel": {
           "pedido": "place an order",
-          "distribucion": "become a distributor / wholesale",
-          "otro": "make an inquiry"
+          "consulta-pedido": "check an order",
+          "disponibilidad": "check product availability",
+          "contacto": "a contact request",
+          "otro": "another reason"
         }
       }
     },
@@ -523,25 +541,27 @@
       "typeRequired": "Select an inquiry type",
       "messageMin": "Message must be at least 10 characters",
       "messageMax": "Message cannot exceed 1200 characters",
-      "controlChars": "This field contains unsupported characters"
+      "controlChars": "This field contains unsupported characters",
+      "motivoOtroRequired": "Please indicate the reason for your inquiry",
+      "motivoOtroMax": "The reason cannot exceed 200 characters"
     }
   },
   "productLines": {
     "limon": {
       "label": "Lemon Juice",
-      "description": "Bold, unmistakable lemon flavor. The classic that never fails."
+      "description": "Concentrate for preparing fresh lemonade. The classic that never fails."
     },
     "limonada-cereza": {
       "label": "Cherry Lemonade",
-      "description": "The acidity of lemon with the irresistible sweet touch of cherry."
+      "description": "Concentrate for preparing lemonade with a sweet cherry twist."
     },
     "limonada-coco": {
       "label": "Coconut Lemonade",
-      "description": "Refreshing tropical combination with a creamy touch."
+      "description": "Concentrate for preparing a refreshing tropical lemonade with coconut."
     },
     "maracuya": {
       "label": "Passion Fruit Juice",
-      "description": "Exotic and vibrant flavor that awakens the senses."
+      "description": "Concentrate for preparing vibrant passion fruit drinks."
     },
     "pulpa-maracuya": {
       "label": "Passion Fruit Pulp",
@@ -584,7 +604,7 @@
       "description": "Ideal for natural juices and sauces, low in calories."
     },
     "kumiss": {
-      "label": "Dairy",
+      "label": "Kumis Yolito",
       "description": "Fermented dairy drink, tradition and flavor in every sip."
     }
   },
@@ -657,6 +677,7 @@
     },
     "customQtyLabel": "Custom",
     "customQtyPlaceholder": "Quantity",
+    "presentation120gPackNote": "Pack presentation: 10 units",
     "waGreeting": "Hello, I'd like to place an order:",
     "waProducts": "Products",
     "waConfirm": "Can you confirm availability and price?",
@@ -689,6 +710,10 @@
     "totalLabel": "Estimated total",
     "taxIncludedNote": "Displayed values already include VAT.",
     "priceNote": "* Estimate. Final price confirmed by the team.",
+    "freeDeliveryQualified": "🎉 Your order qualifies for free delivery.",
+    "freeDeliveryPending": "Add {amount} more to get free delivery.",
+    "freeDelivery120gHint": "For 120g, each pack contains 10 units. Free delivery is usually reached from 3+ packs.",
+    "packShort": "packs",
     "unitsShort": "u.",
     "validation": {
       "contactRequired": "An email or WhatsApp number is required"
@@ -738,6 +763,7 @@
     "step1Label": "How many cups?",
     "step2Label": "Which fruit?",
     "step3Label": "Which pack size works best for you?",
+    "customLabel": "Custom",
     "customPlaceholder": "Number of cups",
     "ctaWhatsapp": "Place order",
     "disclaimer": "Approximate values based on standard preparation. May vary by recipe and intensity.",

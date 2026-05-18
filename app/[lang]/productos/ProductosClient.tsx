@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductCategory, ProductLineConfig, ProductLineKey } from "@/types";
 import { PULPA_KEYS } from "./_constants";
@@ -26,6 +26,8 @@ interface ProductosClientProps {
 
 export default function ProductosClient({ products, productLines, categories }: ProductosClientProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const { dict, lang } = useDictionary();
 
   const categoryLines = useMemo<Record<string, string[]>>(() => {
@@ -63,13 +65,16 @@ export default function ProductosClient({ products, productLines, categories }: 
   const [isSticky, setIsSticky] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  // Sync URL param changes to local state during render (derived state, not effect)
-  if (catFromUrl !== activeCategory) {
-    setActiveCategory(catFromUrl);
-    setActiveSubLines([]);
-    setActiveSize("todos");
-    setHasInteracted(false);
-  }
+  // Sync URL param → state (handles browser back/forward only; handlers update both state and URL)
+  useEffect(() => {
+    if (catFromUrl !== activeCategory) {
+      setActiveCategory(catFromUrl);
+      setActiveSubLines([]);
+      setActiveSize("todos");
+      setHasInteracted(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [catFromUrl]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -183,6 +188,15 @@ export default function ProductosClient({ products, productLines, categories }: 
   }
 
   function selectCategory(cat: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (cat === DEFAULT_CATEGORY) {
+      params.delete("categoria");
+    } else {
+      params.set("categoria", cat);
+    }
+    const query = params.toString();
+    router.replace(`${pathname}${query ? `?${query}` : ""}`, { scroll: false });
+
     if (activeCategory !== cat) {
       setActiveCategory(cat);
       setActiveSubLines([]);
@@ -204,6 +218,7 @@ export default function ProductosClient({ products, productLines, categories }: 
     setActiveSize("todos");
     setHasInteracted(false);
     setSearchQuery("");
+    router.replace(pathname, { scroll: false });
   }
 
   return (

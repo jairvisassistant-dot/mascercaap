@@ -20,14 +20,14 @@
     "productsTitle": "Productos",
     "productLines": {
       "todas": "Todas",
-      "jugos": "Zumos & Limonadas",
+      "zumos": "Zumos y Limonadas",
       "pulpas": "Pulpas de Frutas",
       "lacteos": "Lácteos"
     },
     "contact": "Contacto",
     "location": "Chía, Colombia",
     "copyright": "Más Cerca AP. Todos los derechos reservados.",
-    "madeWith": "Hecho con 🍋 y 🍊 en Colombia",
+    "madeWith": "Hecho en Colombia",
     "socialLabel": "Síguenos en"
   },
   "socialQr": {
@@ -75,7 +75,7 @@
           "cta": "Ver zumos"
         },
         {
-          "title": "Ahorra\n3 horas en cocina.\nSin sacrificar sabor.",
+          "title": "Ahorra tiempo en la cocina.\nSin sacrificar sabor que más te gusta.",
           "subtitle": "PULPAS PREPROCESADAS",
           "description": "Nuestras pulpas llegan listas. Solo sirves.",
           "cta": "Ver pulpas"
@@ -89,7 +89,7 @@
         {
           "title": "Pide hoy.\nLo tienes mañana en tu negocio.",
           "subtitle": "ENTREGA EN BOGOTÁ",
-          "description": "Desde Puente Aranda a toda la ciudad en menos de 24 horas.",
+          "description": "Desde Chía a toda la ciudad en menos de 24 horas.",
           "cta": "Hacer pedido ahora"
         }
       ],
@@ -236,10 +236,22 @@
       "text": "Te brindamos la asesoría adecuada para tu negocio, para que elijas la presentación ideal de nuestro catálogo.",
       "button": "Habla con nosotros",
       "stats": [
-        { "value": "43+", "label": "Productos en catálogo" },
-        { "value": "<24h", "label": "Respuesta comercial" },
-        { "value": "3", "label": "Líneas de producto" },
-        { "value": "WhatsApp", "label": "Atención directa" }
+        {
+          "value": "43+",
+          "label": "Productos en catálogo"
+        },
+        {
+          "value": "<24h",
+          "label": "Respuesta comercial"
+        },
+        {
+          "value": "3",
+          "label": "Líneas de producto"
+        },
+        {
+          "value": "WhatsApp",
+          "label": "Atención directa"
+        }
       ]
     },
     "pulpaGrid": {
@@ -251,7 +263,8 @@
       "availablePlural": "disponibles",
       "scrollPrev": "Ver sabores anteriores",
       "scrollNext": "Ver más sabores",
-      "disclaimer": "Las imágenes mostradas son de referencia para el catálogo de productos. El empaque, presentación y formato del producto pueden variar sin previo aviso, trabajamos con empaques y formatos que pueden cambiar según disponibilidad, sin afectar la calidad."
+      "disclaimer": "Las imágenes mostradas son de referencia para el catálogo de productos. El empaque, presentación y formato del producto pueden variar sin previo aviso, trabajamos con empaques y formatos que pueden cambiar según disponibilidad, sin afectar la calidad.",
+      "pack120gNote": "Nota: La presentación de 120g se comercializa en paquetes de 10 unidades."
     },
     "card": {
       "soldOut": "Agotado",
@@ -263,7 +276,6 @@
     "scrollNext": "Ver más productos de",
     "lightbox": {
       "close": "Cerrar",
-      "ingredients": "Ingredientes",
       "benefits": "Beneficios"
     }
   },
@@ -464,26 +476,30 @@
     },
     "form": {
       "title": "Envíanos un mensaje",
-      "helper": "Usa este formulario para pedidos, distribución o consultas comerciales. Te respondemos por correo o WhatsApp según tu solicitud.",
+      "helper": "Usa este formulario para pedidos, consultas o información comercial. Te respondemos por correo o WhatsApp según tu solicitud.",
       "labels": {
         "name": "Nombre completo *",
         "company": "Empresa / Negocio (opcional)",
         "email": "Email *",
         "phone": "Teléfono *",
         "type": "Tipo de consulta *",
-        "message": "Mensaje *"
+        "message": "Mensaje *",
+        "otherReason": "Motivo *"
       },
       "placeholders": {
         "name": "Tu nombre",
         "company": "Nombre de tu empresa",
         "email": "tu@email.com",
         "phone": "300 123 4567",
-        "message": "Cuéntanos cómo podemos ayudarte..."
+        "message": "Cuéntanos cómo podemos ayudarte...",
+        "otherReason": "Cuéntanos brevemente el motivo de tu consulta"
       },
       "options": {
         "default": "Selecciona una opción",
         "order": "Realizar un pedido",
-        "distribution": "Distribuidor / Mayoreo",
+        "queryOrder": "Consultar pedido",
+        "availability": "Validar disponibilidad de producto",
+        "contact": "Solicitud de contacto",
         "other": "Otro"
       },
       "submit": "Enviar mensaje",
@@ -507,8 +523,10 @@
         "message": "💬 Mensaje:",
         "tipoLabel": {
           "pedido": "realizar un pedido",
-          "distribucion": "ser distribuidor / mayoreo",
-          "otro": "hacer una consulta"
+          "consulta-pedido": "consultar un pedido",
+          "disponibilidad": "validar disponibilidad de producto",
+          "contacto": "una solicitud de contacto",
+          "otro": "otro motivo"
         }
       }
     },
@@ -523,7 +541,9 @@
       "typeRequired": "Selecciona un tipo de consulta",
       "messageMin": "El mensaje debe tener al menos 10 caracteres",
       "messageMax": "El mensaje no puede superar 1200 caracteres",
-      "controlChars": "El campo contiene caracteres no permitidos"
+      "controlChars": "El campo contiene caracteres no permitidos",
+      "motivoOtroRequired": "Indica el motivo de tu consulta",
+      "motivoOtroMax": "El motivo no puede superar 200 caracteres"
     }
   },
   "productLines": {
@@ -657,6 +677,7 @@
     },
     "customQtyLabel": "Personalizado",
     "customQtyPlaceholder": "Cantidad",
+    "presentation120gPackNote": "Presentación en paquetes de 10 unidades",
     "waGreeting": "Hola, quiero hacer un pedido:",
     "waProducts": "Productos",
     "waConfirm": "¿Me confirman disponibilidad y precio?",
@@ -689,6 +710,10 @@
     "totalLabel": "Total estimado",
     "taxIncludedNote": "Los valores mostrados ya tienen IVA incluido.",
     "priceNote": "* Estimación. El equipo confirma el precio final.",
+    "freeDeliveryQualified": "🎉 Tu pedido tiene domicilio gratis.",
+    "freeDeliveryPending": "Te faltan {amount} para obtener domicilio gratis.",
+    "freeDelivery120gHint": "En 120g, cada paquete trae 10 unidades. El domicilio gratis suele lograrse desde 3 paquetes o más.",
+    "packShort": "paq.",
     "unitsShort": "u.",
     "validation": {
       "contactRequired": "Se requiere email o número de WhatsApp"
@@ -738,6 +763,7 @@
     "step1Label": "¿Para cuántos vasos?",
     "step2Label": "¿Qué fruta?",
     "step3Label": "¿Cuál presentación te conviene más?",
+    "customLabel": "Personalizado",
     "customPlaceholder": "Cantidad de vasos",
     "ctaWhatsapp": "Hacer pedido",
     "disclaimer": "Valores aproximados según preparación estándar. Puede variar según receta e intensidad.",
