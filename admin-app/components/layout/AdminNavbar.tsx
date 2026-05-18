@@ -81,12 +81,12 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
             <ThemeToggle labels={themeLabels} />
 
             {isLoginPage ? (
-              <Link
-                href="/es"
+              <a
+                href={process.env.NEXT_PUBLIC_MAIN_APP_URL ?? "https://mascercap.com"}
                 className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
               >
                 ← Volver al sitio
-              </Link>
+              </a>
             ) : isListPage ? (
               <>
                 <Link
