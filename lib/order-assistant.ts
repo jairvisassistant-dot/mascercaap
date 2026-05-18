@@ -59,6 +59,9 @@ export function getPresentationsForProduct(productType: string, fruit: string): 
 }
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
+export const QUANTITY_OPTIONS_120G_PACKS = [1, 2, 3, 4, 5, 10] as const
+export const PRESENTATION_120G = "120g"
+export const PACK_UNITS_120G = 10
 
 // Maps order-form fruit display names to Supabase product line slugs.
 const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
@@ -119,6 +122,23 @@ export function buildPriceResolver(entries: PriceEntry[]): PriceResolver {
   }
 }
 
+export function is120gPackPresentation(presentation: string | null | undefined): boolean {
+  return presentation === PRESENTATION_120G
+}
+
+export function toBillableUnits(item: Pick<OrderItem, "presentation" | "quantity">): number {
+  return is120gPackPresentation(item.presentation) ? item.quantity * PACK_UNITS_120G : item.quantity
+}
+
+export function calculateItemLineTotal(
+  item: Pick<OrderItem, "fruit" | "presentation" | "quantity">,
+  resolvePrice: PriceResolver = () => null
+): number | null {
+  const price = resolvePrice(item.fruit, item.presentation)
+  if (price === null) return null
+  return price * toBillableUnits(item)
+}
+
 type OrderTotals = {
   subtotal:     number
   totalUnits:   number
@@ -128,17 +148,32 @@ type OrderTotals = {
   hasPrice:     boolean
 }
 
+export const FREE_DELIVERY_THRESHOLD_COP = 60_000
+
+export type DeliveryBenefit = {
+  qualifiesFreeDelivery: boolean
+  missingAmount: number
+}
+
+export function getDeliveryBenefit(total: number): DeliveryBenefit {
+  const missingAmount = Math.max(0, FREE_DELIVERY_THRESHOLD_COP - total)
+  return {
+    qualifiesFreeDelivery: missingAmount === 0,
+    missingAmount,
+  }
+}
+
 export function calculateOrderTotal(items: OrderItem[], resolvePrice: PriceResolver = () => null): OrderTotals {
-  const totalUnits  = items.reduce((sum, item) => sum + item.quantity, 0)
+  const totalUnits  = items.reduce((sum, item) => sum + toBillableUnits(item), 0)
   const discountRate = 0
   let subtotal  = 0
   let hasPrice  = items.length > 0
   const lookup  = resolvePrice
 
   for (const item of items) {
-    const price = lookup(item.fruit, item.presentation)
-    if (price === null) { hasPrice = false; continue }
-    subtotal += price * item.quantity
+    const lineTotal = calculateItemLineTotal(item, lookup)
+    if (lineTotal === null) { hasPrice = false; continue }
+    subtotal += lineTotal
   }
 
   const discount = Math.round(subtotal * discountRate)
@@ -166,7 +201,10 @@ export function buildWhatsappMessage(order: OrderInput, waNumber: string, i18n: 
 
   const itemLines = order.items.map((item, idx) => {
     const pres = item.presentation ? ` ${item.presentation}` : ""
-    return `${idx + 1}. ${item.productType} — ${item.fruit}${pres} × ${item.quantity} unidades`
+    const qtyLabel = is120gPackPresentation(item.presentation)
+      ? `${item.quantity} paquetes (${PACK_UNITS_120G}u c/u)`
+      : `${item.quantity} unidades`
+    return `${idx + 1}. ${item.productType} — ${item.fruit}${pres} × ${qtyLabel}`
   })
 
   const lines = [
@@ -197,8 +235,10 @@ function buildItemsTableHtml(items: OrderItem[], resolvePrice: PriceResolver = (
   const lookup = resolvePrice
   const rows = items
     .map((item) => {
-      const price     = lookup(item.fruit, item.presentation)
-      const lineTotal = price !== null ? formatCOP(price * item.quantity) : "—"
+      const lineTotal = calculateItemLineTotal(item, lookup)
+      const qtyLabel = is120gPackPresentation(item.presentation)
+        ? `${item.quantity} paq`
+        : String(item.quantity)
       return `
         <tr>
           <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;">
@@ -208,10 +248,10 @@ function buildItemsTableHtml(items: OrderItem[], resolvePrice: PriceResolver = (
             ${item.presentation ? escapeHtml(item.presentation) : "—"}
           </td>
           <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;text-align:center;">
-            ${item.quantity}
+            ${qtyLabel}
           </td>
           <td style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111827;text-align:right;">
-            ${lineTotal}
+            ${lineTotal !== null ? formatCOP(lineTotal) : "—"}
           </td>
         </tr>`
     })

@@ -263,7 +263,8 @@
       "availablePlural": "available",
       "scrollPrev": "View previous flavors",
       "scrollNext": "View more flavors",
-      "disclaimer": "Images shown are for catalog reference only. Packaging, presentation, and product format may vary without prior notice; we work with packaging and formats that may change based on availability, without affecting quality."
+      "disclaimer": "Images shown are for catalog reference only. Packaging, presentation, and product format may vary without prior notice; we work with packaging and formats that may change based on availability, without affecting quality.",
+      "pack120gNote": "Note: The 120g presentation is sold in packs of 10 units."
     },
     "card": {
       "soldOut": "Sold Out",
@@ -275,7 +276,6 @@
     "scrollNext": "View more products of",
     "lightbox": {
       "close": "Close",
-      "ingredients": "Ingredients",
       "benefits": "Benefits"
     }
   },
@@ -677,6 +677,7 @@
     },
     "customQtyLabel": "Custom",
     "customQtyPlaceholder": "Quantity",
+    "presentation120gPackNote": "Pack presentation: 10 units",
     "waGreeting": "Hello, I'd like to place an order:",
     "waProducts": "Products",
     "waConfirm": "Can you confirm availability and price?",
@@ -709,6 +710,10 @@
     "totalLabel": "Estimated total",
     "taxIncludedNote": "Displayed values already include VAT.",
     "priceNote": "* Estimate. Final price confirmed by the team.",
+    "freeDeliveryQualified": "🎉 Your order qualifies for free delivery.",
+    "freeDeliveryPending": "Add {amount} more to get free delivery.",
+    "freeDelivery120gHint": "For 120g, each pack contains 10 units. Free delivery is usually reached from 3+ packs.",
+    "packShort": "packs",
     "unitsShort": "u.",
     "validation": {
       "contactRequired": "An email or WhatsApp number is required"

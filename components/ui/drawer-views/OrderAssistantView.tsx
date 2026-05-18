@@ -7,9 +7,14 @@ import {
   getProductOptionsForType,
   getPresentationsForProduct,
   buildWhatsappMessage,
+  calculateItemLineTotal,
   calculateOrderTotal,
+  getDeliveryBenefit,
+  is120gPackPresentation,
+  PRESENTATION_120G,
   formatCOP,
   QUANTITY_OPTIONS,
+  QUANTITY_OPTIONS_120G_PACKS,
   PRODUCT_TYPE_OPTIONS,
 } from "@/lib/order-assistant"
 import { useDictionary } from "@/lib/i18n/DictionaryProvider"
@@ -52,6 +57,13 @@ export default function OrderAssistantView({ onContactClick }: Props) {
 
   // ── Derived ───────────────────────────────────────────────────
   const totals   = items.length > 0 ? calculateOrderTotal(items, resolvePrice) : null
+  const has120gItems = items.some((item) => is120gPackPresentation(item.presentation))
+  const deliveryInfo = totals?.hasPrice ? getDeliveryBenefit(totals.total) : null
+  const freeDeliveryMessage = deliveryInfo
+    ? deliveryInfo.qualifiesFreeDelivery
+      ? t.freeDeliveryQualified
+      : t.freeDeliveryPending.replace("{amount}", formatCOP(deliveryInfo.missingAmount))
+    : null
   const stepNum  = step === "result" ? 6 : step === "cart" ? 4.5 : (step as number)
   const progress = Math.min((stepNum / 5) * 100, 100)
 
@@ -80,11 +92,17 @@ export default function OrderAssistantView({ onContactClick }: Props) {
       : []
   ).map((pres) => {
     const price = resolvePrice(curFruit ?? "", pres)
-    return { value: pres, label: price !== null ? `${pres} — ${formatCOP(price)}` : pres }
+    return {
+      value: pres,
+      label: price !== null ? `${pres} — ${formatCOP(price)}` : pres,
+      sublabel: pres === PRESENTATION_120G ? t.presentation120gPackNote : undefined,
+    }
   })
 
+  const isPack120gSelection = is120gPackPresentation(curPresentation)
+  const quantityBaseOptions = isPack120gSelection ? QUANTITY_OPTIONS_120G_PACKS : QUANTITY_OPTIONS
   const quantityOptions = [
-    ...QUANTITY_OPTIONS.map((v) => ({ value: v, label: String(v) })),
+    ...quantityBaseOptions.map((v) => ({ value: v, label: String(v) })),
     { value: CUSTOM_QTY, label: t.customQtyLabel },
   ]
 
@@ -229,11 +247,14 @@ export default function OrderAssistantView({ onContactClick }: Props) {
               {totals && (
                 <div className="w-full text-left bg-surface-page rounded-xl border border-border-soft p-4 mb-5 space-y-2">
                   {items.map((item, i) => {
-                    const price = resolvePrice(item.fruit, item.presentation)
+                    const lineTotal = calculateItemLineTotal(item, resolvePrice)
+                    const qtyLabel = is120gPackPresentation(item.presentation)
+                      ? `${item.quantity} ${t.packShort}`
+                      : `${item.quantity} ${t.unitsShort}`
                     return (
                       <div key={`${i}-${item.fruit}-${item.presentation}`} className="flex justify-between text-sm">
-                        <span className="text-text-sub">{item.fruit}{item.presentation ? ` ${item.presentation}` : ""} × {item.quantity} {t.unitsShort}</span>
-                        <span className="text-text-muted">{price !== null ? formatCOP(price * item.quantity) : "—"}</span>
+                        <span className="text-text-sub">{item.fruit}{item.presentation ? ` ${item.presentation}` : ""} × {qtyLabel}</span>
+                        <span className="text-text-muted">{lineTotal !== null ? formatCOP(lineTotal) : "—"}</span>
                       </div>
                     )
                   })}
@@ -249,6 +270,14 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                       </div>
                       <p className="text-[11px] font-medium text-text-muted">{t.taxIncludedNote}</p>
                       <p className="text-[11px] text-text-faint">{t.priceNote}</p>
+                      {freeDeliveryMessage && (
+                        <p className={`text-[11px] font-semibold ${deliveryInfo?.qualifiesFreeDelivery ? "text-green-700" : "text-amber-700"}`}>
+                          {freeDeliveryMessage}
+                        </p>
+                      )}
+                      {has120gItems && (
+                        <p className="text-[11px] text-text-faint">{t.freeDelivery120gHint}</p>
+                      )}
                     </>
                   )}
                 </div>
@@ -363,6 +392,11 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                       selected={showCustomQty ? CUSTOM_QTY : null}
                       onChange={handleQtySelect}
                     />
+                    {isPack120gSelection && (
+                      <p className="mt-2 text-xs text-text-muted">
+                        {t.presentation120gPackNote}
+                      </p>
+                    )}
                     {showCustomQty && (
                       <div className="mt-3 flex gap-2">
                         <input
@@ -415,7 +449,10 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                 {/* Lista de ítems */}
                 <div className="rounded-xl border border-border-soft overflow-hidden">
                   {items.map((item, i) => {
-                    const price = resolvePrice(item.fruit, item.presentation)
+                    const lineTotal = calculateItemLineTotal(item, resolvePrice)
+                    const qtyLabel = is120gPackPresentation(item.presentation)
+                      ? `${item.quantity} ${t.packShort}`
+                      : `${item.quantity} ${t.unitsShort}`
                     return (
                       <div
                         key={`${i}-${item.fruit}-${item.presentation}`}
@@ -426,9 +463,9 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                             {item.fruit}{item.presentation ? ` ${item.presentation}` : ""}
                           </p>
                           <p className="text-xs text-text-muted">
-                            {item.quantity} {t.unitsShort}
-                            {price !== null && (
-                              <span className="ml-2 text-text-sub">{formatCOP(price * item.quantity)}</span>
+                            {qtyLabel}
+                            {lineTotal !== null && (
+                              <span className="ml-2 text-text-sub">{formatCOP(lineTotal)}</span>
                             )}
                           </p>
                         </div>
@@ -458,6 +495,14 @@ export default function OrderAssistantView({ onContactClick }: Props) {
                     </div>
                     <p className="text-[11px] font-medium text-text-muted">{t.taxIncludedNote}</p>
                     <p className="text-[11px] text-text-faint">{t.priceNote}</p>
+                    {freeDeliveryMessage && (
+                      <p className={`text-[11px] font-semibold ${deliveryInfo?.qualifiesFreeDelivery ? "text-green-700" : "text-amber-700"}`}>
+                        {freeDeliveryMessage}
+                      </p>
+                    )}
+                    {has120gItems && (
+                      <p className="text-[11px] text-text-faint">{t.freeDelivery120gHint}</p>
+                    )}
                   </div>
                 )}
 

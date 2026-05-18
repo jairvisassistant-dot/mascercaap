@@ -17,6 +17,7 @@ type PulpaGridDict = {
   scrollPrev: string;
   scrollNext: string;
   disclaimer: string;
+  pack120gNote: string;
 };
 
 function FruitImage({ slug, label, chipImage }: { slug: string; label: string; chipImage?: string }) {
@@ -217,6 +218,9 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
 
             <p className="mt-4 text-xs text-text-faint text-center leading-relaxed">
               <span aria-hidden="true">📷</span> {pulpaGridDict.disclaimer}
+            </p>
+            <p className="mt-2 text-xs text-text-muted text-center leading-relaxed">
+              <span aria-hidden="true">📦</span> {pulpaGridDict.pack120gNote}
             </p>
           </m.div>
         )}

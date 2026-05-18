@@ -263,7 +263,8 @@
       "availablePlural": "disponibles",
       "scrollPrev": "Ver sabores anteriores",
       "scrollNext": "Ver más sabores",
-      "disclaimer": "Las imágenes mostradas son de referencia para el catálogo de productos. El empaque, presentación y formato del producto pueden variar sin previo aviso, trabajamos con empaques y formatos que pueden cambiar según disponibilidad, sin afectar la calidad."
+      "disclaimer": "Las imágenes mostradas son de referencia para el catálogo de productos. El empaque, presentación y formato del producto pueden variar sin previo aviso, trabajamos con empaques y formatos que pueden cambiar según disponibilidad, sin afectar la calidad.",
+      "pack120gNote": "Nota: La presentación de 120g se comercializa en paquetes de 10 unidades."
     },
     "card": {
       "soldOut": "Agotado",
@@ -275,7 +276,6 @@
     "scrollNext": "Ver más productos de",
     "lightbox": {
       "close": "Cerrar",
-      "ingredients": "Ingredientes",
       "benefits": "Beneficios"
     }
   },
@@ -677,6 +677,7 @@
     },
     "customQtyLabel": "Personalizado",
     "customQtyPlaceholder": "Cantidad",
+    "presentation120gPackNote": "Presentación en paquetes de 10 unidades",
     "waGreeting": "Hola, quiero hacer un pedido:",
     "waProducts": "Productos",
     "waConfirm": "¿Me confirman disponibilidad y precio?",
@@ -709,6 +710,10 @@
     "totalLabel": "Total estimado",
     "taxIncludedNote": "Los valores mostrados ya tienen IVA incluido.",
     "priceNote": "* Estimación. El equipo confirma el precio final.",
+    "freeDeliveryQualified": "🎉 Tu pedido tiene domicilio gratis.",
+    "freeDeliveryPending": "Te faltan {amount} para obtener domicilio gratis.",
+    "freeDelivery120gHint": "En 120g, cada paquete trae 10 unidades. El domicilio gratis suele lograrse desde 3 paquetes o más.",
+    "packShort": "paq.",
     "unitsShort": "u.",
     "validation": {
       "contactRequired": "Se requiere email o número de WhatsApp"
