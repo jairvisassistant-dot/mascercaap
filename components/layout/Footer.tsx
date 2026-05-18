@@ -193,7 +193,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
 
         <div className="border-t border-white/10 pt-8 text-center text-white/58">
           <p>© {new Date().getFullYear()} {dict.footer.copyright}</p>
-          <p className="mt-2 text-sm">{dict.footer.madeWith}</p>
+          <p className="mt-1 text-sm">{dict.footer.madeWith}</p>
         </div>
       </div>
     </footer>
