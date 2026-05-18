@@ -118,6 +118,15 @@ export default function AdminLoginPage() {
             Acceso interno para el equipo de Más Cerca AP.
           </p>
         </form>
+
+        <div className="mt-6 text-center">
+          <a
+            href={process.env.NEXT_PUBLIC_MAIN_APP_URL ?? "https://mascercap.com"}
+            className="text-sm text-text-muted transition-colors hover:text-primary"
+          >
+            ← Volver al sitio
+          </a>
+        </div>
       </div>
     </div>
   );
