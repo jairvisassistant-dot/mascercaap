@@ -318,7 +318,7 @@ export default function HeroCarousel() {
 
           <div className="relative h-full min-h-[540px] md:min-h-[640px]">
             <div className="mx-auto grid h-full min-h-[600px] max-w-7xl items-center px-6 py-16 sm:py-24 sm:px-8 md:min-h-[640px] md:py-28 md:grid-cols-[minmax(0,0.92fr)_minmax(260px,0.58fr)] md:px-12 lg:px-16">
-              <div className={`${currentSlide === 3 ? "max-w-3xl" : "max-w-2xl"} text-left text-white`}>
+              <div className="max-w-2xl text-left text-white">
 
               <m.p
                 initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
@@ -333,7 +333,7 @@ export default function HeroCarousel() {
                 initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: shouldReduceMotion ? 0 : 0.3, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className={`${currentSlide === 3 ? "max-w-[760px]" : currentSlide === 2 ? "max-w-[720px]" : "max-w-[17ch]"} mb-5 whitespace-pre-line text-balance text-3xl font-bold leading-[0.96] tracking-[-0.045em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-4xl md:text-6xl lg:text-7xl`}
+                className="mb-5 whitespace-pre-line text-balance text-3xl font-bold leading-[1.05] tracking-[-0.04em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-4xl md:text-[2.75rem] lg:text-5xl"
               >
                 {slideText.title}
               </m.h1>
