@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { loginSchema } from "@/lib/schemas/admin";
+import {
+  createMfaToken,
+  setMfaSession,
+} from "@/lib/mfa-store";
 
 const COOKIE_NAME = "admin_session";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -71,6 +75,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
 
+  // ── Verificar si el usuario tiene MFA habilitado ──────────────────────
+  const { data: factors, error: mfaError } = await supabase.auth.mfa.listFactors();
+
+  if (!mfaError && factors?.totp?.some((f: { status: string }) => f.status === "verified")) {
+    // Tiene MFA -> guardar sesion temporal y pedir segundo factor
+    const mfaToken = createMfaToken();
+    setMfaSession(mfaToken, {
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token,
+    });
+
+    return NextResponse.json({
+      needs_mfa: true,
+      mfa_token: mfaToken,
+      factor_ids: factors.totp
+        .filter((f: { status: string }) => f.status === "verified")
+        .map((f: { id: string }) => f.id),
+    });
+  }
+
+  // ── Sin MFA -> login directo ──────────────────────────────────────────
   const res = NextResponse.json({ ok: true });
   res.cookies.set(COOKIE_NAME, data.session.access_token, {
     httpOnly: true,
