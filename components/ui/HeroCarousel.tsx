@@ -333,7 +333,7 @@ export default function HeroCarousel() {
                 initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: shouldReduceMotion ? 0 : 0.3, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className="mb-5 whitespace-pre-line text-balance text-3xl font-bold leading-[1.05] tracking-[-0.04em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-4xl md:text-[2.75rem] lg:text-5xl"
+                className="mb-5 whitespace-pre-line text-balance text-3xl font-bold leading-[1.05] tracking-[-0.04em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-4xl md:text-5xl lg:text-6xl"
               >
                 {slideText.title}
               </m.h1>
