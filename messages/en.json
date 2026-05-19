@@ -499,9 +499,35 @@
         "order": "Place an order",
         "queryOrder": "Check an order",
         "availability": "Check product availability",
+        "petitionComplaintClaim": "Petition / Complaint & claim",
         "contact": "Contact request",
         "other": "Other"
       },
+      "availabilityAssistant": {
+        "title": "Choose the category and product you want to check",
+        "description": "First choose a category, then a product line, and finally the specific product. The selection will be added automatically to the message.",
+        "categoryLabel": "Category",
+        "categoryHint": "Choose the category of the product you want to check.",
+        "categoryPlaceholder": "Select a category",
+        "categoryRequired": "Select a category to continue.",
+        "templateCategoryLabel": "Category",
+        "linesLabel": "Product line",
+        "productsLabel": "Product of interest",
+        "linesHint": "Choose a product line within the selected category.",
+        "emptyLinesHint": "First select a category to see its product lines.",
+        "productsHint": "Choose the product you want more information about.",
+        "emptyProductsHint": "First choose a product line to see its products.",
+        "linePlaceholder": "Select a product line",
+        "productPlaceholder": "Select a product",
+        "templateTitle": "Availability inquiry:",
+        "templateCategoryLabel": "Category",
+        "templateLineLabel": "Selected line",
+        "templateProductLabel": "Selected product",
+        "additionalInfoLabel": "Additional information",
+        "lineRequired": "Select a product line to check availability.",
+        "productRequired": "Select a product to complete the availability inquiry."
+      },
+      "close": "Close",
       "submit": "Send message",
       "submitting": "Sending...",
       "success": {
@@ -525,6 +551,7 @@
           "pedido": "place an order",
           "consulta-pedido": "check an order",
           "disponibilidad": "check product availability",
+          "peticion-queja-reclamo": "a petition, complaint or claim",
           "contacto": "a contact request",
           "otro": "another reason"
         }

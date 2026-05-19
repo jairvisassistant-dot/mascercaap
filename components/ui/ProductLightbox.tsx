@@ -105,7 +105,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
             {preparationNotice}
           </p>
 
-          {lang === "es" && product.benefits && product.benefits.length > 0 && (
+          {product.benefits && product.benefits.length > 0 && (
             <div>
               <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-text-muted">
                 {t.benefits}

@@ -34,7 +34,7 @@ export function createProductPatchSchema(msgs?: { noValidFields?: string }) {
       active: z.boolean().optional(),
     })
     .refine((obj) => Object.keys(obj).length > 0, {
-      message: msgs?.noValidFields ?? "No valid fields to update",
+      message: msgs?.noValidFields ?? "No hay campos válidos para actualizar",
     });
 }
 
@@ -141,3 +141,25 @@ export const faqDeleteSchema = z.discriminatedUnion("_type", [
   z.object({ _type: z.literal("category"), id: z.string().min(1) }),
   z.object({ _type: z.literal("question"), id: z.string().min(1) }),
 ]);
+
+// ─── MFA / 2FA ──────────────────────────────────────────────────────────────
+
+export const verifyMfaSchema = z.object({
+  mfa_token: z.string().uuid(),
+  factor_id: z.string().min(1),
+  code: z.string().regex(/^\d{6}$/, "El codigo debe tener 6 digitos"),
+});
+
+export const mfaEnrollSchema = z.object({
+  factorType: z.literal("totp").default("totp"),
+  friendlyName: z.string().max(80).optional(),
+});
+
+export const mfaVerifyEnrollmentSchema = z.object({
+  factor_id: z.string().min(1),
+  code: z.string().regex(/^\d{6}$/, "El codigo debe tener 6 digitos"),
+});
+
+export const mfaUnenrollSchema = z.object({
+  factor_id: z.string().min(1),
+});

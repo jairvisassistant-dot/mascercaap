@@ -499,9 +499,35 @@
         "order": "Realizar un pedido",
         "queryOrder": "Consultar pedido",
         "availability": "Validar disponibilidad de producto",
+        "petitionComplaintClaim": "Petición / Queja y reclamo",
         "contact": "Solicitud de contacto",
         "other": "Otro"
       },
+      "availabilityAssistant": {
+        "title": "Selecciona la categoría y el producto que quieres consultar",
+        "description": "Elige primero la categoría, luego la línea y finalmente el producto. La selección se agregará automáticamente al mensaje.",
+        "categoryLabel": "Categoría",
+        "categoryHint": "Selecciona la categoría del producto que quieres consultar.",
+        "categoryPlaceholder": "Selecciona una categoría",
+        "categoryRequired": "Selecciona una categoría para continuar.",
+        "templateCategoryLabel": "Categoría",
+        "linesLabel": "Línea de producto",
+        "productsLabel": "Producto de interés",
+        "linesHint": "Selecciona la línea dentro de la categoría elegida.",
+        "emptyLinesHint": "Primero selecciona una categoría para ver sus líneas.",
+        "productsHint": "Selecciona el producto sobre el que deseas más información.",
+        "emptyProductsHint": "Primero selecciona una línea para ver sus productos.",
+        "linePlaceholder": "Selecciona una línea de producto",
+        "productPlaceholder": "Selecciona un producto",
+        "templateTitle": "Consulta de disponibilidad:",
+        "templateCategoryLabel": "Categoría",
+        "templateLineLabel": "Línea seleccionada",
+        "templateProductLabel": "Producto seleccionado",
+        "additionalInfoLabel": "Información adicional",
+        "lineRequired": "Selecciona una línea de producto para validar disponibilidad.",
+        "productRequired": "Selecciona un producto para completar la consulta de disponibilidad."
+      },
+      "close": "Cerrar",
       "submit": "Enviar mensaje",
       "submitting": "Enviando...",
       "success": {
@@ -525,6 +551,7 @@
           "pedido": "realizar un pedido",
           "consulta-pedido": "consultar un pedido",
           "disponibilidad": "validar disponibilidad de producto",
+          "peticion-queja-reclamo": "una petición, queja o reclamo",
           "contacto": "una solicitud de contacto",
           "otro": "otro motivo"
         }

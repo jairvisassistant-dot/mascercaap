@@ -28,6 +28,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
   const isListPage       = pathname === "/admin/productos";
   const isOrderPage      = pathname === "/admin/categorias" || pathname === "/admin/lineas";
   const isConsultaPage   = pathname === "/admin/consultas";
+  const isSeguridadPage  = pathname === "/admin/configuracion/seguridad";
 
   return (
     <header
@@ -112,6 +113,12 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                   className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
                 >
                   Consultas
+                </Link>
+                <Link
+                  href="/admin/configuracion/seguridad"
+                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                >
+                  Seguridad
                 </Link>
                 <Link
                   href="/admin/productos/nuevo"
