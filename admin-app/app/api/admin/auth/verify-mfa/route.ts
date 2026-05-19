@@ -9,7 +9,38 @@ import {
 const COOKIE_NAME = "admin_session";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
+// Sliding window: 5 attempts / 60s / IP
+const mfaAttempts = new Map<string, number[]>();
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  const timestamps = (mfaAttempts.get(ip) ?? []).filter((t) => t > windowStart);
+  if (timestamps.length >= RATE_LIMIT_MAX) return false;
+  timestamps.push(now);
+  mfaAttempts.set(ip, timestamps);
+  if (mfaAttempts.size > 200) {
+    for (const [key, times] of mfaAttempts.entries()) {
+      if (times.every((t) => t <= windowStart)) mfaAttempts.delete(key);
+    }
+  }
+  return true;
+}
+
 export async function POST(req: NextRequest) {
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    req.headers.get("x-real-ip") ??
+    "anonymous";
+
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: "Demasiados intentos. Espera un minuto e intenta de nuevo." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
   let body: unknown;
   try {
     body = await req.json();
@@ -28,7 +59,7 @@ export async function POST(req: NextRequest) {
   const stored = getMfaSession(mfa_token);
   if (!stored) {
     return NextResponse.json(
-      { error: "La sesión expiró. Iniciá sesión de nuevo." },
+      { error: "La sesión expiró. Inicia sesión de nuevo." },
       { status: 410 }
     );
   }
@@ -52,7 +83,7 @@ export async function POST(req: NextRequest) {
   if (setSessionError) {
     deleteMfaSession(mfa_token);
     return NextResponse.json(
-      { error: "Sesión inválida. Iniciá sesión de nuevo." },
+      { error: "Sesión inválida. Inicia sesión de nuevo." },
       { status: 401 }
     );
   }
@@ -79,13 +110,20 @@ export async function POST(req: NextRequest) {
   if (verifyError) {
     // No limpiar la sesión — el usuario puede reintentar
     return NextResponse.json(
-      { error: "Código incorrecto. Intentá de nuevo." },
+      { error: "Código incorrecto. Intenta de nuevo." },
       { status: 401 }
     );
   }
 
-  // 4. El verify devuelve un nuevo access_token con AAL2
-  const aal2Token = verifyData?.access_token ?? stored.access_token;
+  // 4. El verify debe devolver un access_token con AAL2 — si no, es un error
+  const aal2Token = verifyData?.access_token;
+  if (!aal2Token) {
+    deleteMfaSession(mfa_token);
+    return NextResponse.json(
+      { error: "Error al verificar 2FA. Inicia sesión de nuevo." },
+      { status: 500 }
+    );
+  }
 
   // 5. Setear cookie con el token AAL2
   const res = NextResponse.json({ ok: true });
