@@ -150,6 +150,12 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                   + Nueva línea
                 </Link>
                 <Link
+                  href="/admin/configuracion/seguridad"
+                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                >
+                  Seguridad
+                </Link>
+                <Link
                   href="/admin/productos"
                   className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
                 >
@@ -167,6 +173,12 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
             ) : isConsultaPage ? (
               <>
                 <Link
+                  href="/admin/configuracion/seguridad"
+                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                >
+                  Seguridad
+                </Link>
+                <Link
                   href="/admin/productos"
                   className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
                 >
@@ -183,6 +195,14 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
               </>
             ) : (
               <>
+                {!isSeguridadPage && (
+                  <Link
+                    href="/admin/configuracion/seguridad"
+                    className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                  >
+                    Seguridad
+                  </Link>
+                )}
                 <Link
                   href="/admin/productos"
                   className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
