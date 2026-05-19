@@ -121,7 +121,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           }
         }
       } catch (err) {
-        console.error("Error cargando catálogo:", err);
+        console.error("Error cargando catálogo:", err instanceof Error ? err.message : "unknown");
         setError("No se pudo cargar el catálogo. Recarga la página.");
       } finally {
         setLoadingCatalog(false);
