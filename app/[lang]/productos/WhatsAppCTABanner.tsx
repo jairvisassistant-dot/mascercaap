@@ -5,7 +5,7 @@ type Props = { lang: string }
 
 export function WhatsAppCTABanner({ lang }: Props) {
   const waText = lang === "es"
-    ? "¿Te interesa algún producto? Escribinos por WhatsApp"
+    ? "¿Te interesa algún producto? Escríbenos por WhatsApp"
     : "Interested in a product? Contact us on WhatsApp"
   const waButton = lang === "es" ? "Escribir ahora" : "Write now"
   const { appUrl, webUrl } = buildWhatsAppLinks(

@@ -27,7 +27,7 @@ export default function NuevaLineaForm() {
         const data: Category[] = await r.json();
         if (Array.isArray(data)) setCategories(data);
       } catch (err) {
-        console.error("Error cargando categorías:", err);
+        console.error("Error cargando categorías:", err instanceof Error ? err.message : "unknown");
         setError("No se pudieron cargar las categorías. Recarga la página.");
       } finally {
         setLoadingCategories(false);

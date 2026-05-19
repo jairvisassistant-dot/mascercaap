@@ -112,10 +112,6 @@ export type Testimonial = {
 };
 
 
-// ContactFormData: inferida desde Zod (fuente de verdad), re-exportada aquí para
-// que types/index.ts siga siendo el punto de importación único del proyecto.
-export type { ContactFormData } from "@/lib/schemas/contact";
-
 // ── Leads / Consultas ────────────────────────────────────────────────────────
 export type LeadRow = {
   id: string;
@@ -145,6 +141,3 @@ export type LegalDocument = {
   sections: LegalSection[];
 };
 
-// ── Order / Pricing (re-exported from lib sources of truth) ────────────────
-export type { PriceEntry, PriceResolver } from "@/lib/order-assistant";
-export type { OrderItem, OrderInput } from "@/lib/schemas/order";

@@ -57,8 +57,8 @@ export default function AdminLoginPage() {
       // Sin MFA -> redirigir directo
       router.push("/admin/productos");
     } catch (err) {
-      console.error("Error en login admin:", err);
-      setError("Error de conexion");
+      console.error("Error en login admin:", err instanceof Error ? err.message : "unknown");
+      setError("Error de conexión");
     } finally {
       setLoading(false);
     }
@@ -114,8 +114,8 @@ export default function AdminLoginPage() {
 
       router.push("/admin/productos");
     } catch (err) {
-      console.error("Error en verificacion 2FA:", err);
-      setError("Error de conexion");
+      console.error("Error en verificación 2FA:", err instanceof Error ? err.message : "unknown");
+      setError("Error de conexión");
     } finally {
       setLoading(false);
     }

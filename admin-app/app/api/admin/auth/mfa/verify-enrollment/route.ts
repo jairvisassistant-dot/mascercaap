@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   if (verifyError) {
     return NextResponse.json(
-      { error: "Código incorrecto. Intentá de nuevo." },
+      { error: "Código incorrecto. Intenta de nuevo." },
       { status: 401 }
     );
   }
