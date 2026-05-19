@@ -263,85 +263,6 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-        {/* Nombre */}
-        <div>
-          <label htmlFor="nombre" className="block text-sm font-medium text-text-sub mb-1">
-            {t.labels.name}
-          </label>
-          <input
-            id="nombre"
-            type="text"
-            autoComplete="name"
-            value={fields.nombre}
-            onChange={update("nombre")}
-            className={`w-full px-4 py-3 rounded-lg border ${
-              fieldErrors.nombre ? "border-red-500" : "border-border-mid"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
-            placeholder={t.placeholders.name}
-          />
-          {fieldErrors.nombre && (
-            <p className="text-red-500 text-sm mt-1">{fieldErrors.nombre}</p>
-          )}
-        </div>
-
-        {/* Empresa */}
-        <div>
-          <label htmlFor="empresa" className="block text-sm font-medium text-text-sub mb-1">
-            {t.labels.company}
-          </label>
-          <input
-            id="empresa"
-            type="text"
-            autoComplete="organization"
-            value={fields.empresa}
-            onChange={update("empresa")}
-            className="w-full px-4 py-3 rounded-lg border border-border-mid focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main"
-            placeholder={t.placeholders.company}
-          />
-        </div>
-
-        {/* Email + Teléfono */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-text-sub mb-1">
-              {t.labels.email}
-            </label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              value={fields.email}
-              onChange={update("email")}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                fieldErrors.email ? "border-red-500" : "border-border-mid"
-              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
-              placeholder={t.placeholders.email}
-            />
-            {fieldErrors.email && (
-              <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="telefono" className="block text-sm font-medium text-text-sub mb-1">
-              {t.labels.phone}
-            </label>
-            <input
-              id="telefono"
-              type="tel"
-              autoComplete="tel"
-              value={fields.telefono}
-              onChange={update("telefono")}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                fieldErrors.telefono ? "border-red-500" : "border-border-mid"
-              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
-              placeholder={t.placeholders.phone}
-            />
-            {fieldErrors.telefono && (
-              <p className="text-red-500 text-sm mt-1">{fieldErrors.telefono}</p>
-            )}
-          </div>
-        </div>
-
         {/* Tipo */}
         <div>
           <label htmlFor="tipo" className="block text-sm font-medium text-text-sub mb-1">
@@ -371,8 +292,7 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
             <option value="pedido">{t.options.order}</option>
             <option value="consulta-pedido">{t.options.queryOrder}</option>
             <option value="disponibilidad">{t.options.availability}</option>
-            <option value="peticion">{t.options.petition}</option>
-            <option value="queja-reclamo">{t.options.complaintClaim}</option>
+            <option value="peticion-queja-reclamo">{t.options.petitionComplaintClaim}</option>
             <option value="contacto">{t.options.contact}</option>
             <option value="otro">{t.options.other}</option>
           </select>
@@ -487,6 +407,85 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
           </div>
         )}
 
+        {/* Nombre */}
+        <div>
+          <label htmlFor="nombre" className="block text-sm font-medium text-text-sub mb-1">
+            {t.labels.name}
+          </label>
+          <input
+            id="nombre"
+            type="text"
+            autoComplete="name"
+            value={fields.nombre}
+            onChange={update("nombre")}
+            className={`w-full px-4 py-3 rounded-lg border ${
+              fieldErrors.nombre ? "border-red-500" : "border-border-mid"
+            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            placeholder={t.placeholders.name}
+          />
+          {fieldErrors.nombre && (
+            <p className="text-red-500 text-sm mt-1">{fieldErrors.nombre}</p>
+          )}
+        </div>
+
+        {/* Empresa */}
+        <div>
+          <label htmlFor="empresa" className="block text-sm font-medium text-text-sub mb-1">
+            {t.labels.company}
+          </label>
+          <input
+            id="empresa"
+            type="text"
+            autoComplete="organization"
+            value={fields.empresa}
+            onChange={update("empresa")}
+            className="w-full px-4 py-3 rounded-lg border border-border-mid focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main"
+            placeholder={t.placeholders.company}
+          />
+        </div>
+
+        {/* Email + Teléfono */}
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-text-sub mb-1">
+              {t.labels.email}
+            </label>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              value={fields.email}
+              onChange={update("email")}
+              className={`w-full px-4 py-3 rounded-lg border ${
+                fieldErrors.email ? "border-red-500" : "border-border-mid"
+              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+              placeholder={t.placeholders.email}
+            />
+            {fieldErrors.email && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.email}</p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="telefono" className="block text-sm font-medium text-text-sub mb-1">
+              {t.labels.phone}
+            </label>
+            <input
+              id="telefono"
+              type="tel"
+              autoComplete="tel"
+              value={fields.telefono}
+              onChange={update("telefono")}
+              className={`w-full px-4 py-3 rounded-lg border ${
+                fieldErrors.telefono ? "border-red-500" : "border-border-mid"
+              } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+              placeholder={t.placeholders.phone}
+            />
+            {fieldErrors.telefono && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.telefono}</p>
+            )}
+          </div>
+        </div>
+
         {/* Mensaje */}
         <div>
           <label htmlFor="mensaje" className="block text-sm font-medium text-text-sub mb-1">
@@ -564,7 +563,7 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
               <button
                 type="button"
                 onClick={() => setSubmitStatus(null)}
-                aria-label="Cerrar"
+                aria-label={t.close}
                 className="shrink-0 p-1 text-green-600 hover:text-green-800 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -609,7 +608,7 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
             <button
               type="button"
               onClick={() => setSubmitStatus(null)}
-              aria-label="Cerrar"
+              aria-label={t.close}
               className="shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>

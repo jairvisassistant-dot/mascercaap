@@ -499,8 +499,7 @@
         "order": "Realizar un pedido",
         "queryOrder": "Consultar pedido",
         "availability": "Validar disponibilidad de producto",
-        "petition": "Petición",
-        "complaintClaim": "Queja y reclamo",
+        "petitionComplaintClaim": "Petición / Queja y reclamo",
         "contact": "Solicitud de contacto",
         "other": "Otro"
       },
@@ -528,6 +527,7 @@
         "lineRequired": "Selecciona una línea de producto para validar disponibilidad.",
         "productRequired": "Selecciona un producto para completar la consulta de disponibilidad."
       },
+      "close": "Cerrar",
       "submit": "Enviar mensaje",
       "submitting": "Enviando...",
       "success": {
@@ -551,8 +551,7 @@
           "pedido": "realizar un pedido",
           "consulta-pedido": "consultar un pedido",
           "disponibilidad": "validar disponibilidad de producto",
-          "peticion": "una petición",
-          "queja-reclamo": "una queja o reclamo",
+          "peticion-queja-reclamo": "una petición, queja o reclamo",
           "contacto": "una solicitud de contacto",
           "otro": "otro motivo"
         }

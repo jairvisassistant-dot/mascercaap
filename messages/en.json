@@ -499,8 +499,7 @@
         "order": "Place an order",
         "queryOrder": "Check an order",
         "availability": "Check product availability",
-        "petition": "Petition",
-        "complaintClaim": "Complaint & claim",
+        "petitionComplaintClaim": "Petition / Complaint & claim",
         "contact": "Contact request",
         "other": "Other"
       },
@@ -528,6 +527,7 @@
         "lineRequired": "Select a product line to check availability.",
         "productRequired": "Select a product to complete the availability inquiry."
       },
+      "close": "Close",
       "submit": "Send message",
       "submitting": "Sending...",
       "success": {
@@ -551,8 +551,7 @@
           "pedido": "place an order",
           "consulta-pedido": "check an order",
           "disponibilidad": "check product availability",
-          "peticion": "a petition",
-          "queja-reclamo": "a complaint or claim",
+          "peticion-queja-reclamo": "a petition, complaint or claim",
           "contacto": "a contact request",
           "otro": "another reason"
         }

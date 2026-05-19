@@ -34,7 +34,7 @@ export function createProductPatchSchema(msgs?: { noValidFields?: string }) {
       active: z.boolean().optional(),
     })
     .refine((obj) => Object.keys(obj).length > 0, {
-      message: msgs?.noValidFields ?? "No valid fields to update",
+      message: msgs?.noValidFields ?? "No hay campos válidos para actualizar",
     });
 }
 
