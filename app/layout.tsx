@@ -9,12 +9,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://mascercap.com"),
 };
 
-export const metadata: Metadata = {
-  title: { default: "Más Cerca AP", template: "%s | Más Cerca AP" },
-  description: "Productores de jugos y cítricos 100% naturales en Colombia.",
-  metadataBase: new URL("https://mascercap.com"),
-};
-
 // Applies saved theme before first paint to avoid flash of unstyled content.
 // Reads the `theme` cookie directly from document.cookie (client-side only).
 const THEME_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )theme=([^;]*)/);var t=m?m[1]:(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;

@@ -24,8 +24,6 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-export const revalidate = 60;
-
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
