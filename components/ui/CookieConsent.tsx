@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Script from "next/script";
 import Link from "next/link";
 import type { Dictionary, Locale } from "@/lib/i18n";
@@ -13,17 +13,19 @@ interface CookieConsentProps {
   lang: Locale;
 }
 
-function readConsent(): "accepted" | "declined" | null {
-  try {
-    const stored = localStorage.getItem(CONSENT_KEY);
-    return stored === "accepted" || stored === "declined" ? stored : null;
-  } catch {
-    return null;
-  }
-}
-
 export default function CookieConsent({ gaId, dict, lang }: CookieConsentProps) {
-  const [consent, setConsent] = useState<"accepted" | "declined" | null>(readConsent);
+  const [consent, setConsent] = useState<"accepted" | "declined" | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const stored = localStorage.getItem(CONSENT_KEY);
+      if (stored === "accepted" || stored === "declined") {
+        setConsent(stored as "accepted" | "declined");
+      }
+    } catch { /* private mode */ }
+  }, []);
 
   const accept = () => {
     try { localStorage.setItem(CONSENT_KEY, "accepted"); } catch { /* private mode */ }
@@ -34,6 +36,9 @@ export default function CookieConsent({ gaId, dict, lang }: CookieConsentProps) 
     try { localStorage.setItem(CONSENT_KEY, "declined"); } catch { /* private mode */ }
     setConsent("declined");
   };
+
+  if (!mounted) return null;
+
 
   const t = dict.cookieConsent;
 

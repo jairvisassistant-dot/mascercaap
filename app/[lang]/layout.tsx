@@ -26,6 +26,8 @@ const poppins = Poppins({
 
 export const revalidate = 60;
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
