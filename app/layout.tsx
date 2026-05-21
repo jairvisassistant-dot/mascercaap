@@ -5,7 +5,7 @@ import { cookies, headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: { default: "Más Cerca AP", template: "%s | Más Cerca AP" },
-  description: "Productores de jugos y cítricos 100% naturales en Colombia.",
+  description: "Productos Colombianos de alta calidad.",
   metadataBase: new URL("https://mascercap.com"),
 };
 
