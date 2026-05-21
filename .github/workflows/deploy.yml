@@ -1,0 +1,85 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "24"
+
+jobs:
+  # ── Validate: build + test in CI before touching production ─────────────────
+  validate:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build main app
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
+
+      - name: Install admin-app dependencies
+        run: npm ci
+        working-directory: admin-app
+
+      - name: Build admin app
+        run: npm run build
+        working-directory: admin-app
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+  # ── Deploy: SSH into Hostinger, pull & rebuild both apps ────────────────────
+  deploy:
+    name: Deploy to Production
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          username: ${{ secrets.HOSTINGER_SSH_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          port: 65002
+          script: |
+            set -e
+            export NODE_OPTIONS="--max-old-space-size=512"
+
+            echo "── Deploying main app ──────────────────────────"
+            cd ${{ secrets.MAIN_APP_PATH }}
+            git pull origin main
+            npm ci --include=dev
+            npm run build
+            touch tmp/restart.txt
+            echo "✓ Main app rebuilt"
+
+            echo "── Deploying admin app ─────────────────────────"
+            cd ${{ secrets.ADMIN_APP_PATH }}
+            npm ci --include=dev
+            npm run build
+            touch tmp/restart.txt
+            echo "✓ Admin app rebuilt"
