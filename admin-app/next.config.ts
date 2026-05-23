@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    cpus: 1,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [70, 75, 80],
