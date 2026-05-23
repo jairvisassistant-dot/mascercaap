@@ -10,6 +10,7 @@
     "dev:main": "next dev --webpack",
     "build": "next build",
     "build:admin": "npm ci --prefix admin-app && npm run build --prefix admin-app",
+    "build:admin-deploy": "npm run build:admin && cp -r admin-app/.next .next",
     "start": "next start",
     "lint": "eslint",
     "images:update-local": "tsx scripts/update-local-product-images.ts",
