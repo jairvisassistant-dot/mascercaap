@@ -9,6 +9,7 @@
     "dev": "concurrently --names main,admin --prefix-colors cyan,yellow \"next dev --webpack\" \"npm --prefix admin-app run dev\"",
     "dev:main": "next dev --webpack",
     "build": "next build",
+    "build:admin": "npm ci --prefix admin-app && npm run build --prefix admin-app",
     "start": "next start",
     "lint": "eslint",
     "images:update-local": "tsx scripts/update-local-product-images.ts",
