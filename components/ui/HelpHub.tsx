@@ -4,10 +4,14 @@ import dynamic from "next/dynamic";
 import { m, AnimatePresence } from "framer-motion";
 import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { useHelpHub } from "@/lib/help-hub-context";
+import type { FAQData } from "@/types";
+import type { PriceEntry } from "@/lib/order-assistant";
 
 const HelpDrawer = dynamic(() => import("./HelpDrawer"), { ssr: false });
 
-export default function HelpHub() {
+type Props = { faqData: FAQData; prices: PriceEntry[] };
+
+export default function HelpHub({ faqData, prices }: Props) {
   const { isOpen, openDrawer, closeDrawer } = useHelpHub();
   const { dict } = useDictionary();
   const t = dict.helpHub;
@@ -31,7 +35,7 @@ export default function HelpHub() {
       </m.button>
 
       <AnimatePresence>
-        {isOpen && <HelpDrawer onClose={closeDrawer} />}
+        {isOpen && <HelpDrawer faqData={faqData} prices={prices} onClose={closeDrawer} />}
       </AnimatePresence>
     </>
   );

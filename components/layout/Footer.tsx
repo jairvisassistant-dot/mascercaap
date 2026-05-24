@@ -43,8 +43,6 @@ interface FooterProps {
 }
 
 export default function Footer({ dict, lang, categories }: FooterProps) {
-  const adminUrl = (process.env.ADMIN_APP_URL ?? "") + "/admin/login";
-
   const footerLinks = [
     { href: `/${lang}`, label: dict.nav.home },
     { href: `/${lang}/productos`, label: dict.nav.products },
@@ -100,12 +98,12 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
                 </li>
               ))}
               <li>
-                <a
-                  href={adminUrl}
+                <Link
+                  href="/admin/login"
                   className="transition-colors text-white/35 hover:text-white/55"
                 >
                   Admin
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

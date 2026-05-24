@@ -6,10 +6,8 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "concurrently --names main,admin --prefix-colors cyan,yellow \"next dev --webpack\" \"npm --prefix admin-app run dev\"",
-    "dev:main": "next dev --webpack",
+    "dev": "next dev --webpack",
     "build": "next build",
-    "build:admin": "npm ci --prefix admin-app && npm run build --prefix admin-app && cp -r admin-app/.next .next",
     "start": "next start",
     "lint": "eslint",
     "images:update-local": "tsx scripts/update-local-product-images.ts",
@@ -35,7 +33,6 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.2",
-    "concurrently": "^9.2.1",
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "^16.2.6",

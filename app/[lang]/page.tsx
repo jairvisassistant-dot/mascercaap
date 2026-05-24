@@ -15,7 +15,7 @@ import { SITE_CONFIG } from "@/lib/config";
 import { testimonials as fallbackTestimonials } from "@/data/testimonials";
 import type { Testimonial } from "@/types";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -100,7 +100,7 @@ export default async function HomePage({ params }: Props) {
       <HeroCarousel />
 
       <ProductCategories dict={dict} lang={lang} />
-      <FeaturedProducts products={featuredProducts} dict={dict} />
+      <FeaturedProducts products={featuredProducts} dict={dict} lang={lang} />
       <WhyChooseUs dict={dict} />
 
       <DailyOffer dict={dict} />

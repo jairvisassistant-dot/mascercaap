@@ -1,5 +1,4 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const locales = ["es", "en"];
 const defaultLocale = "es";
@@ -7,7 +6,6 @@ const defaultLocale = "es";
 function getLocale(request: NextRequest): string {
   const cookie = request.cookies.get("NEXT_LOCALE");
   if (cookie && locales.includes(cookie.value)) return cookie.value;
-
   const acceptLang = request.headers.get("accept-language") ?? "";
   const preferred = acceptLang
     .split(",")
@@ -16,51 +14,44 @@ function getLocale(request: NextRequest): string {
       return { lang: tag.trim().split("-")[0].toLowerCase(), q: q ? parseFloat(q) : 1 };
     })
     .sort((a, b) => b.q - a.q);
-
   for (const { lang } of preferred) {
     if ((locales as readonly string[]).includes(lang)) return lang;
   }
-
   return defaultLocale;
 }
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Admin is a standalone app. Strip locale prefix then redirect to ADMIN_APP_URL.
-  if (pathname.startsWith("/admin") || locales.some((l) => pathname.startsWith(`/${l}/admin`))) {
-    const adminPath = locales.reduce(
-      (p, l) => (p.startsWith(`/${l}/admin`) ? p.slice(l.length + 1) : p),
-      pathname,
-    );
-    const adminAppUrl = process.env.ADMIN_APP_URL;
-    if (adminAppUrl) {
-      return NextResponse.redirect(
-        new URL(adminPath + request.nextUrl.search, adminAppUrl),
-        { status: 308 },
-      );
+  // Block middleware bypass header (CVE-2025-29927)
+  if (request.headers.get("x-middleware-subrequest")) {
+    return new NextResponse(null, { status: 403 });
+  }
+
+  // Admin routes: protect and exit early — no locale prefix applied to /admin/*
+  if (pathname.startsWith("/admin")) {
+    if (!pathname.startsWith("/admin/login")) {
+      const session = request.cookies.get("admin_session");
+      if (!session?.value) {
+        return NextResponse.redirect(new URL("/admin/login", request.url));
+      }
     }
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.next();
   }
 
-  // Skip _next/data and any static files not caught by the matcher
-  if (pathname.startsWith("/_next") || pathname.includes(".")) {
-    return;
-  }
+  // Skip static assets not caught by the matcher
+  if (pathname.startsWith("/_next") || pathname.includes(".")) return;
 
-  // Check if pathname already has a locale
+  // i18n
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
-
   if (pathnameHasLocale) {
     const lang = locales.find((l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`) ?? defaultLocale;
     const res = NextResponse.next();
     res.headers.set("x-lang", lang);
     return res;
   }
-
-  // Redirect to the locale-prefixed path
   const locale = getLocale(request);
   request.nextUrl.pathname = `/${locale}${pathname}`;
   return NextResponse.redirect(request.nextUrl);

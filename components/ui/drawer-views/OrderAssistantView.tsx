@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { m, AnimatePresence } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
@@ -16,9 +16,10 @@ import {
   QUANTITY_OPTIONS,
   QUANTITY_OPTIONS_120G_PACKS,
   PRODUCT_TYPE_OPTIONS,
+  buildPriceResolver,
 } from "@/lib/order-assistant"
 import { useDictionary } from "@/lib/i18n/DictionaryProvider"
-import { usePrices } from "@/lib/prices/PriceProvider"
+import type { PriceEntry } from "@/lib/order-assistant"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 
@@ -28,13 +29,14 @@ type SubmitStatus = "idle" | "sending" | "success" | "error"
 const CUSTOM_QTY = -1
 
 type Props = {
+  prices: PriceEntry[];
   onContactClick: () => void
 }
 
-export default function OrderAssistantView({ onContactClick }: Props) {
+export default function OrderAssistantView({ prices, onContactClick }: Props) {
   const { dict } = useDictionary()
   const t = dict.orderAssistant
-  const resolvePrice = usePrices()
+  const resolvePrice = useMemo(() => buildPriceResolver(prices), [prices])
 
   // ── Global state ───────────────────────────────────────────────
   const [step, setStep]       = useState<Step>(1)

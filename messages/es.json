@@ -277,6 +277,11 @@
     "lightbox": {
       "close": "Cerrar",
       "benefits": "Beneficios"
+    },
+    "whatsappBanner": {
+      "text": "¿Te interesa algún producto? Escríbenos por WhatsApp",
+      "button": "Escribir ahora",
+      "waMessage": "Hola, me interesa un producto del catálogo"
     }
   },
   "about": {
@@ -835,6 +840,7 @@
     "text": "Usamos Google Analytics, almacenamiento local del navegador y datos de sesión para mejorar tu experiencia. Puedes aceptar o rechazar el seguimiento analítico.",
     "accept": "Aceptar",
     "decline": "Solo necesarias",
-    "learnMore": "Ver políticas"
+    "learnMore": "Ver políticas",
+    "dialogLabel": "Aviso de cookies"
   }
 }

@@ -27,7 +27,7 @@ const FRUIT_OPTIONS_ROW1 = (
 ).map((k) => ({ value: k, label: FRUIT_DATA[k].label }))
 
 const FRUIT_OPTIONS_ROW2 = (
-  ["maracuya", "frutos_rojos", "guanabana", "tomate_arbol"] as FruitKey[]
+  ["maracuya", "frutos_rojos", "frutos_amarillos", "guanabana", "tomate_arbol"] as FruitKey[]
 ).map((k) => ({ value: k, label: FRUIT_DATA[k].label }))
 
 const CUSTOM_VALUE = -1
