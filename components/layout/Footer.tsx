@@ -43,16 +43,13 @@ interface FooterProps {
 }
 
 export default function Footer({ dict, lang, categories }: FooterProps) {
+  const adminUrl = (process.env.ADMIN_APP_URL ?? "") + "/admin/login";
+
   const footerLinks = [
     { href: `/${lang}`, label: dict.nav.home },
     { href: `/${lang}/productos`, label: dict.nav.products },
     { href: `/${lang}/nosotros`, label: dict.nav.about },
     { href: `/${lang}/contacto`, label: dict.nav.contact },
-    {
-      href: "/admin/login",
-      label: "Admin",
-      className: "text-white/35 hover:text-white/55",
-    },
   ];
 
   return (
@@ -96,12 +93,20 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`transition-colors ${link.className ?? "text-white/62 hover:text-primary"}`}
+                    className="transition-colors text-white/62 hover:text-primary"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
+              <li>
+                <a
+                  href={adminUrl}
+                  className="transition-colors text-white/35 hover:text-white/55"
+                >
+                  Admin
+                </a>
+              </li>
             </ul>
           </div>
 
