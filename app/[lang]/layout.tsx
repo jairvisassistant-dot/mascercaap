@@ -5,8 +5,6 @@ import type { Locale } from "@/lib/i18n";
 import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
-import { FAQProvider } from "@/lib/faq-provider";
-import { PriceProvider } from "@/lib/prices/PriceProvider";
 import { supabasePublic as supabase } from "@/lib/supabase";
 import { getFAQData } from "@/lib/faq-data";
 import { getAllProductCategories } from "@/lib/supabase/queries";
@@ -130,9 +128,7 @@ export default async function LangLayout({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div className={`${poppins.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
-          <PriceProvider prices={prices}>
           <DictionaryProvider dict={dict} lang={lang}>
-            <FAQProvider data={faqData}>
             <HelpHubProvider>
               <a
                 href="#main-content"
@@ -144,11 +140,9 @@ export default async function LangLayout({
               <Navbar />
               <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
               <Footer dict={dict} lang={lang} categories={categories} />
-              <HelpHub />
+              <HelpHub faqData={faqData} prices={prices} />
             </HelpHubProvider>
-            </FAQProvider>
           </DictionaryProvider>
-          </PriceProvider>
         </MotionProvider>
         <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} dict={dict} lang={lang} />
       </div>

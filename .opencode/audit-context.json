@@ -1,22 +1,22 @@
 {
   "meta": {
-    "generated_at": "2026-05-18T23:54:17Z",
+    "generated_at": "2026-05-24T05:25:40Z",
     "project_root": "/home/jilz/Escritorio/mas-cerca-ap"
   },
   "baseline": {
-    "hash": "f1b2c4e",
+    "hash": "1b7606a",
     "source": "heurística git (audit|baseline)",
-    "branch": "feature/admin-2fa",
+    "branch": "feat/unify-admin",
     "worktree": "modificado",
-    "commits_since": 21,
-    "diff_mode": "f1b2c4e..HEAD + working tree modificado"
+    "commits_since": 17,
+    "diff_mode": "1b7606a..HEAD + working tree modificado"
   },
   "project": {
     "framework": "Next.js ^16.2.6",
-    "total_source_files": 86,
-    "tsx_components": 65,
-    "ts_modules": 21,
-    "use_client_files": ["components/sections/FeaturedProducts.tsx", "components/sections/YieldCalculator.tsx", "components/sections/ContactForm.tsx", "components/sections/OrderAssistantCTA.tsx", "components/sections/MisionVisionTabs.tsx", "components/layout/Navbar.tsx", "components/layout/AdminNavbar.tsx", "components/ui/TestimonialMarquee.tsx", "components/ui/ChipSelector.tsx", "components/ui/SealBadge.tsx", "components/ui/ProductGridCard.tsx", "components/ui/calculator/CupGrid.tsx", "components/ui/calculator/PreparationTimeline.tsx", "components/ui/calculator/AnimatedNumber.tsx", "components/ui/calculator/PresentationComparison.tsx", "components/ui/calculator/AnimatedCup.tsx", "components/ui/ProductLineRow.tsx", "components/ui/ProductCard.tsx", "components/ui/HeroCarousel.tsx", "components/ui/drawer-views/LegalView.tsx", "components/ui/drawer-views/ContactView.tsx", "components/ui/drawer-views/HelpMenu.tsx", "components/ui/drawer-views/FaqView.tsx", "components/ui/drawer-views/OrderAssistantView.tsx", "components/ui/drawer-views/WhatsAppConnectView.tsx", "components/ui/LanguageSwitcher.tsx", "components/ui/PulpaFruitGrid.tsx", "components/ui/CookieConsent.tsx", "components/ui/HelpHub.tsx", "components/ui/ScrollProgress.tsx", "components/ui/ThemeToggle.tsx", "components/ui/HelpDrawer.tsx", "components/ui/ProductLightbox.tsx", "components/ui/motion/AnimateInView.tsx", "components/ui/AnimatedWhatsAppButton.tsx", "app/[lang]/productos/ProductsHero.tsx", "app/[lang]/productos/ProductosClient.tsx", "app/[lang]/productos/ProductsFilterBar.tsx", "app/[lang]/productos/ProductsContent.tsx"]
+    "total_source_files": 121,
+    "tsx_components": 95,
+    "ts_modules": 26,
+    "use_client_files": ["components/sections/FeaturedProducts.tsx", "components/sections/YieldCalculator.tsx", "components/sections/ContactForm.tsx", "components/sections/OrderAssistantCTA.tsx", "components/sections/MisionVisionTabs.tsx", "components/layout/Navbar.tsx", "components/admin/AdminNavbar.tsx", "components/ui/TestimonialMarquee.tsx", "components/ui/ChipSelector.tsx", "components/ui/SealBadge.tsx", "components/ui/ProductGridCard.tsx", "components/ui/calculator/CupGrid.tsx", "components/ui/calculator/PreparationTimeline.tsx", "components/ui/calculator/AnimatedNumber.tsx", "components/ui/calculator/PresentationComparison.tsx", "components/ui/calculator/AnimatedCup.tsx", "components/ui/ProductLineRow.tsx", "components/ui/ProductCard.tsx", "components/ui/HeroCarousel.tsx", "components/ui/drawer-views/LegalView.tsx", "components/ui/drawer-views/ContactView.tsx", "components/ui/drawer-views/HelpMenu.tsx", "components/ui/drawer-views/FaqView.tsx", "components/ui/drawer-views/OrderAssistantView.tsx", "components/ui/drawer-views/WhatsAppConnectView.tsx", "components/ui/LanguageSwitcher.tsx", "components/ui/PulpaFruitGrid.tsx", "components/ui/CookieConsent.tsx", "components/ui/HelpHub.tsx", "components/ui/ScrollProgress.tsx", "components/ui/ThemeToggle.tsx", "components/ui/HelpDrawer.tsx", "components/ui/ProductLightbox.tsx", "components/ui/motion/AnimateInView.tsx", "components/ui/AnimatedWhatsAppButton.tsx", "app/[lang]/productos/ProductsHero.tsx", "app/[lang]/productos/ProductosClient.tsx", "app/[lang]/productos/ProductsFilterBar.tsx", "app/[lang]/productos/ProductsContent.tsx", "app/(admin)/admin/categorias/CategoriasList.tsx", "app/(admin)/admin/categorias/NuevaCategoriaForm.tsx", "app/(admin)/admin/lineas/NuevaLineaForm.tsx", "app/(admin)/admin/lineas/LineasList.tsx", "app/(admin)/admin/configuracion/seguridad/page.tsx", "app/(admin)/admin/productos/ProductosAdminClient.tsx", "app/(admin)/admin/productos/ProductoForm.tsx", "app/(admin)/admin/login/page.tsx", "app/(admin)/admin/faq/components/NewQuestionForm.tsx", "app/(admin)/admin/faq/components/FAQCategoryCard.tsx", "app/(admin)/admin/faq/components/FAQQuestionItem.tsx", "app/(admin)/admin/faq/components/ConfigSection.tsx", "app/(admin)/admin/faq/components/QuestionEditForm.tsx", "app/(admin)/admin/faq/components/NewCategoryForm.tsx", "app/(admin)/admin/faq/components/ConfirmDeleteBox.tsx", "app/(admin)/admin/faq/components/CategoryEditForm.tsx", "app/(admin)/admin/faq/FAQAdminClient.tsx", "app/(admin)/admin/consultas/ConsultasList.tsx"]
   },
   "i18n": {
     "languages": ["es", "en"],
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "prod_count": 7,
-    "dev_count": 15,
+    "dev_count": 14,
     "next": "^16.2.6",
     "framer_motion": "^12.38.0",
     "zod": "^4.4.3"

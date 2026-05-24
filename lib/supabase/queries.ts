@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { supabasePublic as supabase } from "@/lib/supabase";
 import type { Product, ProductCategory, ProductLineConfig, Testimonial } from "@/types";
@@ -9,92 +10,102 @@ function noClient(fn: string): never[] {
   return [];
 }
 
-export const getAllProducts = unstable_cache(
-  async (): Promise<Product[]> => {
-    if (!supabase) return noClient("getAllProducts");
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("active", true)
-      .order("display_order");
-    if (error || !data) return [];
-    return data.map(mapRowToProduct);
-  },
-  ["all-products"],
-  { revalidate: 300, tags: ["products"] }
+export const getAllProducts = cache(
+  unstable_cache(
+    async (): Promise<Product[]> => {
+      if (!supabase) return noClient("getAllProducts");
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("active", true)
+        .order("display_order");
+      if (error || !data) return [];
+      return data.map(mapRowToProduct);
+    },
+    ["all-products"],
+    { revalidate: 300, tags: ["products"] }
+  )
 );
 
-export const getFeaturedProducts = unstable_cache(
-  async (): Promise<Product[]> => {
-    if (!supabase) return noClient("getFeaturedProducts");
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("active", true)
-      .eq("featured", true)
-      .order("display_order")
-      .limit(3);
-    if (error || !data) return [];
-    return data.map(mapRowToProduct);
-  },
-  ["featured-products"],
-  { revalidate: 300, tags: ["products"] }
+export const getFeaturedProducts = cache(
+  unstable_cache(
+    async (): Promise<Product[]> => {
+      if (!supabase) return noClient("getFeaturedProducts");
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("active", true)
+        .eq("featured", true)
+        .order("display_order")
+        .limit(3);
+      if (error || !data) return [];
+      return data.map(mapRowToProduct);
+    },
+    ["featured-products"],
+    { revalidate: 300, tags: ["products"] }
+  )
 );
 
-export const getAllTestimonials = unstable_cache(
-  async (): Promise<Testimonial[]> => {
-    if (!supabase) return noClient("getAllTestimonials");
-    const { data, error } = await supabase
-      .from("testimonials")
-      .select("*")
-      .eq("active", true)
-      .order("created_at");
-    if (error || !data) return [];
-    return data;
-  },
-  ["all-testimonials"],
-  { revalidate: 300, tags: ["testimonials"] }
+export const getAllTestimonials = cache(
+  unstable_cache(
+    async (): Promise<Testimonial[]> => {
+      if (!supabase) return noClient("getAllTestimonials");
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("*")
+        .eq("active", true)
+        .order("created_at");
+      if (error || !data) return [];
+      return data;
+    },
+    ["all-testimonials"],
+    { revalidate: 300, tags: ["testimonials"] }
+  )
 );
 
-export const getAllProductLines = unstable_cache(
-  async (): Promise<ProductLineConfig[]> => {
-    if (!supabase) return noClient("getAllProductLines");
-    const { data, error } = await supabase
-      .from("product_lines")
-      .select("*")
-      .eq("active", true)
-      .order("display_order");
-    if (error || !data) return [];
-    return data.map((row) => ({
-      key: row.key as string,
-      label: row.label as string,
-      description: row.description as string,
-      gradient: row.gradient as string,
-      iconEmoji: row.icon_emoji as string,
-      chipImage: (row.chip_image as string) ?? undefined,
-      categoryKey: (row.category_key as string | null) ?? null,
-    }));
-  },
-  ["all-product-lines"],
-  { revalidate: 300, tags: ["product-lines"] }
+export const getAllProductLines = cache(
+  unstable_cache(
+    async (): Promise<ProductLineConfig[]> => {
+      if (!supabase) return noClient("getAllProductLines");
+      const { data, error } = await supabase
+        .from("product_lines")
+        .select("*")
+        .eq("active", true)
+        .order("display_order");
+      if (error || !data) return [];
+      return data.map((row) => ({
+        key: row.key as string,
+        label: row.label as string,
+        description: row.description as string,
+        gradient: row.gradient as string,
+        iconEmoji: row.icon_emoji as string,
+        chipImage: (row.chip_image as string) ?? undefined,
+        categoryKey: (row.category_key as string | null) ?? null,
+      }));
+    },
+    ["all-product-lines"],
+    { revalidate: 300, tags: ["product-lines"] }
+  )
 );
 
-export const getAllProductCategories = unstable_cache(
-  async (): Promise<ProductCategory[]> => {
-    if (!supabase) return noClient("getAllProductCategories");
-    const { data, error } = await supabase
-      .from("product_categories")
-      .select("key, label")
-      .eq("active", true)
-      .order("display_order");
-    if (error || !data) return [];
-    return data.map((row) => ({
-      key: row.key as string,
-      label: row.label as string,
-    }));
-  },
-  ["all-product-categories"],
-  { revalidate: 300, tags: ["categories"] }
+export const getAllProductCategories = cache(
+  unstable_cache(
+    async (): Promise<ProductCategory[]> => {
+      if (!supabase) return noClient("getAllProductCategories");
+      const { data, error } = await supabase
+        .from("product_categories")
+        .select("key, label")
+        .eq("active", true)
+        .order("display_order");
+      if (error || !data) return [];
+      return data.map((row) => ({
+        key: row.key as string,
+        label: row.label as string,
+      }));
+    },
+    ["all-product-categories"],
+    { revalidate: 300, tags: ["categories"] }
+  )
 );
 
 function mapRowToProduct(row: Record<string, unknown>): Product {

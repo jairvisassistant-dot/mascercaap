@@ -14,12 +14,14 @@ import { privacyPolicy, termsAndConditions } from "@/data/legal";
 import { SITE_CONFIG } from "@/lib/config";
 import { buildWhatsAppLinks } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
+import type { FAQData } from "@/types";
+import type { PriceEntry } from "@/lib/order-assistant";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
 
 type WhatsAppState = { appUrl: string | null; webUrl: string | null; leadSaved: boolean };
 
-type Props = { onClose: () => void };
+type Props = { faqData: FAQData; prices: PriceEntry[]; onClose: () => void };
 
 // Reducer to avoid setState-in-effect lint errors
 type DrawerAction =
@@ -51,7 +53,7 @@ function buildDefaultWhatsAppState(message: string): WhatsAppState {
   };
 }
 
-export default function HelpDrawer({ onClose }: Props) {
+export default function HelpDrawer({ faqData, prices, onClose }: Props) {
   const { dict, lang } = useDictionary();
   const locale = lang as Locale;
   const t = dict.helpHub;
@@ -222,6 +224,7 @@ export default function HelpDrawer({ onClose }: Props) {
               )}
               {view === "faq" && (
                 <FaqView
+                  faqData={faqData}
                   onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })}
                   onWhatsAppConnect={(appUrl, webUrl, leadSaved) =>
                     navigateToWhatsApp({ appUrl, webUrl, leadSaved })
@@ -245,7 +248,7 @@ export default function HelpDrawer({ onClose }: Props) {
                 />
               )}
               {view === "order" && (
-                <OrderAssistantView onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
+                <OrderAssistantView prices={prices} onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
               )}
             </m.div>
           </AnimatePresence>
