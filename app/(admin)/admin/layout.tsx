@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { supabase } from "@/lib/admin/supabase-service";
+import { requireAdminSession } from "@/lib/admin/session";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,7 @@ async function getProductCount(): Promise<number | null> {
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  await requireAdminSession();
   const productCount = await getProductCount();
 
   return (
