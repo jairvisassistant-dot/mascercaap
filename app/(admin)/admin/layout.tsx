@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { supabase } from "@/lib/admin/supabase-service";
 import { requireAdminSession } from "@/lib/admin/session";
 import AdminNavbar from "@/components/admin/AdminNavbar";
@@ -19,7 +20,11 @@ async function getProductCount(): Promise<number | null> {
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  await requireAdminSession();
+  const hdrs = await headers();
+  const pathname = hdrs.get("x-pathname") ?? "";
+  if (!pathname.startsWith("/admin/login")) {
+    await requireAdminSession();
+  }
   const productCount = await getProductCount();
 
   return (

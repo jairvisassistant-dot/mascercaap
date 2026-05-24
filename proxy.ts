@@ -36,7 +36,9 @@ export function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL("/admin/login", request.url));
       }
     }
-    return NextResponse.next();
+    const res = NextResponse.next();
+    res.headers.set("x-pathname", pathname);
+    return res;
   }
 
   // Skip static assets not caught by the matcher
