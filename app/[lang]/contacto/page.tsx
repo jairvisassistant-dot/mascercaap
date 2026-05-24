@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import ContactoPageContent from "@/components/sections/ContactoPageContent";
 import { SITE_CONFIG } from "@/lib/config";
+import { getAllProductLines, getAllProducts, getAllProductCategories } from "@/lib/supabase/queries";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -44,6 +45,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ContactoPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const dict = await getDictionary(lang);
-  return <ContactoPageContent dict={dict} />;
+
+  const [dict, productLines, products, allCategories] = await Promise.all([
+    getDictionary(lang),
+    getAllProductLines(),
+    getAllProducts(),
+    getAllProductCategories(),
+  ]);
+
+  const categories = allCategories.filter((c) => c.key !== "todas");
+
+  return (
+    <ContactoPageContent
+      dict={dict}
+      productLines={productLines}
+      products={products}
+      categories={categories}
+    />
+  );
 }

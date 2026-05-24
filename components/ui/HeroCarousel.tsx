@@ -275,7 +275,11 @@ export default function HeroCarousel() {
   };
 
   return (
-    <section ref={sectionRef} className="relative min-h-[600px] md:min-h-[640px] overflow-hidden bg-emerald-950">
+    <section
+      ref={sectionRef}
+      className="relative min-h-[600px] md:min-h-[640px] overflow-hidden bg-emerald-950"
+      onFocus={pauseAndResume}
+    >
 
       <AnimatePresence mode="wait">
         <m.div
@@ -303,12 +307,11 @@ export default function HeroCarousel() {
               >
                 <Image
                   src={frame.image}
-                  alt={slideText.title.replace("\n", " ")}
+                  alt={slideText.title.replace(/\n/g, " ")}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                   className="object-cover"
                   priority={currentSlide === 0 && currentFrame === 0}
-                  loading={currentSlide === 0 && currentFrame > 0 ? "eager" : undefined}
                   quality={70}
                 />
               </m.div>

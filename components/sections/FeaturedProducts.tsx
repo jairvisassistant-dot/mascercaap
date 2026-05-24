@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Image from "next/image";
 import { useHelpHub } from "@/lib/help-hub-context";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product } from "@/types";
 import type { Dictionary } from "@/lib/i18n";
 
 interface FeaturedProductsProps {
   products: Product[];
   dict: Dictionary;
+  lang: string;
 }
 
 const cardVariants = {
@@ -57,10 +57,9 @@ const cardStyles = [
   },
 ] as const;
 
-export default function FeaturedProducts({ products, dict }: FeaturedProductsProps) {
+export default function FeaturedProducts({ products, dict, lang }: FeaturedProductsProps) {
   const hooks = dict.home.featured.productHooks;
   const { openDrawer } = useHelpHub();
-  const { lang } = useDictionary();
   const pl = dict.productLines as Record<string, { label: string }>;
   const [canFlip, setCanFlip] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);

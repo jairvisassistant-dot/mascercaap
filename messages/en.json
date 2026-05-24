@@ -277,6 +277,11 @@
     "lightbox": {
       "close": "Close",
       "benefits": "Benefits"
+    },
+    "whatsappBanner": {
+      "text": "Interested in a product? Contact us on WhatsApp",
+      "button": "Write now",
+      "waMessage": "Hello, I'm interested in a product from your catalog"
     }
   },
   "about": {
@@ -748,7 +753,7 @@
   },
   "chatbot": {
     "title": "Frequently Asked Questions",
-    "welcome": "Hi! 👋 I'm the Más Cerca AP automated assistant. Select a category or type your question. If you'd prefer to speak with a person, choose «Connect with advisor».",
+    "welcome": "Hi! 👋 I'm the Más Cerca AP automated assistant. Select a category or type your question. If you'd prefer to speak with a person, choose «Connect with advisor». You can also write in Spanish.",
     "placeholder": "Type your question...",
     "fallback": "I don't have information about that. Would you like to talk to our team?",
     "advisorOffer": "Would you still like to speak with an advisor?",
@@ -835,6 +840,7 @@
     "text": "We use Google Analytics, local browser storage, and session data to improve your experience. You can accept or decline analytical tracking.",
     "accept": "Accept",
     "decline": "Necessary only",
-    "learnMore": "View policies"
+    "learnMore": "View policies",
+    "dialogLabel": "Cookie notice"
   }
 }

@@ -268,7 +268,7 @@ export default function ProductosClient({ products, productLines, categories }: 
         </div>
       </section>
 
-      <WhatsAppCTABanner lang={lang} />
+      <WhatsAppCTABanner lang={lang} dict={dict} />
       <ProductsClosingCTA dict={dict} lang={lang} />
     </div>
   );

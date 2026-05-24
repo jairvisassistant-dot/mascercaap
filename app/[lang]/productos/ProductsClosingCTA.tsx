@@ -1,9 +1,14 @@
+"use client"
+
 import Link from "next/link"
+import { m, useReducedMotion } from "framer-motion"
 import type { Dictionary } from "@/lib/i18n"
 
 type Props = { dict: Dictionary; lang: string }
 
 export function ProductsClosingCTA({ dict, lang }: Props) {
+  const prefersReducedMotion = useReducedMotion()
+
   return (
     <section className="py-16 bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
@@ -34,14 +39,17 @@ export function ProductsClosingCTA({ dict, lang }: Props) {
 
           <div className="grid grid-cols-2 gap-4">
             {dict.products.cta.stats.map((stat, i) => (
-              <div
+              <m.div
                 key={i}
-                className="fade-in-up bg-white/5 border border-white/10 rounded-xl p-5 text-center"
-                style={{ animationDelay: `${i * 0.08}s` }}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
+                className="bg-white/5 border border-white/10 rounded-xl p-5 text-center"
               >
                 <span className="text-3xl font-bold text-primary block mb-1">{stat.value}</span>
                 <span className="text-gray-400 text-xs leading-snug">{stat.label}</span>
-              </div>
+              </m.div>
             ))}
           </div>
         </div>

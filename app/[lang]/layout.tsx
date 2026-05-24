@@ -150,9 +150,7 @@ export default async function LangLayout({
           </DictionaryProvider>
           </PriceProvider>
         </MotionProvider>
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} dict={dict} lang={lang} />
-        )}
+        <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} dict={dict} lang={lang} />
       </div>
     </>
   );

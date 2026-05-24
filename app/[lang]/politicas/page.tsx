@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       locale: lang === "es" ? "es_CO" : "en_US",
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: dict.metadata.privacy.title,
       description: dict.metadata.privacy.description,
     },

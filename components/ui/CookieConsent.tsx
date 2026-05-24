@@ -8,7 +8,7 @@ import type { Dictionary, Locale } from "@/lib/i18n";
 const CONSENT_KEY = "ga-consent";
 
 interface CookieConsentProps {
-  gaId: string;
+  gaId: string | undefined;
   dict: Dictionary;
   lang: Locale;
 }
@@ -44,7 +44,7 @@ export default function CookieConsent({ gaId, dict, lang }: CookieConsentProps) 
 
   return (
     <>
-      {consent === "accepted" && (
+      {consent === "accepted" && gaId && (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
@@ -63,7 +63,7 @@ export default function CookieConsent({ gaId, dict, lang }: CookieConsentProps) 
       {consent === null && (
         <div
           role="dialog"
-          aria-label={t.text}
+          aria-label={t.dialogLabel}
           className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-2xl rounded-2xl border border-border-soft bg-surface-card p-4 shadow-2xl sm:bottom-6 sm:left-6 sm:right-6"
         >
           <p className="text-sm text-text-muted mb-3">

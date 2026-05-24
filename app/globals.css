@@ -204,6 +204,11 @@ body {
 .fade-in-up {
   animation: fade-in-up 0.5s ease both;
 }
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up {
+    animation: none;
+  }
+}
 
 /* Marquee de testimonios — dos filas en sentidos contrarios */
 @keyframes marquee-left {
