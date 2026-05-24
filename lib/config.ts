@@ -14,7 +14,7 @@ export const SITE_CONFIG = {
   /** Teléfono con guiones para JSON-LD y atributos tel: */
   phoneTel: "+57-321-905-4984",
   /** Email de contacto general */
-  emailContact: "apalejandraplata@gmail.com",
+  emailContact: "comercial@mascercaap.com",
   /** URL canónica del sitio */
   siteUrl: "https://mascercap.com",
   /** Logo público usado para metadata y datos estructurados */
