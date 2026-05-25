@@ -68,7 +68,7 @@ export async function POST(req: Request) {
       name: d.name,
       line: d.line,
       presentation: d.presentation,
-      presentation_order: d.presentationOrder ?? 0,
+      presentation_order: d.presentationOrder ?? 1,
       price: d.price ?? null,
       image: d.image ?? null,
       description: d.description,

@@ -76,7 +76,7 @@
         },
         {
           "title": "Save\ntime in the kitchen.\nWithout sacrificing flavor.",
-          "subtitle": "PRE-PROCESSED PULPS",
+          "subtitle": "PURE PULP · EASY TO PREPARE",
           "description": "Our pulps arrive ready. You just serve.",
           "cta": "See pulps"
         },
@@ -835,12 +835,4 @@
     "terms": {
       "ctaTitle": "Questions about these terms?"
     }
-  },
-  "cookieConsent": {
-    "text": "We use Google Analytics, local browser storage, and session data to improve your experience. You can accept or decline analytical tracking.",
-    "accept": "Accept",
-    "decline": "Necessary only",
-    "learnMore": "View policies",
-    "dialogLabel": "Cookie notice"
-  }
-}
+  }}

@@ -33,10 +33,8 @@ export async function GET(req: NextRequest) {
 
 function verifySignature(rawBody: string, signature: string | null): boolean {
   const appSecret = process.env.WHATSAPP_APP_SECRET;
-  if (!appSecret) {
-    // Signature verification skipped — set WHATSAPP_APP_SECRET before going live
-    return true;
-  }
+  if (!appSecret) return false;
+
   if (!signature) return false;
   const expected = `sha256=${crypto.createHmac("sha256", appSecret).update(rawBody).digest("hex")}`;
   try {

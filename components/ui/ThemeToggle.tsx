@@ -39,8 +39,8 @@ export default function ThemeToggle({ labels }: ThemeToggleProps) {
     const next = theme === "light" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", next);
     document.documentElement.style.colorScheme = next;
-    try { localStorage.setItem("theme", next); } catch {}
-    try { document.cookie = `theme=${next};path=/;max-age=31536000;SameSite=Lax`; } catch {}
+    try { localStorage.setItem("theme", next); } catch { /* unavailable in private browsing or storage quota exceeded */ }
+    try { document.cookie = `theme=${next};path=/;max-age=31536000;SameSite=Lax`; } catch { /* blocked by browser cookie policy */ }
   };
 
   const isDark = theme === "dark";

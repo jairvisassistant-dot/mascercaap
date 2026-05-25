@@ -235,6 +235,8 @@ export default function SeguridadPage() {
               <img
                 src={`data:image/svg+xml;utf8,${encodeURIComponent(qrCode)}`}
                 alt="Código QR para 2FA"
+                width={192}
+                height={192}
                 className="h-48 w-48 rounded-xl border border-border-soft"
               />
             )}

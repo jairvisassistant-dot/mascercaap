@@ -2,9 +2,11 @@
 // Importar desde aquí. NO duplicar estos valores en otros archivos.
 
 const _whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
-if (!_whatsappNumber && process.env.NODE_ENV !== "test") {
+if (!_whatsappNumber && process.env.NODE_ENV === "development") {
   console.warn("⚠️  NEXT_PUBLIC_WHATSAPP_NUMBER no configurada — los links de WhatsApp quedarán rotos.");
 }
+
+const _webhookVerifyToken = process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN ?? "";
 
 export const SITE_CONFIG = {
   /** Número de WhatsApp para links wa.me — sin +, sin espacios */
@@ -34,5 +36,5 @@ export const SITE_CONFIG = {
   /** NIT de la empresa */
   nit: "53.053.083",
   /** Token de verificación para webhook de WhatsApp Business API */
-  whatsappWebhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN ?? "",
+  whatsappWebhookVerifyToken: _webhookVerifyToken,
 } as const;
