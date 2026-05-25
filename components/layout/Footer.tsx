@@ -97,14 +97,6 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  href="/admin/login"
-                  className="transition-colors text-white/35 hover:text-white/55"
-                >
-                  Admin
-                </Link>
-              </li>
             </ul>
           </div>
 

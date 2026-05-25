@@ -76,7 +76,7 @@
         },
         {
           "title": "Ahorra tiempo en la cocina.\nSin sacrificar sabor que más te gusta.",
-          "subtitle": "PULPAS PREPROCESADAS",
+          "subtitle": "PULPA PURA · FÁCIL DE PREPARAR",
           "description": "Nuestras pulpas llegan listas. Solo sirves.",
           "cta": "Ver pulpas"
         },
@@ -835,12 +835,4 @@
     "terms": {
       "ctaTitle": "¿Tienes preguntas sobre estos términos?"
     }
-  },
-  "cookieConsent": {
-    "text": "Usamos Google Analytics, almacenamiento local del navegador y datos de sesión para mejorar tu experiencia. Puedes aceptar o rechazar el seguimiento analítico.",
-    "accept": "Aceptar",
-    "decline": "Solo necesarias",
-    "learnMore": "Ver políticas",
-    "dialogLabel": "Aviso de cookies"
-  }
-}
+  }}

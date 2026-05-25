@@ -182,8 +182,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const referer = request.headers.get("referer") ?? "";
-    const validationMsgs = referer.includes("/en/")
+    const validationMsgs = body?.lang === "en"
       ? enMessages.contact.validation
       : esMessages.contact.validation;
     const data = createContactSchema(validationMsgs).parse(body);

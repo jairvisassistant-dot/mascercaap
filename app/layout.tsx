@@ -2,11 +2,12 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { cookies, headers } from "next/headers";
+import { SITE_CONFIG } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: { default: "Más Cerca AP", template: "%s | Más Cerca AP" },
   description: "Productos Colombianos de alta calidad.",
-  metadataBase: new URL("https://mascercap.com"),
+  metadataBase: new URL(SITE_CONFIG.siteUrl),
 };
 
 // Applies saved theme before first paint to avoid flash of unstyled content.

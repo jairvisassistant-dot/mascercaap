@@ -8,6 +8,7 @@ import { SITE_CONFIG } from "@/lib/config";
 import { buildWhatsAppAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
+import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import type { Product, ProductCategory, ProductLineConfig } from "@/types";
 
 type FormFields = {
@@ -84,6 +85,7 @@ function buildAvailabilityTemplate(params: {
 }
 
 export default function ContactForm({ dict, lines = [], products = [], categories = [] }: ContactFormProps) {
+  const { lang } = useDictionary();
   const t = dict.contact.form;
   const availability = t.availabilityAssistant as AvailabilityCopy;
   const [fields, setFields] = useState<FormFields>(EMPTY);
@@ -212,7 +214,7 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, lang }),
       });
 
       if (response.ok) {
@@ -246,7 +248,7 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
         setSubmitStatus("error");
       }
     } catch (err) {
-      console.error("Error enviando formulario de contacto:", err);
+      console.error("Error enviando formulario de contacto:", err instanceof Error ? err.message : "unknown");
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -521,7 +523,7 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
             <span className="text-sm text-text-sub">
               {t.consentLabel}{" "}
               <Link
-                href="/politicas"
+                href={`/${lang}/politicas`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary underline underline-offset-2 hover:text-primary-dark"

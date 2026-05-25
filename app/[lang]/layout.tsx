@@ -1,4 +1,4 @@
-import { Poppins } from "next/font/google";
+import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -13,13 +13,18 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
 import ScrollProgress from "@/components/ui/ScrollProgress";
-import CookieConsent from "@/components/ui/CookieConsent";
 import { SITE_CONFIG } from "@/lib/config";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-dm-serif",
 });
 
 export const revalidate = 3600;
@@ -126,7 +131,7 @@ export default async function LangLayout({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <div className={`${poppins.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
+      <div className={`${poppins.variable} ${dmSerifDisplay.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
           <DictionaryProvider dict={dict} lang={lang}>
             <HelpHubProvider>
@@ -144,7 +149,6 @@ export default async function LangLayout({
             </HelpHubProvider>
           </DictionaryProvider>
         </MotionProvider>
-        <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} dict={dict} lang={lang} />
       </div>
     </>
   );

@@ -7,6 +7,8 @@ import type { Locale } from "@/lib/i18n";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+export const dynamic = "force-static";
+
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
