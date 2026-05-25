@@ -15,7 +15,7 @@ create table if not exists faq_categories (
 
 create table if not exists faq_questions (
   id            text primary key,
-  category_id   text not null references faq_categories(id) on delete cascade,
+  category_id   text not null references faq_categories(id) on delete restrict,
   question_es   text not null,
   question_en   text not null,
   answer_es     text not null,
