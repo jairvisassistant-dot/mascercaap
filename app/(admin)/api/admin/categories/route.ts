@@ -124,12 +124,11 @@ export async function DELETE(req: Request) {
   const { count } = await sb
     .from("product_lines")
     .select("key", { count: "exact", head: true })
-    .eq("category_key", key)
-    .eq("active", true);
+    .eq("category_key", key);
 
   if (count && count > 0) {
     return NextResponse.json(
-      { error: `Esta categoría tiene ${count} línea${count !== 1 ? "s" : ""} asociada${count !== 1 ? "s" : ""}. Reasigna o elimina las líneas antes de borrar la categoría.` },
+      { error: `Esta categoría tiene ${count} línea${count !== 1 ? "s" : ""} asociada${count !== 1 ? "s" : ""}. Reasigna o elimínalas antes de borrar la categoría.` },
       { status: 409 }
     );
   }
