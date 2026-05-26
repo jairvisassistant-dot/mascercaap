@@ -193,22 +193,22 @@
     "howToBuy": {
       "sectionLabel": "Cómo comprar",
       "title": "Tu pedido en 4 pasos",
-      "subtitle": "Comprar es fácil. Elegís, nos escribís, pagás y te entregamos.",
+      "subtitle": "Comprar es fácil. Elige, escríbenos, paga y recibe tu pedido.",
       "steps": [
         {
           "number": "1",
-          "title": "Elegí tus productos",
-          "description": "Navegá nuestro catálogo y anotá qué querés: jugos, pulpas o lácteos."
+          "title": "Elige tus productos",
+          "description": "Navega nuestro catálogo y anota lo que necesitas: jugos, pulpas o lácteos."
         },
         {
           "number": "2",
-          "title": "Escribinos por WhatsApp",
-          "description": "Mandanos tu lista por WhatsApp. Te confirmamos disponibilidad y precio en minutos."
+          "title": "Escríbenos por WhatsApp",
+          "description": "Mándanos tu lista por WhatsApp. Te confirmamos disponibilidad y precio en minutos."
         },
         {
           "number": "3",
-          "title": "Realizás el pago",
-          "description": "Transferencia bancaria o efectivo al recibir. Lo coordinamos con vos."
+          "title": "Realiza el pago",
+          "description": "Transferencia bancaria o efectivo al recibir. Lo coordinamos contigo."
         },
         {
           "number": "4",
