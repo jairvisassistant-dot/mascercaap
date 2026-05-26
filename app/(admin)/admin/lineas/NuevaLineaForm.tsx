@@ -64,7 +64,7 @@ export default function NuevaLineaForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error creando línea");
 
-      router.push("/admin/productos");
+      router.push("/admin/lineas");
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error creando línea");
@@ -227,7 +227,7 @@ export default function NuevaLineaForm() {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/admin/productos")}
+          onClick={() => router.push("/admin/lineas")}
           className="rounded-xl px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
         >
           Cancelar

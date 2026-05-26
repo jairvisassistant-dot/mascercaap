@@ -15,7 +15,7 @@
     "logoAlt": "Más Cerca AP"
   },
   "footer": {
-    "description": "100% natural juices, fruit pulps, and dairy drinks, made with hand-picked fruit straight from the farm. From farm to table in hours, no preservatives.",
+      "description": "Our juices, fruit pulps, and dairy drinks are made with carefully selected fruit and high quality standards, so you can always enjoy the flavor and aroma of the fruits you love most.",
     "quickLinks": "Navigation",
     "productsTitle": "Products",
     "productLines": {
@@ -66,7 +66,7 @@
           "title": "The fruit leaves the farm today.\nTomorrow it's on your table.",
           "subtitle": "100% NATURAL PULPS · NO PRESERVATIVES · NO COLORANTS",
           "description": "Colombian fruit frozen at its exact peak of ripeness. Preserving its aromas, color and flavor — exactly as freshly harvested.",
-          "cta": "Learn our story"
+          "cta": "View products"
         },
         {
           "title": "The quality of our products\nis unmatched.",
@@ -231,9 +231,9 @@
       "searchCount": "results for"
     },
     "cta": {
-      "badge": "Custom orders",
-      "title": "Can't find what you're looking for?",
-      "text": "Contact us directly. We have more varieties and can build custom orders for your business.",
+      "badge": "Commercial support",
+      "title": "Need help with any of our products?",
+      "text": "We provide the right guidance for your business, so you can choose the ideal presentation from our catalog or build an order based on your needs.",
       "button": "Talk to us",
       "stats": [
         {
@@ -378,7 +378,7 @@
           "body": "We rise early with the farmer to choose only the fruit at its exact peak of ripeness. There are no shortcuts in the field — and we don't take any either."
         },
         {
-          "title": "We buy at the farm",
+          "title": "We buy directly from farms",
           "body": "No middlemen. The Colombian farmer deserves a fair price and you deserve to know exactly where what you drink comes from."
         },
         {

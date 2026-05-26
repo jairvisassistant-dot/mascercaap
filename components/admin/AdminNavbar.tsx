@@ -17,6 +17,9 @@ const themeLabels = {
 const itemCls =
   "flex items-center px-4 py-2.5 text-sm font-medium text-text-sub hover:bg-surface-warm hover:text-primary-dark transition-colors first:rounded-t-2xl last:rounded-b-2xl";
 
+const createActionCls =
+  "rounded-xl border border-primary/40 bg-surface-card px-4 py-2.5 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/8 active:translate-y-0";
+
 export default function AdminNavbar({ productCount }: { productCount?: number | null }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -173,7 +176,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                 {isCatPage && (
                   <Link
                     href="/admin/categorias/nueva"
-                    className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                    className={createActionCls}
                   >
                     + Nueva categoría
                   </Link>
@@ -181,7 +184,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                 {isLineasPage && (
                   <Link
                     href="/admin/lineas/nueva"
-                    className="rounded-xl border border-primary/40 bg-surface-card px-4 py-2.5 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/8 active:translate-y-0"
+                    className={createActionCls}
                   >
                     + Nueva línea
                   </Link>

@@ -6,7 +6,7 @@
     "contact": "Contacto",
     "cta": "Pedir ahora",
     "menuAriaLabel": "Abrir o cerrar menú",
-    "switchToEnglish": "Switch to English",
+    "switchToEnglish": "Cambiar a inglés",
     "switchToSpanish": "Cambiar a Español",
     "themeDark": "Oscuro",
     "themeLight": "Claro",
@@ -15,7 +15,7 @@
     "logoAlt": "Más Cerca AP"
   },
   "footer": {
-    "description": "Nuestros productos son elaborados con altos estándares de calidad para que siempre disfrutes del sabor y el aroma de las frutas que más te gustan.",
+      "description": "Zumos, pulpas de fruta y bebidas lácteas elaborados con fruta seleccionada y altos estándares de calidad, para que siempre disfrutes el sabor y el aroma de las frutas que más te gustan.",
     "quickLinks": "Navegación",
     "productsTitle": "Productos",
     "productLines": {
@@ -75,7 +75,7 @@
           "cta": "Ver zumos"
         },
         {
-          "title": "Ahorra tiempo en la cocina.\nSin sacrificar sabor que más te gusta.",
+          "title": "Ahorra tiempo en la cocina.\nSin sacrificar el sabor que más te gusta.",
           "subtitle": "PULPA PURA · FÁCIL DE PREPARAR",
           "description": "Nuestras pulpas llegan listas. Solo sirves.",
           "cta": "Ver pulpas"
@@ -233,7 +233,7 @@
     "cta": {
       "badge": "Acompañamiento comercial",
       "title": "¿Necesitas ayuda sobre alguno de nuestros productos?",
-      "text": "Te brindamos la asesoría adecuada para tu negocio, para que elijas la presentación ideal de nuestro catálogo.",
+      "text": "Te brindamos la asesoría adecuada para tu negocio, para que elijas la presentación ideal de nuestro catálogo o armes un pedido según tus necesidades.",
       "button": "Habla con nosotros",
       "stats": [
         {
@@ -354,7 +354,7 @@
         },
         {
           "title": "Servicio Genuino",
-          "description": "Servir a la gente no es lo que hacemos: es por lo qué existimos."
+          "description": "Servir a la gente no es lo que hacemos: es por lo que existimos."
         },
         {
           "title": "Calidad",
@@ -636,7 +636,7 @@
       "description": "Ideal para jugos y salsas naturales, bajo en calorías."
     },
     "kumiss": {
-      "label": "Lácteos",
+      "label": "Kumis Yolito",
       "description": "Bebida láctea fermentada, tradición y sabor en cada sorbo."
     }
   },
