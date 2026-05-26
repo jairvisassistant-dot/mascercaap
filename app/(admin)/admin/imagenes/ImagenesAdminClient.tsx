@@ -107,20 +107,6 @@ export default function ImagenesAdminClient({ initialProducts, lineLabels }: Pro
     if (bulkInputRef.current) bulkInputRef.current.value = "";
   }
 
-  async function handleSingleUpload(productId: string, file: File) {
-    setUploadStatus((prev) => ({ ...prev, [productId]: "uploading" }));
-    try {
-      const url = await uploadFile(file);
-      await saveImageToProduct(productId, url);
-      setProducts((prev) =>
-        prev.map((p) => (p.id === productId ? { ...p, image: url } : p))
-      );
-      setUploadStatus((prev) => ({ ...prev, [productId]: "done" }));
-    } catch {
-      setUploadStatus((prev) => ({ ...prev, [productId]: "error" }));
-    }
-  }
-
   const selectedList = products.filter((p) => selectedIds.has(p.id));
   const pairsCount = Math.min(selectedList.length, queuedFiles.length);
   const filesExceed = queuedFiles.length > selectedList.length;
@@ -147,19 +133,9 @@ export default function ImagenesAdminClient({ initialProducts, lineLabels }: Pro
             </span>
           </span>
         </label>
-        <div className="flex items-center gap-3">
-          {summary && (
-            <span className="text-sm font-medium text-primary">{summary}</span>
-          )}
-          <button
-            type="button"
-            disabled={!canUpload || anyUploading}
-            onClick={handleBulkUpload}
-            className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {anyUploading ? "Cargando..." : "Cargar imágenes"}
-          </button>
-        </div>
+        {summary && (
+          <span className="text-sm font-medium text-primary">{summary}</span>
+        )}
       </div>
 
       {globalError && (
@@ -174,20 +150,30 @@ export default function ImagenesAdminClient({ initialProducts, lineLabels }: Pro
           <p className="text-xs font-bold uppercase tracking-[0.15em] text-accent-dark">
             Panel de carga masiva — {selectedIds.size} producto{selectedIds.size !== 1 ? "s" : ""} seleccionado{selectedIds.size !== 1 ? "s" : ""}
           </p>
-          <label className="inline-flex cursor-pointer items-center gap-3">
-            <span className="rounded-xl border border-border-mid bg-surface-warm px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary/40 hover:text-primary-dark">
-              Seleccionar archivos
-            </span>
-            <span className="text-xs text-text-muted">.webp, .jpg, .png — máx 2MB por archivo</span>
-            <input
-              ref={bulkInputRef}
-              type="file"
-              multiple
-              accept="image/webp,image/jpeg,image/png"
-              className="hidden"
-              onChange={(e) => setQueuedFiles(Array.from(e.target.files ?? []))}
-            />
-          </label>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="inline-flex cursor-pointer items-center gap-3">
+              <span className="rounded-xl border border-border-mid bg-surface-warm px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary/40 hover:text-primary-dark">
+                Seleccionar archivos
+              </span>
+              <span className="text-xs text-text-muted">.webp, .jpg, .png — máx 2MB por archivo</span>
+              <input
+                ref={bulkInputRef}
+                type="file"
+                multiple
+                accept="image/webp,image/jpeg,image/png"
+                className="hidden"
+                onChange={(e) => setQueuedFiles(Array.from(e.target.files ?? []))}
+              />
+            </label>
+            <button
+              type="button"
+              disabled={!canUpload || anyUploading}
+              onClick={handleBulkUpload}
+              className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {anyUploading ? "Cargando..." : "Cargar imágenes"}
+            </button>
+          </div>
 
           {queuedFiles.length > 0 && (
             <div className="space-y-2.5">
@@ -265,45 +251,27 @@ export default function ImagenesAdminClient({ initialProducts, lineLabels }: Pro
               </div>
 
               {/* Image area */}
-              <div className="relative mx-2.5 mt-1.5 h-28 overflow-hidden rounded-lg bg-surface-warm">
+              <div className="relative mx-2.5 mt-1.5 aspect-[4/3] overflow-hidden rounded-lg bg-surface-warm">
                 {product.image ? (
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-contain p-1"
+                    className="object-contain p-2"
                   />
                 ) : (
                   <div className="flex h-full w-full flex-col items-center justify-center gap-1">
-                    <span className="text-xl text-text-faint/40">◻</span>
-                    <span className="text-[9px] font-medium uppercase tracking-widest text-text-faint">sin imagen</span>
+                    <span className="text-2xl text-text-faint/30">◻</span>
+                    <span className="text-[9px] font-medium uppercase tracking-widest text-text-faint/60">sin imagen</span>
                   </div>
                 )}
               </div>
 
               {/* Name + line */}
-              <div className="px-2.5 pb-1 pt-2">
+              <div className="px-2.5 pb-2.5 pt-2">
                 <p className="truncate text-xs font-semibold leading-tight text-text-main">{product.name}</p>
                 <p className="truncate text-[10px] text-text-muted">{lineName}</p>
               </div>
-
-              {/* Per-card upload */}
-              <label
-                className="mx-2.5 mb-2.5 flex cursor-pointer items-center justify-center rounded-lg border border-border-soft bg-surface-warm py-1.5 text-[10px] font-semibold uppercase tracking-wide text-text-faint transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary-dark"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {status === "uploading" ? "Subiendo…" : "Cambiar"}
-                <input
-                  type="file"
-                  accept="image/webp,image/jpeg,image/png"
-                  className="hidden"
-                  disabled={status === "uploading"}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleSingleUpload(product.id, file);
-                  }}
-                />
-              </label>
             </div>
           );
         })}
