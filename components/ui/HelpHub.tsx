@@ -6,13 +6,13 @@ import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { useHelpHub } from "@/lib/help-hub-context";
 import { track } from "@/lib/analytics";
 import type { FAQData } from "@/types";
-import type { PriceEntry } from "@/lib/order-assistant";
+import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 
 const HelpDrawer = dynamic(() => import("./HelpDrawer"), { ssr: false });
 
-type Props = { faqData: FAQData; prices: PriceEntry[] };
+type Props = { faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[] };
 
-export default function HelpHub({ faqData, prices }: Props) {
+export default function HelpHub({ faqData, prices, lines }: Props) {
   const { isOpen, openDrawer, closeDrawer } = useHelpHub();
   const { dict } = useDictionary();
   const t = dict.helpHub;
@@ -36,7 +36,7 @@ export default function HelpHub({ faqData, prices }: Props) {
       </m.button>
 
       <AnimatePresence>
-        {isOpen && <HelpDrawer faqData={faqData} prices={prices} onClose={closeDrawer} />}
+        {isOpen && <HelpDrawer faqData={faqData} prices={prices} lines={lines} onClose={closeDrawer} />}
       </AnimatePresence>
     </>
   );

@@ -8,7 +8,7 @@ import { HelpHubProvider } from "@/lib/help-hub-context";
 import { supabasePublic as supabase } from "@/lib/supabase";
 import { getFAQData } from "@/lib/faq-data";
 import { getAllProductCategories } from "@/lib/supabase/queries";
-import type { PriceEntry } from "@/lib/order-assistant";
+import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
@@ -117,12 +117,21 @@ export default async function LangLayout({
   const faqJsonLd = getFaqJsonLd(faqData, lang);
 
   let prices: PriceEntry[] = [];
+  let lines: CatalogLine[] = [];
   if (supabase) {
-    const { data } = await supabase
-      .from("products")
-      .select("line, name, presentation, price")
-      .not("price", "is", null);
-    if (data?.length) prices = data as PriceEntry[];
+    const [{ data: productData }, { data: lineData }] = await Promise.all([
+      supabase
+        .from("products")
+        .select("id, line, name, presentation, presentation_order, price")
+        .not("price", "is", null),
+      supabase
+        .from("product_lines")
+        .select("key, label, category_key, display_order")
+        .eq("active", true)
+        .order("display_order"),
+    ]);
+    if (productData?.length) prices = productData as PriceEntry[];
+    if (lineData?.length)    lines  = lineData  as CatalogLine[];
   }
 
   const categories = await getAllProductCategories();
@@ -147,7 +156,7 @@ export default async function LangLayout({
               <Navbar />
               <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
               <Footer dict={dict} lang={lang} categories={categories} />
-              <HelpHub faqData={faqData} prices={prices} />
+              <HelpHub faqData={faqData} prices={prices} lines={lines} />
             </HelpHubProvider>
           </DictionaryProvider>
         </MotionProvider>

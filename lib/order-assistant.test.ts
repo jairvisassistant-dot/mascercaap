@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest"
 import {
-  getProductOptionsForType,
+  buildCatalog,
   calculateItemLineTotal,
   calculateOrderTotal,
   getDeliveryBenefit,
   buildWhatsappMessage,
   buildOrderEmailHtml,
 } from "./order-assistant"
-import type { PriceResolver } from "./order-assistant"
+import type { PriceResolver, CatalogLine, PriceEntry } from "./order-assistant"
 import type { OrderInput } from "@/lib/schemas/order"
 
 // Mock resolver that mirrors the prices previously hardcoded in PRICES_COP / LACTEOS_PRICES.
@@ -45,17 +45,49 @@ const baseOrder: OrderInput = {
 }
 
 // ──────────────────────────────────────────────
-// getProductOptionsForType
+// buildCatalog — getProductOptionsForType
 // ──────────────────────────────────────────────
-describe("getProductOptionsForType", () => {
-  it("Pulpas returns fruit list", () => {
-    const opts = getProductOptionsForType("Pulpas")
+const mockLines: CatalogLine[] = [
+  { key: "pulpa-maracuya",      label: "Pulpa de Maracuyá",      category_key: "pulpas",  display_order: 0 },
+  { key: "pulpa-mora",          label: "Pulpa de Mora",           category_key: "pulpas",  display_order: 1 },
+  { key: "pulpa-guayaba",       label: "Pulpa de Guayaba",        category_key: "pulpas",  display_order: 2 },
+  { key: "limon",               label: "Zumo de Limón",           category_key: "zumos",   display_order: 10 },
+  { key: "limonada-cereza",     label: "Limonada con Cereza",     category_key: "zumos",   display_order: 11 },
+  { key: "limonada-coco",       label: "Limonada con Coco",       category_key: "zumos",   display_order: 12 },
+  { key: "maracuya",            label: "Zumo de Maracuyá",        category_key: "zumos",   display_order: 13 },
+  { key: "kumiss-del-hato",     label: "Kumis Del Hato",          category_key: "lacteos", display_order: 100 },
+  { key: "yogurt-del-hato",     label: "Yogurt Del Hato",         category_key: "lacteos", display_order: 101 },
+  { key: "kumiss-yolito",       label: "Kumis Yolito",            category_key: "lacteos", display_order: 102 },
+]
+
+const mockProducts: PriceEntry[] = [
+  { id: "pulpa-maracuya-120",  line: "pulpa-maracuya", name: "Pulpa de Maracuyá", presentation: "120g",  presentation_order: 1, price: 2900 },
+  { id: "pulpa-maracuya-300",  line: "pulpa-maracuya", name: "Pulpa de Maracuyá", presentation: "300g",  presentation_order: 2, price: 4850 },
+  { id: "pulpa-maracuya-1000", line: "pulpa-maracuya", name: "Pulpa de Maracuyá", presentation: "1000g", presentation_order: 3, price: 15500 },
+  { id: "pulpa-mora-120",      line: "pulpa-mora",      name: "Pulpa de Mora",     presentation: "120g",  presentation_order: 1, price: 2300 },
+  { id: "pulpa-mora-300",      line: "pulpa-mora",      name: "Pulpa de Mora",     presentation: "300g",  presentation_order: 2, price: 4400 },
+  { id: "pulpa-mora-1000",     line: "pulpa-mora",      name: "Pulpa de Mora",     presentation: "1000g", presentation_order: 3, price: 13000 },
+  { id: "pulpa-guayaba-300",   line: "pulpa-guayaba",   name: "Pulpa de Guayaba",  presentation: "300g",  presentation_order: 2, price: 4000 },
+  { id: "pulpa-guayaba-1000",  line: "pulpa-guayaba",   name: "Pulpa de Guayaba",  presentation: "1000g", presentation_order: 3, price: 12000 },
+  { id: "limon-600",           line: "limon",           name: "Zumo de Limón",     presentation: "600ml", presentation_order: 1, price: 5600 },
+  { id: "limon-1000",          line: "limon",           name: "Zumo de Limón",     presentation: "1L",    presentation_order: 2, price: 9000 },
+  { id: "kumiss-del-hato-250ml", line: "kumiss-del-hato", name: "Kumis Del Hato", presentation: "250ml", presentation_order: 1, price: 3700 },
+  { id: "yogurt-del-hato-250ml", line: "yogurt-del-hato", name: "Yogurt Del Hato", presentation: "250ml", presentation_order: 1, price: 3700 },
+  { id: "kumiss-yolito-250ml",   line: "kumiss-yolito",   name: "Kumis Yolito",    presentation: "250ml", presentation_order: 1, price: 3400 },
+]
+
+describe("buildCatalog — getProductOptionsForType", () => {
+  const catalog = buildCatalog(mockLines, mockProducts)
+
+  it("Pulpas returns fruit list from active lines", () => {
+    const opts = catalog.getProductOptionsForType("Pulpas")
     expect(opts).toContain("Maracuyá")
     expect(opts).toContain("Mora")
+    expect(opts).toContain("Guayaba")
   })
 
   it("Zumos returns zumo products, not pulpa fruits", () => {
-    const opts = getProductOptionsForType("Zumos")
+    const opts = catalog.getProductOptionsForType("Zumos")
     expect(opts).toContain("Limón")
     expect(opts).toContain("Limonada con Cereza")
     expect(opts).toContain("Limonada con Coco")
@@ -65,7 +97,7 @@ describe("getProductOptionsForType", () => {
   })
 
   it("Lácteos returns dairy products", () => {
-    const opts = getProductOptionsForType("Lácteos")
+    const opts = catalog.getProductOptionsForType("Lácteos")
     expect(opts).toContain("Kumis Del Hato 250ml")
     expect(opts).toContain("Kumis Yolito 250ml")
     expect(opts).toContain("Yogurt Del Hato 250ml")
@@ -73,7 +105,19 @@ describe("getProductOptionsForType", () => {
   })
 
   it("unknown type returns empty array", () => {
-    expect(getProductOptionsForType("Desconocido")).toEqual([])
+    expect(catalog.getProductOptionsForType("Desconocido")).toEqual([])
+  })
+
+  it("Guayaba has no 120g (derived from Supabase, no hardcoded override needed)", () => {
+    const pres = catalog.getPresentationsForProduct("Pulpas", "Guayaba")
+    expect(pres).not.toContain("120g")
+    expect(pres).toContain("300g")
+    expect(pres).toContain("1000g")
+  })
+
+  it("Maracuyá has 120g, 300g, 1000g in presentation_order", () => {
+    const pres = catalog.getPresentationsForProduct("Pulpas", "Maracuyá")
+    expect(pres).toEqual(["120g", "300g", "1000g"])
   })
 })
 

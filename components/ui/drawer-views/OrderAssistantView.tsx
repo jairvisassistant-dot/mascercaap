@@ -4,8 +4,6 @@ import { useState, useMemo } from "react"
 import { m, AnimatePresence } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
-  getProductOptionsForType,
-  getPresentationsForProduct,
   buildWhatsappMessage,
   calculateItemLineTotal,
   calculateOrderTotal,
@@ -17,9 +15,10 @@ import {
   QUANTITY_OPTIONS_120G_PACKS,
   PRODUCT_TYPE_OPTIONS,
   buildPriceResolver,
+  buildCatalog,
 } from "@/lib/order-assistant"
 import { useDictionary } from "@/lib/i18n/DictionaryProvider"
-import type { PriceEntry } from "@/lib/order-assistant"
+import type { PriceEntry, CatalogLine } from "@/lib/order-assistant"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 
@@ -30,13 +29,15 @@ const CUSTOM_QTY = -1
 
 type Props = {
   prices: PriceEntry[];
+  lines:  CatalogLine[];
   onContactClick: () => void
 }
 
-export default function OrderAssistantView({ prices, onContactClick }: Props) {
+export default function OrderAssistantView({ prices, lines, onContactClick }: Props) {
   const { dict } = useDictionary()
   const t = dict.orderAssistant
   const resolvePrice = useMemo(() => buildPriceResolver(prices), [prices])
+  const catalog      = useMemo(() => buildCatalog(lines, prices), [lines, prices])
 
   // ── Global state ───────────────────────────────────────────────
   const [step, setStep]       = useState<Step>(1)
@@ -78,7 +79,7 @@ export default function OrderAssistantView({ prices, onContactClick }: Props) {
 
   const isLacteos = curProductType === "Lácteos"
 
-  const fruitOptions = getProductOptionsForType(curProductType ?? "").map((v) => {
+  const fruitOptions = catalog.getProductOptionsForType(curProductType ?? "").map((v) => {
     const price = isLacteos ? resolvePrice(v, null) : null
     return {
       value: v,
@@ -90,7 +91,7 @@ export default function OrderAssistantView({ prices, onContactClick }: Props) {
   // Chips de presentación dinámicos según tipo de producto y fruta/producto seleccionado
   const presentationOptions = (
     curProductType && curFruit
-      ? getPresentationsForProduct(curProductType, curFruit)
+      ? catalog.getPresentationsForProduct(curProductType, curFruit)
       : []
   ).map((pres) => {
     const price = resolvePrice(curFruit ?? "", pres)

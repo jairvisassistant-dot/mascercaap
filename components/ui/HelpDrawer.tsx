@@ -15,13 +15,13 @@ import { SITE_CONFIG } from "@/lib/config";
 import { buildWhatsAppLinks } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
 import type { FAQData } from "@/types";
-import type { PriceEntry } from "@/lib/order-assistant";
+import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
 
 type WhatsAppState = { appUrl: string | null; webUrl: string | null; leadSaved: boolean };
 
-type Props = { faqData: FAQData; prices: PriceEntry[]; onClose: () => void };
+type Props = { faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[]; onClose: () => void };
 
 // Reducer to avoid setState-in-effect lint errors
 type DrawerAction =
@@ -53,7 +53,7 @@ function buildDefaultWhatsAppState(message: string): WhatsAppState {
   };
 }
 
-export default function HelpDrawer({ faqData, prices, onClose }: Props) {
+export default function HelpDrawer({ faqData, prices, lines, onClose }: Props) {
   const { dict, lang } = useDictionary();
   const locale = lang as Locale;
   const t = dict.helpHub;
@@ -248,7 +248,7 @@ export default function HelpDrawer({ faqData, prices, onClose }: Props) {
                 />
               )}
               {view === "order" && (
-                <OrderAssistantView prices={prices} onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
+                <OrderAssistantView prices={prices} lines={lines} onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
               )}
             </m.div>
           </AnimatePresence>

@@ -5,67 +5,10 @@ import { buildWhatsAppAppUrl, buildWhatsAppMessage as buildSharedWhatsAppMessage
 
 export const PRODUCT_TYPE_OPTIONS = ["Pulpas", "Zumos", "Lácteos"] as const
 
-const PULPA_FRUITS = [
-  "Maracuyá",
-  "Mora",
-  "Mango",
-  "Lulo",
-  "Guanábana",
-  "Fresa",
-  "Guayaba",
-  "Frutos Rojos",
-  "Frutos Amarillos",
-  "Tomate de árbol",
-]
-
-const ZUMOS_PRODUCTS = [
-  "Limón",
-  "Limonada con Cereza",
-  "Limonada con Coco",
-  "Maracuyá",
-]
-
-const PRODUCT_OPTIONS_BY_TYPE: Record<string, string[]> = {
-  "Pulpas": PULPA_FRUITS,
-  "Zumos":  ZUMOS_PRODUCTS,
-  "Lácteos": [
-    "Kumis Del Hato 250ml",
-    "Kumis Yolito 250ml",
-    "Yogurt Del Hato 250ml",
-  ],
-}
-
-export function getProductOptionsForType(productType: string): string[] {
-  return PRODUCT_OPTIONS_BY_TYPE[productType] ?? []
-}
-
-const PULPA_PRESENTATIONS = ["120g", "300g", "1000g"] as const
-
-// Guayaba y Tomate de árbol no tienen presentación 120g
-const PULPA_PRESENTATIONS_OVERRIDE: Record<string, string[]> = {
-  "Guayaba":         ["300g", "1000g"],
-  "Tomate de árbol": ["300g", "1000g"],
-}
-
-const ZUMOS_PRESENTATIONS: Record<string, string[]> = {
-  "Limón":               ["600ml", "1L", "2L", "5L"],
-  "Limonada con Cereza": ["350ml", "1L", "2L"],
-  "Limonada con Coco":   ["350ml", "1L", "2L"],
-  "Maracuyá":            ["350ml", "1L", "2L"],
-}
-
-export function getPresentationsForProduct(productType: string, fruit: string): string[] {
-  if (productType === "Zumos") return ZUMOS_PRESENTATIONS[fruit] ?? []
-  return PULPA_PRESENTATIONS_OVERRIDE[fruit] ?? [...PULPA_PRESENTATIONS]
-}
-
-export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
-export const QUANTITY_OPTIONS_120G_PACKS = [1, 2, 3, 4, 5, 10] as const
-export const PRESENTATION_120G = "120g"
-const PACK_UNITS_120G = 10
-
-// Maps order-form fruit display names to Supabase product line slugs.
-const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
+// Maps order-form display names to Supabase product_lines slugs.
+// This is the single source of truth for name ↔ slug bridging.
+// Presentations and active status are derived dynamically from Supabase.
+const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos" | "Lácteos", Record<string, string>> = {
   Pulpas: {
     "Maracuyá":         "pulpa-maracuya",
     "Mora":             "pulpa-mora",
@@ -84,22 +27,58 @@ const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
     "Limonada con Coco":   "limonada-coco",
     "Maracuyá":            "maracuya",
   },
+  Lácteos: {
+    "Kumis Del Hato 250ml":  "kumiss-del-hato",
+    "Yogurt Del Hato 250ml": "yogurt-del-hato",
+    "Kumis Yolito 250ml":    "kumiss-yolito",
+  },
 }
+
+// Supabase product_categories.key → UI product type label
+const CATEGORY_TO_TYPE: Record<string, string> = {
+  pulpas:  "Pulpas",
+  zumos:   "Zumos",
+  lacteos: "Lácteos",
+}
+
+// Inverted FRUIT_TO_LINE: line slug → display name, keyed by product type
+const LINE_TO_DISPLAY: Record<string, Record<string, string>> = Object.fromEntries(
+  (Object.entries(FRUIT_TO_LINE) as [string, Record<string, string>][]).map(([type, map]) => [
+    type,
+    Object.fromEntries(Object.entries(map).map(([display, line]) => [line, display])),
+  ])
+)
+
+export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
+export const QUANTITY_OPTIONS_120G_PACKS = [1, 2, 3, 4, 5, 10] as const
+export const PRESENTATION_120G = "120g"
+const PACK_UNITS_120G = 10
 
 export type PriceResolver = (fruit: string, presentation: string | null | undefined) => number | null
 
 /** Row shape returned by the Supabase `products` table price query. */
 export type PriceEntry = {
-  line:         string | null
-  name:         string | null
-  presentation: string | null
-  price:        number
+  id?:                 string | null
+  line:                string | null
+  name:                string | null
+  presentation:        string | null
+  presentation_order?: number | null
+  price:               number
+}
+
+/** Row shape returned by the Supabase `product_lines` table catalog query. */
+export type CatalogLine = {
+  key:          string
+  label:        string
+  category_key: string | null
+  display_order: number
 }
 
 /** Builds a PriceResolver from Supabase product rows. */
 export function buildPriceResolver(entries: PriceEntry[]): PriceResolver {
   const byLinePresentation = new Map<string, number>()
   const byName             = new Map<string, number>()
+
   for (const p of entries) {
     if (p.presentation && p.line) {
       byLinePresentation.set(`${p.line}:${p.presentation}`, p.price)
@@ -107,8 +86,19 @@ export function buildPriceResolver(entries: PriceEntry[]): PriceResolver {
       byName.set(p.name, p.price)
     }
   }
+
   return (fruit, presentation) => {
-    if (!presentation) return byName.get(fruit) ?? null
+    if (!presentation) {
+      // Lácteos: each product has its own line slug; find its single presentation price
+      const lacteosLine = FRUIT_TO_LINE.Lácteos[fruit]
+      if (lacteosLine) {
+        for (const [key, price] of byLinePresentation) {
+          if (key.startsWith(`${lacteosLine}:`)) return price
+        }
+        return null
+      }
+      return byName.get(fruit) ?? null
+    }
     if (presentation.endsWith("g")) {
       const line = FRUIT_TO_LINE.Pulpas[fruit]
       return line ? (byLinePresentation.get(`${line}:${presentation}`) ?? null) : null
@@ -120,6 +110,55 @@ export function buildPriceResolver(entries: PriceEntry[]): PriceResolver {
     }
     const pulpaLine = FRUIT_TO_LINE.Pulpas[fruit]
     return pulpaLine ? (byLinePresentation.get(`${pulpaLine}:${presentation}`) ?? null) : null
+  }
+}
+
+/** Dynamic catalog derived from Supabase product_lines and products. */
+export type Catalog = {
+  getProductOptionsForType:    (productType: string) => string[]
+  getPresentationsForProduct:  (productType: string, fruit: string) => string[]
+}
+
+/**
+ * Builds a Catalog from live Supabase data.
+ * - Product lists per type are filtered by active product_lines in Supabase.
+ * - Presentations per product are derived from actual product rows (no hardcoded overrides).
+ * - Display names bridge through FRUIT_TO_LINE, keeping the mapping in code.
+ */
+export function buildCatalog(lines: CatalogLine[], products: PriceEntry[]): Catalog {
+  // Index presentations per line, ordered by presentation_order
+  const presentationsByLine = new Map<string, { presentation: string; order: number }[]>()
+  for (const p of products) {
+    if (!p.line || !p.presentation) continue
+    if (!presentationsByLine.has(p.line)) presentationsByLine.set(p.line, [])
+    const list = presentationsByLine.get(p.line)!
+    if (!list.some((e) => e.presentation === p.presentation)) {
+      list.push({ presentation: p.presentation, order: p.presentation_order ?? 0 })
+    }
+  }
+  for (const list of presentationsByLine.values()) {
+    list.sort((a, b) => a.order - b.order)
+  }
+
+  return {
+    getProductOptionsForType(productType: string): string[] {
+      const lineToDisplay = LINE_TO_DISPLAY[productType] ?? {}
+      const categoryKey   = Object.entries(CATEGORY_TO_TYPE).find(([, v]) => v === productType)?.[0]
+      if (!categoryKey) return []
+
+      return lines
+        .filter((l) => l.category_key === categoryKey && l.key in lineToDisplay)
+        .sort((a, b) => a.display_order - b.display_order)
+        .map((l) => lineToDisplay[l.key])
+    },
+
+    getPresentationsForProduct(productType: string, fruit: string): string[] {
+      const fruitToLine = FRUIT_TO_LINE[productType as keyof typeof FRUIT_TO_LINE]
+      if (!fruitToLine) return []
+      const lineKey = fruitToLine[fruit]
+      if (!lineKey) return []
+      return (presentationsByLine.get(lineKey) ?? []).map((p) => p.presentation)
+    },
   }
 }
 

@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     if (supabase) {
       const { data: dbProducts } = await supabase
         .from("products")
-        .select("line, name, presentation, price")
+        .select("id, line, name, presentation, presentation_order, price")
         .not("price", "is", null)
       if (dbProducts?.length) {
         resolvePrice = buildPriceResolver(dbProducts as PriceEntry[])
