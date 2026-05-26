@@ -248,7 +248,7 @@ export default function ContactForm({ dict, lines = [], products = [], categorie
         setSubmitStatus("error");
       }
     } catch (err) {
-      console.error("Error enviando formulario de contacto:", err instanceof Error ? err.message : "unknown");
+      console.error("Error enviando formulario de contacto");
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);

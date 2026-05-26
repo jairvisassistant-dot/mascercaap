@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { SITE_CONFIG } from "@/lib/config";
 
 const webhookPayloadSchema = z.object({
   object: z.string(),
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("hub.verify_token");
   const challenge = req.nextUrl.searchParams.get("hub.challenge");
 
-  const verifyToken = process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN;
+  const verifyToken = SITE_CONFIG.whatsappWebhookVerifyToken;
   if (!verifyToken) {
     return NextResponse.json({ error: "Service not configured" }, { status: 503 });
   }

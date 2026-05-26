@@ -308,7 +308,7 @@ export default function FaqView({ faqData, onContactClick, onWhatsAppConnect }: 
         has_email: Boolean(leadData.email.trim()),
       });
     } catch (err) {
-      console.error("Error guardando lead:", err);
+      console.error("Error guardando lead");
       trackHelpHubEvent("helphub_lead_submit_result", {
         locale,
         result: "network_error",

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Step = "credentials" | "totp";
 
@@ -298,12 +299,12 @@ export default function AdminLoginPage() {
         )}
 
         <div className="mt-6 text-center">
-          <a
+          <Link
             href="/es"
             className="text-sm text-text-muted transition-colors hover:text-primary"
           >
             ← Volver al sitio
-          </a>
+          </Link>
         </div>
       </div>
     </div>

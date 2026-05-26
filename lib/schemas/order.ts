@@ -33,6 +33,7 @@ export function createOrderSchema(msgs: OrderValidationMessages = DEFAULT_MESSAG
   )
 }
 
+/** @internal — used in tests only */
 export const orderSchema = createOrderSchema()
 
 export type OrderItem  = z.infer<typeof orderItemSchema>
