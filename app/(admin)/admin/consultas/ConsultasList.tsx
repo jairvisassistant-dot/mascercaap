@@ -166,7 +166,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
           className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
         >
           <option value="">Todos los estados</option>
-          {[...new Set(leads.map((l) => l.estado_seguimiento))].map((e) => (
+          {[...new Set(leads.map((l) => l.estado_seguimiento))].filter(Boolean).map((e) => (
             <option key={e} value={e}>
               {e.charAt(0).toUpperCase() + e.slice(1)}
             </option>

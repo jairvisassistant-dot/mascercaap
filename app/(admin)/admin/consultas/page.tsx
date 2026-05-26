@@ -18,7 +18,12 @@ export default async function ConsultasPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  const leads = (data ?? []) as {
+  const leads = (data ?? []).map((row) => ({
+    ...row,
+    estado_seguimiento: (row.estado_seguimiento as string | null | undefined) ?? "nuevo",
+    preguntas_bot: Array.isArray(row.preguntas_bot) ? (row.preguntas_bot as string[]) : [],
+    notas: (row.notas as string | null | undefined) ?? null,
+  })) as {
     id: string;
     nombre: string;
     email: string | null;
