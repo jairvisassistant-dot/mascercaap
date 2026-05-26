@@ -136,7 +136,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                   <div className="mx-3 my-1 border-t border-border-soft" />
                   <Link href="/admin/productos" onClick={() => setOpenMenu(null)}
                     className={`${itemCls} ${pathname === "/admin/productos" ? "font-semibold text-primary" : ""}`}>
-                    Productos
+                    Lista de productos
                   </Link>
                   <Link href="/admin/categorias" onClick={() => setOpenMenu(null)}
                     className={`${itemCls} ${pathname === "/admin/categorias" ? "font-semibold text-primary" : ""}`}>
@@ -170,14 +170,6 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                   </Link>
                 </NavDropdown>
 
-                {isListPage && (
-                  <Link
-                    href="/admin/productos/nuevo"
-                    className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.85)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0"
-                  >
-                    + Nuevo producto
-                  </Link>
-                )}
                 {isCatPage && (
                   <Link
                     href="/admin/categorias/nueva"
