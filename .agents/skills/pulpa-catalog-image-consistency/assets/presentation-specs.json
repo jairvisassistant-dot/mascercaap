@@ -1,0 +1,182 @@
+{
+  "global": {
+    "defaultProvider": "gpt-image-2",
+    "masterGeometryFlavor": "fresa",
+    "canvas": {
+      "width": 1000,
+      "height": 1000,
+      "background": "transparent",
+      "finalFormat": "webp"
+    },
+    "generationCanvas": {
+      "provider": "gpt-image-2",
+      "width": 1024,
+      "height": 1024,
+      "backgroundRequest": "transparent-by-prompt",
+      "fallbackBackground": "pure-white",
+      "reason": "gpt-image-2 explicit dimensions must be multiples of 16; final catalog assets are normalized to 1000x1000 after generation."
+    },
+    "canvasPolicy": [
+      "Final deliverables must always use this 1000x1000 canvas.",
+      "Generated candidates may use generationCanvas when the provider cannot produce 1000x1000 directly.",
+      "Controlled final normalization from generationCanvas to global.canvas is allowed only through scripts/normalize_catalog_webp.py.",
+      "masterReferenceCanvasPx values are historical source-reference sizes only.",
+      "Never use a FRESA source canvas size as the final output canvas."
+    ],
+    "orientationRule": "all-presentations-vertical",
+    "cameraRule": "slight-left-turn-right-edge-visible",
+    "cameraRuleExplanation": "The product itself rotates slightly toward viewer-left; as a result the right side seam/edge must be a little more visible than the left. If the left side becomes more visible, the angle is wrong.",
+    "labelTextPolicy": {
+      "allowed": ["Pulpa de Fruta Natural", "{FLAVOR_NAME}"],
+      "forbidden": ["120g", "300g", "1000g", "gramos", "neto", "badges", "claims", "extra copy"]
+    },
+    "sealQualityPolicy": {
+      "target": "premium-clean",
+      "topSeal": "thin, refined, heat-sealed edge with aggressively minimized visible residual plastic",
+      "sideSeals": "clean and subtle, never thick, cloudy, ragged, or visually dominant",
+      "forbidden": [
+        "excess residual plastic",
+        "bulky white seal caps",
+        "ragged plastic flanges",
+        "dirty or cloudy seal borders",
+        "heavy corrugated seal texture",
+        "wide transparent plastic halo above the pouch",
+        "top flange that reads as a second pouch layer"
+      ]
+    },
+    "invariantsSameFlavor": [
+      "pulp color and consistency",
+      "label style and placement",
+      "fruit layout base",
+      "lighting direction",
+      "camera style",
+      "seal cleanliness"
+    ],
+    "masterSizePolicy": [
+      "Use the flavor reference for color, pulp consistency, garnish identity, and label text.",
+      "Use the FRESA master reference of the same presentation for final visible scale and canvas occupancy.",
+      "If the flavor reference is smaller or larger than the FRESA master, do not inherit that size.",
+      "Reject outputs that do not match the FRESA master size tolerance for the same presentation."
+    ],
+    "standardTemplateHierarchy": [
+      "120g must be visibly shorter than 300g and 1000g.",
+      "300g and 1000g must share nearly the same visible total height.",
+      "1000g grows mainly in width and robustness, not in visible total height."
+    ],
+    "masterViewPolicy": [
+      "The pouch must not look perfectly frontal.",
+      "Rotate the pouch slightly toward the viewer's left.",
+      "The right side edge must be visibly a little more exposed than the left even in a thumbnail-sized view.",
+      "Keep the rotation subtle and premium, never dramatic.",
+      "Reject the image if the left edge reads as more exposed than the right."
+    ],
+    "colorConsistencyPolicy": [
+      "The pouch pulp color and the cut-fruit flesh color must stay in the same hue family as the flavor reference.",
+      "Reject outputs where the pouch and the cut fruit drift into different flavor families or any other obvious hue split.",
+      "Reject outputs that brighten, desaturate, or oversaturate the flavor color away from the reference."
+    ],
+    "referenceSimilarityPolicy": [
+      "The generated image does not need to be pixel-identical to the flavor reference, but it must read as the same product family at a glance.",
+      "Match the reference not only in flavor identity, but also in realism level and detail density.",
+      "If the reference pouch pulp is visually smoother or less seed-dominant, do not overstate seeds, gloss, micro-texture, or frozen granularity.",
+      "If the reference fruit garnish is simpler, do not inflate fruit volume, sharpness, moisture, or polish far beyond the reference.",
+      "Reject outputs that feel like a more luxurious reinterpretation instead of a faithful catalog sibling of the reference."
+    ],
+    "transparencyPolicy": [
+      "True transparent background is required in the final deliverable.",
+      "If GPT Images-2 renders checkerboard or opaque white instead of alpha, that image is not final.",
+      "Do not use green, magenta, blue, or any chroma-key background for this catalog skill.",
+      "If a useful transparent candidate does not materialize on the first realistic attempt, switch to a pure-white fallback and pass through mandatory white-background-removal normalization before export."
+    ],
+    "iterationPolicy": {
+      "defaultMaxCreativeAttemptsPerPresentation": 2,
+      "builtinIntegratedFastPath": [
+        "Try transparency once.",
+        "If the built-in generator returns checkerboard, RGB without alpha, or any opaque background, stop retrying transparency.",
+        "Use one pure-white fallback generation only, then normalize."
+      ],
+      "normalizationFirstFixes": [
+        "Fix provider-native square canvases during normalization instead of regenerating.",
+        "Fix edge-connected pure-white fallback backgrounds during normalization instead of regenerating.",
+        "Regenerate only for flavor, composition, label, angle, seal, or size-discipline failures that normalization cannot solve."
+      ]
+    },
+    "normalizationPolicy": [
+      "Final delivery is not the raw generator output.",
+      "Normalize every generated candidate into global.canvas 1000x1000 before final audit.",
+      "Canvas fitting must preserve the whole isolated product group and must not create a new presentation from another presentation.",
+      "White-background removal is allowed only for edge-connected pure-white fallback backgrounds.",
+      "Final alpha, filename, file size, bbox, and visual QA still gate approval."
+    ],
+    "exportPolicy": {
+      "finalFormat": "webp",
+      "webpQualityRange": [72, 82],
+      "stripMetadata": true,
+      "maxFileSizeKB": {
+        "120g": 300,
+        "300g": 380,
+        "1000g": 420
+      },
+      "idealFileSizeKB": {
+        "120g": 220,
+        "300g": 280,
+        "1000g": 320
+      }
+    }
+  },
+  "presentations": {
+    "120g": {
+      "pouchOrientation": "vertical",
+      "masterReference": "/home/jilz/Escritorio/mas-cerca-ap/public/imgs/pulpa-fresa120.webp",
+      "masterReferenceCanvasPx": [500, 500],
+      "masterReferencePouchBBoxPx": [166, 387],
+      "normalizedPouchBBoxPx": [332, 762],
+      "pouchWidthPx": [324, 340],
+      "pouchHeightPx": [756, 768],
+      "masterReferenceFullGroupBBoxPx": [340, 393],
+      "normalizedFullGroupBBoxPx": [680, 762],
+      "fullGroupWidthPx": [660, 700],
+      "fullGroupHeightPx": [754, 770],
+      "targetGroupFillWidthPercent": [66, 70],
+      "targetGroupFillHeightPercent": [75, 77],
+      "fruitZonePercentFromBottom": [12, 16],
+      "pouchPriority": "For 120g, keep the group visibly shorter than 300g and 1000g, anchored to the normalized FRESA 120g reference size, and slightly shorter than the previous 120g template while preserving the same width family.",
+      "masterSizeTolerancePercent": 2.5
+    },
+    "300g": {
+      "pouchOrientation": "vertical",
+      "masterReference": "/home/jilz/Escritorio/mas-cerca-ap/public/imgs/pulpa-fresa300.webp",
+      "masterReferenceCanvasPx": [800, 800],
+      "masterReferencePouchBBoxPx": [334, 644],
+      "normalizedPouchBBoxPx": [418, 805],
+      "pouchWidthPx": [406, 430],
+      "pouchHeightPx": [796, 812],
+      "masterReferenceFullGroupBBoxPx": [634, 647],
+      "normalizedFullGroupBBoxPx": [792, 810],
+      "fullGroupWidthPx": [775, 808],
+      "fullGroupHeightPx": [792, 810],
+      "targetGroupFillWidthPercent": [77, 81],
+      "targetGroupFillHeightPercent": [79, 81],
+      "fruitZonePercentFromBottom": [18, 22],
+      "masterSizeTolerancePercent": 2.5,
+      "sharedHeightFamily": "300g-1000g"
+    },
+    "1000g": {
+      "pouchOrientation": "vertical",
+      "masterReference": "/home/jilz/Escritorio/mas-cerca-ap/public/imgs/pulpa-fresa1000.webp",
+      "masterReferenceCanvasPx": [800, 800],
+      "pouchWidthPx": [440, 470],
+      "pouchHeightPx": [796, 812],
+      "masterReferenceFullGroupBBoxPxEstimated": [670, 631],
+      "normalizedFullGroupBBoxPxEstimated": [838, 810],
+      "fullGroupWidthPx": [820, 855],
+      "fullGroupHeightPx": [792, 810],
+      "targetGroupFillWidthPercent": [82, 86],
+      "targetGroupFillHeightPercent": [79, 81],
+      "fruitZonePercentFromBottom": [16, 20],
+      "masterSizeTolerancePercent": 3.0,
+      "sharedHeightFamily": "300g-1000g",
+      "note": "1000g master bbox is projected from the 300g baseline (shared-height rule), not measured from the current FRESA 1000g baseline. The current 1000g image (RGB, no alpha, near-white gradient background) is not reliable for bbox measurement. FullGroupHeightPx is identical to 300g per the shared-height family invariant."
+    }
+  }
+}

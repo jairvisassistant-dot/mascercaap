@@ -1,281 +1,948 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
+import {
+  matchFileToProducts,
+  isNonProductAsset,
+  type ProductBrief,
+} from "@/lib/match-product-image";
+
+// ── Types ─────────────────────────────────────────────────────────────
 
 export type ProductRow = {
   id: string;
   name: string;
   line: string;
+  presentation: string;
   image: string | null;
   display_order: number;
 };
 
-type UploadStatus = "idle" | "uploading" | "done" | "error";
+type FileEntry = {
+  id: string;
+  file: File;
+  previewUrl: string;
+  /** Resultado del matching automático */
+  match:
+    | { type: "replace"; product: ProductRow }
+    | { type: "new"; product: ProductRow }
+    | { type: "ambiguous"; candidates: ProductRow[]; reason: string }
+    | { type: "none"; reason: string }
+    | { type: "skipped"; reason: string };
+  /** Producto asignado manualmente (para ambiguous/none) */
+  manualProductId: string | null;
+  uploadStatus: "pending" | "uploading" | "done" | "error";
+  errorMessage?: string;
+  uploadedUrl?: string;
+};
 
 type Props = {
   initialProducts: ProductRow[];
   lineLabels: Record<string, string>;
 };
 
-export default function ImagenesAdminClient({ initialProducts, lineLabels }: Props) {
+// ── Helpers ───────────────────────────────────────────────────────────
+
+function generateId(): string {
+  return Math.random().toString(36).slice(2, 9);
+}
+
+const ACCEPTED_MIME = ["image/webp", "image/jpeg", "image/png"];
+const RETRYABLE_STATUSES: ReadonlySet<string> = new Set(["pending", "error"]);
+const BATCH_LIMIT = 20;
+
+// ── Componente ─────────────────────────────────────────────────────────
+
+export default function ImagenesAdminClient({
+  initialProducts,
+  lineLabels,
+}: Props) {
   const [products, setProducts] = useState<ProductRow[]>(initialProducts);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [queuedFiles, setQueuedFiles] = useState<File[]>([]);
-  const [uploadStatus, setUploadStatus] = useState<Record<string, UploadStatus>>({});
-  const [summary, setSummary] = useState<string | null>(null);
-  const [globalError, setGlobalError] = useState<string | null>(null);
-  const bulkInputRef = useRef<HTMLInputElement>(null);
+  const [entries, setEntries] = useState<FileEntry[]>([]);
+  const [dragOver, setDragOver] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const entriesRef = useRef(entries);
+  entriesRef.current = entries;
 
-  function toggleSelect(id: string) {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  }
+  // Limpiar object URLs al desmontar (solo una vez, sin dep en entries)
+  useEffect(() => {
+    return () => {
+      for (const e of entriesRef.current) {
+        URL.revokeObjectURL(e.previewUrl);
+      }
+    };
+  }, []);
 
-  function toggleSelectAll() {
-    if (selectedIds.size === products.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(products.map((p) => p.id)));
-    }
-  }
+  // ── Agrupación de resultados ──────────────────────────────────────
 
-  async function uploadFile(file: File): Promise<string> {
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? "Error subiendo imagen");
-    return data.url as string;
-  }
-
-  async function saveImageToProduct(productId: string, url: string): Promise<void> {
-    const res = await fetch(`/api/admin/products/${productId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image: url }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? "Error guardando imagen");
-  }
-
-  async function handleBulkUpload() {
-    const selectedList = products.filter((p) => selectedIds.has(p.id));
-    const rawPairs = Math.min(selectedList.length, queuedFiles.length);
-    const cappedPairs = Math.min(rawPairs, 10);
-
-    setSummary(null);
-
-    if (rawPairs > 10) {
-      setGlobalError(
-        `El límite es 10 imágenes por 5 minutos. Solo se cargarán las primeras 10.`
-      );
-    } else {
-      setGlobalError(null);
-    }
-
-    const pairs = selectedList.slice(0, cappedPairs);
-    const files = queuedFiles.slice(0, cappedPairs);
-
-    const initialStatus: Record<string, UploadStatus> = {};
-    for (const p of pairs) initialStatus[p.id] = "uploading";
-    setUploadStatus((prev) => ({ ...prev, ...initialStatus }));
-
-    let successCount = 0;
-
-    for (let i = 0; i < pairs.length; i++) {
-      const product = pairs[i];
-      const file = files[i];
-      try {
-        const url = await uploadFile(file);
-        await saveImageToProduct(product.id, url);
-        setProducts((prev) =>
-          prev.map((p) => (p.id === product.id ? { ...p, image: url } : p))
-        );
-        setUploadStatus((prev) => ({ ...prev, [product.id]: "done" }));
-        successCount++;
-      } catch {
-        setUploadStatus((prev) => ({ ...prev, [product.id]: "error" }));
+  const groups = useMemo(() => {
+    const replace: FileEntry[] = [];
+    const newly: FileEntry[] = [];
+    const ambiguous: FileEntry[] = [];
+    const noMatch: FileEntry[] = [];
+    const skipped: FileEntry[] = [];
+    for (const e of entries) {
+      switch (e.match.type) {
+        case "replace":
+          replace.push(e);
+          break;
+        case "new":
+          newly.push(e);
+          break;
+        case "ambiguous":
+          ambiguous.push(e);
+          break;
+        case "none":
+          noMatch.push(e);
+          break;
+        case "skipped":
+          skipped.push(e);
+          break;
       }
     }
+    return { replace, newly, ambiguous, noMatch, skipped };
+  }, [entries]);
 
-    setSummary(`${successCount} de ${pairs.length} imágenes cargadas exitosamente.`);
-    setQueuedFiles([]);
-    if (bulkInputRef.current) bulkInputRef.current.value = "";
+  /**
+   * Entries ambiguous/none que el usuario todavía no resolvió manualmente.
+   * Estas son las únicas que bloquean la ejecución.
+   */
+  const unresolvedEntries = useMemo(
+    () =>
+      entries.filter(
+        (e) =>
+          (e.match.type === "ambiguous" || e.match.type === "none") &&
+          !e.manualProductId,
+      ),
+    [entries],
+  );
+
+  const needsResolutionCount = unresolvedEntries.length;
+
+  /**
+   * `manualProductId`: duplicados en el mismo lote (varios archivos al mismo producto).
+   */
+  const duplicateProductIds = useMemo(() => {
+    const pidToEntryIds = new Map<string, string[]>();
+    for (const e of entries) {
+      if (!RETRYABLE_STATUSES.has(e.uploadStatus)) continue;
+      const pid =
+        e.match.type === "replace" || e.match.type === "new"
+          ? e.match.product.id
+          : e.manualProductId;
+      if (!pid) continue;
+      const existing = pidToEntryIds.get(pid) ?? [];
+      existing.push(e.id);
+      pidToEntryIds.set(pid, existing);
+    }
+    const dups = new Map<string, string[]>();
+    for (const [pid, ids] of pidToEntryIds) {
+      if (ids.length > 1) dups.set(pid, ids);
+    }
+    return dups;
+  }, [entries]);
+
+  const exceedsBatchLimit =
+    entries.filter((e) => RETRYABLE_STATUSES.has(e.uploadStatus)).length > BATCH_LIMIT;
+
+  /** Tiene al menos una entry lista para enviar (no skipped, no done, no uploading) */
+  const hasSendableEntries = entries.some((e) => {
+    if (!RETRYABLE_STATUSES.has(e.uploadStatus)) return false;
+    if (e.match.type === "skipped") return false;
+    const pid =
+      e.match.type === "replace" || e.match.type === "new"
+        ? e.match.product.id
+        : e.manualProductId;
+    return !!pid;
+  });
+
+  const canExecute =
+    entries.length > 0 &&
+    hasSendableEntries &&
+    needsResolutionCount === 0 &&
+    duplicateProductIds.size === 0 &&
+    !exceedsBatchLimit &&
+    !isUploading;
+
+  const nonSkippedEntries = entries.filter((e) => e.match.type !== "skipped");
+  const allDone = nonSkippedEntries.length > 0 && nonSkippedEntries.every((e) => e.uploadStatus === "done");
+  const hasErrors = entries.some((e) => e.uploadStatus === "error");
+
+  // ── File processing ───────────────────────────────────────────────
+
+  function processFiles(files: FileList | File[]) {
+    const fileArray = Array.from(files).filter((f) =>
+      ACCEPTED_MIME.includes(f.type),
+    );
+
+    if (fileArray.length === 0) return;
+
+    const productBriefs: ProductBrief[] = products.map((p) => ({
+      id: p.id,
+      line: p.line,
+      presentation: p.presentation,
+      image: p.image,
+    }));
+
+    const newEntries: FileEntry[] = fileArray.map((file) => {
+      // Detectar assets no-producto (logos, slides, portadas, etc.)
+      if (isNonProductAsset(file.name)) {
+        return {
+          id: generateId(),
+          file,
+          previewUrl: URL.createObjectURL(file),
+          match: {
+            type: "skipped",
+            reason:
+              "No es una imagen de producto (logo, slide, portada, etc.)",
+          },
+          manualProductId: null,
+          uploadStatus: "pending",
+        };
+      }
+
+      const match = matchFileToProducts(file.name, productBriefs);
+      return {
+        id: generateId(),
+        file,
+        previewUrl: URL.createObjectURL(file),
+        match: matchToEntryResult(match, products),
+        manualProductId: null,
+        uploadStatus: "pending",
+      };
+    });
+
+    setEntries((prev) => [...prev, ...newEntries]);
   }
 
-  const selectedList = products.filter((p) => selectedIds.has(p.id));
-  const pairsCount = Math.min(selectedList.length, queuedFiles.length);
-  const filesExceed = queuedFiles.length > selectedList.length;
-  const filesShort = queuedFiles.length > 0 && queuedFiles.length < selectedList.length;
-  const canUpload = selectedIds.size > 0 && queuedFiles.length > 0;
-  const anyUploading = Object.values(uploadStatus).some((s) => s === "uploading");
+  function removeEntry(id: string) {
+    setEntries((prev) => {
+      const entry = prev.find((e) => e.id === id);
+      if (entry) URL.revokeObjectURL(entry.previewUrl);
+      return prev.filter((e) => e.id !== id);
+    });
+  }
+
+  function clearAllEntries() {
+    for (const e of entries) URL.revokeObjectURL(e.previewUrl);
+    setEntries([]);
+  }
+
+  function setManualProduct(entryId: string, productId: string) {
+    // El <select> emite "" para la opción placeholder — normalizar a null
+    setEntries((prev) =>
+      prev.map((e) =>
+        e.id === entryId
+          ? { ...e, manualProductId: productId || null }
+          : e,
+      ),
+    );
+  }
+
+  // ── Drag & Drop ──────────────────────────────────────────────────
+
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(true);
+  }
+
+  function handleDragLeave(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+    if (e.dataTransfer.files) processFiles(e.dataTransfer.files);
+  }
+
+  // ── Upload ───────────────────────────────────────────────────────
+
+  async function handleBatchUpload() {
+    if (!canExecute) return;
+    setIsUploading(true);
+
+    const formData = new FormData();
+    const sentEntries: Array<{
+      fileIndex: number;
+      productId: string;
+      entryId: string;
+    }> = [];
+
+    // Tomar entradas pendientes + con error (reintentos), respetando el límite del lote
+    const pendingEntries = entries.filter((e) => RETRYABLE_STATUSES.has(e.uploadStatus));
+    const batchEntries = pendingEntries.slice(0, BATCH_LIMIT);
+
+    setEntries((prev) =>
+      prev.map((e) =>
+        pendingEntries.includes(e) ? { ...e, uploadStatus: "pending" as const } : e,
+      ),
+    );
+
+    let fileIndex = 0;
+    for (const entry of batchEntries) {
+      const resolvedProductId =
+        entry.match.type === "replace" || entry.match.type === "new"
+          ? entry.match.product.id
+          : entry.manualProductId;
+
+      if (!resolvedProductId) continue;
+
+      formData.append(`file_${fileIndex}`, entry.file);
+      sentEntries.push({ fileIndex, productId: resolvedProductId, entryId: entry.id });
+      fileIndex++;
+    }
+
+    formData.append(
+      "entries",
+      JSON.stringify(
+        sentEntries.map((se) => ({
+          fileIndex: se.fileIndex,
+          productId: se.productId,
+        })),
+      ),
+    );
+
+    try {
+      const res = await fetch("/api/admin/images/batch", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Mark batch entries as error, leave others untouched
+        const sentIds = new Set(sentEntries.map((e) => e.entryId));
+        setEntries((prev) =>
+          prev.map((e) =>
+            sentIds.has(e.id)
+              ? { ...e, uploadStatus: "error" as const, errorMessage: data.error ?? "Error en la carga masiva" }
+              : e,
+          ),
+        );
+        setIsUploading(false);
+        return;
+      }
+
+      const results: Array<{
+        fileIndex: number;
+        productId: string;
+        status: string;
+        url?: string;
+        error?: string;
+      }> = data.results ?? [];
+
+      // Map results by fileIndex back to the original entry
+      const resultByFileIndex = new Map(
+        results.map((r) => [r.fileIndex, r]),
+      );
+
+      setEntries((prev) => {
+        const next = [...prev];
+        for (const sent of sentEntries) {
+          const result = resultByFileIndex.get(sent.fileIndex);
+          if (!result) continue;
+
+          const idx = next.findIndex((e) => e.id === sent.entryId);
+          if (idx === -1) continue;
+
+          if (result.status === "done") {
+            next[idx] = {
+              ...next[idx],
+              uploadStatus: "done",
+              uploadedUrl: result.url,
+            };
+
+            if (result.url) {
+              const pid = sent.productId;
+              setProducts((prevProducts) =>
+                prevProducts.map((p) =>
+                  p.id === pid ? { ...p, image: result.url! } : p,
+                ),
+              );
+            }
+          } else {
+            next[idx] = {
+              ...next[idx],
+              uploadStatus: "error",
+              errorMessage: result.error ?? "Error desconocido",
+            };
+          }
+        }
+        return next;
+      });
+    } catch (e) {
+      setEntries((prev) =>
+        prev.map((entry) => ({
+          ...entry,
+          uploadStatus: "error" as const,
+          errorMessage:
+            e instanceof Error ? e.message : "Error de red inesperado",
+        })),
+      );
+    }
+
+    setIsUploading(false);
+  }
+
+  // ── File input click handler ─────────────────────────────────────
+
+  function handleFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) processFiles(e.target.files);
+    // Reset so same file can be re-selected
+    e.target.value = "";
+  }
+
+  // ── Render ───────────────────────────────────────────────────────
 
   return (
     <div className="space-y-5">
-
-      {/* Header controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-primary/12 bg-surface-card p-4 shadow-[0_8px_30px_-18px_rgba(47,111,54,0.3)]">
-        <label className="flex cursor-pointer items-center gap-3 select-none">
-          <input
-            type="checkbox"
-            checked={selectedIds.size === products.length && products.length > 0}
-            onChange={toggleSelectAll}
-            className="h-4 w-4 rounded border-border-mid accent-primary"
-          />
-          <span className="text-sm font-semibold text-text-sub">
-            Seleccionar todas{" "}
-            <span className="font-normal text-text-muted">
-              ({selectedIds.size}/{products.length})
-            </span>
+      {/* ── Dropzone ───────────────────────────────────────────── */}
+      <div
+        onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={() => fileInputRef.current?.click()}
+        className={`relative min-h-[240px] cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 md:min-h-[300px] ${
+          dragOver
+            ? "border-primary/60 bg-primary/5 shadow-[0_0_0_4px_rgba(63,143,70,0.10)]"
+            : "border-border-soft bg-surface-card hover:border-primary/30 hover:bg-primary/[0.03]"
+        }`}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept={ACCEPTED_MIME.join(",")}
+          className="hidden"
+          onChange={handleFileInputChange}
+        />
+        <div className="flex h-full min-h-[176px] flex-col items-center justify-center gap-4 md:min-h-[236px]">
+          <span className="text-4xl text-text-faint/40 md:text-5xl">
+            {dragOver ? "⬇" : "📁"}
           </span>
-        </label>
-        {summary && (
-          <span className="text-sm font-medium text-primary">{summary}</span>
-        )}
+          <div>
+            <p className="text-base font-semibold text-text-sub md:text-lg">
+              {dragOver
+                ? "Soltá las imágenes aquí"
+                : "Arrastrá imágenes o hacé clic para seleccionar"}
+            </p>
+            <p className="mt-2 text-sm text-text-muted">
+              .webp, .jpg, .png &mdash; máx 2MB por archivo
+            </p>
+          </div>
+        </div>
       </div>
 
-      {globalError && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
-          {globalError}
-        </div>
-      )}
-
-      {/* Upload panel */}
-      {selectedIds.size > 0 && (
-        <div className="space-y-4 rounded-2xl border border-border-soft bg-surface-card p-5">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-accent-dark">
-            Panel de carga masiva — {selectedIds.size} producto{selectedIds.size !== 1 ? "s" : ""} seleccionado{selectedIds.size !== 1 ? "s" : ""}
-          </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <label className="inline-flex cursor-pointer items-center gap-3">
-              <span className="rounded-xl border border-border-mid bg-surface-warm px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary/40 hover:text-primary-dark">
-                Seleccionar archivos
-              </span>
-              <span className="text-xs text-text-muted">.webp, .jpg, .png — máx 2MB por archivo</span>
-              <input
-                ref={bulkInputRef}
-                type="file"
-                multiple
-                accept="image/webp,image/jpeg,image/png"
-                className="hidden"
-                onChange={(e) => setQueuedFiles(Array.from(e.target.files ?? []))}
-              />
-            </label>
-            <button
-              type="button"
-              disabled={!canUpload || anyUploading}
-              onClick={handleBulkUpload}
-              className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {anyUploading ? "Cargando..." : "Cargar imágenes"}
-            </button>
+      {/* ── File Entries Review Panel ──────────────────────────── */}
+      {entries.length > 0 && (
+        <div className="space-y-4">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-bold uppercase tracking-[0.15em] text-accent-dark">
+              {entries.length} archivo{entries.length !== 1 ? "s" : ""} cargado
+              {entries.length !== 1 ? "s" : ""}
+            </p>
+            {!isUploading && (
+              <button
+                type="button"
+                onClick={clearAllEntries}
+                className="text-xs font-medium text-red-500 hover:text-red-600 transition-colors"
+              >
+                Limpiar todo
+              </button>
+            )}
           </div>
 
-          {queuedFiles.length > 0 && (
-            <div className="space-y-2.5">
-              <p className="text-xs font-semibold text-text-muted">
-                {queuedFiles.length} archivo{queuedFiles.length !== 1 ? "s" : ""} seleccionado{queuedFiles.length !== 1 ? "s" : ""}
-                {" — "}se cargarán {Math.min(pairsCount, 10)} imagen{Math.min(pairsCount, 10) !== 1 ? "es" : ""}
-              </p>
-              {filesExceed && (
-                <p className="text-xs font-medium text-amber-600">
-                  Se usarán solo los primeros {selectedList.length} archivos
-                </p>
-              )}
-              {filesShort && (
-                <p className="text-xs font-medium text-amber-600">
-                  Faltan {selectedList.length - queuedFiles.length} archivo{selectedList.length - queuedFiles.length !== 1 ? "s" : ""} para cubrir todos los productos seleccionados
-                </p>
-              )}
-              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-                {Array.from({ length: pairsCount }, (_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 rounded-xl border border-border-soft bg-surface-warm px-3 py-2 text-xs"
-                  >
-                    <span className="truncate font-medium text-text-sub max-w-[40%]">
-                      {selectedList[i]?.name}
-                    </span>
-                    <span className="shrink-0 text-text-faint">←</span>
-                    <span className="truncate text-text-muted">{queuedFiles[i]?.name}</span>
-                  </div>
+          {/* ── Auto-matched: Replace ─────────────────────── */}
+          {groups.replace.length > 0 && (
+            <SectionCard
+              title="Reemplazar"
+              count={groups.replace.length}
+              accent="text-amber-600"
+              badge="border-amber-200 bg-amber-50 text-amber-700"
+            >
+              <EntryGrid>
+                {groups.replace.map((entry) => (
+                  <FileCard
+                    key={entry.id}
+                    entry={entry}
+                    lineLabels={lineLabels}
+                    label="Reemplazar"
+                    onRemove={isUploading ? undefined : removeEntry}
+                  />
                 ))}
+              </EntryGrid>
+            </SectionCard>
+          )}
+
+          {/* ── Auto-matched: New ─────────────────────────── */}
+          {groups.newly.length > 0 && (
+            <SectionCard
+              title="Nuevas"
+              count={groups.newly.length}
+              accent="text-primary-dark"
+              badge="border-primary/20 bg-primary/5 text-primary-dark"
+            >
+              <EntryGrid>
+                {groups.newly.map((entry) => (
+                  <FileCard
+                    key={entry.id}
+                    entry={entry}
+                    lineLabels={lineLabels}
+                    label="Nueva"
+                    onRemove={isUploading ? undefined : removeEntry}
+                  />
+                ))}
+              </EntryGrid>
+            </SectionCard>
+          )}
+
+          {/* ── Ambiguous ─────────────────────────────────── */}
+          {groups.ambiguous.length > 0 && (
+            <SectionCard
+              title="Múltiples coincidencias"
+              count={groups.ambiguous.length}
+              accent="text-orange-600"
+              badge="border-orange-200 bg-orange-50 text-orange-700"
+            >
+              <p className="mb-3 text-xs text-text-muted">
+                Seleccioná el producto correcto para cada archivo.
+              </p>
+              <EntryGrid>
+                {groups.ambiguous.map((entry) => (
+                  <FileCard
+                    key={entry.id}
+                    entry={entry}
+                    lineLabels={lineLabels}
+                    label="Conflicto"
+                    candidates={
+                      entry.match.type === "ambiguous"
+                        ? entry.match.candidates
+                        : undefined
+                    }
+                    allProducts={products}
+                    onManualSelect={(pid) => setManualProduct(entry.id, pid)}
+                    onRemove={isUploading ? undefined : removeEntry}
+                  />
+                ))}
+              </EntryGrid>
+            </SectionCard>
+          )}
+
+          {/* ── No Match ──────────────────────────────────── */}
+          {groups.noMatch.length > 0 && (
+            <SectionCard
+              title="Sin coincidencia"
+              count={groups.noMatch.length}
+              accent="text-red-600"
+              badge="border-red-200 bg-red-50 text-red-700"
+            >
+              <p className="mb-3 text-xs text-text-muted">
+                No se pudo identificar el producto por el nombre del archivo.
+                Seleccioná el producto manualmente.
+              </p>
+              <EntryGrid>
+                {groups.noMatch.map((entry) => (
+                  <FileCard
+                    key={entry.id}
+                    entry={entry}
+                    lineLabels={lineLabels}
+                    label="Sin match"
+                    allProducts={products}
+                    onManualSelect={(pid) => setManualProduct(entry.id, pid)}
+                    onRemove={isUploading ? undefined : removeEntry}
+                  />
+                ))}
+              </EntryGrid>
+            </SectionCard>
+          )}
+
+          {/* ── Omitidos ─────────────────────────────────── */}
+          {groups.skipped.length > 0 && (
+            <SectionCard
+              title="Omitidos"
+              count={groups.skipped.length}
+              accent="text-text-faint"
+              badge="border-border-soft bg-surface-warm text-text-muted"
+            >
+              <p className="mb-3 text-xs text-text-muted">
+                Estos archivos no corresponden a imágenes de producto (logos,
+                slides, portadas). Quitalos del lote para continuar.
+              </p>
+              <EntryGrid>
+                {groups.skipped.map((entry) => (
+                  <FileCard
+                    key={entry.id}
+                    entry={entry}
+                    lineLabels={lineLabels}
+                    label="Omitido"
+                    onRemove={isUploading ? undefined : removeEntry}
+                  />
+                ))}
+              </EntryGrid>
+            </SectionCard>
+          )}
+
+          {/* ── Progress summary ──────────────────────────────── */}
+          {!allDone && (
+            <div className="space-y-3">
+              {/* Advertencia: productos duplicados */}
+              {duplicateProductIds.size > 0 && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs text-red-700">
+                  <p className="font-semibold">Productos duplicados en el lote</p>
+                  <ul className="mt-1 list-inside list-disc space-y-0.5">
+                    {Array.from(duplicateProductIds.entries()).map(
+                      ([pid, ids]) => {
+                        const product = products.find((p) => p.id === pid);
+                        return (
+                          <li key={pid}>
+                            <span className="font-medium">
+                              {product?.name ?? pid}
+                            </span>
+                            {" — "}
+                            {ids.length} archivos. Quitá los archivos
+                            sobrantes para continuar.
+                          </li>
+                        );
+                      },
+                    )}
+                  </ul>
+                </div>
+              )}
+
+              {/* Advertencia: límite de lote */}
+              {exceedsBatchLimit && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
+                  El lote máximo es de {BATCH_LIMIT} archivos.
+                  Quitá algunos para poder ejecutar la carga.
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border-soft bg-surface-card p-4">
+                <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs">
+                  <span className="font-medium text-text-sub">
+                    <span className="text-amber-600 font-semibold">
+                      {groups.replace.length}
+                    </span>{" "}
+                    reemplazo{groups.replace.length !== 1 ? "s" : ""}
+                  </span>
+                  <span className="font-medium text-text-sub">
+                    <span className="text-primary-dark font-semibold">
+                      {groups.newly.length}
+                    </span>{" "}
+                    nueva{groups.newly.length !== 1 ? "s" : ""}
+                  </span>
+                  {needsResolutionCount > 0 && (
+                    <span className="font-medium text-text-sub">
+                      <span className="text-orange-600 font-semibold">
+                        {needsResolutionCount}
+                      </span>{" "}
+                      requiere{needsResolutionCount !== 1 ? "n" : ""} atención
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  disabled={!canExecute}
+                  onClick={handleBatchUpload}
+                  className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {isUploading && (
+                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  )}
+                  {isUploading
+                    ? "Subiendo..."
+                    : "Ejecutar carga masiva"}
+                </button>
               </div>
+            </div>
+          )}
+
+          {/* ── Upload done banner ──────────────────────────────── */}
+          {allDone && (
+            <div className="flex items-center justify-between rounded-2xl border border-primary/15 bg-primary/5 p-4">
+              <p className="text-sm font-semibold text-primary-dark">
+                {hasErrors
+                  ? "Algunas imágenes no pudieron cargarse."
+                  : "✅  Todas las imágenes se cargaron correctamente."}
+              </p>
+              <button
+                type="button"
+                onClick={clearAllEntries}
+                className="rounded-lg border border-border-soft bg-white px-3 py-1.5 text-xs font-semibold text-text-sub transition-colors hover:border-border-mid"
+              >
+                Cargar más
+              </button>
             </div>
           )}
         </div>
       )}
 
-      {/* Product grid */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product) => {
-          const isSelected = selectedIds.has(product.id);
-          const status = uploadStatus[product.id] ?? "idle";
-          const lineName = lineLabels[product.line] ?? product.line;
-
-          return (
-            <div
-              key={product.id}
-              onClick={() => toggleSelect(product.id)}
-              className={`group relative cursor-pointer rounded-xl border bg-white transition-all duration-200 ${
-                isSelected
-                  ? "border-primary/60 shadow-[0_0_0_3px_rgba(63,143,70,0.10),0_4px_16px_-6px_rgba(63,143,70,0.25)]"
-                  : "border-border-soft shadow-sm hover:border-border-mid hover:shadow-md"
-              }`}
-            >
-              {/* Checkbox + status row */}
-              <div className="flex items-center justify-between px-2.5 pt-2.5">
-                <div onClick={(e) => e.stopPropagation()}>
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => toggleSelect(product.id)}
-                    className="h-3.5 w-3.5 rounded border-border-mid accent-primary"
-                  />
-                </div>
-                <div className="h-4">
-                  {status === "uploading" && (
-                    <span className="flex h-4 w-4 animate-spin items-center justify-center text-[10px] text-text-faint">↻</span>
-                  )}
-                  {status === "done" && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-green-100 text-[9px] font-bold text-green-600">✓</span>
-                  )}
-                  {status === "error" && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-red-100 text-[9px] font-bold text-red-500">✕</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Image area */}
-              <div className="relative mx-2.5 mt-1.5 aspect-[4/3] overflow-hidden rounded-lg bg-surface-warm">
-                {product.image ? (
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-contain p-2"
-                  />
-                ) : (
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-1">
-                    <span className="text-2xl text-text-faint/30">◻</span>
-                    <span className="text-[9px] font-medium uppercase tracking-widest text-text-faint/60">sin imagen</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Name + line */}
-              <div className="px-2.5 pb-2.5 pt-2">
-                <p className="truncate text-xs font-semibold leading-tight text-text-main">{product.name}</p>
-                <p className="truncate text-[10px] text-text-muted">{lineName}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
+}
+
+// ── Sub-components ────────────────────────────────────────────────────
+
+function SectionCard({
+  title,
+  count,
+  accent,
+  badge,
+  children,
+}: {
+  title: string;
+  count: number;
+  accent: string;
+  badge: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-border-soft bg-surface-card p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <h3 className={`text-xs font-bold uppercase tracking-[0.15em] ${accent}`}>
+          {title}
+        </h3>
+        <span
+          className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${badge}`}
+        >
+          {count}
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function EntryGrid({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {children}
+    </div>
+  );
+}
+
+function FileCard({
+  entry,
+  lineLabels,
+  label,
+  candidates,
+  allProducts,
+  onManualSelect,
+  onRemove,
+}: {
+  entry: FileEntry;
+  lineLabels: Record<string, string>;
+  label: string;
+  candidates?: ProductRow[];
+  allProducts?: ProductRow[];
+  onManualSelect?: (productId: string) => void;
+  onRemove?: (id: string) => void;
+}) {
+  const productToShow =
+    (entry.match.type === "replace" || entry.match.type === "new") &&
+    entry.match.product
+      ? entry.match.product
+      : entry.manualProductId && allProducts
+        ? allProducts.find((p) => p.id === entry.manualProductId) ?? null
+        : null;
+
+  const isResolved =
+    entry.match.type === "replace" ||
+    entry.match.type === "new" ||
+    entry.match.type === "skipped" ||
+    entry.manualProductId !== null;
+
+  const statusColor: Record<string, string> = {
+    pending: "border-border-soft",
+    uploading: "border-blue-300 bg-blue-50/30",
+    done: "border-primary/30 bg-primary/[0.04]",
+    error: "border-red-300 bg-red-50/30",
+  };
+
+  return (
+    <div
+      className={`relative rounded-xl border p-3 transition-all ${
+        statusColor[entry.uploadStatus] ?? "border-border-soft"
+      } ${entry.uploadStatus === "uploading" ? "animate-pulse" : ""}`}
+    >
+      {/* Preview + info */}
+      <div className="flex items-start gap-3">
+        {/* Thumbnail */}
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-border-soft bg-white">
+          <Image
+            src={entry.previewUrl}
+            alt={entry.file.name}
+            fill
+            className="object-contain p-1"
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          {/* Filename */}
+          <p className="truncate text-xs font-medium text-text-sub">
+            {entry.file.name}
+          </p>
+          <p className="text-[10px] text-text-muted">
+            {(entry.file.size / 1024).toFixed(0)} KB
+          </p>
+
+          {/* Status badge */}
+          <div className="mt-1 flex flex-wrap items-center gap-1.5">
+            <span
+              className={`inline-block rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                entry.uploadStatus === "done"
+                  ? "bg-green-100 text-green-700"
+                  : entry.uploadStatus === "error"
+                    ? "bg-red-100 text-red-600"
+                    : entry.uploadStatus === "uploading"
+                      ? "bg-blue-100 text-blue-600"
+                      : isResolved
+                        ? "bg-primary/10 text-primary-dark"
+                        : "bg-orange-100 text-orange-600"
+              }`}
+            >
+              {entry.uploadStatus === "done"
+                ? "✓ Cargada"
+                : entry.uploadStatus === "error"
+                  ? `✕ ${entry.errorMessage ?? "Error"}`
+                  : entry.uploadStatus === "uploading"
+                    ? "Subiendo..."
+                    : label}
+            </span>
+
+            {entry.uploadStatus === "done" && productToShow && (
+              <span className="text-[9px] text-primary-dark">
+                → {formatProductLabel(productToShow)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Remove button */}
+        {onRemove && (entry.uploadStatus === "pending" || entry.uploadStatus === "error") && (
+          <button
+            type="button"
+            onClick={() => onRemove(entry.id)}
+            className="shrink-0 rounded-full p-1 text-text-faint hover:bg-red-50 hover:text-red-500 transition-colors"
+            title="Quitar"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path d="M3 3l8 8M11 3l-8 8" />
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* Product selector (for ambiguous / noMatch) */}
+      {(entry.match.type === "ambiguous" || entry.match.type === "none") &&
+        allProducts &&
+        onManualSelect && (
+          <div className="mt-2.5">
+            {entry.match.type === "ambiguous" && candidates && (
+              <p className="mb-1 text-[10px] text-orange-600">
+                {entry.match.reason}
+              </p>
+            )}
+            <select
+              value={entry.manualProductId ?? ""}
+              onChange={(e) => onManualSelect(e.target.value)}
+              className="w-full rounded-lg border border-border-soft bg-white px-2.5 py-1.5 text-xs text-text-sub focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/10"
+              disabled={entry.uploadStatus !== "pending"}
+            >
+              <option value="">— Seleccionar producto —</option>
+              {groupedProducts(allProducts, lineLabels).map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {formatProductLabel(p)}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
+        )}
+
+      {/* Error detail */}
+      {entry.uploadStatus === "error" && entry.errorMessage && (
+        <p className="mt-1.5 text-[10px] leading-tight text-red-500">
+          {entry.errorMessage}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ── Product selector helper ───────────────────────────────────────────
+
+type ProductGroup = {
+  label: string;
+  products: ProductRow[];
+};
+
+function groupedProducts(
+  products: ProductRow[],
+  lineLabels: Record<string, string>,
+): ProductGroup[] {
+  const map = new Map<string, ProductRow[]>();
+  for (const p of products) {
+    const key = p.line;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(p);
+  }
+  return Array.from(map.entries())
+    .map(([key, prods]) => ({
+      label: lineLabels[key] ?? key,
+      products: prods,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+function formatProductLabel(product: ProductRow): string {
+  return `${product.name} — ${product.presentation}`;
+}
+
+// ── Match result mapper ───────────────────────────────────────────────
+
+function matchToEntryResult(
+  match: ReturnType<typeof matchFileToProducts>,
+  products: ProductRow[],
+): FileEntry["match"] {
+  if (match.type === "single") {
+    const product = products.find((p) => p.id === match.product.id);
+    if (!product) return { type: "none", reason: "Producto no encontrado" };
+    if (product.image) {
+      return { type: "replace", product };
+    }
+    return { type: "new", product };
+  }
+
+  if (match.type === "multiple") {
+    const candidates = match.candidates
+      .map((c) => products.find((p) => p.id === c.id))
+      .filter(Boolean) as ProductRow[];
+    return {
+      type: "ambiguous",
+      candidates,
+      reason: match.reason,
+    };
+  }
+
+  return { type: "none", reason: match.reason };
 }

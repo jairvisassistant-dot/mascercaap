@@ -19,7 +19,7 @@ export default async function ImagenesAdminPage() {
   const [{ data: products }, { data: linesData }] = await Promise.all([
     sb
       .from("products")
-      .select("id, name, line, image, display_order")
+      .select("id, name, line, presentation, image, display_order")
       .eq("active", true)
       .order("display_order"),
     sb
@@ -43,7 +43,7 @@ export default async function ImagenesAdminPage() {
           Imágenes de productos
         </h1>
         <p className="mt-1 text-sm text-text-muted">
-          Seleccioná uno o varios productos y cargá sus imágenes en lote.
+          Arrastrá imágenes o seleccionalas para asignarlas a productos por nombre de archivo.
         </p>
       </div>
       <div className="mx-auto w-full max-w-[1680px] p-6 pt-4 lg:px-8">
