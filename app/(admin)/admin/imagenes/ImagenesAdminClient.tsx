@@ -221,7 +221,7 @@ export default function ImagenesAdminClient({ initialProducts, lineLabels }: Pro
             <div
               key={product.id}
               onClick={() => toggleSelect(product.id)}
-              className={`group relative cursor-pointer rounded-xl border bg-surface-card transition-all duration-200 ${
+              className={`group relative cursor-pointer rounded-xl border bg-white transition-all duration-200 ${
                 isSelected
                   ? "border-primary/60 shadow-[0_0_0_3px_rgba(63,143,70,0.10),0_4px_16px_-6px_rgba(63,143,70,0.25)]"
                   : "border-border-soft shadow-sm hover:border-border-mid hover:shadow-md"
