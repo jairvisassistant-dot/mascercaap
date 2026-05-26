@@ -199,7 +199,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
         {filtered.map((lead) => {
           const isExpanded = expandedId === lead.id;
           const createdAt = new Date(lead.created_at);
-          const dateStr = createdAt.toLocaleDateString("es-AR", {
+          const dateStr = createdAt.toLocaleString("es-AR", {
             day: "2-digit",
             month: "short",
             year: "numeric",
@@ -228,7 +228,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
                     )}
                   </div>
                   <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-                    <span>{dateStr}</span>
+                    <span suppressHydrationWarning>{dateStr}</span>
                     <span>{FUENTE_LABELS[lead.fuente] ?? lead.fuente}</span>
                     {lead.producto_interes && (
                       <span className="truncate">
