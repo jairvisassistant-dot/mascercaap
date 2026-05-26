@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 
+function getPublicBase(req: Request): string {
+  const proto = req.headers.get("x-forwarded-proto") ?? "https";
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "localhost";
+  return `${proto}://${host}`;
+}
+
 function clearAndRedirect(req: Request, destination: string) {
-  const url = new URL(req.url);
-  const base = `${url.protocol}//${url.host}`;
-  const res = NextResponse.redirect(`${base}${destination}`);
+  const res = NextResponse.redirect(`${getPublicBase(req)}${destination}`);
   res.cookies.delete("admin_session");
   return res;
 }
@@ -11,15 +15,13 @@ function clearAndRedirect(req: Request, destination: string) {
 export async function GET(req: Request) {
   // Sec-Fetch-Dest distinguishes legitimate browser navigation (value: "document")
   // from CSRF via embedded tags like <img src="/api/admin/auth/logout">.
-  // Only clear the cookie for navigation requests; everything else just redirects.
   const dest = req.headers.get("sec-fetch-dest");
   if (dest !== "document") {
-    const url = new URL(req.url);
-    return NextResponse.redirect(`${url.origin}/admin/login`);
+    return NextResponse.redirect(`${getPublicBase(req)}/admin/login`);
   }
   return clearAndRedirect(req, "/admin/login");
 }
 
 export async function POST(req: Request) {
-  return clearAndRedirect(req, "/es/");
+  return clearAndRedirect(req, "/admin/login");
 }
