@@ -14,7 +14,6 @@ import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import { SITE_CONFIG } from "@/lib/config";
-import { Analytics } from "@vercel/analytics/next";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -147,7 +146,6 @@ export default async function LangLayout({
               <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
               <Footer dict={dict} lang={lang} categories={categories} />
               <HelpHub faqData={faqData} prices={prices} />
-              <Analytics />
             </HelpHubProvider>
           </DictionaryProvider>
         </MotionProvider>
