@@ -23,5 +23,5 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  return clearAndRedirect(req, "/admin/login");
+  return clearAndRedirect(req, "/es");
 }

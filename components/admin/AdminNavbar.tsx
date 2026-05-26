@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -14,8 +14,13 @@ const themeLabels = {
   activateLight: "Activar modo claro",
 };
 
+const itemCls =
+  "flex items-center px-4 py-2.5 text-sm font-medium text-text-sub hover:bg-surface-warm hover:text-primary-dark transition-colors first:rounded-t-2xl last:rounded-b-2xl";
+
 export default function AdminNavbar({ productCount }: { productCount?: number | null }) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const navRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -24,11 +29,43 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isLoginPage      = pathname === "/admin/login";
-  const isListPage       = pathname === "/admin/productos";
-  const isOrderPage      = pathname === "/admin/categorias" || pathname === "/admin/lineas";
-  const isConsultaPage   = pathname === "/admin/consultas";
-  const isSeguridadPage  = pathname === "/admin/configuracion/seguridad";
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenMenu(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenMenu(null);
+    }
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  const isLoginPage  = pathname === "/admin/login";
+  const isListPage   = pathname === "/admin/productos";
+  const isCatPage    = pathname === "/admin/categorias";
+  const isLineasPage = pathname === "/admin/lineas";
+
+  const isSubPage =
+    pathname.startsWith("/admin/productos/") ||
+    pathname.startsWith("/admin/categorias/") ||
+    pathname.startsWith("/admin/lineas/");
+
+  const backHref = pathname.startsWith("/admin/categorias/")
+    ? "/admin/categorias"
+    : pathname.startsWith("/admin/lineas/")
+    ? "/admin/lineas"
+    : "/admin/productos";
+
+  function toggleMenu(id: string) {
+    setOpenMenu((prev) => (prev === id ? null : id));
+  }
 
   return (
     <header
@@ -78,7 +115,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div ref={navRef} className="flex items-center gap-3">
             <ThemeToggle labels={themeLabels} />
 
             {isLoginPage ? (
@@ -88,127 +125,78 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
               >
                 ← Volver al sitio
               </Link>
-            ) : isListPage ? (
-              <>
-                <Link
-                  href="/admin/categorias"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  Categorías
-                </Link>
-                <Link
-                  href="/admin/lineas"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  Líneas
-                </Link>
-                <Link
-                  href="/admin/faq"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  FAQ
-                </Link>
-                <Link
-                  href="/admin/consultas"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  Consultas
-                </Link>
-                <Link
-                  href="/admin/configuracion/seguridad"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  Seguridad
-                </Link>
-                <Link
-                  href="/admin/productos/nuevo"
-                  className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.85)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0"
-                >
-                  + Nuevo producto
-                </Link>
-                <form action="/api/admin/auth/logout" method="POST">
-                  <button
-                    type="submit"
-                    className="rounded-xl px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
-                  >
-                    Salir
-                  </button>
-                </form>
-              </>
-            ) : isOrderPage ? (
-              <>
-                <Link
-                  href="/admin/categorias/nueva"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  + Nueva categoría
-                </Link>
-                <Link
-                  href="/admin/lineas/nueva"
-                  className="rounded-xl border border-primary/40 bg-surface-card px-4 py-2.5 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/8 active:translate-y-0"
-                >
-                  + Nueva línea
-                </Link>
-                <Link
-                  href="/admin/configuracion/seguridad"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  Seguridad
-                </Link>
-                <Link
-                  href="/admin/productos"
-                  className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
-                >
-                  ← Volver
-                </Link>
-                <form action="/api/admin/auth/logout" method="POST">
-                  <button
-                    type="submit"
-                    className="rounded-xl px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
-                  >
-                    Salir
-                  </button>
-                </form>
-              </>
-            ) : isConsultaPage ? (
-              <>
-                <Link
-                  href="/admin/configuracion/seguridad"
-                  className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                >
-                  Seguridad
-                </Link>
-                <Link
-                  href="/admin/productos"
-                  className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
-                >
-                  ← Volver
-                </Link>
-                <form action="/api/admin/auth/logout" method="POST">
-                  <button
-                    type="submit"
-                    className="rounded-xl px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
-                  >
-                    Salir
-                  </button>
-                </form>
-              </>
             ) : (
               <>
-                {!isSeguridadPage && (
-                  <Link
-                    href="/admin/configuracion/seguridad"
-                    className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
-                  >
+                <NavDropdown label="Catálogo" id="catalogo" openMenu={openMenu} onToggle={toggleMenu}>
+                  <Link href="/admin/productos" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/productos" ? "font-semibold text-primary" : ""}`}>
+                    Productos
+                  </Link>
+                  <Link href="/admin/categorias" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/categorias" ? "font-semibold text-primary" : ""}`}>
+                    Categorías
+                  </Link>
+                  <Link href="/admin/lineas" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/lineas" ? "font-semibold text-primary" : ""}`}>
+                    Líneas
+                  </Link>
+                  <Link href="/admin/imagenes" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/imagenes" ? "font-semibold text-primary" : ""}`}>
+                    Imágenes
+                  </Link>
+                </NavDropdown>
+
+                <NavDropdown label="Operaciones" id="operaciones" openMenu={openMenu} onToggle={toggleMenu}>
+                  <Link href="/admin/consultas" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/consultas" ? "font-semibold text-primary" : ""}`}>
+                    Consultas
+                  </Link>
+                  <Link href="/admin/faq" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/faq" ? "font-semibold text-primary" : ""}`}>
+                    FAQ
+                  </Link>
+                </NavDropdown>
+
+                <NavDropdown label="Sistema" id="sistema" openMenu={openMenu} onToggle={toggleMenu}>
+                  <Link href="/admin/configuracion/seguridad" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/configuracion/seguridad" ? "font-semibold text-primary" : ""}`}>
                     Seguridad
                   </Link>
+                </NavDropdown>
+
+                {isListPage && (
+                  <Link
+                    href="/admin/productos/nuevo"
+                    className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.85)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0"
+                  >
+                    + Nuevo producto
+                  </Link>
                 )}
-                <Link
-                  href="/admin/productos"
-                  className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
-                >
-                  ← Volver
-                </Link>
+                {isCatPage && (
+                  <Link
+                    href="/admin/categorias/nueva"
+                    className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+                  >
+                    + Nueva categoría
+                  </Link>
+                )}
+                {isLineasPage && (
+                  <Link
+                    href="/admin/lineas/nueva"
+                    className="rounded-xl border border-primary/40 bg-surface-card px-4 py-2.5 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/8 active:translate-y-0"
+                  >
+                    + Nueva línea
+                  </Link>
+                )}
+                {isSubPage && (
+                  <Link
+                    href={backHref}
+                    className="rounded-xl border border-border-mid px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark"
+                  >
+                    ← Volver
+                  </Link>
+                )}
+
                 <form action="/api/admin/auth/logout" method="POST">
                   <button
                     type="submit"
@@ -223,5 +211,38 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
         </div>
       </div>
     </header>
+  );
+}
+
+type NavDropdownProps = {
+  label: string;
+  id: string;
+  openMenu: string | null;
+  onToggle: (id: string) => void;
+  children: React.ReactNode;
+};
+
+function NavDropdown({ label, id, openMenu, onToggle, children }: NavDropdownProps) {
+  const isOpen = openMenu === id;
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => onToggle(id)}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        className="flex items-center gap-1 rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary-dark active:translate-y-0"
+      >
+        {label}
+        <span className={`text-[10px] transition-transform duration-150 ${isOpen ? "rotate-180" : ""}`}>
+          ▾
+        </span>
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 top-full z-50 mt-1.5 min-w-[180px] overflow-hidden rounded-2xl border border-border-soft bg-surface-card shadow-[0_8px_32px_-8px_rgba(0,0,0,0.15)]">
+          {children}
+        </div>
+      )}
+    </div>
   );
 }

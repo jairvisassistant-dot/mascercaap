@@ -22,7 +22,7 @@ export default async function AdminProductosPage() {
     { data: categoriesData },
   ] = await Promise.all([
     supabase.from("products").select("*").order("display_order"),
-    supabase.from("product_lines").select("key, label, category_key").order("display_order"),
+    supabase.from("product_lines").select("key, label, category_key").eq("active", true).order("display_order"),
     supabase.from("product_categories").select("key, label").eq("active", true).order("display_order"),
   ]);
 

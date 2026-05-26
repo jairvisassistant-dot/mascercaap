@@ -19,24 +19,6 @@ type Product = {
   display_order: number;
 };
 
-const LINE_LABELS_STATIC: Record<string, string> = {
-  limon: "Zumo de Limón",
-  "limonada-cereza": "Limonada Cereza",
-  "limonada-coco": "Limonada Coco",
-  maracuya: "Zumo Maracuyá",
-  "pulpa-maracuya": "Pulpa Maracuyá",
-  "pulpa-mora": "Pulpa Mora",
-  "pulpa-fresa": "Pulpa Fresa",
-  "pulpa-mango": "Pulpa Mango",
-  "pulpa-guanabana": "Pulpa Guanábana",
-  "pulpa-lulo": "Pulpa Lulo",
-  "pulpa-guayaba": "Pulpa Guayaba",
-  "pulpa-frutos-rojos": "Pulpa Frutos Rojos",
-  "pulpa-frutos-amarillos": "Pulpa Frutos Amarillos",
-  "pulpa-tomate-arbol": "Pulpa Tomate de Árbol",
-  kumiss: "Kumiss / Yogurt",
-};
-
 export default function ProductosAdminClient({
   initialProducts,
   lineLabels = {},
@@ -48,7 +30,6 @@ export default function ProductosAdminClient({
   lineCategories?: Record<string, string>;
   categories?: { key: string; label: string }[];
 }) {
-  const LINE_LABELS = { ...LINE_LABELS_STATIC, ...lineLabels };
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [search, setSearch] = useState("");
@@ -59,9 +40,9 @@ export default function ProductosAdminClient({
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Todas las líneas definidas en product_lines (incluyendo las nuevas sin productos)
-  const allLineKeys = Object.keys(LINE_LABELS).length > 0
-    ? Object.keys(LINE_LABELS)
+  // Todas las líneas activas en product_lines (viene de DB, filtrado por active=true)
+  const allLineKeys = Object.keys(lineLabels).length > 0
+    ? Object.keys(lineLabels)
     : Array.from(new Set(initialProducts.map((p) => p.line))).sort();
 
   // Líneas sin categoría asignada
@@ -187,7 +168,7 @@ export default function ProductosAdminClient({
             {linesForCategory.length === 0 ? "Sin líneas en esta categoría" : "Todas las líneas"}
           </option>
           {linesForCategory.map((l) => (
-            <option key={l} value={l}>{LINE_LABELS[l] ?? l}</option>
+            <option key={l} value={l}>{lineLabels[l] ?? l}</option>
           ))}
         </select>
         <span className="self-center rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm font-medium text-accent-dark">
@@ -234,7 +215,7 @@ export default function ProductosAdminClient({
                   <p className="text-xs text-text-muted">{p.id}</p>
                 </td>
                 <td className="hidden px-4 py-3 text-text-sub md:table-cell">
-                  {LINE_LABELS[p.line] ?? p.line}
+                  {lineLabels[p.line] ?? p.line}
                 </td>
                 <td className="hidden px-4 py-3 text-text-sub sm:table-cell">{p.presentation}</td>
                 <td className="hidden px-4 py-3 text-right font-mono text-sm text-text-main sm:table-cell">

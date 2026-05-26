@@ -32,6 +32,7 @@ export function createProductPatchSchema(msgs?: { noValidFields?: string }) {
       is_sold_out: z.boolean().optional(),
       is_best_seller: z.boolean().optional(),
       active: z.boolean().optional(),
+      image: z.string().url().nullable().optional(),
     })
     .refine((obj) => Object.keys(obj).length > 0, {
       message: msgs?.noValidFields ?? "No valid fields to update",

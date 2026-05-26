@@ -15,7 +15,8 @@ async function getProductCount(): Promise<number | null> {
   if (!supabase) return null;
   const { count } = await supabase
     .from("products")
-    .select("*", { count: "exact", head: true });
+    .select("*", { count: "exact", head: true })
+    .eq("active", true);
   return count;
 }
 
