@@ -225,7 +225,7 @@ export default function ImagenesAdminClient({ initialProducts, lineLabels }: Pro
       )}
 
       {/* Product grid */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => {
           const isSelected = selectedIds.has(product.id);
           const status = uploadStatus[product.id] ?? "idle";
@@ -235,69 +235,64 @@ export default function ImagenesAdminClient({ initialProducts, lineLabels }: Pro
             <div
               key={product.id}
               onClick={() => toggleSelect(product.id)}
-              className={`relative cursor-pointer rounded-2xl border-2 bg-surface-card p-3 transition-all ${
+              className={`group relative cursor-pointer rounded-xl border bg-surface-card transition-all duration-200 ${
                 isSelected
-                  ? "border-primary shadow-[0_0_0_3px_rgba(63,143,70,0.12)]"
-                  : "border-border-soft hover:border-border-mid"
+                  ? "border-primary/60 shadow-[0_0_0_3px_rgba(63,143,70,0.10),0_4px_16px_-6px_rgba(63,143,70,0.25)]"
+                  : "border-border-soft shadow-sm hover:border-border-mid hover:shadow-md"
               }`}
             >
-              {/* Checkbox */}
-              <div className="absolute left-2.5 top-2.5 z-10" onClick={(e) => e.stopPropagation()}>
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  onChange={() => toggleSelect(product.id)}
-                  className="h-4 w-4 rounded border-border-mid accent-primary"
-                />
-              </div>
-
-              {/* Status badge */}
-              {status !== "idle" && (
-                <div className="absolute right-2.5 top-2.5 z-10">
+              {/* Checkbox + status row */}
+              <div className="flex items-center justify-between px-2.5 pt-2.5">
+                <div onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleSelect(product.id)}
+                    className="h-3.5 w-3.5 rounded border-border-mid accent-primary"
+                  />
+                </div>
+                <div className="h-4">
                   {status === "uploading" && (
-                    <span className="flex h-6 w-6 animate-spin items-center justify-center rounded-full bg-surface-card text-xs text-text-faint">
-                      ↻
-                    </span>
+                    <span className="flex h-4 w-4 animate-spin items-center justify-center text-[10px] text-text-faint">↻</span>
                   )}
                   {status === "done" && (
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-xs font-bold text-green-600">
-                      ✓
-                    </span>
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-green-100 text-[9px] font-bold text-green-600">✓</span>
                   )}
                   {status === "error" && (
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-xs font-bold text-red-500">
-                      ✕
-                    </span>
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-red-100 text-[9px] font-bold text-red-500">✕</span>
                   )}
                 </div>
-              )}
+              </div>
 
               {/* Image area */}
-              <div className="relative mb-3 aspect-square overflow-hidden rounded-xl bg-surface-warm">
+              <div className="relative mx-2.5 mt-1.5 h-28 overflow-hidden rounded-lg bg-surface-warm">
                 {product.image ? (
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-cover"
+                    className="object-contain p-1"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-3xl text-text-faint">
-                    ?
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-1">
+                    <span className="text-xl text-text-faint/40">◻</span>
+                    <span className="text-[9px] font-medium uppercase tracking-widest text-text-faint">sin imagen</span>
                   </div>
                 )}
               </div>
 
               {/* Name + line */}
-              <p className="truncate text-sm font-semibold text-text-main">{product.name}</p>
-              <p className="truncate text-xs text-text-muted">{lineName}</p>
+              <div className="px-2.5 pb-1 pt-2">
+                <p className="truncate text-xs font-semibold leading-tight text-text-main">{product.name}</p>
+                <p className="truncate text-[10px] text-text-muted">{lineName}</p>
+              </div>
 
               {/* Per-card upload */}
               <label
-                className="mt-2.5 flex cursor-pointer items-center justify-center rounded-lg border border-border-soft bg-surface-warm px-3 py-1.5 text-xs font-medium text-text-muted transition-colors hover:border-primary/30 hover:text-primary-dark"
+                className="mx-2.5 mb-2.5 flex cursor-pointer items-center justify-center rounded-lg border border-border-soft bg-surface-warm py-1.5 text-[10px] font-semibold uppercase tracking-wide text-text-faint transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary-dark"
                 onClick={(e) => e.stopPropagation()}
               >
-                {status === "uploading" ? "Subiendo..." : "cambiar imagen"}
+                {status === "uploading" ? "Subiendo…" : "Cambiar"}
                 <input
                   type="file"
                   accept="image/webp,image/jpeg,image/png"

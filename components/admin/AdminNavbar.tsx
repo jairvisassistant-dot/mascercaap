@@ -128,6 +128,12 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
             ) : (
               <>
                 <NavDropdown label="Catálogo" id="catalogo" openMenu={openMenu} onToggle={toggleMenu}>
+                  <Link href="/admin/productos/nuevo" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} gap-2 font-semibold text-primary`}>
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/12 text-[10px] font-bold text-primary">+</span>
+                    Nuevo producto
+                  </Link>
+                  <div className="mx-3 my-1 border-t border-border-soft" />
                   <Link href="/admin/productos" onClick={() => setOpenMenu(null)}
                     className={`${itemCls} ${pathname === "/admin/productos" ? "font-semibold text-primary" : ""}`}>
                     Productos
