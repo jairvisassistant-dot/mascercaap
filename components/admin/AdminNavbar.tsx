@@ -159,6 +159,10 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                     className={`${itemCls} ${pathname === "/admin/consultas" ? "font-semibold text-primary" : ""}`}>
                     Consultas
                   </Link>
+                  <Link href="/admin/analytics" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/analytics" ? "font-semibold text-primary" : ""}`}>
+                    Analytics
+                  </Link>
                   <Link href="/admin/faq" onClick={() => setOpenMenu(null)}
                     className={`${itemCls} ${pathname === "/admin/faq" ? "font-semibold text-primary" : ""}`}>
                     FAQ
@@ -169,6 +173,10 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                   <Link href="/admin/configuracion/seguridad" onClick={() => setOpenMenu(null)}
                     className={`${itemCls} ${pathname === "/admin/configuracion/seguridad" ? "font-semibold text-primary" : ""}`}>
                     Seguridad
+                  </Link>
+                  <Link href="/admin/configuracion/csp" onClick={() => setOpenMenu(null)}
+                    className={`${itemCls} ${pathname === "/admin/configuracion/csp" ? "font-semibold text-primary" : ""}`}>
+                    CSP
                   </Link>
                 </NavDropdown>
 

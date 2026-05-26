@@ -17,7 +17,7 @@ const schema = z.object({
   properties: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
 });
 
-const NO_CONTENT = NextResponse.json(null, { status: 204 });
+const NO_CONTENT = new NextResponse(null, { status: 204 });
 
 export async function POST(request: NextRequest) {
   let body: unknown;
