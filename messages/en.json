@@ -190,6 +190,33 @@
         }
       ]
     },
+    "howToBuy": {
+      "sectionLabel": "How to order",
+      "title": "Your order in 4 steps",
+      "subtitle": "Ordering is easy. Pick, message us, pay, and we deliver.",
+      "steps": [
+        {
+          "number": "1",
+          "title": "Pick your products",
+          "description": "Browse our catalog and note what you want: juices, pulps, or dairy."
+        },
+        {
+          "number": "2",
+          "title": "Message us on WhatsApp",
+          "description": "Send your list via WhatsApp. We confirm availability and price within minutes."
+        },
+        {
+          "number": "3",
+          "title": "Make your payment",
+          "description": "Bank transfer or cash on delivery — we work it out with you."
+        },
+        {
+          "number": "4",
+          "title": "We coordinate delivery",
+          "description": "We agree on day and area in Bogotá. Your order arrives fresh, straight to your door."
+        }
+      ]
+    },
     "testimonials": {
       "label": "Clients",
       "title": "What Our Clients Say",

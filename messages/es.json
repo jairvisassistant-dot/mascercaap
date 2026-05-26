@@ -190,6 +190,33 @@
         }
       ]
     },
+    "howToBuy": {
+      "sectionLabel": "Cómo comprar",
+      "title": "Tu pedido en 4 pasos",
+      "subtitle": "Comprar es fácil. Elegís, nos escribís, pagás y te entregamos.",
+      "steps": [
+        {
+          "number": "1",
+          "title": "Elegí tus productos",
+          "description": "Navegá nuestro catálogo y anotá qué querés: jugos, pulpas o lácteos."
+        },
+        {
+          "number": "2",
+          "title": "Escribinos por WhatsApp",
+          "description": "Mandanos tu lista por WhatsApp. Te confirmamos disponibilidad y precio en minutos."
+        },
+        {
+          "number": "3",
+          "title": "Realizás el pago",
+          "description": "Transferencia bancaria o efectivo al recibir. Lo coordinamos con vos."
+        },
+        {
+          "number": "4",
+          "title": "Coordinamos la entrega",
+          "description": "Acordamos día y zona en Bogotá. Tu pedido llega fresco, directo a tu puerta."
+        }
+      ]
+    },
     "testimonials": {
       "label": "Clientes",
       "title": "Lo que dicen nuestros clientes",

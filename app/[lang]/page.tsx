@@ -8,6 +8,7 @@ import FeaturedProducts from "@/components/sections/FeaturedProducts";
 const YieldCalculator = dynamic(() => import("@/components/sections/YieldCalculator"), { ssr: true });
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DailyOffer from "@/components/sections/DailyOffer";
+import HowToBuy from "@/components/sections/HowToBuy";
 import TestimonialMarquee from "@/components/ui/TestimonialMarquee";
 import { getFeaturedProducts, getAllTestimonials } from "@/lib/supabase/queries";
 import AnimatedWhatsAppButton from "@/components/ui/AnimatedWhatsAppButton";
@@ -104,6 +105,8 @@ export default async function HomePage({ params }: Props) {
       <WhyChooseUs dict={dict} />
 
       <DailyOffer dict={dict} />
+
+      <HowToBuy dict={dict} />
 
       <section className="py-24 bg-[#233746] relative overflow-hidden">
         {/* Glow decorativo */}
