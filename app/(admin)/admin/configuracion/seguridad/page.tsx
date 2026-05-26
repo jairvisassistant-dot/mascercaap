@@ -232,6 +232,7 @@ export default function SeguridadPage() {
 
           <div className="mb-5 flex justify-center">
             {qrCode && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={`data:image/svg+xml;utf8,${encodeURIComponent(qrCode)}`}
                 alt="Código QR para 2FA"

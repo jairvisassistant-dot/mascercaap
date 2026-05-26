@@ -3,8 +3,8 @@ import { type NextRequest, NextResponse } from "next/server";
 const locales = ["es", "en"];
 const defaultLocale = "es";
 
-// In-memory rate limiter — fixed window, per worker instance.
-// State is not shared across Vercel Edge workers/regions; adequate for this traffic volume.
+// In-memory rate limiter — fixed window, per process instance.
+// State resets on server restart — adequate for this traffic volume on a single Node.js process.
 const RL_WINDOW_MS = 60_000;
 const RL_MAX_REQUESTS = 10;
 const rlStore = new Map<string, { count: number; windowStart: number }>();

@@ -51,7 +51,6 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
   }, []);
 
   const isLoginPage  = pathname === "/admin/login";
-  const isListPage   = pathname === "/admin/productos";
   const isCatPage    = pathname === "/admin/categorias";
   const isLineasPage = pathname === "/admin/lineas";
 

@@ -77,7 +77,6 @@ type SupabaseMock = ReturnType<typeof createDefaultSupabaseMock>;
 async function loadRoute(
   authResult: null | Response = null,
   supabaseMock?: SupabaseMock,
-  csrfOrigin?: string,
 ) {
   vi.resetModules();
 
@@ -326,7 +325,6 @@ describe("POST /api/admin/images/batch", () => {
   });
 
   it("does not fail entire batch when one entry has error", async () => {
-    const mockSupabase = createDefaultSupabaseMock();
     // Hacer que el upload falle para el segundo archivo
     const mockStorageFrom = vi.fn();
     mockStorageFrom
