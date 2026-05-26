@@ -58,7 +58,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
           <div className="md:col-span-2 md:pr-8">
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold mb-4">
               <Image src="/imgs/Logo.webp" alt={dict.nav.logoAlt} width={97} height={60} className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
-              <span className="text-primary">MAS CERCA</span>
+              <span className="text-primary-light">MAS CERCA</span>
               <span className="text-accent">AP</span>
               <BrandFruitMark />
             </Link>
@@ -100,7 +100,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
               <li>
                 <Link
                   href="/admin/login"
-                  className="transition-colors text-white/35 hover:text-white/55"
+                  className="transition-colors text-white/55 hover:text-white/80"
                 >
                   Admin
                 </Link>
@@ -185,11 +185,11 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
 
         {/* Legal links */}
         <div className="flex items-center justify-center gap-6 mb-6 text-sm">
-          <Link href={`/${lang}/politicas`} className="text-white/45 hover:text-primary transition-colors">
+          <Link href={`/${lang}/politicas`} className="text-white/55 hover:text-primary transition-colors">
             {dict.helpHub.menu.privacy}
           </Link>
           <span className="text-white/22">·</span>
-          <Link href={`/${lang}/terminos`} className="text-white/45 hover:text-primary transition-colors">
+          <Link href={`/${lang}/terminos`} className="text-white/55 hover:text-primary transition-colors">
             {dict.helpHub.menu.terms}
           </Link>
         </div>

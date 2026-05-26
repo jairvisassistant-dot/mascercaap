@@ -1,5 +1,6 @@
 import type { OrderInput, OrderItem } from "@/lib/schemas/order"
 import { SITE_CONFIG } from "@/lib/config"
+import { escapeHtml } from "@/lib/sanitize"
 import { buildWhatsAppAppUrl, buildWhatsAppMessage as buildSharedWhatsAppMessage } from "@/lib/whatsapp"
 
 export const PRODUCT_TYPE_OPTIONS = ["Pulpas", "Zumos", "Lácteos"] as const
@@ -61,7 +62,7 @@ export function getPresentationsForProduct(productType: string, fruit: string): 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
 export const QUANTITY_OPTIONS_120G_PACKS = [1, 2, 3, 4, 5, 10] as const
 export const PRESENTATION_120G = "120g"
-export const PACK_UNITS_120G = 10
+const PACK_UNITS_120G = 10
 
 // Maps order-form fruit display names to Supabase product line slugs.
 const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos", Record<string, string>> = {
@@ -126,7 +127,7 @@ export function is120gPackPresentation(presentation: string | null | undefined):
   return presentation === PRESENTATION_120G
 }
 
-export function toBillableUnits(item: Pick<OrderItem, "presentation" | "quantity">): number {
+function toBillableUnits(item: Pick<OrderItem, "presentation" | "quantity">): number {
   return is120gPackPresentation(item.presentation) ? item.quantity * PACK_UNITS_120G : item.quantity
 }
 
@@ -148,9 +149,9 @@ type OrderTotals = {
   hasPrice:     boolean
 }
 
-export const FREE_DELIVERY_THRESHOLD_COP = 60_000
+const FREE_DELIVERY_THRESHOLD_COP = 60_000
 
-export type DeliveryBenefit = {
+type DeliveryBenefit = {
   qualifiesFreeDelivery: boolean
   missingAmount: number
 }
@@ -220,15 +221,6 @@ export function buildWhatsappMessage(order: OrderInput, waNumber: string, i18n: 
   ]
 
   return buildWhatsAppAppUrl(waNumber, buildSharedWhatsAppMessage(lines)) ?? ""
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;")
 }
 
 function buildItemsTableHtml(items: OrderItem[], resolvePrice: PriceResolver = () => null): string {

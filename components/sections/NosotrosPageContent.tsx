@@ -87,7 +87,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       <section className="py-20 bg-gradient-to-b from-surface-page to-emerald-50/60">
         <div className="max-w-7xl mx-auto px-4">
           <div className="fade-in-up text-center mb-16">
-            <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
+            <span className="inline-block text-xs font-bold tracking-widest text-text-muted uppercase mb-3">
               {t.timeline.sectionLabel}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-4">{t.timeline.title}</h2>
@@ -123,7 +123,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       <section className="py-20 bg-surface-page">
         <div className="max-w-7xl mx-auto px-4">
           <div className="fade-in-up text-center mb-14">
-            <span className="inline-block text-sm font-semibold tracking-widest text-accent uppercase mb-3">{t.values.subtitle}</span>
+            <span className="inline-block text-sm font-semibold tracking-widest text-amber-800 uppercase mb-3">{t.values.subtitle}</span>
             <h2 className="text-3xl md:text-4xl font-bold text-text-main">{t.values.title}</h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -210,7 +210,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       <section className="py-20 bg-surface-page overflow-hidden">
         <div className="max-w-5xl mx-auto px-4">
           <div className="fade-in-up text-center mb-20">
-            <span className="inline-block text-xs font-bold tracking-widest text-primary/60 uppercase mb-3">
+            <span className="inline-block text-xs font-bold tracking-widest text-text-muted uppercase mb-3">
               {t.gallery.sectionLabel}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t.gallery.title}</h2>
@@ -257,7 +257,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                     {/* Contenido */}
                     <div className={`md:px-8 ${isEven ? "md:order-3" : "md:order-1 md:text-right"}`}>
                       <EmojiIcon emoji={step.icon} label={cardText.title} size="lg" tone="service" className="mb-3 md:hidden" />
-                      <span className="inline-block text-[10px] font-bold tracking-widest text-primary/60 uppercase mb-2">
+                      <span className="inline-block text-[10px] font-bold tracking-widest text-text-muted uppercase mb-2">
                         {`${t.gallery.stepLabel} ${index + 1} ${t.gallery.stepOf} ${processSteps.length}`}
                       </span>
                       <h3 className="text-2xl md:text-[1.6rem] font-bold text-text-main mb-3 leading-snug">

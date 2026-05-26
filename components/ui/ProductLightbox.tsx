@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { Product } from "@/types";
@@ -21,6 +21,9 @@ const PREPARATION_NOTICE = {
 
 export default function ProductLightbox({ product, isOpen, onClose, dict, lang }: ProductLightboxProps) {
   const t = dict.products.lightbox;
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<Element | null>(null);
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
   const displayDescription =
@@ -30,10 +33,38 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
   const preparationNotice = lang === "es" ? PREPARATION_NOTICE.es : PREPARATION_NOTICE.en;
 
   useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement;
+      closeButtonRef.current?.focus();
+    } else {
+      (previousFocusRef.current as HTMLElement | null)?.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!isOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key !== "Tab" || !dialogRef.current) return;
+
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        last.focus(); e.preventDefault();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        first.focus(); e.preventDefault();
+      }
+    };
+
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
@@ -45,6 +76,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
 
   return createPortal(
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={displayName}
@@ -61,9 +93,10 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
 
         {/* Close button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           aria-label={t.close}
-          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition hover:bg-black/40"
+          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition hover:bg-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-4 w-4">
             <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
@@ -125,7 +158,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
 
           <button
             onClick={onClose}
-            className="mt-2 self-start rounded-xl border border-border-mid px-5 py-2.5 text-sm font-semibold text-text-sub transition hover:border-primary-light hover:bg-primary-light/15 hover:text-primary-dark"
+            className="mt-2 self-start rounded-xl border border-border-mid px-5 py-2.5 text-sm font-semibold text-text-sub transition hover:border-primary-light hover:bg-primary-light/15 hover:text-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             {t.close}
           </button>

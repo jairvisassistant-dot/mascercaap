@@ -51,7 +51,7 @@ export function ProductsFilterBar({
               onClick={() => onSelectCategory(cat)}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
                 isActive
-                  ? "bg-accent text-white border-accent shadow-sm"
+                  ? "bg-accent text-gray-900 border-accent shadow-sm"
                   : isSticky
                     ? "bg-white/30 text-primary-dark border-white/25 hover:bg-white/50 hover:border-white/40"
                     : "bg-surface-card text-text-muted border-border-soft hover:border-primary hover:text-primary"
@@ -135,7 +135,7 @@ export function ProductsFilterBar({
                           onClick={() => onSelectSize(size)}
                           className={`shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
                             activeSize === size
-                              ? "bg-accent text-white border-accent shadow-sm"
+                              ? "bg-accent text-gray-900 border-accent shadow-sm"
                               : isSticky
                                 ? "bg-white/30 text-primary-dark border-white/25 hover:bg-white/50"
                                 : "bg-surface-card text-text-muted border-border-soft hover:border-accent hover:text-accent"

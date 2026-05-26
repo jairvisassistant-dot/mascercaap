@@ -84,7 +84,7 @@ export default async function SocialPlatformPage({
               href={socialUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white transition hover:bg-accent-dark"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-gray-900 transition hover:bg-accent-dark"
             >
               {t.openProfile}
             </a>

@@ -48,7 +48,7 @@ function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang
         </div>
         <div className="min-w-0">
           <p className="text-white text-xs font-semibold truncate">{testimonial.name}</p>
-          <p className="text-white/50 text-[10px] truncate">{role}</p>
+          <p className="text-white/70 text-[10px] truncate">{role}</p>
         </div>
       </div>
     </div>

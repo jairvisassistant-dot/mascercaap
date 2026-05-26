@@ -100,7 +100,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|imgs|fonts|_vercel).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|imgs|fonts).*)",
     "/api/orders/:path*",
     "/api/leads/:path*",
     "/api/contact/:path*",

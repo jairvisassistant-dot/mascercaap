@@ -11,8 +11,8 @@
   color-scheme: light;
 
   /* Colores de marca */
-  --primary: #3f8f46;
-  --primary-dark: #2f6f36;
+  --primary: #2d7534;
+  --primary-dark: #236128;
   --primary-light: #b8d4b5;
   --accent: #e58a22;
   --accent-dark: #c97016;
@@ -26,7 +26,7 @@
   --text-main: #171717;
   --text-sub: #374151;
   --text-muted: #6b7280;
-  --text-faint: #9ca3af;
+  --text-faint: #767676;
   --border-soft: rgba(23, 23, 23, 0.08);
   --border-mid: rgba(23, 23, 23, 0.15);
 }

@@ -182,7 +182,7 @@ export function matchFileToProducts(
 
 // ── Agrupación util para reportes ──────────────────────────────────
 
-export type MatchGroup = {
+type MatchGroup = {
   pending: { file: string; product: ProductBrief }[];   // match exacto y image === null
   existing: { file: string; product: ProductBrief }[];   // match exacto pero ya tiene imagen
   ambiguous: MatchResult[];                              // múltiples candidatos

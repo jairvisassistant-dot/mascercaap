@@ -46,7 +46,7 @@ const cardStyles = [
   {
     shell: "bg-amber-100/80 ring-amber-900/10",
     core: "from-[#fff5bf] via-white to-[#f3bc4d]",
-    badge: "bg-accent text-white",
+    badge: "bg-accent text-gray-900",
     imageGlow: "bg-amber-300/55",
   },
   {
@@ -117,7 +117,7 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <span className="h-px w-10 bg-accent/50 rounded-full" />
-            <span className="text-xs font-bold tracking-[0.22em] text-accent uppercase">
+            <span className="text-xs font-bold tracking-[0.22em] text-amber-800 uppercase">
               {dict.home.featured.sectionLabel}
             </span>
             <span className="h-px w-10 bg-accent/50 rounded-full" />

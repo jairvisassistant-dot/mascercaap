@@ -431,8 +431,8 @@ export default function ImagenesAdminClient({
           <div>
             <p className="text-base font-semibold text-text-sub md:text-lg">
               {dragOver
-                ? "Soltá las imágenes aquí"
-                : "Arrastrá imágenes o hacé clic para seleccionar"}
+                ? "Suelta las imágenes aquí"
+                : "Arrastra imágenes o haz clic para seleccionar"}
             </p>
             <p className="mt-2 text-sm text-text-muted">
               .webp, .jpg, .png &mdash; máx 2MB por archivo

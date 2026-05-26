@@ -12,3 +12,9 @@ if ((!url || !anonKey) && process.env.NODE_ENV !== "production") {
 export const supabasePublic = url && anonKey
   ? createClient(url, anonKey, { auth: { persistSession: false } })
   : null;
+
+// Admin client — bypasses RLS. Use only in API routes and server actions.
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export const supabaseAdmin = url && serviceKey
+  ? createClient(url, serviceKey, { auth: { persistSession: false } })
+  : null;

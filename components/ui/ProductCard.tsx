@@ -6,6 +6,7 @@ import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Product } from "@/types";
 import type { Dictionary } from "@/lib/i18n";
 import ProductLightbox from "./ProductLightbox";
+import { track } from "@/lib/analytics";
 
 interface ProductCardProps {
   product: Product;
@@ -92,7 +93,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
         {imageSrc && !isComingSoon && (
           <button
             type="button"
-            onClick={() => setLightboxOpen(true)}
+            onClick={() => { track("product_view", { line: product.line, presentation: product.presentation }); setLightboxOpen(true); }}
             className="absolute inset-0 z-[5] w-full h-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
             aria-label={`${dict.products.card.viewImage} ${displayName} ${product.presentation}`}
           >
