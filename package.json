@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "images:update-local": "tsx scripts/update-local-product-images.ts",
+    "images:sync": "tsx scripts/sync-product-images.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "i18n:validate": "tsx scripts/validate-i18n.ts"
