@@ -108,7 +108,7 @@ export const getAllProductCategories = cache(
   )
 );
 
-function mapRowToProduct(row: Record<string, unknown>): Product {
+export function mapRowToProduct(row: Record<string, unknown>): Product {
   return {
     id: row.id as string,
     name: row.name as string,
@@ -116,7 +116,7 @@ function mapRowToProduct(row: Record<string, unknown>): Product {
     presentation: row.presentation as string,
     presentationOrder: row.presentation_order as number,
     price: row.price !== null ? (row.price as number) : undefined,
-    image: row.image as string,
+    image: (row.image as string | null) ?? "",
     description: row.description as string,
     ingredients: row.ingredients as string[] | undefined,
     benefits: row.benefits as string[] | undefined,

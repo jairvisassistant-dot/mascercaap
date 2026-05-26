@@ -22,11 +22,12 @@ const CARD_GRADIENTS: Record<string, string> = {
 
 export default function ProductGridCard({ product, line, priority = false, dict, lang }: ProductGridCardProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const imageSrc = product.image ?? "";
   const isComingSoon = product.presentation === "Próximamente";
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
   const isDairyProduct = product.line === "kumiss";
-  const hasPackagingImage = product.line.startsWith("pulpa-") && !product.image.includes("/imgs/fruta-");
+  const hasPackagingImage = product.line.startsWith("pulpa-") && imageSrc !== "" && !imageSrc.includes("/imgs/fruta-");
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
   const displayDescription = lang !== "es" ? (pl[product.line]?.description ?? product.description) : product.description;
@@ -41,7 +42,7 @@ export default function ProductGridCard({ product, line, priority = false, dict,
         className="group relative w-full overflow-hidden rounded-[1.4rem] border border-white/70 bg-surface-card text-left shadow-[0_16px_36px_rgba(15,23,42,0.10)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(15,23,42,0.16)] disabled:pointer-events-none"
         onClick={() => setLightboxOpen(true)}
       >
-        {product.image && (
+        {imageSrc && (
           <>
             <div className="pointer-events-none absolute inset-[1px] z-[1] rounded-[1.32rem] border border-white/35" />
             <div className={`pointer-events-none absolute inset-x-5 -top-8 z-[1] h-16 rounded-full bg-gradient-to-r blur-2xl transition-opacity duration-300 ${cardGradient} opacity-10 group-hover:opacity-20`} />
@@ -50,17 +51,17 @@ export default function ProductGridCard({ product, line, priority = false, dict,
 
         {/* Imagen */}
         <div className={`relative aspect-[4/5] ${isDairyProduct ? "bg-white" : hasPackagingImage ? `bg-gradient-to-b ${cardGradient}` : "bg-surface-page"}`}>
-          {product.image && (
+          {imageSrc && (
             <>
               <div className={`pointer-events-none absolute inset-0 z-[1] ${hasPackagingImage ? "bg-[radial-gradient(circle_at_50%_12%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0.10)_24%,transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.08)_22%,transparent_55%)]"}`} />
               <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] ${hasPackagingImage ? "h-20 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.16)_0%,transparent_68%)]" : "h-24 bg-[linear-gradient(180deg,transparent_0%,rgba(15,23,42,0.14)_100%)]"}`} />
             </>
           )}
 
-          {product.image ? (
+          {imageSrc ? (
             // alt: displayName comes from i18n dict; presentation (e.g. "120g") is a universal technical value — no translation needed
             <Image
-              src={product.image}
+              src={imageSrc}
               alt={`${displayName} ${product.presentation}`}
               fill
               className={`transition-transform duration-500 group-hover:scale-105 ${

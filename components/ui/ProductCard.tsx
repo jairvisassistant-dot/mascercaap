@@ -43,6 +43,7 @@ const CARD_SHADOW_TINTS: Record<string, string> = {
 
 export default function ProductCard({ product, accentGradient = "from-primary to-primary-dark", priority = false, dict, lang }: ProductCardProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const imageSrc = product.image ?? "";
   const isComingSoon = product.presentation === "Próximamente";
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
@@ -51,7 +52,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const isBestSeller = product.isBestSeller === true;
   const isDairyProduct = product.line === "kumiss";
   // Tratamiento nuevo solo para productos con imagen de packaging (no las fotos de campo fruta-*.webp)
-  const hasPackagingImage = product.line.startsWith("pulpa-") && !product.image.includes("/imgs/fruta-");
+  const hasPackagingImage = product.line.startsWith("pulpa-") && imageSrc !== "" && !imageSrc.includes("/imgs/fruta-");
 
   const cardGradient = CARD_GRADIENTS[product.line] ?? accentGradient;
   const cardShadowTint = CARD_SHADOW_TINTS[product.line] ?? "shadow-md hover:shadow-xl hover:shadow-primary/8";
@@ -63,7 +64,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
     <div className={`card-shimmer group relative shrink-0 w-[234px] overflow-hidden rounded-[1.35rem] border bg-surface-card transition-all duration-300 hover:-translate-y-1 ${
       baseCardClasses
     }`}>
-      {(hasPackagingImage || product.image) && (
+      {(hasPackagingImage || imageSrc) && (
         <>
           <div className="pointer-events-none absolute inset-[1px] z-[1] rounded-[1.28rem] border border-white/35" />
           <div className={`pointer-events-none absolute inset-x-6 -top-10 z-[1] h-20 rounded-full bg-gradient-to-r blur-2xl transition-opacity duration-300 ${cardGradient} ${
@@ -80,7 +81,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
             ? `bg-gradient-to-b ${cardGradient}`
             : "bg-surface-page"
       }`}>
-        {(hasPackagingImage || product.image) && (
+        {(hasPackagingImage || imageSrc) && (
           <>
             <div className={`pointer-events-none absolute inset-0 z-[1] ${hasPackagingImage ? "bg-[radial-gradient(circle_at_50%_14%,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.12)_24%,transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.08)_22%,transparent_55%)]"}`} />
             <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] ${hasPackagingImage ? "h-24 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.18)_0%,transparent_68%)]" : "h-28 bg-[linear-gradient(180deg,transparent_0%,rgba(15,23,42,0.14)_100%)]"}`} />
@@ -88,7 +89,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
           </>
         )}
 
-        {product.image && !isComingSoon && (
+        {imageSrc && !isComingSoon && (
           <button
             type="button"
             onClick={() => setLightboxOpen(true)}
@@ -105,13 +106,13 @@ export default function ProductCard({ product, accentGradient = "from-primary to
           </button>
         )}
 
-        {product.image ? (
+        {imageSrc ? (
           hasPackagingImage ? (
             <div className="absolute inset-0 z-[2] flex items-center justify-center p-3 pointer-events-none">
               <div className="relative h-full w-full transition-transform duration-300 group-hover:scale-[1.02] group-hover:-translate-y-0.5">
                 {/* alt: displayName comes from i18n dict; presentation (e.g. "120g") is a universal technical value — no translation needed */}
                 <Image
-                  src={product.image}
+                  src={imageSrc}
                   alt={`${displayName} ${product.presentation}`}
                   fill
                   className="object-contain object-center drop-shadow-[0_20px_28px_rgba(0,0,0,0.24)]"
@@ -123,7 +124,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
           ) : (
             // alt: displayName from i18n dict; presentation is a universal technical value
             <Image
-              src={product.image}
+              src={imageSrc}
               alt={`${displayName} ${product.presentation}`}
               fill
                 className={`transition-transform duration-500 group-hover:scale-[1.04] ${isDairyProduct ? "object-contain object-center p-3" : "object-cover"}`}
@@ -145,7 +146,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
 
         {!isComingSoon && (
           <span className={`absolute top-3 right-3 ${
-            product.image
+            imageSrc
               ? "border border-white/60 bg-white/88 text-gray-700 shadow-[0_8px_20px_rgba(255,255,255,0.22)] backdrop-blur-md"
               : `bg-gradient-to-r ${accentGradient} text-white`
           } z-10 rounded-full px-2.5 py-1 text-xs font-bold shadow`}>
