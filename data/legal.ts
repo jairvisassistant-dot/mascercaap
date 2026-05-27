@@ -6,7 +6,7 @@ export const privacyPolicy: LegalDocument = {
     es: "Política de Privacidad y Tratamiento de Datos",
     en: "Privacy Policy and Data Treatment",
   },
-  lastUpdated: "2026-05-13",
+  lastUpdated: "2026-05-27",
   sections: [
     {
       title: { es: "1. Responsable del tratamiento", en: "1. Data Controller" },
@@ -65,10 +65,17 @@ export const privacyPolicy: LegalDocument = {
       },
     },
     {
-      title: { es: "9. Terceros proveedores de servicios", en: "9. Third-Party Service Providers" },
+      title: { es: "9. Analítica propia del sitio", en: "9. Own-Site Analytics" },
       content: {
-        es: "Para operar este sitio web, utilizamos los siguientes proveedores externos que pueden procesar o almacenar datos personales: (a) Google Analytics (Google LLC): herramienta de analítica web que recopila datos de navegación anonimizados (páginas visitadas, duración de sesión, dispositivo). Puede optar por no ser rastreado en analytics.google.com/analytics/optout. (b) Supabase: plataforma de base de datos donde se almacenan los datos enviados a través del formulario de contacto. Opera bajo estándares de seguridad SOC 2. (c) Resend: servicio de envío de correos electrónicos utilizado para el envío de confirmaciones y notificaciones derivadas de sus solicitudes. Cada proveedor actúa como encargado del tratamiento y está sujeto a sus propias políticas de privacidad y a los acuerdos de tratamiento de datos suscritos con Más Cerca AP.",
-        en: "To operate this website, we use the following external providers who may process or store personal data: (a) Google Analytics (Google LLC): a web analytics tool that collects anonymized browsing data (pages visited, session duration, device type). You may opt out at analytics.google.com/analytics/optout. (b) Supabase: a database platform where data submitted through the contact form is stored. It operates under SOC 2 security standards. (c) Resend: an email delivery service used to send confirmations and notifications related to your requests. Each provider acts as a data processor and is subject to their own privacy policies and the data processing agreements entered into with Más Cerca AP.",
+        es: "Este sitio web utiliza un sistema de analítica propio (no Google Analytics ni servicios de terceros de rastreo) para medir el uso del sitio y mejorar la experiencia del usuario. Los datos recopilados incluyen: nombre del evento de interacción (por ejemplo, visualización de página, apertura del chat de ayuda, clic en WhatsApp), la URL de la página donde ocurrió el evento, la URL referente (si la hay) y propiedades adicionales del evento en formato anónimo. No se recopila información de identificación personal (nombre, email, teléfono) a través de este sistema. Los datos son almacenados en Supabase (plataforma de base de datos con certificación SOC 2) y se utilizan exclusivamente para fines estadísticos internos.",
+        en: "This website uses its own analytics system (not Google Analytics or any third-party tracking service) to measure site usage and improve user experience. The data collected includes: the name of the interaction event (e.g., page view, help chat open, WhatsApp click), the URL of the page where the event occurred, the referring URL (if any), and additional anonymous event properties. No personally identifiable information (name, email, phone number) is collected through this system. Data is stored in Supabase (a SOC 2-certified database platform) and used exclusively for internal statistical purposes.",
+      },
+    },
+    {
+      title: { es: "10. Terceros proveedores de servicios", en: "10. Third-Party Service Providers" },
+      content: {
+        es: "Para operar este sitio web, utilizamos los siguientes proveedores externos que pueden procesar o almacenar datos personales: (a) Supabase: plataforma de base de datos donde se almacenan los datos del formulario de contacto y los eventos de analítica propia. Opera bajo estándares de seguridad SOC 2. (b) Resend: servicio de envío de correos electrónicos utilizado para el envío de confirmaciones y notificaciones derivadas de sus solicitudes. Cada proveedor actúa como encargado del tratamiento y está sujeto a sus propias políticas de privacidad y a los acuerdos de tratamiento de datos suscritos con Más Cerca AP.",
+        en: "To operate this website, we use the following external providers who may process or store personal data: (a) Supabase: a database platform where contact form data and own-site analytics events are stored. It operates under SOC 2 security standards. (b) Resend: an email delivery service used to send confirmations and notifications related to your requests. Each provider acts as a data processor and is subject to their own privacy policies and the data processing agreements entered into with Más Cerca AP.",
       },
     },
   ],

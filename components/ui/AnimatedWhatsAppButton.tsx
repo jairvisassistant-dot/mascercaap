@@ -38,7 +38,8 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
       widthCtrl.set({ width: 0 });
       textCtrl.set({ opacity: 0 });
 
-      while (aliveRef.current) {
+      let cycles = 0;
+      while (aliveRef.current && cycles < 3) {
         // Expand
         await Promise.all([
           widthCtrl.start({
@@ -80,6 +81,16 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
 
         // Pause
         await new Promise<void>(r => setTimeout(r, PAUSE_MS));
+
+        cycles++;
+      }
+
+      // After N cycles: leave button in expanded static state
+      if (aliveRef.current) {
+        await Promise.all([
+          widthCtrl.start({ width: 240, transition: { duration: EXPAND_MS / 1000, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } }),
+          textCtrl.start({ opacity: 1, transition: { duration: 0.45, delay: (EXPAND_MS / 1000) * 0.4, ease: "easeOut" } }),
+        ]);
       }
     };
 

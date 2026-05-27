@@ -142,6 +142,10 @@ export async function POST(req: Request) {
   // inside async arrow functions (closures lose outer narrowing).
   const db = supabase;
 
+  // Cache the bucket reference outside the map so storage.from() is called
+  // once regardless of how many entries are processed in parallel.
+  const bucket = db.storage.from(BUCKET);
+
   const results: BatchResult[] = await Promise.all(
     entries.map(async (entry): Promise<BatchResult> => {
       const fileField = `file_${entry.fileIndex}`;
@@ -191,8 +195,7 @@ export async function POST(req: Request) {
 
       try {
         const bytes = await file.arrayBuffer();
-        const { error: uploadError } = await db.storage
-          .from(BUCKET)
+        const { error: uploadError } = await bucket
           .upload(filename, Buffer.from(bytes), {
             contentType: file.type,
             upsert: false,
@@ -209,7 +212,7 @@ export async function POST(req: Request) {
 
         const {
           data: { publicUrl },
-        } = db.storage.from(BUCKET).getPublicUrl(filename);
+        } = bucket.getPublicUrl(filename);
 
         // Update product
         const { error: updateError } = await db

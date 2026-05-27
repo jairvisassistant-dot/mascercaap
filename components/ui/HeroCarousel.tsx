@@ -5,6 +5,7 @@ import Image from "next/image";
 import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useHelpHub } from "@/lib/help-hub-context";
+import { SITE_CONFIG } from "@/lib/config";
 import type { Dictionary, Locale } from "@/lib/i18n";
 
 type KenBurns = {
@@ -362,7 +363,13 @@ export default function HeroCarousel({ dict, lang }: Props) {
                 {slide.ctaHref === "__whatsapp__" ? (
                   <button
                     type="button"
-                    onClick={() => openDrawer("order")}
+                    onClick={() => {
+                      if (isMobile) {
+                        window.open(`https://wa.me/${SITE_CONFIG.whatsappNumber}`, "_blank", "noopener,noreferrer");
+                      } else {
+                        openDrawer("order");
+                      }
+                    }}
                     className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950 md:text-base`}
                   >
                     {slideText.cta}

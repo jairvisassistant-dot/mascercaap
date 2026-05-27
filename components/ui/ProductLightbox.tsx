@@ -72,7 +72,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [isOpen, stableOnClose]);
+  }, [isOpen]); // stableOnClose is stable by definition (useEffectEvent) — not a dep
 
   if (!isOpen || !product.image) return null;
 

@@ -30,13 +30,16 @@ Entender el POR QUÉ es más valioso que memorizar el QUÉ.
 
 **Por qué ocurrió:** El patrón de Context/Provider es conveniente de implementar, pero en Next.js App Router es arquitecturalmente incorrecto para datos que vienen del servidor. El diccionario se carga en el servidor (`getDictionary`) pero se redistribuye via Context en el cliente, forzando que todos los consumidores sean Client Components.
 
+**Resolución:** `DictionaryProvider` y `useDictionary()` fueron eliminados. El patrón actual es prop drilling desde Server Components usando `getDictionary(lang)` en `lib/i18n/index.ts`. `LazyMotion` vive ahora en `lib/i18n/MotionProvider.tsx`.
+
 **Regla derivada:** En Next.js App Router, los datos del servidor (como el diccionario i18n) deben pasarse como **props** desde el Server Component padre, NO via Context. Context solo es válido para estado genuinamente interactivo (Navbar, ChatBot, etc.). Cuando un componente solo necesita el diccionario para renderizar, recibirlo como prop permite que sea un RSC en el futuro.
 
 **Patrón correcto:**
 ```tsx
-// ❌ MAL — fuerza "use client"
+// ❌ MAL — fuerza "use client" (patrón eliminado)
 export function WhyChooseUs() {
-  const { dict } = useDictionary(); // Context en un componente que solo renderiza
+  // useDictionary() ya no existe — no usar este patrón
+  const { dict } = useDictionary();
   return <section>...</section>;
 }
 
@@ -56,7 +59,7 @@ export function WhyChooseUs({ dict }: { dict: Dictionary }) {
 
 **Por qué ocurrió:** `import { motion } from "framer-motion"` es el ejemplo más común en la documentación de Framer Motion y en tutoriales. La alternativa `LazyMotion + m` requiere un paso de configuración inicial que no se hizo.
 
-**Regla derivada:** SIEMPRE usar `LazyMotion` con `domAnimation` en el root del árbol de componentes y usar `m` en lugar de `motion` en todos los componentes. `LazyMotion` ya está configurado en `DictionaryProvider.tsx`. Nunca agregar `import { motion }` sin antes verificar si se puede usar `m`.
+**Regla derivada:** SIEMPRE usar `LazyMotion` con `domAnimation` en el root del árbol de componentes y usar `m` en lugar de `motion` en todos los componentes. `LazyMotion` ya está configurado en `lib/i18n/MotionProvider.tsx`. Nunca agregar `import { motion }` sin antes verificar si se puede usar `m`.
 
 **Patrón correcto:**
 ```tsx
@@ -64,7 +67,7 @@ export function WhyChooseUs({ dict }: { dict: Dictionary }) {
 import { motion } from "framer-motion";
 <motion.div animate={...}>
 
-// ✅ BIEN — usa features lazy-loaded desde LazyMotion (ya configurado en DictionaryProvider)
+// ✅ BIEN — usa features lazy-loaded desde LazyMotion (ya configurado en MotionProvider)
 import { m } from "framer-motion";
 <m.div animate={...}>
 ```
@@ -153,7 +156,7 @@ import { m } from "framer-motion";
 
 1. **Client Components**: Solo usar `"use client"` si el componente usa hooks de estado, eventos del browser, o APIs exclusivas del cliente. Recibir `dict` como prop desde el Server Component padre es SIEMPRE preferible a usar `useDictionary()`.
 
-2. **LazyMotion**: Siempre usar `m` en lugar de `motion`. `LazyMotion` ya está configurado en `DictionaryProvider.tsx`. Si se necesita agregar un nuevo componente con animaciones, usar `import { m } from "framer-motion"`.
+2. **LazyMotion**: Siempre usar `m` en lugar de `motion`. `LazyMotion` está configurado en `lib/i18n/MotionProvider.tsx`. Si se necesita agregar un nuevo componente con animaciones, usar `import { m } from "framer-motion"`.
 
 3. **Proxy (Next.js 16)**: El archivo debe llamarse `proxy.ts` en la raíz. La función exportada debe llamarse `proxy`. `middleware.ts` es la convención ANTERIOR deprecada — usarla genera un warning. Verificar siempre en `node_modules/next/dist/docs/` si cambia la versión.
 
@@ -288,9 +291,11 @@ try {
 
 **Por qué ocurrió:** El patrón de Context es conveniente pero arquitecturalmente incorrecto para datos que vienen del servidor en Next.js App Router.
 
-**Regla derivada:** Todo componente NUEVO que solo necesite `dict` para renderizar debe recibirlo como prop desde su Server Component padre. `useDictionary()` queda reservado para componentes que YA son Client Components por interactividad real (estado, eventos, browser APIs). El patrón correcto es: Server Component padre llama `getDictionary(lang)` y pasa `dict` como prop.
+**Resolución:** `DictionaryProvider` y `useDictionary()` fueron eliminados del proyecto. El patrón actual es prop drilling puro.
 
-**Archivos de referencia:** `lib/i18n/DictionaryProvider.tsx` (provider), `lib/i18n/index.ts` (getDictionary con React.cache)
+**Regla derivada:** Todo componente que necesite `dict` debe recibirlo como prop desde su Server Component padre. `useDictionary()` ya no existe — no usarlo. El patrón correcto es: Server Component padre llama `getDictionary(lang)` y pasa `dict` como prop.
+
+**Archivos de referencia:** `lib/i18n/index.ts` (getDictionary con React.cache), `lib/i18n/MotionProvider.tsx` (LazyMotion provider)
 
 ---
 
