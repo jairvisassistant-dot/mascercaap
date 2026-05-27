@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useId, Children, isValidElement, cloneElement } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -404,6 +404,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       <section>
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Descripción</h2>
         <textarea
+          aria-label="Descripción"
           value={form.description}
           onChange={(e) => set("description", e.target.value)}
           required
@@ -436,6 +437,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <div className="flex gap-2">
           <input
             type="text"
+            aria-label="Nuevo ingrediente"
             value={newIngredient}
             onChange={(e) => setNewIngredient(e.target.value)}
             onKeyDown={(e) => {
@@ -487,6 +489,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <div className="flex gap-2">
           <input
             type="text"
+            aria-label="Nuevo beneficio"
             value={newBenefit}
             onChange={(e) => setNewBenefit(e.target.value)}
             onKeyDown={(e) => {
@@ -552,10 +555,19 @@ const inputCls =
   "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const id = useId();
+  const kids = Children.toArray(children);
+  const first = kids[0];
+  const rest = kids.slice(1);
+  const labelledControl = isValidElement(first)
+    ? cloneElement(first as React.ReactElement<{ id?: string }>, { id })
+    : first;
+
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
-      {children}
+      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
+      {labelledControl}
+      {rest}
     </div>
   );
 }

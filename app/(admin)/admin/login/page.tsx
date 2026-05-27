@@ -177,7 +177,6 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                autoFocus
                 autoComplete="email"
                 className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="admin@example.com"
@@ -257,10 +256,9 @@ export default function AdminLoginPage() {
               <p id="totp-label" className="mb-3 block text-center text-sm font-semibold text-text-sub">
                 Codigo de verificacion
               </p>
-              <div
-                role="group"
+              <fieldset
                 aria-labelledby="totp-label"
-                className="flex justify-center gap-2"
+                className="m-0 flex justify-center gap-2 border-0 p-0"
               >
                 {code.map((digit, i) => (
                   <input
@@ -277,7 +275,7 @@ export default function AdminLoginPage() {
                     className="h-14 w-12 rounded-xl border border-border-mid bg-surface-card text-center text-xl font-bold text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 ))}
-              </div>
+              </fieldset>
             </div>
 
             {error && (

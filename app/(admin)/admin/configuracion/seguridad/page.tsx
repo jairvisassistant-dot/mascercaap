@@ -256,6 +256,7 @@ export default function SeguridadPage() {
                 type="text"
                 inputMode="numeric"
                 maxLength={1}
+                aria-label={`Dígito ${i + 1} de 6`}
                 value={digit}
                 onChange={(e) => handleCodeChange(i, e.target.value)}
                 className="h-14 w-12 rounded-xl border border-border-mid bg-surface-card text-center text-xl font-bold text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"

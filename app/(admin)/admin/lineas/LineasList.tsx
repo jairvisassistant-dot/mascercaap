@@ -281,7 +281,6 @@ function LineRow({
             <input
               id={`${line.key}-nombre`}
               type="text"
-              autoFocus
               value={vals.label}
               onChange={(e) => onSetEdit(line.key, { label: e.target.value })}
               className="w-full rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"

@@ -33,7 +33,6 @@ export default function QuestionEditForm({
             <input
               id={`${uid}-question-es`}
               type="text"
-              autoFocus
               value={vals.question_es}
               onChange={(e) => onChange({ question_es: e.target.value })}
               className="w-full rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main placeholder:text-text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"

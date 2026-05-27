@@ -132,7 +132,6 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                   <input
                     id={`${cat.key}-nombre`}
                     type="text"
-                    autoFocus
                     value={vals.label}
                     onChange={(e) => setEditValues((prev) => ({ ...prev, [cat.key]: { ...vals, label: e.target.value } }))}
                     className="w-full rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main placeholder:text-text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"

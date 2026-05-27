@@ -406,29 +406,28 @@ export default function ImagenesAdminClient({
   return (
     <div className="space-y-5">
       {/* ── Dropzone ───────────────────────────────────────────── */}
-      <div
-        role="button"
-        tabIndex={0}
+      {/* Hidden file input lives outside <button> to keep interactive-content nesting valid */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        accept={ACCEPTED_MIME.join(",")}
+        className="hidden"
+        onChange={handleFileInputChange}
+      />
+      <button
+        type="button"
         aria-label="Zona de carga de imágenes. Arrastra archivos o presiona Enter para seleccionar"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
-        className={`relative min-h-[240px] cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 md:min-h-[300px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+        className={`w-full relative min-h-[240px] cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 md:min-h-[300px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
           dragOver
             ? "border-primary/60 bg-primary/5 shadow-[0_0_0_4px_rgba(63,143,70,0.10)]"
             : "border-border-soft bg-surface-card hover:border-primary/30 hover:bg-primary/[0.03]"
         }`}
       >
-        <input
-          ref={fileInputRef}
-          type="file"
-          multiple
-          accept={ACCEPTED_MIME.join(",")}
-          className="hidden"
-          onChange={handleFileInputChange}
-        />
         <div className="flex h-full min-h-[176px] flex-col items-center justify-center gap-4 md:min-h-[236px]">
           <span className="text-4xl text-text-faint/40 md:text-5xl">
             {dragOver ? "⬇" : "📁"}
@@ -444,7 +443,7 @@ export default function ImagenesAdminClient({
             </p>
           </div>
         </div>
-      </div>
+      </button>
 
       {/* ── File Entries Review Panel ──────────────────────────── */}
       {entries.length > 0 && (
@@ -867,6 +866,7 @@ function FileCard({
               </p>
             )}
             <select
+              aria-label="Seleccionar producto manualmente"
               value={entry.manualProductId ?? ""}
               onChange={(e) => onManualSelect(e.target.value)}
               className="w-full rounded-lg border border-border-soft bg-white px-2.5 py-1.5 text-xs text-text-sub focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/10"

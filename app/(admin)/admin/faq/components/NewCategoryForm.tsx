@@ -33,7 +33,6 @@ export default function NewCategoryForm({
           <input
             id={`${uid}-id`}
             type="text"
-            autoFocus
             value={newCat.id}
             onChange={(e) => onChange({ ...newCat, id: e.target.value })}
             placeholder="ej: envios"

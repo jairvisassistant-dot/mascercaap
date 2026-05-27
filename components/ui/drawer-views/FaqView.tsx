@@ -420,10 +420,11 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
               <form onSubmit={handleLeadSubmit} className="flex flex-col gap-3">
                 {/* Nombre */}
                 <div>
-                  <label className="block text-xs font-semibold text-text-sub mb-1">
+                  <label htmlFor="faq-lead-nombre" className="block text-xs font-semibold text-text-sub mb-1">
                     {t.leadName} <span className="text-accent">*</span>
                   </label>
                   <input
+                    id="faq-lead-nombre"
                     type="text"
                     value={leadData.nombre}
                     onChange={(e) => setLeadData((d) => ({ ...d, nombre: e.target.value }))}
@@ -435,10 +436,11 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
 
                 {/* Email */}
                 <div>
-                  <label className="block text-xs font-semibold text-text-sub mb-1">
+                  <label htmlFor="faq-lead-email" className="block text-xs font-semibold text-text-sub mb-1">
                     {t.leadEmail}
                   </label>
                   <input
+                    id="faq-lead-email"
                     type="email"
                     value={leadData.email}
                     onChange={(e) => setLeadData((d) => ({ ...d, email: e.target.value }))}

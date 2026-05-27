@@ -74,7 +74,6 @@ export default function NuevaCategoriaForm() {
               value={label}
               onChange={(e) => setLabel(e.target.value)}
               required
-              autoFocus
               placeholder="ej: Bebidas Exóticas"
               className={inputCls}
             />
