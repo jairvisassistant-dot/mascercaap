@@ -1,6 +1,4 @@
-"use client"
-
-import { m } from "framer-motion"
+import { AnimateInView } from "@/components/ui/motion/AnimateInView"
 import ProductGridCard from "@/components/ui/ProductGridCard"
 import ProductLineRow from "@/components/ui/ProductLineRow"
 import PulpaFruitGrid from "@/components/ui/PulpaFruitGrid"
@@ -29,11 +27,8 @@ export function ProductsContent({
 
   if (searchResults !== null) {
     return (
-      <m.div
+      <AnimateInView
         key={`search-${searchQuery}`}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
       >
         {searchResults.length > 0 ? (
           <>
@@ -61,17 +56,14 @@ export function ProductsContent({
             </p>
           </div>
         )}
-      </m.div>
+      </AnimateInView>
     )
   }
 
   if (activeSize !== "todos") {
     return (
-      <m.div
+      <AnimateInView
         key={`grid-${activeSize}`}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
       >
         {sizeFilteredItems.length > 0 ? (
           <>
@@ -99,7 +91,7 @@ export function ProductsContent({
             </p>
           </div>
         )}
-      </m.div>
+      </AnimateInView>
     )
   }
 
@@ -108,12 +100,9 @@ export function ProductsContent({
       {segments.map((seg, segIndex) => {
         if (seg.type === "pulpa") {
           return (
-            <m.div
+            <AnimateInView
               key="pulpa-grid"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: segIndex * 0.08 }}
+              delay={segIndex * 0.08}
             >
               <PulpaFruitGrid
                 pulpaLines={seg.lines}
@@ -123,18 +112,15 @@ export function ProductsContent({
                 dict={dict}
                 lang={lang}
               />
-            </m.div>
+            </AnimateInView>
           )
         }
 
         const { line } = seg
         return (
-          <m.div
+          <AnimateInView
             key={line.key}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: segIndex * 0.08 }}
+            delay={segIndex * 0.08}
           >
             <div className="flex items-center gap-4 mb-5">
               <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
@@ -150,7 +136,7 @@ export function ProductsContent({
                 .filter((p) => p.line === line.key && (activeSize === "todos" || p.presentation === activeSize))
                 .sort((a, b) => a.presentationOrder - b.presentationOrder)
             } firstLine={segIndex === 0} dict={dict} lang={lang} />
-          </m.div>
+          </AnimateInView>
         )
       })}
     </div>

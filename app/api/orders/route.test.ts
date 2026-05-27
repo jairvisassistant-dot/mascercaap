@@ -7,7 +7,7 @@ const validOrder = {
   consentAccepted: true,
   profile:         "cafeteria",
   items: [
-    { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
+    { productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "1000g", quantity: 10 },
   ],
 } as const
 
@@ -29,6 +29,15 @@ async function loadPost(
         return {
           select: vi.fn(() => ({
             not: vi.fn().mockResolvedValue({ data: [], error: null }),
+          })),
+        }
+      }
+      if (table === "product_lines") {
+        return {
+          select: vi.fn(() => ({
+            eq: vi.fn(() => ({
+              order: vi.fn().mockResolvedValue({ data: [], error: null }),
+            })),
           })),
         }
       }
@@ -125,8 +134,8 @@ describe("POST /api/orders", () => {
     const multiOrder = {
       ...validOrder,
       items: [
-        { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
-        { productType: "Pulpas", fruit: "Mora",      presentation: "300g",  quantity: 5  },
+        { productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "1000g", quantity: 10 },
+        { productType: "Pulpas", fruit: "Mora",      lineKey: "pulpa-mora",      presentation: "300g",  quantity: 5  },
       ],
     }
     await POST(createRequest(multiOrder))

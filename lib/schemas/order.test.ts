@@ -4,6 +4,7 @@ import { orderSchema, orderItemSchema } from "./order"
 const baseItem = {
   productType:  "Pulpas",
   fruit:        "Maracuyá",
+  lineKey:      "pulpa-maracuya",
   presentation: "1000g" as const,
   quantity:     10,
 }
@@ -23,7 +24,7 @@ describe("orderItemSchema", () => {
   })
 
   it("accepts Lácteos item with null presentation", () => {
-    const lacteos = { productType: "Lácteos", fruit: "Kumis Del Hato 250ml", presentation: null, quantity: 6 }
+    const lacteos = { productType: "Lácteos", fruit: "Kumis Del Hato 250ml", lineKey: "kumiss-del-hato", presentation: null, quantity: 6 }
     expect(orderItemSchema.safeParse(lacteos).success).toBe(true)
   })
 
@@ -36,13 +37,19 @@ describe("orderItemSchema", () => {
   })
 
   it("accepts Zumos presentation in ml", () => {
-    const item = { productType: "Zumos", fruit: "Limón", presentation: "600ml", quantity: 5 }
+    const item = { productType: "Zumos", fruit: "Limón", lineKey: "limon", presentation: "600ml", quantity: 5 }
     expect(orderItemSchema.safeParse(item).success).toBe(true)
   })
 
   it("accepts 1L presentation for Zumos", () => {
-    const item = { productType: "Zumos", fruit: "Limonada con Cereza", presentation: "1L", quantity: 3 }
+    const item = { productType: "Zumos", fruit: "Limonada con Cereza", lineKey: "limonada-cereza", presentation: "1L", quantity: 3 }
     expect(orderItemSchema.safeParse(item).success).toBe(true)
+  })
+
+  it("accepts legacy items without lineKey for backward compatibility", () => {
+    const { lineKey: _lineKey, ...legacyItem } = baseItem
+    expect(orderItemSchema.safeParse(legacyItem).success).toBe(true)
+    void _lineKey
   })
 
   it("fails with empty presentation string", () => {

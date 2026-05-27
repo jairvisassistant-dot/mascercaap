@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Testimonial } from "@/types";
 
@@ -120,7 +120,7 @@ export default function TestimonialMarquee({
   dict,
   lang,
 }: TestimonialMarqueeProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = usePrefersReducedMotion();
 
   if (testimonials.length === 0) return null;
 

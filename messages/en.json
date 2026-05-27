@@ -122,7 +122,7 @@
     "featured": {
       "sectionLabel": "High rotation",
       "title": "What people are ordering most",
-      "subtitle": "These are the products moving most across homes, cafés, and restaurants. Try our quality and you will see why others keep choosing them. Order here.",
+      "subtitle": "These are the products moving most across homes, coffee shops, and restaurants. Try our quality and you will see why others keep choosing them. Order here.",
       "productHooks": [
         {
           "badge": "#1 in orders",
@@ -133,7 +133,7 @@
         {
           "badge": "Top for business",
           "kicker": "High rotation",
-          "text": "Often requested by cafés and restaurants for its yield and consistent flavor.",
+          "text": "Often requested by coffee shops and restaurants for its yield and consistent flavor.",
           "cta": "Order this product"
         },
         {
@@ -222,7 +222,7 @@
       "title": "What Our Clients Say",
       "subtitle": "Businesses that trust Más Cerca AP for their natural juice needs.",
       "highlights": [
-        "Restaurants and cafés",
+        "Restaurants and coffee shops",
         "Commercial partners in Bogotá",
         "Clients who order again"
       ]
@@ -230,10 +230,10 @@
     "cta": {
       "badge": "Deliveries in Bogotá",
       "title": "Ready to taste the quality of our products?",
-      "text": "Message us on WhatsApp for home, café, and restaurant orders. We deliver across Bogotá and coordinate each order based on area and availability.",
+      "text": "Message us on WhatsApp for home, coffee shop, and restaurant orders. We deliver across Bogotá and coordinate each order based on area and availability.",
       "button": "Order via WhatsApp",
       "highlights": [
-        "Homes, cafés, and restaurants",
+        "Homes, coffee shops, and restaurants",
         "Coordinated by area and availability"
       ]
     }
@@ -816,7 +816,7 @@
     "sectionLabel": "Real yield",
     "title": "How much do our fruit pulps yield?",
     "subtitle": "Just choose your favorite preparation and how many cups you want to make — we'll show you exactly how much you need. Our products are perfect for home use or your business.",
-    "prepLabel": "What do you want to prepare?",
+    "prepLabel": "What do you want to make?",
     "prepJugo": "Juice",
     "prepFrappe": "Frappe",
     "step1Label": "How many cups?",

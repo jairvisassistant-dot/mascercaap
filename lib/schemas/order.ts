@@ -3,6 +3,7 @@ import { z } from "zod"
 export const orderItemSchema = z.object({
   productType:  z.string().min(1).max(60),
   fruit:        z.string().min(1).max(60),
+  lineKey:      z.string().min(1).max(120).optional().nullable(),
   presentation: z.string().min(1).max(20).nullable(),
   quantity:     z.number().int().min(1).max(9999),
 })

@@ -126,7 +126,7 @@ export default async function LangLayout({
         .not("price", "is", null),
       supabase
         .from("product_lines")
-        .select("key, label, category_key, display_order")
+        .select("key, label, category_key, display_order, order_assistant_enabled, order_assistant_label")
         .eq("active", true)
         .order("display_order"),
     ]);

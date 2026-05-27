@@ -3,7 +3,7 @@ import { z } from "zod"
 import { createOrderSchema, type OrderItem } from "@/lib/schemas/order"
 import esMessages from "@/messages/es.json"
 import enMessages from "@/messages/en.json"
-import { buildOrderEmailHtml, buildPriceResolver, is120gPackPresentation, type PriceEntry } from "@/lib/order-assistant"
+import { buildOrderEmailHtml, buildPriceResolver, is120gPackPresentation, type CatalogLine, type PriceEntry } from "@/lib/order-assistant"
 import { sanitizeSubject } from "@/lib/sanitize"
 import { supabasePublic as supabase } from "@/lib/supabase"
 
@@ -79,12 +79,19 @@ export async function POST(request: Request) {
     // Resolve live prices from Supabase
     let resolvePrice = buildPriceResolver([])
     if (supabase) {
-      const { data: dbProducts } = await supabase
-        .from("products")
-        .select("id, line, name, presentation, presentation_order, price")
-        .not("price", "is", null)
+      const [{ data: dbProducts }, { data: dbLines }] = await Promise.all([
+        supabase
+          .from("products")
+          .select("id, line, name, presentation, presentation_order, price")
+          .not("price", "is", null),
+        supabase
+          .from("product_lines")
+          .select("key, label, category_key, display_order, order_assistant_enabled, order_assistant_label")
+          .eq("active", true)
+          .order("display_order"),
+      ])
       if (dbProducts?.length) {
-        resolvePrice = buildPriceResolver(dbProducts as PriceEntry[])
+        resolvePrice = buildPriceResolver(dbProducts as PriceEntry[], (dbLines ?? []) as CatalogLine[])
       }
     }
 

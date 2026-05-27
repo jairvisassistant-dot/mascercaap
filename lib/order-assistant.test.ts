@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
   buildCatalog,
+  buildPriceResolver,
   calculateItemLineTotal,
   calculateOrderTotal,
   getDeliveryBenefit,
@@ -10,29 +11,6 @@ import {
 import type { PriceResolver, CatalogLine, PriceEntry } from "./order-assistant"
 import type { OrderInput } from "@/lib/schemas/order"
 
-// Mock resolver that mirrors the prices previously hardcoded in PRICES_COP / LACTEOS_PRICES.
-// Used only in tests — production prices come from Supabase.
-const mockResolvePrice: PriceResolver = (fruit, presentation) => {
-  if (!presentation) {
-    const lacteos: Record<string, number> = {
-      "Kumis Del Hato 250ml":  3700,
-      "Kumis Yolito 250ml":    3400,
-      "Yogurt Del Hato 250ml": 3700,
-    }
-    return lacteos[fruit] ?? null
-  }
-  const prices: Record<string, Record<string, number>> = {
-    "Maracuyá":         { "120g": 2900, "300g": 4850,  "1000g": 15500 },
-    "Mora":             { "120g": 2300, "300g": 4400,  "1000g": 13000 },
-    "Mango":            { "120g": 2300, "300g": 4200,  "1000g": 13000 },
-    "Lulo":             { "120g": 2300, "300g": 4200,  "1000g": 13000 },
-    "Fresa":            { "120g": 2300, "300g": 4200,  "1000g": 13000 },
-    "Frutos Rojos":     { "120g": 2300, "300g": 4200,  "1000g": 13000 },
-    "Frutos Amarillos": { "120g": 2300, "300g": 4200,  "1000g": 13000 },
-  }
-  return prices[fruit]?.[presentation] ?? null
-}
-
 const baseOrder: OrderInput = {
   nombre:          "Laura Sánchez",
   email:           "laura@example.com",
@@ -40,7 +18,7 @@ const baseOrder: OrderInput = {
   consentAccepted: true,
   profile:         "cafeteria",
   items: [
-    { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
+    { productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "1000g", quantity: 10 },
   ],
 }
 
@@ -48,16 +26,16 @@ const baseOrder: OrderInput = {
 // buildCatalog — getProductOptionsForType
 // ──────────────────────────────────────────────
 const mockLines: CatalogLine[] = [
-  { key: "pulpa-maracuya",      label: "Pulpa de Maracuyá",      category_key: "pulpas",  display_order: 0 },
-  { key: "pulpa-mora",          label: "Pulpa de Mora",           category_key: "pulpas",  display_order: 1 },
-  { key: "pulpa-guayaba",       label: "Pulpa de Guayaba",        category_key: "pulpas",  display_order: 2 },
-  { key: "limon",               label: "Zumo de Limón",           category_key: "zumos",   display_order: 10 },
-  { key: "limonada-cereza",     label: "Limonada con Cereza",     category_key: "zumos",   display_order: 11 },
-  { key: "limonada-coco",       label: "Limonada con Coco",       category_key: "zumos",   display_order: 12 },
-  { key: "maracuya",            label: "Zumo de Maracuyá",        category_key: "zumos",   display_order: 13 },
-  { key: "kumiss-del-hato",     label: "Kumis Del Hato",          category_key: "lacteos", display_order: 100 },
-  { key: "yogurt-del-hato",     label: "Yogurt Del Hato",         category_key: "lacteos", display_order: 101 },
-  { key: "kumiss-yolito",       label: "Kumis Yolito",            category_key: "lacteos", display_order: 102 },
+  { key: "pulpa-maracuya",      label: "Pulpa de Maracuyá",      category_key: "pulpas",  display_order: 0,   order_assistant_enabled: true, order_assistant_label: "Maracuyá" },
+  { key: "pulpa-mora",          label: "Pulpa de Mora",           category_key: "pulpas",  display_order: 1,   order_assistant_enabled: true, order_assistant_label: "Mora" },
+  { key: "pulpa-guayaba",       label: "Pulpa de Guayaba",        category_key: "pulpas",  display_order: 2,   order_assistant_enabled: true, order_assistant_label: "Guayaba" },
+  { key: "limon",               label: "Zumo de Limón",           category_key: "zumos",   display_order: 10,  order_assistant_enabled: true, order_assistant_label: "Limón" },
+  { key: "limonada-cereza",     label: "Limonada con Cereza",     category_key: "zumos",   display_order: 11,  order_assistant_enabled: true, order_assistant_label: "Limonada con Cereza" },
+  { key: "limonada-coco",       label: "Limonada con Coco",       category_key: "zumos",   display_order: 12,  order_assistant_enabled: true, order_assistant_label: "Limonada con Coco" },
+  { key: "maracuya",            label: "Zumo de Maracuyá",        category_key: "zumos",   display_order: 13,  order_assistant_enabled: true, order_assistant_label: "Maracuyá" },
+  { key: "kumiss-del-hato",     label: "Kumis Del Hato",          category_key: "lacteos", display_order: 100, order_assistant_enabled: true, order_assistant_label: "Kumis Del Hato 250ml" },
+  { key: "yogurt-del-hato",     label: "Yogurt Del Hato",         category_key: "lacteos", display_order: 101, order_assistant_enabled: true, order_assistant_label: "Yogurt Del Hato 250ml" },
+  { key: "kumiss-yolito",       label: "Kumis Yolito",            category_key: "lacteos", display_order: 102, order_assistant_enabled: true, order_assistant_label: "Kumis Yolito 250ml" },
 ]
 
 const mockProducts: PriceEntry[] = [
@@ -71,37 +49,44 @@ const mockProducts: PriceEntry[] = [
   { id: "pulpa-guayaba-1000",  line: "pulpa-guayaba",   name: "Pulpa de Guayaba",  presentation: "1000g", presentation_order: 3, price: 12000 },
   { id: "limon-600",           line: "limon",           name: "Zumo de Limón",     presentation: "600ml", presentation_order: 1, price: 5600 },
   { id: "limon-1000",          line: "limon",           name: "Zumo de Limón",     presentation: "1L",    presentation_order: 2, price: 9000 },
+  { id: "limonada-cereza-600", line: "limonada-cereza", name: "Limonada con Cereza", presentation: "600ml", presentation_order: 1, price: 6100 },
+  { id: "limonada-coco-600",   line: "limonada-coco",   name: "Limonada con Coco",   presentation: "600ml", presentation_order: 1, price: 6400 },
+  { id: "maracuya-600",        line: "maracuya",        name: "Zumo de Maracuyá",    presentation: "600ml", presentation_order: 1, price: 6200 },
   { id: "kumiss-del-hato-250ml", line: "kumiss-del-hato", name: "Kumis Del Hato", presentation: "250ml", presentation_order: 1, price: 3700 },
   { id: "yogurt-del-hato-250ml", line: "yogurt-del-hato", name: "Yogurt Del Hato", presentation: "250ml", presentation_order: 1, price: 3700 },
   { id: "kumiss-yolito-250ml",   line: "kumiss-yolito",   name: "Kumis Yolito",    presentation: "250ml", presentation_order: 1, price: 3400 },
 ]
+
+const mockResolvePrice: PriceResolver = buildPriceResolver(mockProducts, mockLines)
 
 describe("buildCatalog — getProductOptionsForType", () => {
   const catalog = buildCatalog(mockLines, mockProducts)
 
   it("Pulpas returns fruit list from active lines", () => {
     const opts = catalog.getProductOptionsForType("Pulpas")
-    expect(opts).toContain("Maracuyá")
-    expect(opts).toContain("Mora")
-    expect(opts).toContain("Guayaba")
+    expect(opts.map((option) => option.label)).toContain("Maracuyá")
+    expect(opts.map((option) => option.label)).toContain("Mora")
+    expect(opts.map((option) => option.label)).toContain("Guayaba")
   })
 
   it("Zumos returns zumo products, not pulpa fruits", () => {
     const opts = catalog.getProductOptionsForType("Zumos")
-    expect(opts).toContain("Limón")
-    expect(opts).toContain("Limonada con Cereza")
-    expect(opts).toContain("Limonada con Coco")
-    expect(opts).toContain("Maracuyá")
-    expect(opts).not.toContain("Mora")
-    expect(opts).not.toContain("Guayaba")
+    const labels = opts.map((option) => option.label)
+    expect(labels).toContain("Limón")
+    expect(labels).toContain("Limonada con Cereza")
+    expect(labels).toContain("Limonada con Coco")
+    expect(labels).toContain("Maracuyá")
+    expect(labels).not.toContain("Mora")
+    expect(labels).not.toContain("Guayaba")
   })
 
   it("Lácteos returns dairy products", () => {
     const opts = catalog.getProductOptionsForType("Lácteos")
-    expect(opts).toContain("Kumis Del Hato 250ml")
-    expect(opts).toContain("Kumis Yolito 250ml")
-    expect(opts).toContain("Yogurt Del Hato 250ml")
-    expect(opts).not.toContain("Maracuyá")
+    const labels = opts.map((option) => option.label)
+    expect(labels).toContain("Kumis Del Hato 250ml")
+    expect(labels).toContain("Kumis Yolito 250ml")
+    expect(labels).toContain("Yogurt Del Hato 250ml")
+    expect(labels).not.toContain("Maracuyá")
   })
 
   it("unknown type returns empty array", () => {
@@ -109,15 +94,34 @@ describe("buildCatalog — getProductOptionsForType", () => {
   })
 
   it("Guayaba has no 120g (derived from Supabase, no hardcoded override needed)", () => {
-    const pres = catalog.getPresentationsForProduct("Pulpas", "Guayaba")
+    const pres = catalog.getPresentationsForProduct("Pulpas", "pulpa-guayaba")
     expect(pres).not.toContain("120g")
     expect(pres).toContain("300g")
     expect(pres).toContain("1000g")
   })
 
   it("Maracuyá has 120g, 300g, 1000g in presentation_order", () => {
-    const pres = catalog.getPresentationsForProduct("Pulpas", "Maracuyá")
+    const pres = catalog.getPresentationsForProduct("Pulpas", "pulpa-maracuya")
     expect(pres).toEqual(["120g", "300g", "1000g"])
+  })
+
+  it("returns the visible label for a selection", () => {
+    expect(catalog.getLabelForSelection("Lácteos", "kumiss-del-hato")).toBe("Kumis Del Hato 250ml")
+  })
+})
+
+describe("buildPriceResolver", () => {
+  it("resolves by lineKey for current UI payloads", () => {
+    expect(mockResolvePrice({ productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "300g" })).toBe(4850)
+  })
+
+  it("resolves by legacy label when lineKey is missing", () => {
+    expect(mockResolvePrice({ productType: "Lácteos", fruit: "Kumis Del Hato 250ml", presentation: null })).toBe(3700)
+  })
+
+  it("keeps type-scoped aliases separate for shared labels", () => {
+    expect(mockResolvePrice({ productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g" })).toBe(15500)
+    expect(mockResolvePrice({ productType: "Zumos", fruit: "Maracuyá", presentation: "600ml" })).toBe(6200)
   })
 })
 
@@ -126,7 +130,7 @@ describe("buildCatalog — getProductOptionsForType", () => {
 // ──────────────────────────────────────────────
 describe("calculateOrderTotal", () => {
   it("calculates subtotal for 120g using pack-of-10 logic", () => {
-    const items = [{ productType: "Pulpas", fruit: "Maracuyá", presentation: "120g" as const, quantity: 5 }]
+    const items = [{ productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "120g" as const, quantity: 5 }]
     const t = calculateOrderTotal(items, mockResolvePrice)
     expect(t.subtotal).toBe(2900 * 50)
     expect(t.discountRate).toBe(0)
@@ -137,8 +141,8 @@ describe("calculateOrderTotal", () => {
 
   it("keeps net total without volume discount for 20 total units", () => {
     const items = [
-      { productType: "Pulpas", fruit: "Maracuyá", presentation: "300g" as const, quantity: 10 },
-      { productType: "Pulpas", fruit: "Mora",      presentation: "300g" as const, quantity: 10 },
+      { productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "300g" as const, quantity: 10 },
+      { productType: "Pulpas", fruit: "Mora",      lineKey: "pulpa-mora",      presentation: "300g" as const, quantity: 10 },
     ]
     const t = calculateOrderTotal(items, mockResolvePrice)
     const expectedSubtotal = 4850 * 10 + 4400 * 10
@@ -156,7 +160,7 @@ describe("calculateOrderTotal", () => {
   })
 
   it("keeps net total without volume discount for 50 packs of 120g", () => {
-    const items = [{ productType: "Pulpas", fruit: "Mora", presentation: "120g" as const, quantity: 50 }]
+    const items = [{ productType: "Pulpas", fruit: "Mora", lineKey: "pulpa-mora", presentation: "120g" as const, quantity: 50 }]
     const t = calculateOrderTotal(items, mockResolvePrice)
     expect(t.subtotal).toBe(2300 * 500)
     expect(t.discountRate).toBe(0)
@@ -165,7 +169,7 @@ describe("calculateOrderTotal", () => {
   })
 
   it("returns hasPrice false and zero subtotal when no resolver provided", () => {
-    const items = [{ productType: "Pulpas", fruit: "Maracuyá", presentation: "120g" as const, quantity: 5 }]
+    const items = [{ productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "120g" as const, quantity: 5 }]
     const t = calculateOrderTotal(items)
     expect(t.hasPrice).toBe(false)
     expect(t.subtotal).toBe(0)
@@ -175,11 +179,11 @@ describe("calculateOrderTotal", () => {
 describe("calculateItemLineTotal", () => {
   it("uses packs for 120g and units for other presentations", () => {
     const line120 = calculateItemLineTotal(
-      { fruit: "Mora", presentation: "120g", quantity: 3 },
+      { productType: "Pulpas", fruit: "Mora", lineKey: "pulpa-mora", presentation: "120g", quantity: 3 },
       mockResolvePrice
     )
     const line300 = calculateItemLineTotal(
-      { fruit: "Mora", presentation: "300g", quantity: 3 },
+      { productType: "Pulpas", fruit: "Mora", lineKey: "pulpa-mora", presentation: "300g", quantity: 3 },
       mockResolvePrice
     )
 
@@ -239,8 +243,8 @@ describe("buildWhatsappMessage", () => {
     const multi: OrderInput = {
       ...baseOrder,
       items: [
-        { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
-        { productType: "Pulpas", fruit: "Mora",      presentation: "300g",  quantity: 5  },
+        { productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "1000g", quantity: 10 },
+        { productType: "Pulpas", fruit: "Mora",      lineKey: "pulpa-mora",      presentation: "300g",  quantity: 5  },
       ],
     }
     const text = decodeURIComponent(buildWhatsappMessage(multi, "573001234567").split("?text=")[1] ?? "")
@@ -279,8 +283,8 @@ describe("buildOrderEmailHtml", () => {
     const multi: OrderInput = {
       ...baseOrder,
       items: [
-        { productType: "Pulpas", fruit: "Maracuyá", presentation: "1000g", quantity: 10 },
-        { productType: "Pulpas", fruit: "Mora",      presentation: "300g",  quantity: 5  },
+        { productType: "Pulpas", fruit: "Maracuyá", lineKey: "pulpa-maracuya", presentation: "1000g", quantity: 10 },
+        { productType: "Pulpas", fruit: "Mora",      lineKey: "pulpa-mora",      presentation: "300g",  quantity: 5  },
       ],
     }
     const html = buildOrderEmailHtml(multi)
@@ -292,7 +296,7 @@ describe("buildOrderEmailHtml", () => {
     const malicious: OrderInput = {
       ...baseOrder,
       nombre: '<script>alert("xss")</script>',
-      items: [{ productType: "Pulpas", fruit: "Mora &amp; Fresa", presentation: "300g", quantity: 5 }],
+      items: [{ productType: "Pulpas", fruit: "Mora &amp; Fresa", lineKey: "pulpa-mora", presentation: "300g", quantity: 5 }],
     }
     const html = buildOrderEmailHtml(malicious)
     expect(html).not.toContain("<script>")
