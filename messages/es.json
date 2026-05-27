@@ -66,7 +66,7 @@
           "title": "La fruta sale del campo hoy.\nMañana está en tu mesa.",
           "subtitle": "PULPAS 100% NATURALES · SIN CONSERVANTES · SIN COLORANTES",
           "description": "Fruta colombiana congelada en su punto exacto de madurez. Conserva sus aromas, color y sabor — exactamente como recién cosechada.",
-          "cta": "Conocer nuestra historia"
+          "cta": "Ver productos"
         },
         {
           "title": "La calidad de nuestros productos\nno se compara.",
@@ -674,23 +674,23 @@
       "keywords": "jugos, naturales, Colombia, limón, naranja, zumos, bebidas"
     },
     "products": {
-      "title": "Productos — Más Cerca AP",
+      "title": "Productos",
       "description": "Zumos, pulpas de frutas y bebidas naturales elaborados con frutas colombianas. Del campo a tu mesa."
     },
     "about": {
-      "title": "Nosotros — Más Cerca AP",
+      "title": "Nosotros",
       "description": "Conoce la historia de Más Cerca AP: una empresa colombiana que produce y comercializa jugos, pulpas y productos frescos comprando directamente al campesino."
     },
     "contact": {
-      "title": "Contacto — Más Cerca AP",
+      "title": "Contacto",
       "description": "Contacta a Más Cerca AP para hacer un pedido, ser distribuidor o hacer una consulta."
     },
     "privacy": {
-      "title": "Políticas y Privacidad — Más Cerca AP",
+      "title": "Políticas y Privacidad",
       "description": "Conoce las políticas de privacidad y tratamiento de datos personales de Más Cerca AP."
     },
     "terms": {
-      "title": "Términos y Condiciones — Más Cerca AP",
+      "title": "Términos y Condiciones",
       "description": "Lee los términos y condiciones de uso de los servicios y productos de Más Cerca AP."
     }
   },

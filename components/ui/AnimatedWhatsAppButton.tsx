@@ -4,7 +4,6 @@ import { memo, useEffect, useRef } from "react";
 import { m, useAnimation, useReducedMotion } from "framer-motion";
 import { useHelpHub } from "@/lib/help-hub-context";
 import { trackHelpHubEvent } from "@/lib/help-hub-analytics";
-import { track } from "@/lib/analytics";
 
 interface Props {
   label: string;
@@ -124,7 +123,6 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
       <button
         type="button"
         onClick={() => {
-          track("cta_whatsapp", { source: "floating_button" });
           trackHelpHubEvent("helphub_whatsapp_cta_clicked", {
             source: "floating_whatsapp_button",
           });

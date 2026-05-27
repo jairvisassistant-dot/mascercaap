@@ -25,7 +25,7 @@
       "lacteos": "Dairy"
     },
     "contact": "Contact",
-    "location": "Chia, Colombia",
+    "location": "Chía, Colombia",
     "copyright": "Más Cerca AP. All rights reserved.",
     "madeWith": "Made in Colombia",
     "socialLabel": "Follow us on"
@@ -82,7 +82,7 @@
         },
         {
           "title": "We serve with love,\nhonesty and faith\nin every delivery.",
-          "subtitle": "MAS CERCA AP — YOUR BUSINESS PARTNER",
+          "subtitle": "MÁS CERCA AP — YOUR BUSINESS PARTNER",
           "description": "More than distributors, we are the bridge that brings the best Colombian products to your business.",
           "cta": "Learn our story"
         },
@@ -319,7 +319,7 @@
     "history": {
       "title": "Our Story",
       "text": "Más Cerca AP is not just a business — it is a gift from God, and living proof that new beginnings are possible. It was founded by a couple who believed that serving people was the best way to build something. We produce and sell fruit juices, fruit pulps and fresh products sourced directly from farms, buying from farmers at their land and serving as the platform that brings their products to homes, businesses and new markets. We are driven by faith in God, guided by honesty and defined by our commitment to the Colombian countryside.",
-      "imageAlt": "Más Cerca AP founders at their production facility in Chia, Cundinamarca",
+      "imageAlt": "Más Cerca AP founders at their production facility in Chía, Cundinamarca",
       "headline": {
         "prefix": "We connect the",
         "highlight": "Colombian countryside",
@@ -674,23 +674,23 @@
       "keywords": "juices, natural, Colombia, lemon, orange, beverages, fruit pulp"
     },
     "products": {
-      "title": "Products — Más Cerca AP",
+      "title": "Products",
       "description": "Juices, fruit pulps and natural beverages made with Colombian fruits. From farm to table."
     },
     "about": {
-      "title": "About Us — Más Cerca AP",
+      "title": "About Us",
       "description": "Learn the story of Más Cerca AP: a Colombian company that produces and sells juices, pulps and fresh products buying directly from farmers."
     },
     "contact": {
-      "title": "Contact — Más Cerca AP",
+      "title": "Contact",
       "description": "Contact Más Cerca AP to place an order, become a distributor or make an inquiry."
     },
     "privacy": {
-      "title": "Privacy Policy — Más Cerca AP",
+      "title": "Privacy Policy",
       "description": "Read the privacy policy and personal data processing practices of Más Cerca AP."
     },
     "terms": {
-      "title": "Terms and Conditions — Más Cerca AP",
+      "title": "Terms and Conditions",
       "description": "Read the terms and conditions of use for Más Cerca AP services and products."
     }
   },

@@ -9,7 +9,6 @@ import { buildWhatsAppAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
 import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Product, ProductCategory, ProductLineConfig } from "@/types";
-import { track } from "@/lib/analytics";
 
 type FormFields = {
   nombre: string;
@@ -241,7 +240,6 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
 
         const waNumber = SITE_CONFIG.whatsappNumber;
         if (waNumber) setWhatsappUrl(buildWhatsAppAppUrl(waNumber, msg));
-        track("contact_form_submit", { status: "success" });
         setSubmitStatus("success");
         setFields(EMPTY);
         setSelectedLineKey("");
@@ -250,12 +248,10 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
         setFieldErrors({});
         setConsented(false);
       } else {
-        track("contact_form_submit", { status: "error" });
         setSubmitStatus("error");
       }
     } catch {
       console.error("Error enviando formulario de contacto");
-      track("contact_form_submit", { status: "error" });
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
