@@ -68,13 +68,10 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
 
   // Sync URL param → state (handles browser back/forward only; handlers update both state and URL)
   useEffect(() => {
-    if (catFromUrl !== activeCategory) {
-      setActiveCategory(catFromUrl);
-      setActiveSubLines([]);
-      setActiveSize("todos");
-      setHasInteracted(false);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setActiveCategory(catFromUrl);
+    setActiveSubLines([]);
+    setActiveSize("todos");
+    setHasInteracted(false);
   }, [catFromUrl]);
 
   useEffect(() => {

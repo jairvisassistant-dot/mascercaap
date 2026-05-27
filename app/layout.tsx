@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           id="theme-detector"
           strategy="beforeInteractive"
           nonce={nonce}
-          dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}
+          dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} /* safe: THEME_SCRIPT is a build-time constant string, not user input */
         />
         {children}
       </body>

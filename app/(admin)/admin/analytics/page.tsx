@@ -186,10 +186,10 @@ function Table({ headers, rows, emptyText }: { headers: string[]; rows: string[]
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, index) => (
-            <tr key={`${row.join("-")}-${index}`} className="border-b border-border-soft/70 last:border-b-0">
+          {rows.map((row) => (
+            <tr key={row.join("|")} className="border-b border-border-soft/70 last:border-b-0">
               {row.map((cell, cellIndex) => (
-                <td key={`${cell}-${cellIndex}`} className="px-0 py-3 pr-4 text-text-sub">{cell}</td>
+                <td key={cellIndex} className="px-0 py-3 pr-4 text-text-sub">{cell}</td>
               ))}
             </tr>
           ))}

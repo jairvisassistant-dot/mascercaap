@@ -25,6 +25,7 @@ type EditValues = {
 
 export default function LineasList({ initial, categories }: { initial: Line[]; categories: Category[] }) {
   const { refresh } = useRouter();
+  // Intentional: mutable local copy of server data; router.refresh() remounts with fresh `initial`.
   const [lines, setLines] = useState<Line[]>(initial);
   const [moving, setMoving] = useState<string | null>(null);
   const [rowMode, setRowMode] = useState<Record<string, Mode>>({});

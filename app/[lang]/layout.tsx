@@ -149,6 +149,7 @@ export default async function LangLayout({
 
   return (
     <>
+      {/* safe: JSON-LD structured data — JSON.stringify escapes <>/& as unicode escapes; data is server-typed, not user input */}
       <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
       <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />

@@ -82,6 +82,7 @@ export default async function ProductosPage({ params }: Props) {
 
   return (
     <>
+      {/* safe: JSON-LD breadcrumb — JSON.stringify escapes <>/& as unicode escapes; data is server-typed, not user input */}
       <script
         nonce={nonce}
         type="application/ld+json"

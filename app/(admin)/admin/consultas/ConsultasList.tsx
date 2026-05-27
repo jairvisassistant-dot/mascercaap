@@ -36,6 +36,8 @@ const ESTADO_COLORS: Record<string, string> = {
 
 export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
   const { refresh } = useRouter();
+  // Intentional: mutable local copy of server data. Mutations are applied optimistically;
+  // router.refresh() remounts with a fresh `initial` from the server component.
   const [leads, setLeads] = useState(initial);
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [expandedId, setExpandedId] = useState<string | null>(null);

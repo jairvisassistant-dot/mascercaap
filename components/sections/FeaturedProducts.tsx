@@ -61,12 +61,18 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
   const hooks = dict.home.featured.productHooks;
   const { openDrawer } = useHelpHub();
   const pl = dict.productLines as Record<string, { label: string }>;
-  const [canFlip, setCanFlip] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  // Lazy initializers avoid setState-in-effect for the mount snapshot
+  const [canFlip, setCanFlip] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  });
+  const [reducedMotion, setReducedMotion] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
 
+  // Subscribe to subsequent changes only — initial value already captured above
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
     const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -74,8 +80,6 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
       setCanFlip(hoverQuery.matches);
       setReducedMotion(reducedMotionQuery.matches);
     };
-
-    update();
 
     const addListener = (mq: MediaQueryList, cb: () => void) => {
       if (typeof mq.addEventListener === "function") {
