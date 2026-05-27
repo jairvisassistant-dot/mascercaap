@@ -22,7 +22,7 @@ const PREPARATION_NOTICE = {
 export default function ProductLightbox({ product, isOpen, onClose, dict, lang }: ProductLightboxProps) {
   const t = dict.products.lightbox;
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const previousFocusRef = useRef<Element | null>(null);
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
@@ -77,17 +77,17 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
   if (!isOpen || !product.image) return null;
 
   return createPortal(
-    <div
+    <dialog
       ref={dialogRef}
-      role="dialog"
-      aria-modal="true"
+      open
       aria-label={displayName}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 m-0 max-w-none max-h-none w-full h-full bg-transparent border-0 outline-none"
     >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/55 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Card */}
@@ -167,7 +167,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
           </button>
         </div>
       </div>
-    </div>,
+    </dialog>,
     document.body
   );
 }

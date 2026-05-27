@@ -407,11 +407,15 @@ export default function ImagenesAdminClient({
     <div className="space-y-5">
       {/* ── Dropzone ───────────────────────────────────────────── */}
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Zona de carga de imágenes. Arrastra archivos o presiona Enter para seleccionar"
         onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      onClick={() => fileInputRef.current?.click()}
-        className={`relative min-h-[240px] cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 md:min-h-[300px] ${
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
+        className={`relative min-h-[240px] cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 md:min-h-[300px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
           dragOver
             ? "border-primary/60 bg-primary/5 shadow-[0_0_0_4px_rgba(63,143,70,0.10)]"
             : "border-border-soft bg-surface-card hover:border-primary/30 hover:bg-primary/[0.03]"
@@ -835,7 +839,7 @@ function FileCard({
             type="button"
             onClick={() => onRemove(entry.id)}
             className="shrink-0 rounded-full p-1 text-text-faint hover:bg-red-50 hover:text-red-500 transition-colors"
-            title="Quitar"
+            aria-label="Quitar imagen"
           >
             <svg
               width="14"
@@ -844,6 +848,7 @@ function FileCard({
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
+              aria-hidden="true"
             >
               <path d="M3 3l8 8M11 3l-8 8" />
             </svg>

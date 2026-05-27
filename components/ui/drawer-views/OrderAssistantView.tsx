@@ -559,8 +559,9 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
 
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-xs font-medium text-text-muted mb-1">{t.nameLabel} *</label>
+                        <label htmlFor="oa-nombre" className="block text-xs font-medium text-text-muted mb-1">{t.nameLabel} *</label>
                         <input
+                          id="oa-nombre"
                           type="text"
                           value={nombre}
                           onChange={(e) => setNombre(e.target.value)}
@@ -570,8 +571,9 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-text-muted mb-1">{t.emailLabel}</label>
+                        <label htmlFor="oa-email" className="block text-xs font-medium text-text-muted mb-1">{t.emailLabel}</label>
                         <input
+                          id="oa-email"
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -581,8 +583,9 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-text-muted mb-1">{t.whatsappLabel}</label>
+                        <label htmlFor="oa-whatsapp" className="block text-xs font-medium text-text-muted mb-1">{t.whatsappLabel}</label>
                         <input
+                          id="oa-whatsapp"
                           type="tel"
                           value={waNumber}
                           onChange={(e) => setWaNumber(e.target.value)}
