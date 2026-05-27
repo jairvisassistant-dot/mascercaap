@@ -118,51 +118,11 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
     [products, selectedLineKey]
   );
 
-  const selectedCategory = useMemo(
-    () => categories.find((c) => c.key === selectedCategoryKey) ?? null,
-    [categories, selectedCategoryKey]
-  );
-
-  const selectedLine = useMemo(
-    () => linesByKey.get(selectedLineKey) ?? null,
-    [linesByKey, selectedLineKey]
-  );
-
-  const selectedProduct = useMemo(
-    () => products.find((product) => product.id === selectedProductId) ?? null,
-    [products, selectedProductId]
-  );
-
   useEffect(() => {
     if (!submitStatus) return;
     const timer = setTimeout(() => setSubmitStatus(null), 8000);
     return () => clearTimeout(timer);
   }, [submitStatus]);
-
-  useEffect(() => {
-    if (fields.tipo !== "disponibilidad") return;
-
-    if (!selectedCategory || !selectedLine || !selectedProduct) {
-      setFields((prev) => {
-        const nextMessage = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
-        return nextMessage === prev.mensaje ? prev : { ...prev, mensaje: nextMessage };
-      });
-      return;
-    }
-
-    setFields((prev) => ({
-      ...prev,
-      mensaje: buildAvailabilityTemplate({
-        categoryLabel: selectedCategory.label,
-        lineLabel: selectedLine.label,
-        productLabel: `${selectedProduct.name} (${selectedProduct.presentation})`,
-        copy: availability,
-        existingMessage: prev.mensaje,
-      }),
-    }));
-    setAvailabilityError(null);
-    setFieldErrors((prev) => ({ ...prev, mensaje: undefined }));
-  }, [availability, fields.tipo, selectedCategory, selectedLine, selectedProduct]);
 
   function update(key: keyof FormFields) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -283,6 +243,10 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
                 setSelectedLineKey("");
                 setSelectedProductId("");
                 setAvailabilityError(null);
+                setFields((prev) => {
+                  const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
+                  return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
+                });
               }
               if (e.target.value !== "otro") {
                 setFields((prev) => ({ ...prev, motivoOtro: "" }));
@@ -323,6 +287,10 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
                   setSelectedLineKey("");
                   setSelectedProductId("");
                   setAvailabilityError(null);
+                  setFields((prev) => {
+                    const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
+                    return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
+                  });
                 }}
                 className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
               >
@@ -348,6 +316,10 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
                   setSelectedLineKey(e.target.value);
                   setSelectedProductId("");
                   setAvailabilityError(null);
+                  setFields((prev) => {
+                    const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
+                    return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
+                  });
                 }}
                 className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
               >
@@ -368,8 +340,32 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
                 id="availability-product"
                 value={selectedProductId}
                 onChange={(e) => {
-                  setSelectedProductId(e.target.value);
+                  const newProductId = e.target.value;
+                  setSelectedProductId(newProductId);
                   setAvailabilityError(null);
+                  if (newProductId && selectedCategoryKey && selectedLineKey) {
+                    const cat = categories.find((c) => c.key === selectedCategoryKey);
+                    const line = linesByKey.get(selectedLineKey);
+                    const product = products.find((p) => p.id === newProductId);
+                    if (cat && line && product) {
+                      setFields((prev) => ({
+                        ...prev,
+                        mensaje: buildAvailabilityTemplate({
+                          categoryLabel: cat.label,
+                          lineLabel: line.label,
+                          productLabel: `${product.name} (${product.presentation})`,
+                          copy: availability,
+                          existingMessage: prev.mensaje,
+                        }),
+                      }));
+                      setFieldErrors((prev) => ({ ...prev, mensaje: undefined }));
+                    }
+                  } else {
+                    setFields((prev) => {
+                      const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
+                      return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
+                    });
+                  }
                 }}
                 disabled={!selectedLineKey}
                 className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"

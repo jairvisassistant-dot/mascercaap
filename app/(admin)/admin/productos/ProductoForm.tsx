@@ -82,12 +82,13 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const controller = new AbortController();
     async function loadCatalog() {
       try {
         const [linesData, catsData, productsData] = await Promise.all([
-          fetch("/api/admin/product-lines").then((r) => r.json()),
-          fetch("/api/admin/categories").then((r) => r.json()),
-          mode === "create" ? fetch("/api/admin/products").then((r) => r.json()) : Promise.resolve([]),
+          fetch("/api/admin/product-lines", { signal: controller.signal }).then((r) => r.json()),
+          fetch("/api/admin/categories", { signal: controller.signal }).then((r) => r.json()),
+          mode === "create" ? fetch("/api/admin/products", { signal: controller.signal }).then((r) => r.json()) : Promise.resolve([]),
         ]);
 
         const mappedLines: LineOption[] =
@@ -121,6 +122,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           }
         }
       } catch (err) {
+        if ((err as DOMException).name === "AbortError") return;
         console.error("Error cargando catálogo:", err instanceof Error ? err.message : "unknown");
         setError("No se pudo cargar el catálogo. Recarga la página.");
       } finally {
@@ -128,6 +130,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       }
     }
     void loadCatalog();
+    return () => controller.abort();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filteredLines = selectedCategory

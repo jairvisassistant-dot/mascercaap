@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -18,13 +19,6 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // Enfocar el primer input del codigo TOTP al entrar al step 2
-  useEffect(() => {
-    if (step === "totp") {
-      inputRefs.current[0]?.focus();
-    }
-  }, [step]);
 
   // ── Step 1: Login con credenciales ────────────────────────────────────
   async function handleCredentialsSubmit(e: React.FormEvent) {
@@ -49,9 +43,13 @@ export default function AdminLoginPage() {
       if (data.needs_mfa) {
         // Pasar al step 2 - verificacion TOTP
         mfaTokenRef.current = data.mfa_token ?? "";
-        setFactorIds(data.factor_ids ?? []);
-        setSelectedFactor(data.factor_ids?.[0] ?? "");
-        setStep("totp");
+        // flushSync commits DOM before focus so the TOTP inputs are mounted
+        flushSync(() => {
+          setFactorIds(data.factor_ids ?? []);
+          setSelectedFactor(data.factor_ids?.[0] ?? "");
+          setStep("totp");
+        });
+        inputRefs.current[0]?.focus();
         return;
       }
 

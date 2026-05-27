@@ -21,12 +21,14 @@ export default function NuevaLineaForm() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const controller = new AbortController();
     async function loadCategories() {
       try {
-        const r = await fetch("/api/admin/categories");
+        const r = await fetch("/api/admin/categories", { signal: controller.signal });
         const data: Category[] = await r.json();
         if (Array.isArray(data)) setCategories(data);
       } catch (err) {
+        if ((err as DOMException).name === "AbortError") return;
         console.error("Error cargando categorías:", err instanceof Error ? err.message : "unknown");
         setError("No se pudieron cargar las categorías. Recarga la página.");
       } finally {
@@ -34,6 +36,7 @@ export default function NuevaLineaForm() {
       }
     }
     void loadCategories();
+    return () => controller.abort();
   }, []);
 
   const generatedKey = useMemo(
