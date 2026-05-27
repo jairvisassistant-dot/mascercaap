@@ -11,7 +11,6 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
 import { buildWhatsAppLinks } from "@/lib/whatsapp";
 import { SITE_CONFIG } from "@/lib/config";
-import { track } from "@/lib/analytics";
 import type { Dictionary, Locale } from "@/lib/i18n";
 
 const ORDER_MESSAGE = "Hola, quiero hacer un pedido";
@@ -97,7 +96,7 @@ export default function Navbar({ dict, lang }: Props) {
             {/* Logo */}
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold text-primary">
               <Image src="/imgs/Logo.webp" alt={dict.nav.logoAlt} width={97} height={60} priority className="object-contain" style={{ filter: "drop-shadow(2px 4px 8px rgba(0,0,0,0.20))", marginRight: "-8px" }} />
-              <span className="text-primary whitespace-nowrap">MAS CERCA</span>
+              <span className="text-primary whitespace-nowrap">MÁS CERCA</span>
               <span className="text-accent-dark">AP</span>
               <BrandFruitMark />
             </Link>
@@ -128,7 +127,7 @@ export default function Navbar({ dict, lang }: Props) {
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => track("cta_whatsapp", { source: "navbar" })}
+                onClick={() => {}}
                 className="bg-accent hover:bg-accent-dark text-gray-900 font-semibold py-2 px-6 rounded-full transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
@@ -204,7 +203,7 @@ export default function Navbar({ dict, lang }: Props) {
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => { track("cta_whatsapp", { source: "navbar" }); setIsOpen(false); }}
+                onClick={() => { setIsOpen(false); }}
                 className="flex-1 bg-accent text-gray-900 font-semibold py-3 px-6 rounded-full text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}

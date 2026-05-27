@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useReducer } from "react";
+import { useEffect, useRef, useReducer, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useHelpHub } from "@/lib/help-hub-context";
 import HelpMenu from "./drawer-views/HelpMenu";
@@ -9,8 +9,8 @@ import LegalView from "./drawer-views/LegalView";
 import ContactView from "./drawer-views/ContactView";
 import WhatsAppConnectView from "./drawer-views/WhatsAppConnectView";
 import OrderAssistantView from "./drawer-views/OrderAssistantView";
-import { privacyPolicy, termsAndConditions } from "@/data/legal";
 import { SITE_CONFIG } from "@/lib/config";
+import type { LegalDocument } from "@/types";
 import { buildWhatsAppLinks } from "@/lib/whatsapp";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { FAQData } from "@/types";
@@ -59,6 +59,17 @@ export default function HelpDrawer({ dict, lang, faqData, prices, lines, onClose
   const [{ view, whatsAppState }, dispatch] = useReducer(drawerReducer, { view: initialView, whatsAppState: null });
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [legalDocs, setLegalDocs] = useState<{ privacyPolicy: LegalDocument; termsAndConditions: LegalDocument } | null>(null);
+
+  // Lazy-load legal data only when user navigates to privacy/terms view.
+  // Keeps ~12KB of static text out of the initial bundle.
+  useEffect(() => {
+    if (view === "privacy" || view === "terms") {
+      import("@/data/legal").then(({ privacyPolicy, termsAndConditions }) => {
+        setLegalDocs({ privacyPolicy, termsAndConditions });
+      });
+    }
+  }, [view]);
 
   useEffect(() => {
     closeButtonRef.current?.focus();
@@ -137,8 +148,8 @@ export default function HelpDrawer({ dict, lang, faqData, prices, lines, onClose
   function getTitle(): string {
     if (view === "menu") return t.title;
     if (view === "faq") return t.menu.faq;
-    if (view === "privacy") return privacyPolicy.title[locale];
-    if (view === "terms") return termsAndConditions.title[locale];
+    if (view === "privacy") return legalDocs?.privacyPolicy.title[locale] ?? t.menu.privacy;
+    if (view === "terms") return legalDocs?.termsAndConditions.title[locale] ?? t.menu.terms;
     if (view === "whatsapp") return t.menu.whatsapp;
     if (view === "order") return t.menu.order;
     return t.menu.contact;
@@ -231,11 +242,11 @@ export default function HelpDrawer({ dict, lang, faqData, prices, lines, onClose
                   }
                 />
               )}
-              {view === "privacy" && (
-                <LegalView document={privacyPolicy} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
+              {view === "privacy" && legalDocs && (
+                <LegalView document={legalDocs.privacyPolicy} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
               )}
-              {view === "terms" && (
-                <LegalView document={termsAndConditions} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
+              {view === "terms" && legalDocs && (
+                <LegalView document={legalDocs.termsAndConditions} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
               )}
               {view === "contact" && (
                 <ContactView dict={dict} lang={locale} />

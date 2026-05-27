@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { m, AnimatePresence } from "framer-motion";
 import { useHelpHub } from "@/lib/help-hub-context";
-import { track } from "@/lib/analytics";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { FAQData } from "@/types";
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
@@ -24,7 +23,7 @@ export default function HelpHub({ dict, lang, faqData, prices, lines }: Props) {
         transition={{ delay: 1, duration: 0.4, ease: "easeOut" }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.97 }}
-        onClick={() => { track("helphub_open"); openDrawer("menu", undefined, { restoreSession: true }); }}
+        onClick={() => { openDrawer("menu", undefined, { restoreSession: true }); }}
         aria-label={t.trigger}
         className="fixed bottom-32 right-4 z-40 flex items-center gap-2.5 bg-primary text-white p-3 sm:bottom-6 sm:right-6 sm:pl-3 sm:pr-4 sm:py-3 rounded-full shadow-lg hover:shadow-xl transition-shadow"
       >

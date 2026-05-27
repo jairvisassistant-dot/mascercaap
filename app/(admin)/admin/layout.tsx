@@ -7,7 +7,7 @@ import AdminNavbar from "@/components/admin/AdminNavbar";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin — Mas Cerca AP",
+  title: "Admin — Más Cerca AP",
   robots: { index: false, follow: false },
 };
 

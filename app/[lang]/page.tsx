@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hasLocale(lang)) return {};
   const dict = await getDictionary(lang);
   return {
-    title: dict.metadata.home.title,
+    title: { absolute: dict.metadata.home.title },
     description: dict.metadata.home.description,
     keywords: dict.metadata.home.keywords,
     openGraph: {

@@ -180,11 +180,11 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     if (drawerContext?.product) lines.push(`\nProducto de interés: *${drawerContext.product}*`);
 
     const conversation = currentMessages
-      .flatMap((m) => {
-        if (m.id === "welcome") return [];
-        return [m.role === "user"
-          ? `Yo: "${m.text}"`
-          : `Bot: "${m.text.length > 120 ? m.text.slice(0, 120) + "…" : m.text}"`];
+      .flatMap((msg) => {
+        if (msg.id === "welcome") return [];
+        return [msg.role === "user"
+          ? `Yo: "${msg.text}"`
+          : `Bot: "${msg.text.length > 120 ? msg.text.slice(0, 120) + "…" : msg.text}"`];
       })
       .join("\n");
 

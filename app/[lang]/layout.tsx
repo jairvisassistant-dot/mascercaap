@@ -12,7 +12,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
 import ScrollProgress from "@/components/ui/ScrollProgress";
-import PageTracker from "@/components/ui/PageTracker";
 import { headers } from "next/headers";
 import { SITE_CONFIG } from "@/lib/config";
 
@@ -162,7 +161,6 @@ export default async function LangLayout({
             >
               {lang === "es" ? "Saltar al contenido" : "Skip to content"}
             </a>
-            <PageTracker />
             <ScrollProgress />
             <Navbar dict={dict} lang={lang} />
             <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
