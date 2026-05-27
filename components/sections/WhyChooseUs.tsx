@@ -48,7 +48,7 @@ export default function WhyChooseUs({ dict }: { dict: Dictionary }) {
           <div className="border-y border-border-mid divide-y divide-border-mid bg-surface-page/60">
             {pillars.map((pillar, index) => (
               <div
-                key={index}
+                key={pillar.title}
                 className="fade-in-up group grid gap-5 py-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start"
                 style={{ animationDelay: `${index * 0.08}s` }}
               >

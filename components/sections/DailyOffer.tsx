@@ -32,7 +32,7 @@ export default function DailyOffer({ dict }: { dict: Dictionary }) {
         <div className="flex flex-wrap justify-center gap-8 md:gap-16">
           {badges.map((badge, index) => (
             <SealBadge
-              key={index}
+              key={badge.top}
               emoji={emojis[index]}
               top={badge.top}
               bottom={badge.bottom}

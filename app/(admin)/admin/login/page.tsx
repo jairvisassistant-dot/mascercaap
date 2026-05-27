@@ -259,7 +259,7 @@ export default function AdminLoginPage() {
               <div className="flex justify-center gap-2">
                 {code.map((digit, i) => (
                   <input
-                    key={i}
+                    key={`totp-input-${i}`}
                     ref={(el) => { inputRefs.current[i] = el; }}
                     type="text"
                     inputMode="numeric"
@@ -281,6 +281,7 @@ export default function AdminLoginPage() {
             )}
 
             <button
+              type="button"
               onClick={handleMFASubmit}
               disabled={loading}
               className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"

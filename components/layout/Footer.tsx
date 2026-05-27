@@ -195,7 +195,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
         </div>
 
         <div className="border-t border-white/10 pt-8 text-center text-white/58">
-          <p>© {new Date().getFullYear()} {dict.footer.copyright}</p>
+          <p suppressHydrationWarning>© {new Date().getFullYear()} {dict.footer.copyright}</p>
           <p className="mt-1 text-sm">{dict.footer.madeWith}</p>
         </div>
       </div>

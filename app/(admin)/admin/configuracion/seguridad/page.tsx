@@ -178,6 +178,7 @@ export default function SeguridadPage() {
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <p className="text-sm text-red-600">{mfaState.message}</p>
           <button
+            type="button"
             onClick={loadStatus}
             className="mt-3 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
           >
@@ -209,6 +210,7 @@ export default function SeguridadPage() {
           </p>
 
           <button
+            type="button"
             onClick={handleStartEnroll}
             disabled={loading}
             className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
@@ -250,7 +252,7 @@ export default function SeguridadPage() {
           <div className="mb-4 flex justify-center gap-2">
             {code.map((digit, i) => (
               <input
-                key={i}
+                key={`totp-digit-${i}`}
                 type="text"
                 inputMode="numeric"
                 maxLength={1}
@@ -262,6 +264,7 @@ export default function SeguridadPage() {
           </div>
 
           <button
+            type="button"
             onClick={handleVerifyEnroll}
             disabled={loading}
             className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
@@ -270,6 +273,7 @@ export default function SeguridadPage() {
           </button>
 
           <button
+            type="button"
             onClick={() => {
               setEnrollStep("idle");
               setCode(["", "", "", "", "", ""]);
@@ -324,6 +328,7 @@ export default function SeguridadPage() {
           </div>
 
           <button
+            type="button"
             onClick={() => handleDisable(mfaState.factors[0]?.id ?? "")}
             disabled={loading}
             className="w-full rounded-xl border border-red-300 bg-white px-4 py-3 font-semibold text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-55"
@@ -335,6 +340,7 @@ export default function SeguridadPage() {
 
       <div className="mt-6">
         <button
+          type="button"
           onClick={() => router.push("/admin/productos")}
           className="text-sm text-text-muted transition-colors hover:text-primary"
         >

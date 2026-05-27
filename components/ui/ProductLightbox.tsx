@@ -157,6 +157,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
           )}
 
           <button
+            type="button"
             onClick={onClose}
             className="mt-2 self-start rounded-xl border border-border-mid px-5 py-2.5 text-sm font-semibold text-text-sub transition hover:border-primary-light hover:bg-primary-light/15 hover:text-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >

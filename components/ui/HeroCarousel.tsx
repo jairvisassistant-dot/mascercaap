@@ -246,8 +246,9 @@ export default function HeroCarousel({ dict, lang }: Props) {
   }, [currentSlide, frameCount, frameDurationMs, isVisible, shouldReduceMotion]);
 
   useEffect(() => {
+    const timerRef = resumeTimerRef;
     return () => {
-      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 

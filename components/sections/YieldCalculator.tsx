@@ -132,8 +132,9 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   }
 
   useEffect(() => {
+    const timerRef = scrollTimerRef
     return () => {
-      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
+      if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [])
 

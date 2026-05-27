@@ -290,7 +290,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
                       <ul className="space-y-1">
                         {lead.preguntas_bot.map((q, i) => (
                           <li
-                            key={i}
+                            key={`${i}-${q}`}
                             className="rounded-lg bg-surface-warm px-3 py-1.5 text-sm text-text-sub"
                           >
                             <span className="mr-1.5 text-[10px] font-bold text-text-faint">{i + 1}.</span>

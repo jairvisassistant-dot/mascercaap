@@ -89,8 +89,8 @@ export default async function PoliticasPage({ params }: { params: Promise<{ lang
       {/* Contenido */}
       <section className="max-w-3xl mx-auto px-4 py-12">
         <div className="space-y-10">
-          {privacyPolicy.sections.map((section, i) => (
-            <div key={i} className="border-l-2 border-primary/30 pl-6">
+          {privacyPolicy.sections.map((section) => (
+            <div key={section.title.es} className="border-l-2 border-primary/30 pl-6">
               <h2 className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">
                 {section.title[locale]}
               </h2>
