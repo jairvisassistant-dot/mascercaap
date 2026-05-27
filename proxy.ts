@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { buildEnforcedCsp, buildReportOnlyCsp } from "@/lib/security/csp";
 
 const locales = ["es", "en"];
 const defaultLocale = "es";
@@ -38,6 +39,15 @@ function getLocale(request: NextRequest): string {
   return defaultLocale;
 }
 
+/** Attach nonce-aware CSP headers to an outgoing response. */
+function withCsp(response: NextResponse, nonce: string): NextResponse {
+  const isDev = process.env.NODE_ENV === "development";
+  response.headers.set("Content-Security-Policy", buildEnforcedCsp(isDev, nonce));
+  const reportOnly = buildReportOnlyCsp(isDev, nonce);
+  if (reportOnly) response.headers.set("Content-Security-Policy-Report-Only", reportOnly);
+  return response;
+}
+
 const RATE_LIMITED_PATHS = ["/api/orders", "/api/leads", "/api/contact"];
 
 export function proxy(request: NextRequest) {
@@ -48,7 +58,10 @@ export function proxy(request: NextRequest) {
     return new NextResponse(null, { status: 403 });
   }
 
-  // Rate limit sensitive API routes
+  // Generate a fresh nonce for every HTML request.
+  const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("base64");
+
+  // Rate limit sensitive API routes (no nonce needed — JSON responses)
   if (RATE_LIMITED_PATHS.some((p) => pathname.startsWith(p))) {
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
@@ -76,13 +89,14 @@ export function proxy(request: NextRequest) {
     }
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set("x-pathname", pathname);
-    return NextResponse.next({ request: { headers: requestHeaders } });
+    requestHeaders.set("x-nonce", nonce);
+    return withCsp(NextResponse.next({ request: { headers: requestHeaders } }), nonce);
   }
 
   // Skip static assets not caught by the matcher
   if (pathname.startsWith("/_next") || pathname.includes(".")) return;
 
-  // i18n
+  // i18n — attach lang + nonce to request headers for RSC layouts to read
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
@@ -91,8 +105,11 @@ export function proxy(request: NextRequest) {
       locales.find((l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`) ?? defaultLocale;
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set("x-lang", lang);
-    return NextResponse.next({ request: { headers: requestHeaders } });
+    requestHeaders.set("x-nonce", nonce);
+    return withCsp(NextResponse.next({ request: { headers: requestHeaders } }), nonce);
   }
+
+  // Redirect to locale-prefixed path
   const locale = getLocale(request);
   request.nextUrl.pathname = `/${locale}${pathname}`;
   return NextResponse.redirect(request.nextUrl);
