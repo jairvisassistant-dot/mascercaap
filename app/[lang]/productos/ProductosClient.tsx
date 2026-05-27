@@ -235,17 +235,14 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
 
       <ProductsFilterBar
         dict={dict}
-        isSticky={isSticky}
+        filterState={{ isSticky, hasInteracted, showSubFilter, hasActiveFilters }}
         categoryOrder={categoryOrder}
         catLabels={catLabels}
         activeCategory={activeCategory}
-        hasInteracted={hasInteracted}
-        showSubFilter={showSubFilter}
         categorySubLines={categorySubLines}
         activeSubLines={activeSubLines}
         availableSizes={availableSizes}
         activeSize={activeSize}
-        hasActiveFilters={hasActiveFilters}
         pl={pl}
         onSelectCategory={selectCategory}
         onToggleSubLine={toggleSubLine}

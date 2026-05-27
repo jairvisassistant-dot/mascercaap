@@ -145,6 +145,7 @@ export default function ProductosAdminClient({
       <div className="relative mb-6 flex flex-wrap gap-3 rounded-3xl border border-primary/15 bg-gradient-to-br from-[#f7ffe6]/80 via-surface-card to-surface-card p-4 shadow-[0_20px_60px_-38px_rgba(47,111,54,0.45)]">
         <input
           type="text"
+          aria-label="Buscar productos por nombre o ID"
           placeholder="Buscar por nombre o ID..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -152,6 +153,7 @@ export default function ProductosAdminClient({
         />
         {/* Filtro 1: Categoría */}
         <select
+          aria-label="Filtrar por categoría"
           value={categoryFilter}
           onChange={(e) => handleCategoryChange(e.target.value)}
           className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -163,6 +165,7 @@ export default function ProductosAdminClient({
         </select>
         {/* Filtro 2: Línea dentro de la categoría */}
         <select
+          aria-label="Filtrar por línea de producto"
           value={lineFilter}
           onChange={(e) => setLineFilter(e.target.value)}
           disabled={linesForCategory.length === 0}
@@ -281,7 +284,7 @@ export default function ProductosAdminClient({
                         onClick={() => setConfirmDeleteId(null)}
                         className="rounded-lg border border-border-mid px-2.5 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:bg-surface-warm"
                       >
-                        No
+                        Cancelar
                       </button>
                     </div>
                   ) : (
@@ -296,9 +299,9 @@ export default function ProductosAdminClient({
                         type="button"
                         onClick={() => { setError(""); setConfirmDeleteId(p.id); }}
                         className="flex h-7 w-7 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-red-50 hover:text-red-500"
-                        title="Eliminar producto"
+                        aria-label={`Eliminar producto ${p.name}`}
                       >
-                        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>

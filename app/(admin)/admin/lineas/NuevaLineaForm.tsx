@@ -9,7 +9,7 @@ import { generateLineKey } from "@/lib/id-generators";
 type Category = { key: string; label: string };
 
 export default function NuevaLineaForm() {
-  const router = useRouter();
+  const { push, refresh } = useRouter();
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
   const [iconEmoji, setIconEmoji] = useState("🛍️");
@@ -64,8 +64,8 @@ export default function NuevaLineaForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error creando línea");
 
-      router.push("/admin/lineas");
-      router.refresh();
+      push("/admin/lineas");
+      refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error creando línea");
     } finally {
@@ -94,8 +94,9 @@ export default function NuevaLineaForm() {
         <p className="mb-4 text-xs text-text-muted">
           Elige a qué categoría pertenece esta línea antes de continuar.
         </p>
-        <Field label="Categoría *">
+        <Field label="Categoría *" htmlFor="linea-categoria">
           <select
+            id="linea-categoria"
             value={categoryKey}
             onChange={(e) => setCategoryKey(e.target.value)}
             disabled={loadingCategories}
@@ -126,8 +127,9 @@ export default function NuevaLineaForm() {
           Información básica
         </h2>
         <div className="space-y-4">
-          <Field label="Nombre de la línea *">
+          <Field label="Nombre de la línea *" htmlFor="linea-nombre">
             <input
+              id="linea-nombre"
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
@@ -148,8 +150,9 @@ export default function NuevaLineaForm() {
             }
           />
 
-          <Field label="Descripción">
+          <Field label="Descripción" htmlFor="linea-descripcion">
             <textarea
+              id="linea-descripcion"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               maxLength={200}
@@ -160,8 +163,9 @@ export default function NuevaLineaForm() {
             <p className="mt-1 text-xs text-text-muted">{description.length}/200</p>
           </Field>
 
-          <Field label="Emoji / Ícono">
+          <Field label="Emoji / Ícono" htmlFor="linea-icono">
             <input
+              id="linea-icono"
               type="text"
               value={iconEmoji}
               onChange={(e) => setIconEmoji(e.target.value)}
@@ -227,7 +231,7 @@ export default function NuevaLineaForm() {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/admin/lineas")}
+          onClick={() => push("/admin/lineas")}
           className="rounded-xl px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
         >
           Cancelar
@@ -240,10 +244,10 @@ export default function NuevaLineaForm() {
 const inputCls =
   "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, htmlFor, children }: { label: string; htmlFor?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
+      <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
       {children}
     </div>
   );

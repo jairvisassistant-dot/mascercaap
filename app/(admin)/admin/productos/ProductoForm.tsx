@@ -68,7 +68,7 @@ const defaultForm: FormData = {
 };
 
 export default function ProductoForm({ mode, initial, productId }: Props) {
-  const router = useRouter();
+  const { push, refresh } = useRouter();
   const [form, setForm] = useState<FormData>({ ...defaultForm, ...initial });
   const [lines, setLines] = useState<LineOption[]>(LINES_FALLBACK);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -196,8 +196,8 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      router.push("/admin/productos");
-      router.refresh();
+      push("/admin/productos");
+      refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error guardando producto");
     } finally {
@@ -538,7 +538,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/admin/productos")}
+          onClick={() => push("/admin/productos")}
           className="rounded-xl px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
         >
           Cancelar

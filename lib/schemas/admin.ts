@@ -25,7 +25,7 @@ export const productCreateSchema = z.object({
 
 export const productUpdateSchema = productCreateSchema.omit({ id: true });
 
-export function createProductPatchSchema(msgs?: { noValidFields?: string }) {
+function createProductPatchSchema(msgs?: { noValidFields?: string }) {
   return z
     .object({
       featured: z.boolean().optional(),

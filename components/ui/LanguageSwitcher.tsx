@@ -11,7 +11,7 @@ interface LanguageSwitcherProps {
 
 export default function LanguageSwitcher({ dict, lang }: LanguageSwitcherProps) {
   const pathname = usePathname();
-  const router = useRouter();
+  const { push } = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const switchLocale = () => {
@@ -19,7 +19,7 @@ export default function LanguageSwitcher({ dict, lang }: LanguageSwitcherProps) 
     const rest = pathname.startsWith(`/${lang}`) ? pathname.slice(`/${lang}`.length) : "";
     const newPath = `/${targetLang}${rest}`;
     try { document.cookie = `NEXT_LOCALE=${targetLang};path=/;max-age=31536000`; } catch {}
-    startTransition(() => { router.push(newPath); });
+    startTransition(() => { push(newPath); });
   };
 
   return (

@@ -7,7 +7,7 @@ import Link from "next/link";
 type Step = "credentials" | "totp";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
+  const { push } = useRouter();
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
       }
 
       // Sin MFA -> redirigir directo
-      router.push("/admin/productos");
+      push("/admin/productos");
     } catch (err) {
       console.error("Error en login admin:", err instanceof Error ? err.message : "unknown");
       setError("Error de conexión");
@@ -113,7 +113,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      router.push("/admin/productos");
+      push("/admin/productos");
     } catch (err) {
       console.error("Error en verificación 2FA:", err instanceof Error ? err.message : "unknown");
       setError("Error de conexión");
@@ -234,10 +234,11 @@ export default function AdminLoginPage() {
             {/* Selector de factor (si hay mas de uno) */}
             {factorIds.length > 1 && (
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-text-sub">
+                <label htmlFor="totp-factor" className="mb-1.5 block text-sm font-semibold text-text-sub">
                   Dispositivo
                 </label>
                 <select
+                  id="totp-factor"
                   value={selectedFactor}
                   onChange={(e) => setSelectedFactor(e.target.value)}
                   className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -253,10 +254,14 @@ export default function AdminLoginPage() {
 
             {/* Inputs de 6 digitos */}
             <div>
-              <label className="mb-3 block text-center text-sm font-semibold text-text-sub">
+              <p id="totp-label" className="mb-3 block text-center text-sm font-semibold text-text-sub">
                 Codigo de verificacion
-              </label>
-              <div className="flex justify-center gap-2">
+              </p>
+              <div
+                role="group"
+                aria-labelledby="totp-label"
+                className="flex justify-center gap-2"
+              >
                 {code.map((digit, i) => (
                   <input
                     key={`totp-input-${i}`}
@@ -265,6 +270,7 @@ export default function AdminLoginPage() {
                     inputMode="numeric"
                     autoComplete="one-time-code"
                     maxLength={1}
+                    aria-label={`Dígito ${i + 1} de 6`}
                     value={digit}
                     onChange={(e) => handleCodeChange(i, e.target.value)}
                     onKeyDown={(e) => handleCodeKeyDown(i, e)}

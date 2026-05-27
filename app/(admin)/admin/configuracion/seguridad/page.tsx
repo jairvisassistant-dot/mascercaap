@@ -12,7 +12,7 @@ type MfaState =
 type EnrollStep = "idle" | "qr" | "verify";
 
 export default function SeguridadPage() {
-  const router = useRouter();
+  const { push } = useRouter();
   const [mfaState, setMfaState] = useState<MfaState>({ status: "loading" });
 
   // Enrollment state
@@ -28,7 +28,7 @@ export default function SeguridadPage() {
     try {
       const res = await fetch("/api/admin/auth/mfa/status");
       if (res.status === 401) {
-        router.push("/admin/login");
+        push("/admin/login");
         return;
       }
       const data = await res.json();
@@ -44,7 +44,7 @@ export default function SeguridadPage() {
     } catch {
       setMfaState({ status: "error", message: "Error de conexión" });
     }
-  }, [router]);
+  }, [push]);
 
   useEffect(() => { loadStatus(); }, [loadStatus]);
 
@@ -169,7 +169,7 @@ export default function SeguridadPage() {
       {/* ── Estado: Cargando ─────────────────────────────────────── */}
       {mfaState.status === "loading" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <p className="text-sm text-text-muted">Cargando configuración...</p>
+          <p className="text-sm text-text-muted">Cargando configuración…</p>
         </div>
       )}
 
@@ -215,7 +215,7 @@ export default function SeguridadPage() {
             disabled={loading}
             className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
-            {loading ? "Generando código QR..." : "Configurar verificación en dos pasos"}
+            {loading ? "Generando código QR…" : "Configurar verificación en dos pasos"}
           </button>
         </div>
       )}
@@ -269,7 +269,7 @@ export default function SeguridadPage() {
             disabled={loading}
             className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
-            {loading ? "Verificando..." : "Verificar y activar"}
+            {loading ? "Verificando…" : "Verificar y activar"}
           </button>
 
           <button
@@ -333,7 +333,7 @@ export default function SeguridadPage() {
             disabled={loading}
             className="w-full rounded-xl border border-red-300 bg-white px-4 py-3 font-semibold text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-55"
           >
-            {loading ? "Deshabilitando..." : "Deshabilitar verificación en dos pasos"}
+            {loading ? "Deshabilitando…" : "Deshabilitar verificación en dos pasos"}
           </button>
         </div>
       )}
@@ -341,7 +341,7 @@ export default function SeguridadPage() {
       <div className="mt-6">
         <button
           type="button"
-          onClick={() => router.push("/admin/productos")}
+          onClick={() => push("/admin/productos")}
           className="text-sm text-text-muted transition-colors hover:text-primary"
         >
           ← Volver al catálogo

@@ -4,19 +4,23 @@ import { m, AnimatePresence } from "framer-motion"
 import type { Dictionary } from "@/lib/i18n"
 import type { ProductLineConfig, ProductLineKey } from "@/types"
 
+type FilterState = {
+  isSticky: boolean
+  hasInteracted: boolean
+  showSubFilter: boolean
+  hasActiveFilters: boolean
+}
+
 type Props = {
   dict: Dictionary
-  isSticky: boolean
+  filterState: FilterState
   categoryOrder: string[]
   catLabels: Record<string, string>
   activeCategory: string
-  hasInteracted: boolean
-  showSubFilter: boolean
   categorySubLines: ProductLineConfig[]
   activeSubLines: ProductLineKey[]
   availableSizes: string[]
   activeSize: string
-  hasActiveFilters: boolean
   pl: Record<string, { label: string; description: string }>
   onSelectCategory: (cat: string) => void
   onToggleSubLine: (key: ProductLineKey) => void
@@ -25,11 +29,12 @@ type Props = {
 }
 
 export function ProductsFilterBar({
-  dict, isSticky, categoryOrder, catLabels, activeCategory,
-  hasInteracted, showSubFilter, categorySubLines, activeSubLines,
-  availableSizes, activeSize, hasActiveFilters, pl,
+  dict, filterState, categoryOrder, catLabels, activeCategory,
+  categorySubLines, activeSubLines,
+  availableSizes, activeSize, pl,
   onSelectCategory, onToggleSubLine, onSelectSize, onClearAll,
 }: Props) {
+  const { isSticky, hasInteracted, showSubFilter, hasActiveFilters } = filterState
   return (
     <div
       className={`sticky z-40 border-b transition-all duration-500 ${

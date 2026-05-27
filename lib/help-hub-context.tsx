@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useMemo } from "react";
+import { createContext, use, useState, useCallback, useMemo } from "react";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
 
@@ -53,7 +53,7 @@ export function HelpHubProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useHelpHub(): HelpHubContextType {
-  const ctx = useContext(HelpHubContext);
+  const ctx = use(HelpHubContext);
   if (!ctx) throw new Error("useHelpHub must be used within HelpHubProvider");
   return ctx;
 }
