@@ -110,34 +110,43 @@ export default async function LangLayout({
 
   if (!hasLocale(lang)) notFound();
 
-  const dict = await getDictionary(lang);
-  const faqData = await getFAQData();
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const [dict, faqData, hdrs] = await Promise.all([
+    getDictionary(lang),
+    getFAQData(),
+    headers(),
+  ]);
+  const nonce = hdrs.get("x-nonce") ?? undefined;
   const organizationJsonLd = getOrganizationJsonLd(lang);
   const webSiteJsonLd = getWebSiteJsonLd(lang);
   const faqJsonLd = getFaqJsonLd(faqData, lang);
 
   let prices: PriceEntry[] = [];
   let lines: CatalogLine[] = [];
-  if (supabase) {
-    const [{ data: productData, error: productErr }, { data: lineData, error: lineErr }] = await Promise.all([
-      supabase
-        .from("products")
-        .select("id, line, name, presentation, presentation_order, price")
-        .not("price", "is", null),
-      supabase
-        .from("product_lines")
-        .select("key, label, category_key, display_order, order_assistant_enabled, order_assistant_label")
-        .eq("active", true)
-        .order("display_order"),
-    ]);
+
+  const [supabaseResult, categories] = await Promise.all([
+    supabase
+      ? Promise.all([
+          supabase
+            .from("products")
+            .select("id, line, name, presentation, presentation_order, price")
+            .not("price", "is", null),
+          supabase
+            .from("product_lines")
+            .select("key, label, category_key, display_order, order_assistant_enabled, order_assistant_label")
+            .eq("active", true)
+            .order("display_order"),
+        ])
+      : null,
+    getAllProductCategories(),
+  ]);
+
+  if (supabaseResult) {
+    const [{ data: productData, error: productErr }, { data: lineData, error: lineErr }] = supabaseResult;
     if (productErr) console.error("[layout] products query failed:", productErr);
     if (lineErr)    console.error("[layout] product_lines query failed:", lineErr);
     if (productData?.length) prices = productData as PriceEntry[];
     if (lineData?.length)    lines  = lineData  as CatalogLine[];
   }
-
-  const categories = await getAllProductCategories();
 
   return (
     <>

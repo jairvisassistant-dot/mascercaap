@@ -346,11 +346,12 @@ export default function ImagenesAdminClient({
 
       setEntries((prev) => {
         const next = [...prev];
+        const entryIndexMap = new Map(next.map((e, i) => [e.id, i]));
         for (const sent of sentEntries) {
           const result = resultByFileIndex.get(sent.fileIndex);
           if (!result) continue;
 
-          const idx = next.findIndex((e) => e.id === sent.entryId);
+          const idx = entryIndexMap.get(sent.entryId) ?? -1;
           if (idx === -1) continue;
 
           if (result.status === "done") {
@@ -782,6 +783,7 @@ function FileCard({
             src={entry.previewUrl}
             alt={entry.file.name}
             fill
+            sizes="56px"
             className="object-contain p-1"
           />
         </div>
@@ -934,9 +936,10 @@ function matchToEntryResult(
   }
 
   if (match.type === "multiple") {
-    const candidates = match.candidates
-      .map((c) => products.find((p) => p.id === c.id))
-      .filter(Boolean) as ProductRow[];
+    const candidates = match.candidates.flatMap((c) => {
+      const found = products.find((p) => p.id === c.id);
+      return found ? [found] : [];
+    }) as ProductRow[];
     return {
       type: "ambiguous",
       candidates,

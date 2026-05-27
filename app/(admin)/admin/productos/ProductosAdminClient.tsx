@@ -19,11 +19,15 @@ type Product = {
   display_order: number;
 };
 
+const EMPTY_LINE_LABELS: Record<string, string> = {};
+const EMPTY_LINE_CATEGORIES: Record<string, string> = {};
+const EMPTY_CATEGORIES: { key: string; label: string }[] = [];
+
 export default function ProductosAdminClient({
   initialProducts,
-  lineLabels = {},
-  lineCategories = {},
-  categories = [],
+  lineLabels = EMPTY_LINE_LABELS,
+  lineCategories = EMPTY_LINE_CATEGORIES,
+  categories = EMPTY_CATEGORIES,
 }: {
   initialProducts: Product[];
   lineLabels?: Record<string, string>;
@@ -202,7 +206,7 @@ export default function ProductosAdminClient({
                 <td className="px-4 py-3">
                   {p.image?.startsWith("http") ? (
                     <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl bg-surface-warm ring-1 ring-border-soft">
-                      <Image src={p.image} alt={p.name} fill className="object-cover" />
+                      <Image src={p.image} alt={p.name} fill sizes="44px" className="object-cover" />
                     </div>
                   ) : (
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-warm text-xs text-text-faint ring-1 ring-border-soft">

@@ -368,7 +368,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Imagen</h2>
         {form.image && (
           <div className="relative mb-3 h-24 w-24 overflow-hidden rounded-2xl bg-surface-warm ring-1 ring-border-soft">
-            <Image src={form.image} alt="preview" fill className="object-cover" />
+            <Image src={form.image} alt="preview" fill sizes="96px" className="object-cover" />
           </div>
         )}
         <div className="flex flex-wrap items-center gap-3">
