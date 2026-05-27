@@ -11,7 +11,7 @@ export default function AdminLoginPage() {
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mfaToken, setMfaToken] = useState("");
+  const mfaTokenRef = useRef("");
   const [factorIds, setFactorIds] = useState<string[]>([]);
   const [selectedFactor, setSelectedFactor] = useState("");
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
 
       if (data.needs_mfa) {
         // Pasar al step 2 - verificacion TOTP
-        setMfaToken(data.mfa_token);
+        mfaTokenRef.current = data.mfa_token ?? "";
         setFactorIds(data.factor_ids ?? []);
         setSelectedFactor(data.factor_ids?.[0] ?? "");
         setStep("totp");
@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mfa_token: mfaToken,
+          mfa_token: mfaTokenRef.current,
           factor_id: selectedFactor,
           code: fullCode,
         }),
@@ -126,7 +126,7 @@ export default function AdminLoginPage() {
     setStep("credentials");
     setCode(["", "", "", "", "", ""]);
     setError("");
-    setMfaToken("");
+    mfaTokenRef.current = "";
   }
 
   // ── Render ────────────────────────────────────────────────────────────

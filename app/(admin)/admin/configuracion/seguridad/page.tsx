@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 type MfaState =
@@ -18,7 +18,7 @@ export default function SeguridadPage() {
   // Enrollment state
   const [enrollStep, setEnrollStep] = useState<EnrollStep>("idle");
   const [qrCode, setQrCode] = useState("");
-  const [factorId, setFactorId] = useState("");
+  const factorIdRef = useRef("");
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,7 @@ export default function SeguridadPage() {
       }
 
       setQrCode(data.qr_code);
-      setFactorId(data.factor_id);
+      factorIdRef.current = data.factor_id ?? "";
       setEnrollStep("qr");
     } catch {
       setError("Error de conexión");
@@ -87,7 +87,7 @@ export default function SeguridadPage() {
       const res = await fetch("/api/admin/auth/mfa/verify-enrollment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ factor_id: factorId, code: fullCode }),
+        body: JSON.stringify({ factor_id: factorIdRef.current, code: fullCode }),
       });
 
       const data = await res.json();
@@ -101,7 +101,7 @@ export default function SeguridadPage() {
       setEnrollStep("idle");
       setCode(["", "", "", "", "", ""]);
       setQrCode("");
-      setFactorId("");
+      factorIdRef.current = "";
       await loadStatus();
     } catch {
       setError("Error de conexión");
@@ -278,7 +278,7 @@ export default function SeguridadPage() {
               setEnrollStep("idle");
               setCode(["", "", "", "", "", ""]);
               setQrCode("");
-              setFactorId("");
+              factorIdRef.current = "";
               setError("");
             }}
             className="mt-3 w-full text-center text-sm text-text-muted transition-colors hover:text-primary"

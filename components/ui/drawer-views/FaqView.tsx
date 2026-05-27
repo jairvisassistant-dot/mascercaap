@@ -67,7 +67,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
   const [leadData, setLeadData] = useState<LeadData>({ nombre: "", email: "", tipo: "" });
   const [leadConsent, setLeadConsent] = useState(false);
   const [leadSaveError, setLeadSaveError] = useState(false);
-  const [pendingWhatsApp, setPendingWhatsApp] = useState<{ appUrl: string | null; webUrl: string | null } | null>(null);
+  const pendingWhatsAppRef = useRef<{ appUrl: string | null; webUrl: string | null } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
 
@@ -180,12 +180,12 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     if (drawerContext?.product) lines.push(`\nProducto de interés: *${drawerContext.product}*`);
 
     const conversation = currentMessages
-      .filter((m) => m.id !== "welcome")
-      .map((m) =>
-        m.role === "user"
+      .flatMap((m) => {
+        if (m.id === "welcome") return [];
+        return [m.role === "user"
           ? `Yo: "${m.text}"`
-          : `Bot: "${m.text.length > 120 ? m.text.slice(0, 120) + "…" : m.text}"`
-      )
+          : `Bot: "${m.text.length > 120 ? m.text.slice(0, 120) + "…" : m.text}"`];
+      })
       .join("\n");
 
     if (conversation) lines.push(`\nConversación:\n${conversation}`);
@@ -275,7 +275,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     e.preventDefault();
     if (!leadConsent || !leadData.nombre.trim() || !leadData.tipo) return;
     setLeadSaveError(false);
-    setPendingWhatsApp(null);
+    pendingWhatsAppRef.current = null;
 
     const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages, leadData));
 
@@ -289,9 +289,9 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
           email: leadData.email.trim() || null,
           tipo: leadData.tipo,
           producto_interes: drawerContext?.product ?? null,
-          preguntas_bot: messages
-            .filter((m) => m.role === "user" && m.id !== "welcome")
-            .map((m) => m.text),
+          preguntas_bot: messages.flatMap((m) =>
+            m.role === "user" && m.id !== "welcome" ? [m.text] : []
+          ),
           resumen_handoff: buildHandoffSummary(messages, {
             nombre: leadData.nombre.trim(),
             email: leadData.email.trim() || null,
@@ -316,7 +316,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
         has_email: Boolean(leadData.email.trim()),
       });
       setLeadSaveError(true);
-      setPendingWhatsApp({ appUrl, webUrl });
+      pendingWhatsAppRef.current = { appUrl, webUrl };
       return;
     }
 
@@ -336,11 +336,11 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
   }
 
   function handleLeadContinueAnyway() {
-    if (!pendingWhatsApp) return;
-    const { appUrl, webUrl } = pendingWhatsApp;
+    if (!pendingWhatsAppRef.current) return;
+    const { appUrl, webUrl } = pendingWhatsAppRef.current;
     setShowLeadForm(false);
     setLeadSaveError(false);
-    setPendingWhatsApp(null);
+    pendingWhatsAppRef.current = null;
     persistFaqSession({
       showLeadForm: false,
       showAdvisorButton: false,

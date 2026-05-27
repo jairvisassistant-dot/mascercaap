@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useEffectEvent } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { Product } from "@/types";
@@ -41,13 +41,15 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
     }
   }, [isOpen]);
 
+  const stableOnClose = useEffectEvent(onClose);
+
   useEffect(() => {
     if (!isOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "Escape") { stableOnClose(); return; }
       if (e.key !== "Tab" || !dialogRef.current) return;
 
       const focusable = Array.from(
@@ -70,7 +72,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, stableOnClose]);
 
   if (!isOpen || !product.image) return null;
 

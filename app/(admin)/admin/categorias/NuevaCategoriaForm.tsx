@@ -14,14 +14,19 @@ export default function NuevaCategoriaForm() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/categories")
-      .then((r) => r.json())
-      .then((data: unknown[]) => {
+    const loadKey = async () => {
+      try {
+        const r = await fetch("/api/admin/categories");
+        const data: unknown[] = await r.json();
         const count = Array.isArray(data) ? data.length : 0;
         setGeneratedKey(generateCategoryKey(count));
-      })
-      .catch(() => setGeneratedKey(generateCategoryKey(0)))
-      .finally(() => setLoadingKey(false));
+      } catch {
+        setGeneratedKey(generateCategoryKey(0));
+      } finally {
+        setLoadingKey(false);
+      }
+    };
+    void loadKey();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
