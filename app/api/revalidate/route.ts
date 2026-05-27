@@ -16,9 +16,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 
-  revalidateTag("products");
-  revalidateTag("product-lines");
-  revalidateTag("categories");
+  revalidateTag("products", {});
+  revalidateTag("product-lines", {});
+  revalidateTag("categories", {});
   revalidatePath("/es/productos");
   revalidatePath("/en/productos");
 
