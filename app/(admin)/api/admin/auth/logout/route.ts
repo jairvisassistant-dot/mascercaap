@@ -12,16 +12,8 @@ function clearAndRedirect(req: Request, destination: string) {
   return res;
 }
 
-export async function GET(req: Request) {
-  // Sec-Fetch-Dest distinguishes legitimate browser navigation (value: "document")
-  // from CSRF via embedded tags like <img src="/api/admin/auth/logout">.
-  const dest = req.headers.get("sec-fetch-dest");
-  if (dest !== "document") {
-    return NextResponse.redirect(`${getPublicBase(req)}/admin/login`);
-  }
-  return clearAndRedirect(req, "/admin/login");
-}
-
+// Only POST is allowed. GET is intentionally omitted to prevent CSRF via
+// unintended prefetch, <img>, or link navigation side-effects.
 export async function POST(req: Request) {
   return clearAndRedirect(req, "/es");
 }

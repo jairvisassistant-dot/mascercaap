@@ -20,6 +20,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
   const widthCtrl  = useAnimation();
   const textCtrl   = useAnimation();
   const aliveRef   = useRef(false);
+  const rafRef     = useRef<number>(0);
   const shouldReduceMotion = useReducedMotion();
   const { openDrawer } = useHelpHub();
 
@@ -87,7 +88,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
         if (entry.isIntersecting && !aliveRef.current) {
           aliveRef.current = true;
           // Defer to next animation frame so Framer Motion controls are connected to DOM
-          requestAnimationFrame(() => { if (aliveRef.current) runLoop(); });
+          rafRef.current = requestAnimationFrame(() => { if (aliveRef.current) runLoop(); });
         } else if (!entry.isIntersecting) {
           aliveRef.current = false;
           widthCtrl.stop();
@@ -101,6 +102,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
 
     return () => {
       aliveRef.current = false;
+      cancelAnimationFrame(rafRef.current);
       observer.disconnect();
     };
   }, [widthCtrl, textCtrl, shouldReduceMotion]);
