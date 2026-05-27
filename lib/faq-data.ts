@@ -13,18 +13,16 @@ const LINE_LABELS: Record<string, { es: string; en: string }> = {
 };
 
 function buildProductAnswers(products: ProductRow[]) {
-  const lineNames = new Map<string, string[]>();
-  const linePres = new Map<string, string[]>();
+  const lineNames = new Map<string, Set<string>>();
+  const linePres = new Map<string, Set<string>>();
 
   for (const p of products) {
     if (!lineNames.has(p.line)) {
-      lineNames.set(p.line, []);
-      linePres.set(p.line, []);
+      lineNames.set(p.line, new Set());
+      linePres.set(p.line, new Set());
     }
-    const names = lineNames.get(p.line)!;
-    if (!names.includes(p.name)) names.push(p.name);
-    const pres = linePres.get(p.line)!;
-    if (!pres.includes(p.presentation)) pres.push(p.presentation);
+    lineNames.get(p.line)!.add(p.name);
+    linePres.get(p.line)!.add(p.presentation);
   }
 
   const catalogParts: { es: string[]; en: string[] } = { es: [], en: [] };
@@ -33,11 +31,13 @@ function buildProductAnswers(products: ProductRow[]) {
   for (const [line, names] of lineNames) {
     const labels = LINE_LABELS[line];
     if (!labels) continue;
-    catalogParts.es.push(`${labels.es}: ${names.join(", ")}`);
-    catalogParts.en.push(`${labels.en}: ${names.join(", ")}`);
+    const nameList = [...names].join(", ");
+    catalogParts.es.push(`${labels.es}: ${nameList}`);
+    catalogParts.en.push(`${labels.en}: ${nameList}`);
     const pres = linePres.get(line)!;
-    sizesParts.es.push(`${labels.es} en ${pres.join(", ")}`);
-    sizesParts.en.push(`${labels.en} in ${pres.join(", ")}`);
+    const presList = [...pres].join(", ");
+    sizesParts.es.push(`${labels.es} en ${presList}`);
+    sizesParts.en.push(`${labels.en} in ${presList}`);
   }
 
   return {

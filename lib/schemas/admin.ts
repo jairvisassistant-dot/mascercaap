@@ -25,7 +25,7 @@ export const productCreateSchema = z.object({
 
 export const productUpdateSchema = productCreateSchema.omit({ id: true });
 
-export function createProductPatchSchema(msgs?: { noValidFields?: string }) {
+function createProductPatchSchema(msgs?: { noValidFields?: string }) {
   return z
     .object({
       featured: z.boolean().optional(),
@@ -145,10 +145,14 @@ export const faqDeleteSchema = z.discriminatedUnion("_type", [
 
 // ─── MFA / 2FA ──────────────────────────────────────────────────────────────
 
+const MFA_MESSAGES = {
+  codeLength: "El código debe tener 6 dígitos",
+} as const;
+
 export const verifyMfaSchema = z.object({
   mfa_token: z.string().uuid(),
   factor_id: z.string().min(1),
-  code: z.string().regex(/^\d{6}$/, "El codigo debe tener 6 digitos"),
+  code: z.string().regex(/^\d{6}$/, MFA_MESSAGES.codeLength),
 });
 
 export const mfaEnrollSchema = z.object({
@@ -158,7 +162,7 @@ export const mfaEnrollSchema = z.object({
 
 export const mfaVerifyEnrollmentSchema = z.object({
   factor_id: z.string().min(1),
-  code: z.string().regex(/^\d{6}$/, "El codigo debe tener 6 digitos"),
+  code: z.string().regex(/^\d{6}$/, MFA_MESSAGES.codeLength),
 });
 
 export const mfaUnenrollSchema = z.object({

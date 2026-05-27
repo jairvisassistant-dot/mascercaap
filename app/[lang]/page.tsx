@@ -98,7 +98,7 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <>
-      <HeroCarousel />
+      <HeroCarousel dict={dict} lang={lang} />
 
       <ProductCategories dict={dict} lang={lang} />
       <FeaturedProducts products={featuredProducts} dict={dict} lang={lang} />

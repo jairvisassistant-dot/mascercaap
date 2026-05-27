@@ -35,7 +35,7 @@ const ESTADO_COLORS: Record<string, string> = {
 // ── Componente principal ─────────────────────────────────────────────────────
 
 export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
-  const router = useRouter();
+  const { refresh } = useRouter();
   const [leads, setLeads] = useState(initial);
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
       setError(data.error ?? "Error al actualizar estado");
       setLeads(initial);
     } else {
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -109,7 +109,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
         delete next[id];
         return next;
       });
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -133,6 +133,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
       <div className="flex flex-wrap items-center gap-3">
         {/* Tipo filter */}
         <select
+          aria-label="Filtrar por tipo"
           value={filters.tipo ?? ""}
           onChange={(e) => setFilters((prev) => ({ ...prev, tipo: e.target.value }))}
           className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
@@ -147,6 +148,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
 
         {/* Fuente filter */}
         <select
+          aria-label="Filtrar por fuente"
           value={filters.fuente ?? ""}
           onChange={(e) => setFilters((prev) => ({ ...prev, fuente: e.target.value }))}
           className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
@@ -161,16 +163,15 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
 
         {/* Estado filter */}
         <select
+          aria-label="Filtrar por estado"
           value={filters.estado ?? ""}
           onChange={(e) => setFilters((prev) => ({ ...prev, estado: e.target.value }))}
           className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
         >
           <option value="">Todos los estados</option>
-          {[...new Set(leads.map((l) => l.estado_seguimiento))].filter(Boolean).map((e) => (
-            <option key={e} value={e}>
-              {e.charAt(0).toUpperCase() + e.slice(1)}
-            </option>
-          ))}
+          {[...new Set(leads.map((l) => l.estado_seguimiento))].flatMap((e) =>
+            e ? [<option key={e} value={e}>{e.charAt(0).toUpperCase() + e.slice(1)}</option>] : []
+          )}
         </select>
 
         {activeFilters > 0 && (
@@ -290,7 +291,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
                       <ul className="space-y-1">
                         {lead.preguntas_bot.map((q, i) => (
                           <li
-                            key={i}
+                            key={`${i}-${q}`}
                             className="rounded-lg bg-surface-warm px-3 py-1.5 text-sm text-text-sub"
                           >
                             <span className="mr-1.5 text-[10px] font-bold text-text-faint">{i + 1}.</span>
@@ -335,10 +336,11 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
 
                   {/* ── Estado de seguimiento ───────────────────── */}
                   <div className="flex items-center gap-3">
-                    <label className="text-xs font-semibold text-text-sub">
+                    <label htmlFor={`estado-${lead.id}`} className="text-xs font-semibold text-text-sub">
                       Estado de seguimiento
                     </label>
                     <select
+                      id={`estado-${lead.id}`}
                       value={lead.estado_seguimiento}
                       onChange={(e) => updateEstado(lead.id, e.target.value)}
                       disabled={busy === lead.id}
@@ -359,11 +361,12 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
 
                   {/* ── Notas ────────────────────────────────────── */}
                   <div>
-                    <label className="mb-1 block text-xs font-semibold text-text-sub">
+                    <label htmlFor={`notas-${lead.id}`} className="mb-1 block text-xs font-semibold text-text-sub">
                       Notas internas
                     </label>
                     <div className="flex gap-2">
                       <textarea
+                        id={`notas-${lead.id}`}
                         defaultValue={lead.notas ?? ""}
                         onChange={(e) =>
                           setEditNotas((prev) => ({ ...prev, [lead.id]: e.target.value }))

@@ -7,11 +7,11 @@ import Link from "next/link";
 type Step = "credentials" | "totp";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
+  const { push } = useRouter();
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mfaToken, setMfaToken] = useState("");
+  const mfaTokenRef = useRef("");
   const [factorIds, setFactorIds] = useState<string[]>([]);
   const [selectedFactor, setSelectedFactor] = useState("");
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
 
       if (data.needs_mfa) {
         // Pasar al step 2 - verificacion TOTP
-        setMfaToken(data.mfa_token);
+        mfaTokenRef.current = data.mfa_token ?? "";
         setFactorIds(data.factor_ids ?? []);
         setSelectedFactor(data.factor_ids?.[0] ?? "");
         setStep("totp");
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
       }
 
       // Sin MFA -> redirigir directo
-      router.push("/admin/productos");
+      push("/admin/productos");
     } catch (err) {
       console.error("Error en login admin:", err instanceof Error ? err.message : "unknown");
       setError("Error de conexión");
@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mfa_token: mfaToken,
+          mfa_token: mfaTokenRef.current,
           factor_id: selectedFactor,
           code: fullCode,
         }),
@@ -113,7 +113,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      router.push("/admin/productos");
+      push("/admin/productos");
     } catch (err) {
       console.error("Error en verificación 2FA:", err instanceof Error ? err.message : "unknown");
       setError("Error de conexión");
@@ -126,7 +126,7 @@ export default function AdminLoginPage() {
     setStep("credentials");
     setCode(["", "", "", "", "", ""]);
     setError("");
-    setMfaToken("");
+    mfaTokenRef.current = "";
   }
 
   // ── Render ────────────────────────────────────────────────────────────
@@ -234,10 +234,11 @@ export default function AdminLoginPage() {
             {/* Selector de factor (si hay mas de uno) */}
             {factorIds.length > 1 && (
               <div>
-                <label className="mb-1.5 block text-sm font-semibold text-text-sub">
+                <label htmlFor="totp-factor" className="mb-1.5 block text-sm font-semibold text-text-sub">
                   Dispositivo
                 </label>
                 <select
+                  id="totp-factor"
                   value={selectedFactor}
                   onChange={(e) => setSelectedFactor(e.target.value)}
                   className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -253,18 +254,23 @@ export default function AdminLoginPage() {
 
             {/* Inputs de 6 digitos */}
             <div>
-              <label className="mb-3 block text-center text-sm font-semibold text-text-sub">
+              <p id="totp-label" className="mb-3 block text-center text-sm font-semibold text-text-sub">
                 Codigo de verificacion
-              </label>
-              <div className="flex justify-center gap-2">
+              </p>
+              <div
+                role="group"
+                aria-labelledby="totp-label"
+                className="flex justify-center gap-2"
+              >
                 {code.map((digit, i) => (
                   <input
-                    key={i}
+                    key={`totp-input-${i}`}
                     ref={(el) => { inputRefs.current[i] = el; }}
                     type="text"
                     inputMode="numeric"
                     autoComplete="one-time-code"
                     maxLength={1}
+                    aria-label={`Dígito ${i + 1} de 6`}
                     value={digit}
                     onChange={(e) => handleCodeChange(i, e.target.value)}
                     onKeyDown={(e) => handleCodeKeyDown(i, e)}
@@ -281,6 +287,7 @@ export default function AdminLoginPage() {
             )}
 
             <button
+              type="button"
               onClick={handleMFASubmit}
               disabled={loading}
               className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"

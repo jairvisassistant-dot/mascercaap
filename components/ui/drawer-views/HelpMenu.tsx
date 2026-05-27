@@ -1,12 +1,10 @@
-"use client";
-
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { SITE_CONFIG } from "@/lib/config";
-
+import type { Dictionary } from "@/lib/i18n";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
 
 type Props = {
+  dict: Dictionary;
   onNavigate: (view: View) => void;
 };
 
@@ -56,8 +54,7 @@ const MENU_ITEMS: {
   },
 ];
 
-export default function HelpMenu({ onNavigate }: Props) {
-  const { dict } = useDictionary();
+export default function HelpMenu({ dict, onNavigate }: Props) {
   const t = dict.helpHub;
 
 

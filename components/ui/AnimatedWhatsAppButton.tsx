@@ -20,6 +20,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
   const widthCtrl  = useAnimation();
   const textCtrl   = useAnimation();
   const aliveRef   = useRef(false);
+  const rafRef     = useRef<number>(0);
   const shouldReduceMotion = useReducedMotion();
   const { openDrawer } = useHelpHub();
 
@@ -37,7 +38,8 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
       widthCtrl.set({ width: 0 });
       textCtrl.set({ opacity: 0 });
 
-      while (aliveRef.current) {
+      let cycles = 0;
+      while (aliveRef.current && cycles < 3) {
         // Expand
         await Promise.all([
           widthCtrl.start({
@@ -79,6 +81,16 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
 
         // Pause
         await new Promise<void>(r => setTimeout(r, PAUSE_MS));
+
+        cycles++;
+      }
+
+      // After N cycles: leave button in expanded static state
+      if (aliveRef.current) {
+        await Promise.all([
+          widthCtrl.start({ width: 240, transition: { duration: EXPAND_MS / 1000, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } }),
+          textCtrl.start({ opacity: 1, transition: { duration: 0.45, delay: (EXPAND_MS / 1000) * 0.4, ease: "easeOut" } }),
+        ]);
       }
     };
 
@@ -87,7 +99,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
         if (entry.isIntersecting && !aliveRef.current) {
           aliveRef.current = true;
           // Defer to next animation frame so Framer Motion controls are connected to DOM
-          requestAnimationFrame(() => { if (aliveRef.current) runLoop(); });
+          rafRef.current = requestAnimationFrame(() => { if (aliveRef.current) runLoop(); });
         } else if (!entry.isIntersecting) {
           aliveRef.current = false;
           widthCtrl.stop();
@@ -101,6 +113,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
 
     return () => {
       aliveRef.current = false;
+      cancelAnimationFrame(rafRef.current);
       observer.disconnect();
     };
   }, [widthCtrl, textCtrl, shouldReduceMotion]);

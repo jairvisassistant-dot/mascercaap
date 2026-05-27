@@ -13,8 +13,8 @@ export default function LegalView({ document: doc, lang, lastUpdatedLabel }: Pro
       </p>
 
       <div className="space-y-6">
-        {doc.sections.map((section, i) => (
-          <div key={i}>
+        {doc.sections.map((section) => (
+          <div key={section.title.es}>
             <h3 className="text-sm font-semibold text-text-main mb-2">
               {section.title[locale]}
             </h3>

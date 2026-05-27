@@ -2,10 +2,15 @@ import { type NextRequest, NextResponse } from "next/server";
 import { buildEnforcedCsp, buildReportOnlyCsp } from "@/lib/security/csp";
 
 const locales = ["es", "en"];
+const localesSet = new Set(locales);
 const defaultLocale = "es";
 
 // In-memory rate limiter — fixed window, per process instance.
 // State resets on server restart — adequate for this traffic volume on a single Node.js process.
+// NOTE: This is a coarse proxy-level guard (10 req/min shared across all protected paths).
+// Fine-grained per-endpoint limits (5 req/min) are enforced in each route handler via lib/rate-limit.ts.
+// To enable Redis-backed rate limiting at the route level, set UPSTASH_REDIS_REST_URL and
+// UPSTASH_REDIS_REST_TOKEN in your deployment environment.
 const RL_WINDOW_MS = 60_000;
 const RL_MAX_REQUESTS = 10;
 const rlStore = new Map<string, { count: number; windowStart: number }>();
@@ -24,7 +29,7 @@ function isRateLimited(ip: string): boolean {
 
 function getLocale(request: NextRequest): string {
   const cookie = request.cookies.get("NEXT_LOCALE");
-  if (cookie && locales.includes(cookie.value)) return cookie.value;
+  if (cookie && localesSet.has(cookie.value)) return cookie.value;
   const acceptLang = request.headers.get("accept-language") ?? "";
   const preferred = acceptLang
     .split(",")
@@ -34,7 +39,7 @@ function getLocale(request: NextRequest): string {
     })
     .sort((a, b) => b.q - a.q);
   for (const { lang } of preferred) {
-    if ((locales as readonly string[]).includes(lang)) return lang;
+    if (localesSet.has(lang)) return lang;
   }
   return defaultLocale;
 }

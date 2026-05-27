@@ -22,7 +22,7 @@ export default function FAQAdminClient({
   initialCategories: FAQCategoryRow[];
   initialConfig: FAQConfigRow | null;
 }) {
-  const router = useRouter();
+  const { refresh } = useRouter();
   const [categories, setCategories] = useState(initialCategories);
   const [config, setConfig] = useState(initialConfig);
   const [rowMode, setRowMode] = useState<Record<string, Mode>>({});
@@ -112,7 +112,7 @@ export default function FAQAdminClient({
       setError(data.error ?? "Error al reordenar");
       setCategories(initialCategories);
     } else {
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setMoving(null);
   }
@@ -152,7 +152,7 @@ export default function FAQAdminClient({
       setError(data.error ?? "Error al reordenar");
       setCategories(initialCategories);
     } else {
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setMoving(null);
   }
@@ -193,7 +193,7 @@ export default function FAQAdminClient({
         )
       );
       setRowMode((prev) => ({ ...prev, [`cat-${id}`]: "view" }));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -213,8 +213,10 @@ export default function FAQAdminClient({
 
     const keywords = vals.keywords
       .split(",")
-      .map((k) => k.trim())
-      .filter(Boolean);
+      .flatMap((k) => {
+        const t = k.trim();
+        return t ? [t] : [];
+      });
 
     const res = await fetch("/api/admin/faq", {
       method: "PUT",
@@ -252,7 +254,7 @@ export default function FAQAdminClient({
         }))
       );
       setRowMode((prev) => ({ ...prev, [`q-${id}`]: "view" }));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -274,7 +276,7 @@ export default function FAQAdminClient({
       setRowMode((prev) => ({ ...prev, [`cat-${id}`]: "view" }));
     } else {
       setCategories((prev) => prev.filter((c) => c.id !== id));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -301,7 +303,7 @@ export default function FAQAdminClient({
           faq_questions: (c.faq_questions ?? []).filter((q) => q.id !== id),
         }))
       );
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -336,7 +338,7 @@ export default function FAQAdminClient({
       setError(data.error ?? "Error al crear pregunta");
     } else {
       setNewQuestionFor(null);
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -365,7 +367,7 @@ export default function FAQAdminClient({
     } else {
       setShowNewCategory(false);
       setNewCat({ id: "", label_es: "", label_en: "", icon: "❓" });
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -391,7 +393,7 @@ export default function FAQAdminClient({
           : { id: 1, ...configForm }
       );
       setEditConfig(false);
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -531,11 +533,12 @@ export default function FAQAdminClient({
                       }
 
                       if (qMode === "confirm-delete") {
+                        const subtextEl = <span className="line-clamp-1">{q.question_es}</span>;
                         return (
                           <ConfirmDeleteBox
                             key={q.id}
                             title="¿Eliminar esta pregunta?"
-                            subtext={<span className="line-clamp-1">{q.question_es}</span>}
+                            subtext={subtextEl}
                             busy={isQBusy}
                             onConfirm={() => deleteQ(q.id)}
                             onCancel={() => cancelRow(`q-${q.id}`)}

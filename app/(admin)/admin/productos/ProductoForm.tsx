@@ -68,7 +68,7 @@ const defaultForm: FormData = {
 };
 
 export default function ProductoForm({ mode, initial, productId }: Props) {
-  const router = useRouter();
+  const { push, refresh } = useRouter();
   const [form, setForm] = useState<FormData>({ ...defaultForm, ...initial });
   const [lines, setLines] = useState<LineOption[]>(LINES_FALLBACK);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -196,8 +196,8 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      router.push("/admin/productos");
-      router.refresh();
+      push("/admin/productos");
+      refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error guardando producto");
     } finally {
@@ -368,7 +368,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Imagen</h2>
         {form.image && (
           <div className="relative mb-3 h-24 w-24 overflow-hidden rounded-2xl bg-surface-warm ring-1 ring-border-soft">
-            <Image src={form.image} alt="preview" fill className="object-cover" />
+            <Image src={form.image} alt="preview" fill sizes="96px" className="object-cover" />
           </div>
         )}
         <div className="flex flex-wrap items-center gap-3">
@@ -538,7 +538,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/admin/productos")}
+          onClick={() => push("/admin/productos")}
           className="rounded-xl px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
         >
           Cancelar

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { generateCategoryKey } from "@/lib/id-generators";
 
 export default function NuevaCategoriaForm() {
-  const router = useRouter();
+  const { push, refresh } = useRouter();
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
   const [generatedKey, setGeneratedKey] = useState("");
@@ -14,14 +14,19 @@ export default function NuevaCategoriaForm() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/categories")
-      .then((r) => r.json())
-      .then((data: unknown[]) => {
+    const loadKey = async () => {
+      try {
+        const r = await fetch("/api/admin/categories");
+        const data: unknown[] = await r.json();
         const count = Array.isArray(data) ? data.length : 0;
         setGeneratedKey(generateCategoryKey(count));
-      })
-      .catch(() => setGeneratedKey(generateCategoryKey(0)))
-      .finally(() => setLoadingKey(false));
+      } catch {
+        setGeneratedKey(generateCategoryKey(0));
+      } finally {
+        setLoadingKey(false);
+      }
+    };
+    void loadKey();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -37,8 +42,8 @@ export default function NuevaCategoriaForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error creando categoría");
-      router.push("/admin/categorias");
-      router.refresh();
+      push("/admin/categorias");
+      refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error creando categoría");
     } finally {
@@ -62,8 +67,9 @@ export default function NuevaCategoriaForm() {
           Información de la categoría
         </h2>
         <div className="space-y-4">
-          <Field label="Nombre *">
+          <Field label="Nombre *" htmlFor="categoria-nombre">
             <input
+              id="categoria-nombre"
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
@@ -80,8 +86,9 @@ export default function NuevaCategoriaForm() {
             loading={loadingKey}
           />
 
-          <Field label="Descripción">
+          <Field label="Descripción" htmlFor="categoria-descripcion">
             <textarea
+              id="categoria-descripcion"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               maxLength={200}
@@ -108,7 +115,7 @@ export default function NuevaCategoriaForm() {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/admin/categorias")}
+          onClick={() => push("/admin/categorias")}
           className="rounded-xl px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
         >
           Cancelar
@@ -121,10 +128,10 @@ export default function NuevaCategoriaForm() {
 const inputCls =
   "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, htmlFor, children }: { label: string; htmlFor?: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
+      <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
       {children}
     </div>
   );

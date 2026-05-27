@@ -60,11 +60,15 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
   }, []);
 
+  const checkScrollRef = useRef(checkScroll);
+  useEffect(() => { checkScrollRef.current = checkScroll; });
+
   useEffect(() => {
-    checkScroll();
-    window.addEventListener("resize", checkScroll);
-    return () => window.removeEventListener("resize", checkScroll);
-  }, [checkScroll, pulpaLines]);
+    checkScrollRef.current();
+    const listener = () => checkScrollRef.current();
+    window.addEventListener("resize", listener);
+    return () => window.removeEventListener("resize", listener);
+  }, [pulpaLines]);
 
   const scroll = (dir: "left" | "right") => {
     scrollRef.current?.scrollBy({ left: dir === "left" ? -220 : 220, behavior: "smooth" });

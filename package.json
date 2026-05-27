@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "framer-motion": "^12.38.0",
     "next": "^16.2.6",
     "react": "^19.2.6",
@@ -42,7 +44,6 @@
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "^16.2.6",
-    "qrcode": "^1.5.4",
     "supabase": "^2.98.2",
     "tailwindcss": "^4.3.0",
     "tsx": "^4.22.0",

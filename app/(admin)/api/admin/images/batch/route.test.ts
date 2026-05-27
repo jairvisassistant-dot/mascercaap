@@ -325,21 +325,21 @@ describe("POST /api/admin/images/batch", () => {
   });
 
   it("does not fail entire batch when one entry has error", async () => {
-    // Hacer que el upload falle para el segundo archivo
-    const mockStorageFrom = vi.fn();
-    mockStorageFrom
-      .mockReturnValueOnce({
-        upload: vi.fn().mockResolvedValue({ error: null }),
-        getPublicUrl: vi.fn(() => ({
-          data: { publicUrl: "https://example.com/storage/ok.webp" },
-        })),
-      })
-      .mockReturnValueOnce({
-        upload: vi.fn().mockResolvedValue({ error: new Error("Storage quota exceeded") }),
-        getPublicUrl: vi.fn(() => ({
-          data: { publicUrl: "" },
-        })),
-      });
+    // storage.from() is now cached once outside the map, so a single bucket
+    // object is reused. Simulate per-entry failure via mockResolvedValueOnce
+    // on upload: first entry succeeds, second entry fails.
+    const mockUpload = vi.fn()
+      .mockResolvedValueOnce({ error: null })
+      .mockResolvedValueOnce({ error: new Error("Storage quota exceeded") });
+
+    const mockGetPublicUrl = vi.fn(() => ({
+      data: { publicUrl: "https://example.com/storage/ok.webp" },
+    }));
+
+    const mockStorageFrom = vi.fn().mockReturnValue({
+      upload: mockUpload,
+      getPublicUrl: mockGetPublicUrl,
+    });
 
     const mockSupabaseWithError = {
       ...createDefaultSupabaseMock(),

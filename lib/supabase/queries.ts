@@ -10,7 +10,8 @@ function noClient(fn: string): never[] {
 }
 
 function logQueryError(fn: string, error: unknown) {
-  console.error(`[supabase] ${fn} query failed:`, error);
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`[supabase] ${fn} query failed: ${message}`);
 }
 
 export const getAllProducts = cache(

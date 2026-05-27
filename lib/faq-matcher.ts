@@ -34,9 +34,10 @@ function uniqueTokens(text: string, lang: Locale): string[] {
 
 function scoreTokenMatches(queryTokens: string[], candidateTokens: string[]): number {
   let score = 0;
+  const candidateSet = new Set(candidateTokens);
 
   for (const token of queryTokens) {
-    if (candidateTokens.includes(token)) {
+    if (candidateSet.has(token)) {
       score += token.length >= 5 ? 3 : 2;
       continue;
     }

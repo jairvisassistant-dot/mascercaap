@@ -96,7 +96,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
           <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
             {t.timeline.steps.map((step, index) => (
               <div
-                key={index}
+                key={step.title}
                 className="fade-in-up text-center"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
@@ -128,7 +128,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
           </div>
           <div className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {t.values.items.map((value, index) => (
-              <div key={index} className="fade-in-up group bg-surface-card rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden" style={{ animationDelay: `${index * 0.12}s` }}>
+              <div key={value.title} className="fade-in-up group bg-surface-card rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden" style={{ animationDelay: `${index * 0.12}s` }}>
                 <div className={`h-1.5 w-full bg-gradient-to-r ${valuesMeta[index].color}`} />
                 <div className="p-8">
                   <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>
@@ -192,7 +192,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
               <div className="flex flex-col divide-y divide-white/10">
                 {t.trayectoria.stats.items.map((item, i) => (
                   <div
-                    key={i}
+                    key={item.value}
                     className="fade-in-up flex items-center justify-between py-5"
                     style={{ animationDelay: `${0.3 + i * 0.1}s` }}
                   >
@@ -228,7 +228,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                 const cardText = t.gallery.cards[index];
                 return (
                   <div
-                    key={index}
+                    key={step.src}
                     className="fade-in-up grid md:grid-cols-[1fr_80px_1fr] items-center gap-6 md:gap-0"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >

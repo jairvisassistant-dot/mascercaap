@@ -6,29 +6,9 @@ import enMessages from "@/messages/en.json"
 import { buildOrderEmailHtml, buildPriceResolver, is120gPackPresentation, type CatalogLine, type PriceEntry } from "@/lib/order-assistant"
 import { sanitizeSubject } from "@/lib/sanitize"
 import { supabasePublic as supabase } from "@/lib/supabase"
+import { createRateLimiter } from "@/lib/rate-limit"
 
-const requestLog = new Map<string, number[]>()
-const RATE_LIMIT_MAX = 5
-const RATE_LIMIT_WINDOW_MS = 60_000
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const windowStart = now - RATE_LIMIT_WINDOW_MS
-  const timestamps = (requestLog.get(ip) ?? []).filter((t) => t > windowStart)
-
-  if (timestamps.length >= RATE_LIMIT_MAX) return false
-
-  timestamps.push(now)
-  requestLog.set(ip, timestamps)
-
-  if (requestLog.size > 500) {
-    for (const [key, times] of requestLog.entries()) {
-      if (times.every((t) => t <= windowStart)) requestLog.delete(key)
-    }
-  }
-
-  return true
-}
+const rateLimiter = createRateLimiter({ id: "orders", max: 5 })
 
 export async function POST(request: Request) {
   const ip =
@@ -36,10 +16,11 @@ export async function POST(request: Request) {
     request.headers.get("x-real-ip") ??
     "anonymous"
 
-  if (!checkRateLimit(ip)) {
+  const { allowed, retryAfter } = await rateLimiter.check(ip)
+  if (!allowed) {
     return NextResponse.json(
       { success: false, error: "Demasiadas solicitudes. Intenta de nuevo en un minuto." },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
     )
   }
 

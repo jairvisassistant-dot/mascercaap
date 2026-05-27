@@ -36,7 +36,7 @@ export function ProductsClosingCTA({ dict, lang }: Props) {
           <div className="grid grid-cols-2 gap-4">
             {dict.products.cta.stats.map((stat, i) => (
               <AnimateInView
-                key={i}
+                key={stat.label}
                 delay={i * 0.08}
                 className="bg-white/5 border border-white/10 rounded-xl p-5 text-center"
               >

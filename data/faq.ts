@@ -137,6 +137,8 @@ export const faqData: FAQData = {
           ],
         },
         {
+          // ⚠️  VERIFY BEFORE DEPLOY — sizes and presentations must match the active
+          // Supabase catalog (products table). Update this answer if the catalog changes.
           id: "tamanios",
           question: {
             es: "¿Cuáles son los tamaños disponibles?",

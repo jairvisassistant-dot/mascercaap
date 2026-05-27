@@ -5,8 +5,8 @@ import PulpaFruitGrid from "@/components/ui/PulpaFruitGrid"
 import EmojiIcon from "@/components/ui/EmojiIcon"
 import type { Dictionary } from "@/lib/i18n"
 import type { Product, ProductLineConfig } from "@/types"
-import type { RenderSegment } from "./_constants"
-import { PULPA_KEYS } from "./_constants"
+import type { RenderSegment } from "@/lib/productos/constants"
+import { PULPA_KEYS } from "@/lib/productos/constants"
 
 type Props = {
   dict: Dictionary

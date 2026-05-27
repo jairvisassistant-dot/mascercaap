@@ -138,112 +138,113 @@ export async function POST(req: Request) {
     (existingProducts ?? []).map((p) => [p.id, p]),
   );
 
-  const results: BatchResult[] = [];
+  // Capture non-null supabase reference so TypeScript keeps the narrowing
+  // inside async arrow functions (closures lose outer narrowing).
+  const db = supabase;
 
-  for (const entry of entries) {
-    const fileField = `file_${entry.fileIndex}`;
-    const file = formData.get(fileField) as File | null;
+  // Cache the bucket reference outside the map so storage.from() is called
+  // once regardless of how many entries are processed in parallel.
+  const bucket = db.storage.from(BUCKET);
 
-    if (!file) {
-      results.push({
-        fileIndex: entry.fileIndex,
-        productId: entry.productId,
-        status: "error",
-        error: `No se encontró el archivo (file_${entry.fileIndex})`,
-      });
-      continue;
-    }
+  const results: BatchResult[] = await Promise.all(
+    entries.map(async (entry): Promise<BatchResult> => {
+      const fileField = `file_${entry.fileIndex}`;
+      const file = formData.get(fileField) as File | null;
 
-    // Validate file type & size
-    if (!ALLOWED_TYPES.has(file.type)) {
-      results.push({
-        fileIndex: entry.fileIndex,
-        productId: entry.productId,
-        status: "error",
-        error: `Tipo no permitido: ${file.type}. Use .webp, .jpg o .png`,
-      });
-      continue;
-    }
-
-    if (file.size > MAX_SIZE_BYTES) {
-      results.push({
-        fileIndex: entry.fileIndex,
-        productId: entry.productId,
-        status: "error",
-        error: `Archivo excede 2MB (${(file.size / 1024 / 1024).toFixed(1)}MB)`,
-      });
-      continue;
-    }
-
-    // Verify product exists
-    if (!existingMap.has(entry.productId)) {
-      results.push({
-        fileIndex: entry.fileIndex,
-        productId: entry.productId,
-        status: "error",
-        error: `Producto ${entry.productId} no encontrado`,
-      });
-      continue;
-    }
-
-    // Upload file
-    const ext = extname(file.name) || ".webp";
-    const filename = `products/${randomUUID()}${ext}`;
-
-    try {
-      const bytes = await file.arrayBuffer();
-      const { error: uploadError } = await supabase.storage
-        .from(BUCKET)
-        .upload(filename, Buffer.from(bytes), {
-          contentType: file.type,
-          upsert: false,
-        });
-
-      if (uploadError) {
-        results.push({
+      if (!file) {
+        return {
           fileIndex: entry.fileIndex,
           productId: entry.productId,
           status: "error",
-          error: `Error de storage: ${uploadError.message}`,
-        });
-        continue;
+          error: `No se encontró el archivo (file_${entry.fileIndex})`,
+        };
       }
 
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from(BUCKET).getPublicUrl(filename);
-
-      // Update product
-      const { error: updateError } = await supabase
-        .from("products")
-        .update({ image: publicUrl })
-        .eq("id", entry.productId);
-
-      if (updateError) {
-        results.push({
+      // Validate file type & size
+      if (!ALLOWED_TYPES.has(file.type)) {
+        return {
           fileIndex: entry.fileIndex,
           productId: entry.productId,
           status: "error",
-          error: `Error actualizando producto: ${updateError.message}`,
-        });
-        continue;
+          error: `Tipo no permitido: ${file.type}. Use .webp, .jpg o .png`,
+        };
       }
 
-      results.push({
-        fileIndex: entry.fileIndex,
-        productId: entry.productId,
-        status: "done",
-        url: publicUrl,
-      });
-    } catch (e) {
-      results.push({
-        fileIndex: entry.fileIndex,
-        productId: entry.productId,
-        status: "error",
-        error: e instanceof Error ? e.message : "Error inesperado",
-      });
-    }
-  }
+      if (file.size > MAX_SIZE_BYTES) {
+        return {
+          fileIndex: entry.fileIndex,
+          productId: entry.productId,
+          status: "error",
+          error: `Archivo excede 2MB (${(file.size / 1024 / 1024).toFixed(1)}MB)`,
+        };
+      }
+
+      // Verify product exists
+      if (!existingMap.has(entry.productId)) {
+        return {
+          fileIndex: entry.fileIndex,
+          productId: entry.productId,
+          status: "error",
+          error: `Producto ${entry.productId} no encontrado`,
+        };
+      }
+
+      // Upload file
+      const ext = extname(file.name) || ".webp";
+      const filename = `products/${randomUUID()}${ext}`;
+
+      try {
+        const bytes = await file.arrayBuffer();
+        const { error: uploadError } = await bucket
+          .upload(filename, Buffer.from(bytes), {
+            contentType: file.type,
+            upsert: false,
+          });
+
+        if (uploadError) {
+          return {
+            fileIndex: entry.fileIndex,
+            productId: entry.productId,
+            status: "error",
+            error: `Error de storage: ${uploadError.message}`,
+          };
+        }
+
+        const {
+          data: { publicUrl },
+        } = bucket.getPublicUrl(filename);
+
+        // Update product
+        const { error: updateError } = await db
+          .from("products")
+          .update({ image: publicUrl })
+          .eq("id", entry.productId);
+
+        if (updateError) {
+          return {
+            fileIndex: entry.fileIndex,
+            productId: entry.productId,
+            status: "error",
+            error: `Error actualizando producto: ${updateError.message}`,
+          };
+        }
+
+        return {
+          fileIndex: entry.fileIndex,
+          productId: entry.productId,
+          status: "done",
+          url: publicUrl,
+        };
+      } catch (e) {
+        return {
+          fileIndex: entry.fileIndex,
+          productId: entry.productId,
+          status: "error",
+          error: e instanceof Error ? e.message : "Error inesperado",
+        };
+      }
+    }),
+  );
 
   const successCount = results.filter((r) => r.status === "done").length;
 

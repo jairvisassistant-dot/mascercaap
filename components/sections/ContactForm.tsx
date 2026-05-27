@@ -85,7 +85,11 @@ function buildAvailabilityTemplate(params: {
   ].join("\n").trimEnd();
 }
 
-export default function ContactForm({ dict, lang, lines = [], products = [], categories = [] }: ContactFormProps) {
+const EMPTY_LINES: ProductLineConfig[] = [];
+const EMPTY_PRODUCTS: Product[] = [];
+const EMPTY_CATEGORIES: ProductCategory[] = [];
+
+export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products = EMPTY_PRODUCTS, categories = EMPTY_CATEGORIES }: ContactFormProps) {
   const t = dict.contact.form;
   const availability = t.availabilityAssistant as AvailabilityCopy;
   const [fields, setFields] = useState<FormFields>(EMPTY);

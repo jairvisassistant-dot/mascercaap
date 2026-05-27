@@ -132,8 +132,9 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   }
 
   useEffect(() => {
+    const timerRef = scrollTimerRef
     return () => {
-      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
+      if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [])
 
@@ -324,7 +325,6 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                             placeholder={t.customPlaceholder}
                             className="w-40 rounded-lg border border-border-mid px-3 py-2 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
                             onKeyDown={(e) => e.key === "Enter" && handleCustomCupsConfirm()}
-                            autoFocus
                           />
                           <button
                             type="button"

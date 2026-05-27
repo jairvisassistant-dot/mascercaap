@@ -89,9 +89,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       needs_mfa: true,
       mfa_token: mfaToken,
-      factor_ids: factors.totp
-        .filter((f: { status: string }) => f.status === "verified")
-        .map((f: { id: string }) => f.id),
+      factor_ids: factors.totp.flatMap((f: { status: string; id: string }) =>
+        f.status === "verified" ? [f.id] : []
+      ),
     });
   }
 

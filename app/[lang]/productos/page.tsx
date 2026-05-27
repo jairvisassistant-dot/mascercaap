@@ -53,7 +53,8 @@ export default async function ProductosPage({ params }: Props) {
 
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
-  const [products, productLines, categories] = await Promise.all([
+  const [dict, products, productLines, categories] = await Promise.all([
+    getDictionary(lang),
     getAllProducts(),
     getAllProductLines(),
     getAllProductCategories(),
@@ -88,6 +89,8 @@ export default async function ProductosPage({ params }: Props) {
       />
       <Suspense fallback={<div className="min-h-screen animate-pulse bg-surface-warm" />}>
         <ProductosClient
+          dict={dict}
+          lang={lang}
           products={products}
           productLines={productLines}
           categories={categories}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useEffectEvent } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { Product } from "@/types";
@@ -22,7 +22,7 @@ const PREPARATION_NOTICE = {
 export default function ProductLightbox({ product, isOpen, onClose, dict, lang }: ProductLightboxProps) {
   const t = dict.products.lightbox;
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const previousFocusRef = useRef<Element | null>(null);
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
@@ -41,13 +41,15 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
     }
   }, [isOpen]);
 
+  const stableOnClose = useEffectEvent(onClose);
+
   useEffect(() => {
     if (!isOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "Escape") { stableOnClose(); return; }
       if (e.key !== "Tab" || !dialogRef.current) return;
 
       const focusable = Array.from(
@@ -70,22 +72,22 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]); // stableOnClose is stable by definition (useEffectEvent) — not a dep
 
   if (!isOpen || !product.image) return null;
 
   return createPortal(
-    <div
+    <dialog
       ref={dialogRef}
-      role="dialog"
-      aria-modal="true"
+      open
       aria-label={displayName}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 m-0 max-w-none max-h-none w-full h-full bg-transparent border-0 outline-none"
     >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/55 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Card */}
@@ -157,6 +159,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
           )}
 
           <button
+            type="button"
             onClick={onClose}
             className="mt-2 self-start rounded-xl border border-border-mid px-5 py-2.5 text-sm font-semibold text-text-sub transition hover:border-primary-light hover:bg-primary-light/15 hover:text-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
@@ -164,7 +167,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
           </button>
         </div>
       </div>
-    </div>,
+    </dialog>,
     document.body
   );
 }

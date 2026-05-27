@@ -2,7 +2,6 @@ import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
 import { supabasePublic as supabase } from "@/lib/supabase";
@@ -111,34 +110,43 @@ export default async function LangLayout({
 
   if (!hasLocale(lang)) notFound();
 
-  const dict = await getDictionary(lang);
-  const faqData = await getFAQData();
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const [dict, faqData, hdrs] = await Promise.all([
+    getDictionary(lang),
+    getFAQData(),
+    headers(),
+  ]);
+  const nonce = hdrs.get("x-nonce") ?? undefined;
   const organizationJsonLd = getOrganizationJsonLd(lang);
   const webSiteJsonLd = getWebSiteJsonLd(lang);
   const faqJsonLd = getFaqJsonLd(faqData, lang);
 
   let prices: PriceEntry[] = [];
   let lines: CatalogLine[] = [];
-  if (supabase) {
-    const [{ data: productData, error: productErr }, { data: lineData, error: lineErr }] = await Promise.all([
-      supabase
-        .from("products")
-        .select("id, line, name, presentation, presentation_order, price")
-        .not("price", "is", null),
-      supabase
-        .from("product_lines")
-        .select("key, label, category_key, display_order, order_assistant_enabled, order_assistant_label")
-        .eq("active", true)
-        .order("display_order"),
-    ]);
+
+  const [supabaseResult, categories] = await Promise.all([
+    supabase
+      ? Promise.all([
+          supabase
+            .from("products")
+            .select("id, line, name, presentation, presentation_order, price")
+            .not("price", "is", null),
+          supabase
+            .from("product_lines")
+            .select("key, label, category_key, display_order, order_assistant_enabled, order_assistant_label")
+            .eq("active", true)
+            .order("display_order"),
+        ])
+      : null,
+    getAllProductCategories(),
+  ]);
+
+  if (supabaseResult) {
+    const [{ data: productData, error: productErr }, { data: lineData, error: lineErr }] = supabaseResult;
     if (productErr) console.error("[layout] products query failed:", productErr);
     if (lineErr)    console.error("[layout] product_lines query failed:", lineErr);
     if (productData?.length) prices = productData as PriceEntry[];
     if (lineData?.length)    lines  = lineData  as CatalogLine[];
   }
-
-  const categories = await getAllProductCategories();
 
   return (
     <>
@@ -147,22 +155,20 @@ export default async function LangLayout({
       <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div className={`${poppins.variable} ${dmSerifDisplay.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
-          <DictionaryProvider dict={dict} lang={lang}>
-            <HelpHubProvider>
-              <a
-                href="#main-content"
-                className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent"
-              >
-                {lang === "es" ? "Saltar al contenido" : "Skip to content"}
-              </a>
-              <PageTracker />
-              <ScrollProgress />
-              <Navbar />
-              <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
-              <Footer dict={dict} lang={lang} categories={categories} />
-              <HelpHub faqData={faqData} prices={prices} lines={lines} />
-            </HelpHubProvider>
-          </DictionaryProvider>
+          <HelpHubProvider>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              {lang === "es" ? "Saltar al contenido" : "Skip to content"}
+            </a>
+            <PageTracker />
+            <ScrollProgress />
+            <Navbar dict={dict} lang={lang} />
+            <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
+            <Footer dict={dict} lang={lang} categories={categories} />
+            <HelpHub dict={dict} lang={lang} faqData={faqData} prices={prices} lines={lines} />
+          </HelpHubProvider>
         </MotionProvider>
       </div>
     </>

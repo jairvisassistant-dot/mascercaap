@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 type MfaState =
@@ -12,13 +12,13 @@ type MfaState =
 type EnrollStep = "idle" | "qr" | "verify";
 
 export default function SeguridadPage() {
-  const router = useRouter();
+  const { push } = useRouter();
   const [mfaState, setMfaState] = useState<MfaState>({ status: "loading" });
 
   // Enrollment state
   const [enrollStep, setEnrollStep] = useState<EnrollStep>("idle");
   const [qrCode, setQrCode] = useState("");
-  const [factorId, setFactorId] = useState("");
+  const factorIdRef = useRef("");
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ export default function SeguridadPage() {
     try {
       const res = await fetch("/api/admin/auth/mfa/status");
       if (res.status === 401) {
-        router.push("/admin/login");
+        push("/admin/login");
         return;
       }
       const data = await res.json();
@@ -44,7 +44,7 @@ export default function SeguridadPage() {
     } catch {
       setMfaState({ status: "error", message: "Error de conexión" });
     }
-  }, [router]);
+  }, [push]);
 
   useEffect(() => { loadStatus(); }, [loadStatus]);
 
@@ -63,7 +63,7 @@ export default function SeguridadPage() {
       }
 
       setQrCode(data.qr_code);
-      setFactorId(data.factor_id);
+      factorIdRef.current = data.factor_id ?? "";
       setEnrollStep("qr");
     } catch {
       setError("Error de conexión");
@@ -87,7 +87,7 @@ export default function SeguridadPage() {
       const res = await fetch("/api/admin/auth/mfa/verify-enrollment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ factor_id: factorId, code: fullCode }),
+        body: JSON.stringify({ factor_id: factorIdRef.current, code: fullCode }),
       });
 
       const data = await res.json();
@@ -101,7 +101,7 @@ export default function SeguridadPage() {
       setEnrollStep("idle");
       setCode(["", "", "", "", "", ""]);
       setQrCode("");
-      setFactorId("");
+      factorIdRef.current = "";
       await loadStatus();
     } catch {
       setError("Error de conexión");
@@ -169,7 +169,7 @@ export default function SeguridadPage() {
       {/* ── Estado: Cargando ─────────────────────────────────────── */}
       {mfaState.status === "loading" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <p className="text-sm text-text-muted">Cargando configuración...</p>
+          <p className="text-sm text-text-muted">Cargando configuración…</p>
         </div>
       )}
 
@@ -178,6 +178,7 @@ export default function SeguridadPage() {
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <p className="text-sm text-red-600">{mfaState.message}</p>
           <button
+            type="button"
             onClick={loadStatus}
             className="mt-3 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
           >
@@ -209,11 +210,12 @@ export default function SeguridadPage() {
           </p>
 
           <button
+            type="button"
             onClick={handleStartEnroll}
             disabled={loading}
             className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
-            {loading ? "Generando código QR..." : "Configurar verificación en dos pasos"}
+            {loading ? "Generando código QR…" : "Configurar verificación en dos pasos"}
           </button>
         </div>
       )}
@@ -250,7 +252,7 @@ export default function SeguridadPage() {
           <div className="mb-4 flex justify-center gap-2">
             {code.map((digit, i) => (
               <input
-                key={i}
+                key={`totp-digit-${i}`}
                 type="text"
                 inputMode="numeric"
                 maxLength={1}
@@ -262,19 +264,21 @@ export default function SeguridadPage() {
           </div>
 
           <button
+            type="button"
             onClick={handleVerifyEnroll}
             disabled={loading}
             className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
-            {loading ? "Verificando..." : "Verificar y activar"}
+            {loading ? "Verificando…" : "Verificar y activar"}
           </button>
 
           <button
+            type="button"
             onClick={() => {
               setEnrollStep("idle");
               setCode(["", "", "", "", "", ""]);
               setQrCode("");
-              setFactorId("");
+              factorIdRef.current = "";
               setError("");
             }}
             className="mt-3 w-full text-center text-sm text-text-muted transition-colors hover:text-primary"
@@ -324,18 +328,20 @@ export default function SeguridadPage() {
           </div>
 
           <button
+            type="button"
             onClick={() => handleDisable(mfaState.factors[0]?.id ?? "")}
             disabled={loading}
             className="w-full rounded-xl border border-red-300 bg-white px-4 py-3 font-semibold text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-55"
           >
-            {loading ? "Deshabilitando..." : "Deshabilitar verificación en dos pasos"}
+            {loading ? "Deshabilitando…" : "Deshabilitar verificación en dos pasos"}
           </button>
         </div>
       )}
 
       <div className="mt-6">
         <button
-          onClick={() => router.push("/admin/productos")}
+          type="button"
+          onClick={() => push("/admin/productos")}
           className="text-sm text-text-muted transition-colors hover:text-primary"
         >
           ← Volver al catálogo
