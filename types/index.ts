@@ -94,6 +94,8 @@ export type ProductLineConfig = {
   iconEmoji: string;
   chipImage?: string;
   categoryKey?: string | null;
+  orderAssistantEnabled?: boolean;
+  orderAssistantLabel?: string | null;
 };
 
 export type ProductCategory = {

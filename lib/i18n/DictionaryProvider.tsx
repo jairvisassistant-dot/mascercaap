@@ -11,6 +11,23 @@ type I18nContextValue = {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
+/**
+ * DictionaryProvider — distributes the i18n dictionary via React Context.
+ *
+ * EXISTE POR RAZONES HISTÓRICAS: componentes que YA eran Client Components
+ * por interactividad real (estado, eventos, browser APIs) usan `useDictionary()`
+ * para acceder al diccionario sin recibirlo como prop.
+ *
+ * IMPORTANT — Architectural constraint:
+ * This provider exists ONLY for components that are ALREADY Client Components
+ * due to real interactivity (state, events, browser APIs).
+ *
+ * For NEW components that only need `dict` for rendering:
+ * do NOT use `useDictionary()`. Instead, receive `dict` as a prop from the
+ * Server Component parent and call `getDictionary(lang)` there.
+ *
+ * See LECCIONES_APRENDIDAS.md — CAUSA RAÍZ #15 for the full rationale.
+ */
 export function DictionaryProvider({
   dict,
   lang,

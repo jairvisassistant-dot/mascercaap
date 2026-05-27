@@ -608,19 +608,19 @@
   "productLines": {
     "limon": {
       "label": "Zumo de Limón",
-      "description": "Sabor intenso e inconfundible de limón. El clásico que nunca falla."
+      "description": "Concentrado para preparar limonada fresca. El clásico que nunca falla."
     },
     "limonada-cereza": {
       "label": "Zumo de Limonada con Cereza",
-      "description": "La acidez del limón con el irresistible toque dulce de cereza."
+      "description": "Concentrado para preparar limonada con un toque dulce de cereza."
     },
     "limonada-coco": {
       "label": "Zumo de Limonada con Coco",
-      "description": "Refrescante combinación tropical con toque cremoso."
+      "description": "Concentrado para preparar una refrescante limonada tropical con coco."
     },
     "maracuya": {
       "label": "Zumo de Maracuyá",
-      "description": "Sabor exótico y vibrante que despierta los sentidos."
+      "description": "Concentrado para preparar bebidas vibrantes de maracuyá."
     },
     "pulpa-maracuya": {
       "label": "Pulpa de Maracuyá",

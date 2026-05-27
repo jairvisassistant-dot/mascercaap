@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
 
 export default function ScrollProgress() {
   const [progress, setProgress] = useState(0);
-  const shouldReduce = useReducedMotion();
+  const shouldReduce = usePrefersReducedMotion();
 
   useEffect(() => {
     const update = () => {

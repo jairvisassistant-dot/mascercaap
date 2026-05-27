@@ -4,57 +4,25 @@ import { escapeHtml } from "@/lib/sanitize"
 import { buildWhatsAppAppUrl, buildWhatsAppMessage as buildSharedWhatsAppMessage } from "@/lib/whatsapp"
 
 export const PRODUCT_TYPE_OPTIONS = ["Pulpas", "Zumos", "Lácteos"] as const
-
-// Maps order-form display names to Supabase product_lines slugs.
-// This is the single source of truth for name ↔ slug bridging.
-// Presentations and active status are derived dynamically from Supabase.
-const FRUIT_TO_LINE: Record<"Pulpas" | "Zumos" | "Lácteos", Record<string, string>> = {
-  Pulpas: {
-    "Maracuyá":         "pulpa-maracuya",
-    "Mora":             "pulpa-mora",
-    "Mango":            "pulpa-mango",
-    "Lulo":             "pulpa-lulo",
-    "Guanábana":        "pulpa-guanabana",
-    "Fresa":            "pulpa-fresa",
-    "Guayaba":          "pulpa-guayaba",
-    "Frutos Rojos":     "pulpa-frutos-rojos",
-    "Frutos Amarillos": "pulpa-frutos-amarillos",
-    "Tomate de árbol":  "pulpa-tomate-arbol",
-  },
-  Zumos: {
-    "Limón":               "limon",
-    "Limonada con Cereza": "limonada-cereza",
-    "Limonada con Coco":   "limonada-coco",
-    "Maracuyá":            "maracuya",
-  },
-  Lácteos: {
-    "Kumis Del Hato 250ml":  "kumiss-del-hato",
-    "Yogurt Del Hato 250ml": "yogurt-del-hato",
-    "Kumis Yolito 250ml":    "kumiss-yolito",
-  },
-}
+type ProductType = (typeof PRODUCT_TYPE_OPTIONS)[number]
 
 // Supabase product_categories.key → UI product type label
-const CATEGORY_TO_TYPE: Record<string, string> = {
+const CATEGORY_TO_TYPE: Record<string, ProductType> = {
   pulpas:  "Pulpas",
   zumos:   "Zumos",
   lacteos: "Lácteos",
 }
-
-// Inverted FRUIT_TO_LINE: line slug → display name, keyed by product type
-const LINE_TO_DISPLAY: Record<string, Record<string, string>> = Object.fromEntries(
-  (Object.entries(FRUIT_TO_LINE) as [string, Record<string, string>][]).map(([type, map]) => [
-    type,
-    Object.fromEntries(Object.entries(map).map(([display, line]) => [line, display])),
-  ])
-)
 
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
 export const QUANTITY_OPTIONS_120G_PACKS = [1, 2, 3, 4, 5, 10] as const
 export const PRESENTATION_120G = "120g"
 const PACK_UNITS_120G = 10
 
-export type PriceResolver = (fruit: string, presentation: string | null | undefined) => number | null
+export type PriceResolverInput = Pick<OrderItem, "productType" | "fruit" | "presentation"> & {
+  lineKey?: string | null
+}
+
+export type PriceResolver = (item: PriceResolverInput) => number | null
 
 /** Row shape returned by the Supabase `products` table price query. */
 export type PriceEntry = {
@@ -68,66 +36,120 @@ export type PriceEntry = {
 
 /** Row shape returned by the Supabase `product_lines` table catalog query. */
 export type CatalogLine = {
-  key:          string
-  label:        string
-  category_key: string | null
-  display_order: number
+  key:                    string
+  label:                  string
+  category_key:           string | null
+  display_order:          number
+  order_assistant_enabled?: boolean | null
+  order_assistant_label?:  string | null
 }
 
-/** Builds a PriceResolver from Supabase product rows. */
-export function buildPriceResolver(entries: PriceEntry[]): PriceResolver {
+function normalizeCatalogValue(value: string): string {
+  return value.trim().toLocaleLowerCase("es-CO").replace(/\s+/g, " ")
+}
+
+function addScopedAlias(map: Map<string, string>, productType: ProductType, alias: string | null | undefined, lineKey: string) {
+  if (!alias) return
+  const normalized = normalizeCatalogValue(alias)
+  if (!normalized) return
+  map.set(`${productType}:${normalized}`, lineKey)
+}
+
+function deriveAssistantLabel(line: CatalogLine, productType: ProductType, lineProducts: PriceEntry[]): string | null {
+  const explicit = line.order_assistant_label?.trim()
+  if (explicit) return explicit
+
+  if (productType === "Pulpas") return line.label.replace(/^Pulpa de\s+/i, "").trim()
+  if (productType === "Zumos") return line.label.replace(/^Zumo de\s+/i, "").trim()
+
+  const firstProduct = lineProducts[0]
+  if (!firstProduct?.name) return line.label.trim() || null
+  return firstProduct.presentation ? `${firstProduct.name} ${firstProduct.presentation}` : firstProduct.name
+}
+
+/** Builds a PriceResolver from Supabase product rows and active product_lines metadata. */
+export function buildPriceResolver(entries: PriceEntry[], lines: CatalogLine[] = []): PriceResolver {
   const byLinePresentation = new Map<string, number>()
-  const byName             = new Map<string, number>()
+  const scopedAliasToLine  = new Map<string, string>()
+  const lineToType         = new Map<string, ProductType>()
+  const lineEntries        = new Map<string, PriceEntry[]>()
+
+  for (const line of lines) {
+    const productType = line.category_key ? CATEGORY_TO_TYPE[line.category_key] : undefined
+    if (!productType) continue
+    lineToType.set(line.key, productType)
+  }
 
   for (const p of entries) {
     if (p.presentation && p.line) {
       byLinePresentation.set(`${p.line}:${p.presentation}`, p.price)
-    } else if (p.name) {
-      byName.set(p.name, p.price)
+      const productsForLine = lineEntries.get(p.line) ?? []
+      productsForLine.push(p)
+      lineEntries.set(p.line, productsForLine)
     }
   }
 
-  return (fruit, presentation) => {
-    if (!presentation) {
-      // Lácteos: each product has its own line slug; find its single presentation price
-      const lacteosLine = FRUIT_TO_LINE.Lácteos[fruit]
-      if (lacteosLine) {
-        for (const [key, price] of byLinePresentation) {
-          if (key.startsWith(`${lacteosLine}:`)) return price
-        }
-        return null
-      }
-      return byName.get(fruit) ?? null
+  for (const line of lines) {
+    const productType = lineToType.get(line.key)
+    if (!productType) continue
+
+    addScopedAlias(scopedAliasToLine, productType, line.key, line.key)
+    addScopedAlias(scopedAliasToLine, productType, line.label, line.key)
+
+    const lineProducts = lineEntries.get(line.key) ?? []
+    const assistantLabel = deriveAssistantLabel(line, productType, lineProducts)
+    addScopedAlias(scopedAliasToLine, productType, assistantLabel, line.key)
+
+    for (const product of lineProducts) {
+      addScopedAlias(scopedAliasToLine, productType, product.name, line.key)
+      addScopedAlias(
+        scopedAliasToLine,
+        productType,
+        product.name && product.presentation ? `${product.name} ${product.presentation}` : null,
+        line.key
+      )
     }
-    if (presentation.endsWith("g")) {
-      const line = FRUIT_TO_LINE.Pulpas[fruit]
-      return line ? (byLinePresentation.get(`${line}:${presentation}`) ?? null) : null
-    }
-    const zumoLine = FRUIT_TO_LINE.Zumos[fruit]
-    if (zumoLine) {
-      const price = byLinePresentation.get(`${zumoLine}:${presentation}`)
-      if (price != null) return price
-    }
-    const pulpaLine = FRUIT_TO_LINE.Pulpas[fruit]
-    return pulpaLine ? (byLinePresentation.get(`${pulpaLine}:${presentation}`) ?? null) : null
+  }
+
+  const singlePresentationPriceByLine = new Map<string, number>()
+  for (const [lineKey, productsForLine] of lineEntries) {
+    if (productsForLine.length === 1) singlePresentationPriceByLine.set(lineKey, productsForLine[0].price)
+  }
+
+  return (item) => {
+    const normalizedFruit = normalizeCatalogValue(item.fruit)
+    const legacyScopedKey = `${item.productType}:${normalizedFruit}`
+    const lineKey = item.lineKey ?? scopedAliasToLine.get(legacyScopedKey)
+    if (!lineKey) return null
+
+    if (!item.presentation) return singlePresentationPriceByLine.get(lineKey) ?? null
+    return byLinePresentation.get(`${lineKey}:${item.presentation}`) ?? null
   }
 }
 
 /** Dynamic catalog derived from Supabase product_lines and products. */
+export type OrderAssistantOption = {
+  value: string
+  label: string
+}
+
 export type Catalog = {
-  getProductOptionsForType:    (productType: string) => string[]
-  getPresentationsForProduct:  (productType: string, fruit: string) => string[]
+  getProductOptionsForType:   (productType: string) => OrderAssistantOption[]
+  getPresentationsForProduct: (productType: string, lineKey: string) => string[]
+  getLabelForSelection:       (productType: string, lineKey: string | null | undefined) => string | null
 }
 
 /**
  * Builds a Catalog from live Supabase data.
  * - Product lists per type are filtered by active product_lines in Supabase.
  * - Presentations per product are derived from actual product rows (no hardcoded overrides).
- * - Display names bridge through FRUIT_TO_LINE, keeping the mapping in code.
+ * - Display labels come from DB metadata (`order_assistant_label`) with a temporary
+ *   derived fallback to keep old datasets functional until the migration is applied.
  */
 export function buildCatalog(lines: CatalogLine[], products: PriceEntry[]): Catalog {
   // Index presentations per line, ordered by presentation_order
   const presentationsByLine = new Map<string, { presentation: string; order: number }[]>()
+  const productsByLine       = new Map<string, PriceEntry[]>()
   for (const p of products) {
     if (!p.line || !p.presentation) continue
     if (!presentationsByLine.has(p.line)) presentationsByLine.set(p.line, [])
@@ -135,29 +157,53 @@ export function buildCatalog(lines: CatalogLine[], products: PriceEntry[]): Cata
     if (!list.some((e) => e.presentation === p.presentation)) {
       list.push({ presentation: p.presentation, order: p.presentation_order ?? 0 })
     }
+    const productList = productsByLine.get(p.line) ?? []
+    productList.push(p)
+    productsByLine.set(p.line, productList)
   }
   for (const list of presentationsByLine.values()) {
     list.sort((a, b) => a.order - b.order)
   }
 
-  return {
-    getProductOptionsForType(productType: string): string[] {
-      const lineToDisplay = LINE_TO_DISPLAY[productType] ?? {}
-      const categoryKey   = Object.entries(CATEGORY_TO_TYPE).find(([, v]) => v === productType)?.[0]
-      if (!categoryKey) return []
+  const optionsByType = new Map<string, OrderAssistantOption[]>()
+  const allowedLineKeysByType = new Map<string, Set<string>>()
+  const labelsByTypeAndLine = new Map<string, string>()
 
-      return lines
-        .filter((l) => l.category_key === categoryKey && l.key in lineToDisplay)
-        .sort((a, b) => a.display_order - b.display_order)
-        .map((l) => lineToDisplay[l.key])
+  for (const line of lines) {
+    const productType = line.category_key ? CATEGORY_TO_TYPE[line.category_key] : undefined
+    if (!productType) continue
+    if (line.order_assistant_enabled === false) continue
+
+    const lineProducts = productsByLine.get(line.key) ?? []
+    if (lineProducts.length === 0) continue
+
+    const label = deriveAssistantLabel(line, productType, lineProducts)
+    if (!label) continue
+
+    const options = optionsByType.get(productType) ?? []
+    options.push({ value: line.key, label })
+    optionsByType.set(productType, options)
+
+    const allowedLineKeys = allowedLineKeysByType.get(productType) ?? new Set<string>()
+    allowedLineKeys.add(line.key)
+    allowedLineKeysByType.set(productType, allowedLineKeys)
+
+    labelsByTypeAndLine.set(`${productType}:${line.key}`, label)
+  }
+
+  return {
+    getProductOptionsForType(productType: string): OrderAssistantOption[] {
+      return optionsByType.get(productType) ?? []
     },
 
-    getPresentationsForProduct(productType: string, fruit: string): string[] {
-      const fruitToLine = FRUIT_TO_LINE[productType as keyof typeof FRUIT_TO_LINE]
-      if (!fruitToLine) return []
-      const lineKey = fruitToLine[fruit]
-      if (!lineKey) return []
+    getPresentationsForProduct(productType: string, lineKey: string): string[] {
+      if (!(allowedLineKeysByType.get(productType)?.has(lineKey) ?? false)) return []
       return (presentationsByLine.get(lineKey) ?? []).map((p) => p.presentation)
+    },
+
+    getLabelForSelection(productType: string, lineKey: string | null | undefined): string | null {
+      if (!lineKey) return null
+      return labelsByTypeAndLine.get(`${productType}:${lineKey}`) ?? null
     },
   }
 }
@@ -171,10 +217,10 @@ function toBillableUnits(item: Pick<OrderItem, "presentation" | "quantity">): nu
 }
 
 export function calculateItemLineTotal(
-  item: Pick<OrderItem, "fruit" | "presentation" | "quantity">,
+  item: Pick<OrderItem, "productType" | "fruit" | "lineKey" | "presentation" | "quantity">,
   resolvePrice: PriceResolver = () => null
 ): number | null {
-  const price = resolvePrice(item.fruit, item.presentation)
+  const price = resolvePrice(item)
   if (price === null) return null
   return price * toBillableUnits(item)
 }

@@ -1,17 +1,18 @@
 import { SITE_CONFIG } from "@/lib/config";
 import ContactForm from "@/components/sections/ContactForm";
 import { AnimateInView } from "@/components/ui/motion/AnimateInView";
-import type { Dictionary } from "@/lib/i18n";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Product, ProductCategory, ProductLineConfig } from "@/types";
 
 type Props = {
   dict: Dictionary;
+  lang: Locale;
   productLines: ProductLineConfig[];
   products: Product[];
   categories: ProductCategory[];
 };
 
-export default async function ContactoPageContent({ dict, productLines, products, categories }: Props) {
+export default async function ContactoPageContent({ dict, lang, productLines, products, categories }: Props) {
   const t = dict.contact;
 
   return (
@@ -133,7 +134,7 @@ export default async function ContactoPageContent({ dict, productLines, products
 
             {/* Columna derecha — formulario */}
             <AnimateInView direction="right">
-              <ContactForm dict={dict} lines={productLines} products={products} categories={categories} />
+              <ContactForm dict={dict} lang={lang} lines={productLines} products={products} categories={categories} />
             </AnimateInView>
           </div>
         </div>

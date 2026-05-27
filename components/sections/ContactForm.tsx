@@ -7,8 +7,7 @@ import { createContactSchema } from "@/lib/schemas/contact";
 import { SITE_CONFIG } from "@/lib/config";
 import { buildWhatsAppAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
 import EmojiIcon from "@/components/ui/EmojiIcon";
-import type { Dictionary } from "@/lib/i18n";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Product, ProductCategory, ProductLineConfig } from "@/types";
 import { track } from "@/lib/analytics";
 
@@ -51,6 +50,7 @@ type AvailabilityCopy = {
 
 interface ContactFormProps {
   dict: Dictionary;
+  lang: Locale;
   lines?: ProductLineConfig[];
   products?: Product[];
   categories?: ProductCategory[];
@@ -85,8 +85,7 @@ function buildAvailabilityTemplate(params: {
   ].join("\n").trimEnd();
 }
 
-export default function ContactForm({ dict, lines = [], products = [], categories = [] }: ContactFormProps) {
-  const { lang } = useDictionary();
+export default function ContactForm({ dict, lang, lines = [], products = [], categories = [] }: ContactFormProps) {
   const t = dict.contact.form;
   const availability = t.availabilityAssistant as AvailabilityCopy;
   const [fields, setFields] = useState<FormFields>(EMPTY);

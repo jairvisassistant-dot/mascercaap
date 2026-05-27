@@ -282,6 +282,18 @@ try {
 
 ---
 
+## CAUSA RAÍZ #15 — Nuevos componentes reciben dict por props, no por Context
+
+**Qué pasó:** `DictionaryProvider` (Context) envolviendo toda la app fuerza a cualquier componente que consuma `useDictionary()` a ser Client Component, incluso si solo necesita el diccionario para renderizar texto.
+
+**Por qué ocurrió:** El patrón de Context es conveniente pero arquitecturalmente incorrecto para datos que vienen del servidor en Next.js App Router.
+
+**Regla derivada:** Todo componente NUEVO que solo necesite `dict` para renderizar debe recibirlo como prop desde su Server Component padre. `useDictionary()` queda reservado para componentes que YA son Client Components por interactividad real (estado, eventos, browser APIs). El patrón correcto es: Server Component padre llama `getDictionary(lang)` y pasa `dict` como prop.
+
+**Archivos de referencia:** `lib/i18n/DictionaryProvider.tsx` (provider), `lib/i18n/index.ts` (getDictionary con React.cache)
+
+---
+
 ## HISTORIAL DE AUDITORÍAS
 
 | Fecha | Hallazgos | CRIT | HIGH | MED | LOW | INFO |

@@ -45,7 +45,7 @@ export default function OrderAssistantView({ prices, lines, onContactClick }: Pr
 
   // ── Current item being built (steps 2–5) ─────────────────────
   const [curProductType, setCurProductType]   = useState<string | null>(null)
-  const [curFruit, setCurFruit]               = useState<string | null>(null)
+  const [curLineKey, setCurLineKey]           = useState<string | null>(null)
   const [curPresentation, setCurPresentation] = useState<string | null>(null)
   const [showCustomQty, setShowCustomQty]     = useState(false)
   const [customQty, setCustomQty]             = useState("")
@@ -78,23 +78,36 @@ export default function OrderAssistantView({ prices, lines, onContactClick }: Pr
   }))
 
   const isLacteos = curProductType === "Lácteos"
+  const currentSelectionLabel = catalog.getLabelForSelection(curProductType ?? "", curLineKey)
 
-  const fruitOptions = catalog.getProductOptionsForType(curProductType ?? "").map((v) => {
-    const price = isLacteos ? resolvePrice(v, null) : null
+  const fruitOptions = catalog.getProductOptionsForType(curProductType ?? "").map((option) => {
+    const price = isLacteos
+      ? resolvePrice({
+          productType: curProductType ?? "",
+          fruit: option.label,
+          lineKey: option.value,
+          presentation: null,
+        })
+      : null
     return {
-      value: v,
-      label: v,
+      value: option.value,
+      label: option.label,
       sublabel: price !== null ? formatCOP(price) : undefined,
     }
   })
 
   // Chips de presentación dinámicos según tipo de producto y fruta/producto seleccionado
   const presentationOptions = (
-    curProductType && curFruit
-      ? catalog.getPresentationsForProduct(curProductType, curFruit)
+    curProductType && curLineKey
+      ? catalog.getPresentationsForProduct(curProductType, curLineKey)
       : []
   ).map((pres) => {
-    const price = resolvePrice(curFruit ?? "", pres)
+    const price = resolvePrice({
+      productType: curProductType ?? "",
+      fruit: currentSelectionLabel ?? "",
+      lineKey: curLineKey,
+      presentation: pres,
+    })
     return {
       value: pres,
       label: price !== null ? `${pres} — ${formatCOP(price)}` : pres,
@@ -112,18 +125,19 @@ export default function OrderAssistantView({ prices, lines, onContactClick }: Pr
   // ── Helpers ───────────────────────────────────────────────────
   function resetCurrentItem() {
     setCurProductType(null)
-    setCurFruit(null)
+    setCurLineKey(null)
     setCurPresentation(null)
     setShowCustomQty(false)
     setCustomQty("")
   }
 
   function commitItem(qty: number) {
-    if (!curProductType || !curFruit) return
+    if (!curProductType || !curLineKey) return
     if (!isLacteos && curPresentation === null) return
+    const visibleLabel = catalog.getLabelForSelection(curProductType, curLineKey) ?? curLineKey
     setItems((prev) => [
       ...prev,
-      { productType: curProductType, fruit: curFruit, presentation: curPresentation, quantity: qty },
+      { productType: curProductType, fruit: visibleLabel, lineKey: curLineKey, presentation: curPresentation, quantity: qty },
     ])
     resetCurrentItem()
     setStep("cart")
@@ -327,13 +341,13 @@ export default function OrderAssistantView({ prices, lines, onContactClick }: Pr
               label={t.step1Label}
               active={step === 1}
               summary={curProductType ? (productTypeLabels[curProductType] ?? curProductType) : null}
-              onEdit={() => { setStep(1); setCurProductType(null); setCurFruit(null); setCurPresentation(null) }}
+              onEdit={() => { setStep(1); setCurProductType(null); setCurLineKey(null); setCurPresentation(null) }}
               backLabel={t.back}
             >
               <ChipSelector
                 options={productOptions}
                 selected={curProductType}
-                onChange={(v) => { setCurProductType(v); setCurFruit(null); setCurPresentation(null); setStep(2) }}
+                onChange={(v) => { setCurProductType(v); setCurLineKey(null); setCurPresentation(null); setStep(2) }}
               />
             </StepBlock>
 
@@ -346,15 +360,15 @@ export default function OrderAssistantView({ prices, lines, onContactClick }: Pr
                     number={2}
                     label={t.step2Label}
                     active={step === 2}
-                    summary={curFruit}
-                    onEdit={() => { setStep(2); setCurFruit(null); setCurPresentation(null) }}
+                    summary={currentSelectionLabel}
+                    onEdit={() => { setStep(2); setCurLineKey(null); setCurPresentation(null) }}
                     backLabel={t.back}
                   >
                     <ChipSelector
                       options={fruitOptions}
-                      selected={curFruit}
+                      selected={curLineKey}
                       onChange={(v) => {
-                        setCurFruit(v)
+                        setCurLineKey(v)
                         setCurPresentation(null)
                         setStep(isLacteos ? 4 : 3)
                       }}

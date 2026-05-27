@@ -58,6 +58,7 @@ export default async function ContactoPage({ params }: Props) {
   return (
     <ContactoPageContent
       dict={dict}
+      lang={lang as "es" | "en"}
       productLines={productLines}
       products={products}
       categories={categories}

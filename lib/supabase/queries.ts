@@ -81,6 +81,8 @@ export const getAllProductLines = cache(
         iconEmoji: row.icon_emoji as string,
         chipImage: (row.chip_image as string) ?? undefined,
         categoryKey: (row.category_key as string | null) ?? null,
+        orderAssistantEnabled: (row.order_assistant_enabled as boolean | null) ?? false,
+        orderAssistantLabel: (row.order_assistant_label as string | null) ?? null,
       }));
     },
     ["all-product-lines"],

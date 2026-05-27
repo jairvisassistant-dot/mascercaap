@@ -238,7 +238,7 @@ export default function HelpDrawer({ faqData, prices, lines, onClose }: Props) {
                 <LegalView document={termsAndConditions} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
               )}
               {view === "contact" && (
-                <ContactView />
+                <ContactView dict={dict} lang={locale} />
               )}
               {view === "whatsapp" && whatsAppState && (
                 <WhatsAppConnectView
