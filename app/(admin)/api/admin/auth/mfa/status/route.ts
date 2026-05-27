@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
       friendly_name: f.friendly_name ?? null,
       created_at: f.created_at,
     })),
-    unverified_factors: totpFactors
-      .filter((f) => f.status !== "verified")
-      .map((f) => ({ id: f.id, status: f.status })),
+    unverified_factors: totpFactors.flatMap((f) =>
+      f.status !== "verified" ? [{ id: f.id, status: f.status }] : []
+    ),
   });
 }

@@ -27,17 +27,21 @@ export default function ProductLineRow({ line, products, firstLine = false, dict
     setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
   }, []);
 
+  const updateArrowsRef = useRef(updateArrows);
+  useEffect(() => { updateArrowsRef.current = updateArrows; });
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    updateArrows();
-    el.addEventListener("scroll", updateArrows, { passive: true });
-    window.addEventListener("resize", updateArrows);
+    updateArrowsRef.current();
+    const listener = () => updateArrowsRef.current();
+    el.addEventListener("scroll", listener, { passive: true });
+    window.addEventListener("resize", listener);
     return () => {
-      el.removeEventListener("scroll", updateArrows);
-      window.removeEventListener("resize", updateArrows);
+      el.removeEventListener("scroll", listener);
+      window.removeEventListener("resize", listener);
     };
-  }, [updateArrows, products]);
+  }, [products]);
 
   const scrollLeft = () => {
     const el = scrollRef.current;

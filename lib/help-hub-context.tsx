@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useMemo } from "react";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
 
@@ -40,8 +40,13 @@ export function HelpHubProvider({ children }: { children: React.ReactNode }) {
     setIsOpen(false);
   }, []);
 
+  const ctxValue = useMemo(
+    () => ({ isOpen, initialView, shouldRestoreSession, drawerContext, openDrawer, closeDrawer }),
+    [isOpen, initialView, shouldRestoreSession, drawerContext, openDrawer, closeDrawer]
+  );
+
   return (
-    <HelpHubContext.Provider value={{ isOpen, initialView, shouldRestoreSession, drawerContext, openDrawer, closeDrawer }}>
+    <HelpHubContext.Provider value={ctxValue}>
       {children}
     </HelpHubContext.Provider>
   );

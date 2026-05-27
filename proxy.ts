@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { buildEnforcedCsp, buildReportOnlyCsp } from "@/lib/security/csp";
 
 const locales = ["es", "en"];
+const localesSet = new Set(locales);
 const defaultLocale = "es";
 
 // In-memory rate limiter — fixed window, per process instance.
@@ -28,7 +29,7 @@ function isRateLimited(ip: string): boolean {
 
 function getLocale(request: NextRequest): string {
   const cookie = request.cookies.get("NEXT_LOCALE");
-  if (cookie && locales.includes(cookie.value)) return cookie.value;
+  if (cookie && localesSet.has(cookie.value)) return cookie.value;
   const acceptLang = request.headers.get("accept-language") ?? "";
   const preferred = acceptLang
     .split(",")
@@ -38,7 +39,7 @@ function getLocale(request: NextRequest): string {
     })
     .sort((a, b) => b.q - a.q);
   for (const { lang } of preferred) {
-    if ((locales as readonly string[]).includes(lang)) return lang;
+    if (localesSet.has(lang)) return lang;
   }
   return defaultLocale;
 }

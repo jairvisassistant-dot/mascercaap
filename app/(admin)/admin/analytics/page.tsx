@@ -9,8 +9,10 @@ type ConversionRow = { day: string; page_views: number; whatsapp_clicks: number;
 type PageViewRow = { page: string | null; views: number };
 type ProductViewRow = { line: string | null; presentation: string | null; views: number };
 
+const NUMBER_FORMATTER = new Intl.NumberFormat("es-CO");
+
 function formatNumber(value: number | null | undefined) {
-  return new Intl.NumberFormat("es-CO").format(value ?? 0);
+  return NUMBER_FORMATTER.format(value ?? 0);
 }
 
 function formatPercent(value: number | null | undefined) {

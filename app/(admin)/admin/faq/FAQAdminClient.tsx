@@ -213,8 +213,10 @@ export default function FAQAdminClient({
 
     const keywords = vals.keywords
       .split(",")
-      .map((k) => k.trim())
-      .filter(Boolean);
+      .flatMap((k) => {
+        const t = k.trim();
+        return t ? [t] : [];
+      });
 
     const res = await fetch("/api/admin/faq", {
       method: "PUT",
@@ -531,11 +533,12 @@ export default function FAQAdminClient({
                       }
 
                       if (qMode === "confirm-delete") {
+                        const subtextEl = <span className="line-clamp-1">{q.question_es}</span>;
                         return (
                           <ConfirmDeleteBox
                             key={q.id}
                             title="¿Eliminar esta pregunta?"
-                            subtext={<span className="line-clamp-1">{q.question_es}</span>}
+                            subtext={subtextEl}
                             busy={isQBusy}
                             onConfirm={() => deleteQ(q.id)}
                             onCancel={() => cancelRow(`q-${q.id}`)}
