@@ -5,34 +5,9 @@ import { SITE_CONFIG } from "@/lib/config";
 import { escapeHtml, sanitizeSubject } from "@/lib/sanitize";
 import esMessages from "@/messages/es.json";
 import enMessages from "@/messages/en.json";
+import { createRateLimiter } from "@/lib/rate-limit";
 
-// Rate Limiting — sliding window, in-memory
-// 5 requests per IP per 60s. Resets on server restart — acceptable for a contact
-// form on a single-instance deployment. Upgrade to @upstash/ratelimit + Redis
-// if multi-instance load balancing is ever configured.
-const requestLog = new Map<string, number[]>();
-const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW_MS = 60_000;
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const windowStart = now - RATE_LIMIT_WINDOW_MS;
-  const timestamps = (requestLog.get(ip) ?? []).filter((t) => t > windowStart);
-
-  if (timestamps.length >= RATE_LIMIT_MAX) return false;
-
-  timestamps.push(now);
-  requestLog.set(ip, timestamps);
-
-  // Prevent unbounded growth: purge fully-expired entries when map exceeds 500 keys
-  if (requestLog.size > 500) {
-    for (const [key, times] of requestLog.entries()) {
-      if (times.every((t) => t <= windowStart)) requestLog.delete(key);
-    }
-  }
-
-  return true;
-}
+const rateLimiter = createRateLimiter({ id: "contact", max: 5 });
 
 const tipoLabel: Record<string, string> = {
   pedido: "Realizar un pedido",
@@ -173,10 +148,11 @@ export async function POST(request: Request) {
     request.headers.get("x-real-ip") ??
     "anonymous";
 
-  if (!checkRateLimit(ip)) {
+  const { allowed, retryAfter } = await rateLimiter.check(ip);
+  if (!allowed) {
     return NextResponse.json(
       { success: false, error: "Demasiadas solicitudes. Intenta de nuevo en un minuto." },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
     );
   }
 

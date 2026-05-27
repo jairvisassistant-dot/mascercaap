@@ -3,33 +3,9 @@ import { createLeadSchema, ES_LEAD_MESSAGES, EN_LEAD_MESSAGES } from "@/lib/sche
 import { supabasePublic as supabase } from "@/lib/supabase";
 import { SITE_CONFIG } from "@/lib/config";
 import { escapeHtml, sanitizeSubject } from "@/lib/sanitize";
+import { createRateLimiter } from "@/lib/rate-limit";
 
-// Rate limiting — sliding window, in-memory
-// 10 requests per IP per 60s. Resets on server restart — acceptable for a chatbot
-// lead capture flow on a single-instance deployment. Upgrade to @upstash/ratelimit
-// + Redis if multi-instance load balancing is ever configured.
-const requestLog = new Map<string, number[]>();
-const RATE_LIMIT_MAX = 10;
-const RATE_LIMIT_WINDOW_MS = 60_000;
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const windowStart = now - RATE_LIMIT_WINDOW_MS;
-  const timestamps = (requestLog.get(ip) ?? []).filter((t) => t > windowStart);
-
-  if (timestamps.length >= RATE_LIMIT_MAX) return false;
-
-  timestamps.push(now);
-  requestLog.set(ip, timestamps);
-
-  if (requestLog.size > 500) {
-    for (const [key, times] of requestLog.entries()) {
-      if (times.every((t) => t <= windowStart)) requestLog.delete(key);
-    }
-  }
-
-  return true;
-}
+const rateLimiter = createRateLimiter({ id: "leads", max: 5 });
 
 // ── Email notification helpers ─────────────────────────────────────────────
 
@@ -222,10 +198,11 @@ export async function POST(req: NextRequest) {
     req.headers.get("x-real-ip") ??
     "anonymous";
 
-  if (!checkRateLimit(ip)) {
+  const { allowed, retryAfter } = await rateLimiter.check(ip);
+  if (!allowed) {
     return NextResponse.json(
       { error: "Demasiadas solicitudes. Intenta de nuevo en un minuto." },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
     );
   }
 

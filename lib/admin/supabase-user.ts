@@ -1,5 +1,5 @@
 import "server-only";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const COOKIE_NAME = "admin_session";
 
@@ -13,8 +13,7 @@ const COOKIE_NAME = "admin_session";
  */
 export async function getAdminClientFromCookie(
   cookieHeader: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<{ supabase: any; error: string | null }> {
+): Promise<{ supabase: SupabaseClient | null; error: string | null }> {
   const match = cookieHeader.match(
     new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]+)`)
   );

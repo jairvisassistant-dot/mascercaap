@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useReducer } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { useHelpHub } from "@/lib/help-hub-context";
 import HelpMenu from "./drawer-views/HelpMenu";
 import FaqView from "./drawer-views/FaqView";
@@ -13,7 +12,7 @@ import OrderAssistantView from "./drawer-views/OrderAssistantView";
 import { privacyPolicy, termsAndConditions } from "@/data/legal";
 import { SITE_CONFIG } from "@/lib/config";
 import { buildWhatsAppLinks } from "@/lib/whatsapp";
-import type { Locale } from "@/lib/i18n";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import type { FAQData } from "@/types";
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 
@@ -21,7 +20,7 @@ type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "ord
 
 type WhatsAppState = { appUrl: string | null; webUrl: string | null; leadSaved: boolean };
 
-type Props = { faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[]; onClose: () => void };
+type Props = { dict: Dictionary; lang: Locale; faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[]; onClose: () => void };
 
 // Reducer to avoid setState-in-effect lint errors
 type DrawerAction =
@@ -53,9 +52,8 @@ function buildDefaultWhatsAppState(message: string): WhatsAppState {
   };
 }
 
-export default function HelpDrawer({ faqData, prices, lines, onClose }: Props) {
-  const { dict, lang } = useDictionary();
-  const locale = lang as Locale;
+export default function HelpDrawer({ dict, lang, faqData, prices, lines, onClose }: Props) {
+  const locale = lang;
   const t = dict.helpHub;
   const { initialView, shouldRestoreSession } = useHelpHub();
   const [{ view, whatsAppState }, dispatch] = useReducer(drawerReducer, { view: initialView, whatsAppState: null });
@@ -220,10 +218,12 @@ export default function HelpDrawer({ faqData, prices, lines, onClose }: Props) {
               className="flex-1 flex flex-col overflow-hidden"
             >
               {view === "menu" && (
-                <HelpMenu onNavigate={(v) => v === "whatsapp" ? navigateToWhatsApp() : dispatch({ type: "SET_VIEW", view: v })} />
+                <HelpMenu dict={dict} onNavigate={(v) => v === "whatsapp" ? navigateToWhatsApp() : dispatch({ type: "SET_VIEW", view: v })} />
               )}
               {view === "faq" && (
                 <FaqView
+                  dict={dict}
+                  lang={locale}
                   faqData={faqData}
                   onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })}
                   onWhatsAppConnect={(appUrl, webUrl, leadSaved) =>
@@ -242,13 +242,14 @@ export default function HelpDrawer({ faqData, prices, lines, onClose }: Props) {
               )}
               {view === "whatsapp" && whatsAppState && (
                 <WhatsAppConnectView
+                  dict={dict}
                   appUrl={whatsAppState.appUrl}
                   webUrl={whatsAppState.webUrl}
                   leadSaved={whatsAppState.leadSaved}
                 />
               )}
               {view === "order" && (
-                <OrderAssistantView prices={prices} lines={lines} onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
+                <OrderAssistantView dict={dict} prices={prices} lines={lines} onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
               )}
             </m.div>
           </AnimatePresence>

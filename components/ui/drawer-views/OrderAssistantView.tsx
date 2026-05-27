@@ -17,7 +17,7 @@ import {
   buildPriceResolver,
   buildCatalog,
 } from "@/lib/order-assistant"
-import { useDictionary } from "@/lib/i18n/DictionaryProvider"
+import type { Dictionary } from "@/lib/i18n"
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
@@ -28,13 +28,13 @@ type SubmitStatus = "idle" | "sending" | "success" | "error"
 const CUSTOM_QTY = -1
 
 type Props = {
+  dict: Dictionary;
   prices: PriceEntry[];
   lines:  CatalogLine[];
   onContactClick: () => void
 }
 
-export default function OrderAssistantView({ prices, lines, onContactClick }: Props) {
-  const { dict } = useDictionary()
+export default function OrderAssistantView({ dict, prices, lines, onContactClick }: Props) {
   const t = dict.orderAssistant
   const resolvePrice = useMemo(() => buildPriceResolver(prices), [prices])
   const catalog      = useMemo(() => buildCatalog(lines, prices), [lines, prices])

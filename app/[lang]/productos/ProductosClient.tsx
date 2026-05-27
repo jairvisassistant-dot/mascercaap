@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Product, ProductCategory, ProductLineConfig, ProductLineKey } from "@/types";
 import { PULPA_KEYS } from "./_constants";
 import type { RenderSegment } from "./_constants";
@@ -19,16 +19,17 @@ function normalizeStr(s: string): string {
 }
 
 interface ProductosClientProps {
+  dict: Dictionary;
+  lang: Locale;
   products: Product[];
   productLines: ProductLineConfig[];
   categories: ProductCategory[];
 }
 
-export default function ProductosClient({ products, productLines, categories }: ProductosClientProps) {
+export default function ProductosClient({ dict, lang, products, productLines, categories }: ProductosClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const { dict, lang } = useDictionary();
 
   const categoryLines = useMemo<Record<string, string[]>>(() => {
     const map: Record<string, string[]> = { todas: productLines.map((l) => l.key) };

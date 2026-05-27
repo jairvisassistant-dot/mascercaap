@@ -2,7 +2,6 @@ import { Poppins, DM_Serif_Display } from "next/font/google";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { DictionaryProvider } from "@/lib/i18n/DictionaryProvider";
 import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
 import { supabasePublic as supabase } from "@/lib/supabase";
@@ -147,22 +146,20 @@ export default async function LangLayout({
       <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div className={`${poppins.variable} ${dmSerifDisplay.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
-          <DictionaryProvider dict={dict} lang={lang}>
-            <HelpHubProvider>
-              <a
-                href="#main-content"
-                className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent"
-              >
-                {lang === "es" ? "Saltar al contenido" : "Skip to content"}
-              </a>
-              <PageTracker />
-              <ScrollProgress />
-              <Navbar />
-              <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
-              <Footer dict={dict} lang={lang} categories={categories} />
-              <HelpHub faqData={faqData} prices={prices} lines={lines} />
-            </HelpHubProvider>
-          </DictionaryProvider>
+          <HelpHubProvider>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              {lang === "es" ? "Saltar al contenido" : "Skip to content"}
+            </a>
+            <PageTracker />
+            <ScrollProgress />
+            <Navbar dict={dict} lang={lang} />
+            <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
+            <Footer dict={dict} lang={lang} categories={categories} />
+            <HelpHub dict={dict} lang={lang} faqData={faqData} prices={prices} lines={lines} />
+          </HelpHubProvider>
         </MotionProvider>
       </div>
     </>

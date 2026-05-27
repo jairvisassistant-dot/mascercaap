@@ -4,8 +4,8 @@ import { useReducer, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { useHelpHub } from "@/lib/help-hub-context";
+import type { Dictionary, Locale } from "@/lib/i18n";
 
 type KenBurns = {
   initial: { scale: number; x: string };
@@ -193,8 +193,9 @@ const slides: SlideStructure[] = [
   },
 ];
 
-export default function HeroCarousel() {
-  const { dict, lang } = useDictionary();
+type Props = { dict: Dictionary; lang: Locale };
+
+export default function HeroCarousel({ dict, lang }: Props) {
   const { openDrawer } = useHelpHub();
   const [{ currentSlide, currentFrame }, dispatch] = useReducer(carouselReducer, {
     currentSlide: 0,

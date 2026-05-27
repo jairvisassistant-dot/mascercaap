@@ -19,21 +19,17 @@ export async function GET(req: NextRequest) {
   }
 
   const totpFactors = data?.totp ?? [];
-  const verifiedFactors = totpFactors.filter(
-    (f: { status: string }) => f.status === "verified"
-  );
+  const verifiedFactors = totpFactors.filter((f) => f.status === "verified");
 
   return NextResponse.json({
     mfa_enabled: verifiedFactors.length > 0,
-    factors: verifiedFactors.map(
-      (f: { id: string; friendly_name: string | null; created_at: string }) => ({
-        id: f.id,
-        friendly_name: f.friendly_name,
-        created_at: f.created_at,
-      })
-    ),
+    factors: verifiedFactors.map((f) => ({
+      id: f.id,
+      friendly_name: f.friendly_name ?? null,
+      created_at: f.created_at,
+    })),
     unverified_factors: totpFactors
-      .filter((f: { status: string }) => f.status !== "verified")
-      .map((f: { id: string; status: string }) => ({ id: f.id, status: f.status })),
+      .filter((f) => f.status !== "verified")
+      .map((f) => ({ id: f.id, status: f.status })),
   });
 }

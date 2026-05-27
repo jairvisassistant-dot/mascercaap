@@ -6,23 +6,24 @@ import { m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import BrandFruitMark from "@/components/ui/BrandFruitMark";
 import { buildWhatsAppLinks } from "@/lib/whatsapp";
 import { SITE_CONFIG } from "@/lib/config";
 import { track } from "@/lib/analytics";
+import type { Dictionary, Locale } from "@/lib/i18n";
 
 const ORDER_MESSAGE = "Hola, quiero hacer un pedido";
 
-export default function Navbar() {
+type Props = { dict: Dictionary; lang: Locale };
+
+export default function Navbar({ dict, lang }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const { dict, lang } = useDictionary();
 
   const { appUrl: waAppUrl, webUrl: waWebUrl } = buildWhatsAppLinks(
     SITE_CONFIG.whatsappNumber,

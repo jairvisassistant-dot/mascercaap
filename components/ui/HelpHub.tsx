@@ -2,19 +2,18 @@
 
 import dynamic from "next/dynamic";
 import { m, AnimatePresence } from "framer-motion";
-import { useDictionary } from "@/lib/i18n/DictionaryProvider";
 import { useHelpHub } from "@/lib/help-hub-context";
 import { track } from "@/lib/analytics";
+import type { Dictionary, Locale } from "@/lib/i18n";
 import type { FAQData } from "@/types";
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 
 const HelpDrawer = dynamic(() => import("./HelpDrawer"), { ssr: false });
 
-type Props = { faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[] };
+type Props = { dict: Dictionary; lang: Locale; faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[] };
 
-export default function HelpHub({ faqData, prices, lines }: Props) {
+export default function HelpHub({ dict, lang, faqData, prices, lines }: Props) {
   const { isOpen, openDrawer, closeDrawer } = useHelpHub();
-  const { dict } = useDictionary();
   const t = dict.helpHub;
 
   return (
@@ -36,7 +35,7 @@ export default function HelpHub({ faqData, prices, lines }: Props) {
       </m.button>
 
       <AnimatePresence>
-        {isOpen && <HelpDrawer faqData={faqData} prices={prices} lines={lines} onClose={closeDrawer} />}
+        {isOpen && <HelpDrawer dict={dict} lang={lang} faqData={faqData} prices={prices} lines={lines} onClose={closeDrawer} />}
       </AnimatePresence>
     </>
   );
