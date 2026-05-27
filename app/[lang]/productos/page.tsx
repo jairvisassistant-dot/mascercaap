@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
@@ -50,6 +51,8 @@ export default async function ProductosPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
 
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   const [products, productLines, categories] = await Promise.all([
     getAllProducts(),
     getAllProductLines(),
@@ -79,6 +82,7 @@ export default async function ProductosPage({ params }: Props) {
   return (
     <>
       <script
+        nonce={nonce}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />

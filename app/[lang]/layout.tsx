@@ -14,6 +14,7 @@ import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import PageTracker from "@/components/ui/PageTracker";
+import { headers } from "next/headers";
 import { SITE_CONFIG } from "@/lib/config";
 
 const poppins = Poppins({
@@ -112,6 +113,7 @@ export default async function LangLayout({
 
   const dict = await getDictionary(lang);
   const faqData = await getFAQData();
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   const organizationJsonLd = getOrganizationJsonLd(lang);
   const webSiteJsonLd = getWebSiteJsonLd(lang);
   const faqJsonLd = getFaqJsonLd(faqData, lang);
@@ -140,9 +142,9 @@ export default async function LangLayout({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div className={`${poppins.variable} ${dmSerifDisplay.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
           <DictionaryProvider dict={dict} lang={lang}>

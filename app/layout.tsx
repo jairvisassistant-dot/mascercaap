@@ -20,6 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const cookieLang = ckrs.get("NEXT_LOCALE")?.value;
   const headerLang = hdrs.get("x-lang");
   const lang = cookieLang === "en" || headerLang === "en" ? "en" : "es";
+  const nonce = hdrs.get("x-nonce") ?? undefined;
 
   return (
     <html lang={lang} suppressHydrationWarning>
@@ -27,6 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Script
           id="theme-detector"
           strategy="beforeInteractive"
+          nonce={nonce}
           dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}
         />
         {children}
