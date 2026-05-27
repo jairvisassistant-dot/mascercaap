@@ -15,8 +15,7 @@ export const metadata: Metadata = {
 const THEME_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )theme=([^;]*)/);var t=m?m[1]:(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const ckrs = await cookies();
-  const hdrs = await headers();
+  const [ckrs, hdrs] = await Promise.all([cookies(), headers()]);
   const cookieLang = ckrs.get("NEXT_LOCALE")?.value;
   const headerLang = hdrs.get("x-lang");
   const lang = cookieLang === "en" || headerLang === "en" ? "en" : "es";

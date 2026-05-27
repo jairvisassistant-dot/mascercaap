@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import type { NewQuestion } from "./types";
 
 export default function NewQuestionForm({
@@ -15,6 +16,7 @@ export default function NewQuestionForm({
   onSubmit: () => void;
   onCancel: () => void;
 }) {
+  const uid = useId();
   const canSubmit = newQ.question_es.trim() && newQ.question_en.trim() && newQ.answer_es.trim() && newQ.answer_en.trim();
   return (
     <div className="rounded-2xl border border-primary/40 bg-surface-card px-4 py-4 shadow-sm ring-1 ring-primary/15">
@@ -24,8 +26,9 @@ export default function NewQuestionForm({
       <div className="space-y-3">
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Pregunta (ES) *</label>
+            <label htmlFor={`${uid}-question-es`} className="mb-1 block text-xs font-semibold text-text-sub">Pregunta (ES) *</label>
             <input
+              id={`${uid}-question-es`}
               type="text"
               autoFocus
               value={newQ.question_es}
@@ -34,8 +37,9 @@ export default function NewQuestionForm({
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Question (EN) *</label>
+            <label htmlFor={`${uid}-question-en`} className="mb-1 block text-xs font-semibold text-text-sub">Question (EN) *</label>
             <input
+              id={`${uid}-question-en`}
               type="text"
               value={newQ.question_en}
               onChange={(e) => onChange({ ...newQ, question_en: e.target.value })}
@@ -44,8 +48,9 @@ export default function NewQuestionForm({
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">Respuesta (ES) *</label>
+          <label htmlFor={`${uid}-answer-es`} className="mb-1 block text-xs font-semibold text-text-sub">Respuesta (ES) *</label>
           <textarea
+            id={`${uid}-answer-es`}
             value={newQ.answer_es}
             onChange={(e) => onChange({ ...newQ, answer_es: e.target.value })}
             rows={3}
@@ -53,8 +58,9 @@ export default function NewQuestionForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">Answer (EN) *</label>
+          <label htmlFor={`${uid}-answer-en`} className="mb-1 block text-xs font-semibold text-text-sub">Answer (EN) *</label>
           <textarea
+            id={`${uid}-answer-en`}
             value={newQ.answer_en}
             onChange={(e) => onChange({ ...newQ, answer_en: e.target.value })}
             rows={3}

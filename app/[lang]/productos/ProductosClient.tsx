@@ -28,7 +28,7 @@ interface ProductosClientProps {
 
 export default function ProductosClient({ dict, lang, products, productLines, categories }: ProductosClientProps) {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  const { replace } = useRouter();
   const pathname = usePathname();
 
   const categoryLines = useMemo<Record<string, string[]>>(() => {
@@ -196,7 +196,7 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
       params.set("categoria", cat);
     }
     const query = params.toString();
-    router.replace(`${pathname}${query ? `?${query}` : ""}`, { scroll: false });
+    replace(`${pathname}${query ? `?${query}` : ""}`, { scroll: false });
 
     if (activeCategory !== cat) {
       setActiveCategory(cat);
@@ -219,7 +219,7 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
     setActiveSize("todos");
     setHasInteracted(false);
     setSearchQuery("");
-    router.replace(pathname, { scroll: false });
+    replace(pathname, { scroll: false });
   }
 
   return (

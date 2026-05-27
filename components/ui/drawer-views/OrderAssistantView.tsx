@@ -421,6 +421,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                           value={customQty}
                           onChange={(e) => setCustomQty(e.target.value)}
                           placeholder={t.customQtyPlaceholder}
+                          aria-label={t.customQtyLabel}
                           className="w-32 rounded-lg border border-border-mid px-3 py-2 text-sm bg-surface-page focus:outline-none focus:border-primary"
                           onKeyDown={(e) => e.key === "Enter" && confirmCustomQty()}
                           autoFocus

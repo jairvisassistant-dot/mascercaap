@@ -24,7 +24,7 @@ type EditValues = {
 };
 
 export default function LineasList({ initial, categories }: { initial: Line[]; categories: Category[] }) {
-  const router = useRouter();
+  const { refresh } = useRouter();
   const [lines, setLines] = useState<Line[]>(initial);
   const [moving, setMoving] = useState<string | null>(null);
   const [rowMode, setRowMode] = useState<Record<string, Mode>>({});
@@ -81,7 +81,7 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
       setError(data.error ?? "Error al reordenar");
       setLines(initial);
     } else {
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setMoving(null);
   }
@@ -116,7 +116,7 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
         )
       );
       setRowMode((prev) => ({ ...prev, [key]: "view" }));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -137,7 +137,7 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
       setRowMode((prev) => ({ ...prev, [key]: "view" }));
     } else {
       setLines((prev) => prev.filter((l) => l.key !== key));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import type { QuestionEdit } from "./types";
 
 export default function QuestionEditForm({
@@ -17,6 +18,8 @@ export default function QuestionEditForm({
   onSave: () => void;
   onChange: (patch: Partial<QuestionEdit>) => void;
 }) {
+  const uid = useId();
+
   return (
     <div className="rounded-2xl border border-primary/40 bg-surface-card px-4 py-4 shadow-sm ring-1 ring-primary/15">
       <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
@@ -26,8 +29,9 @@ export default function QuestionEditForm({
       <div className="space-y-3">
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Pregunta (ES) *</label>
+            <label htmlFor={`${uid}-question-es`} className="mb-1 block text-xs font-semibold text-text-sub">Pregunta (ES) *</label>
             <input
+              id={`${uid}-question-es`}
               type="text"
               autoFocus
               value={vals.question_es}
@@ -36,8 +40,9 @@ export default function QuestionEditForm({
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Question (EN) *</label>
+            <label htmlFor={`${uid}-question-en`} className="mb-1 block text-xs font-semibold text-text-sub">Question (EN) *</label>
             <input
+              id={`${uid}-question-en`}
               type="text"
               value={vals.question_en}
               onChange={(e) => onChange({ question_en: e.target.value })}
@@ -46,8 +51,9 @@ export default function QuestionEditForm({
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">Respuesta (ES) *</label>
+          <label htmlFor={`${uid}-answer-es`} className="mb-1 block text-xs font-semibold text-text-sub">Respuesta (ES) *</label>
           <textarea
+            id={`${uid}-answer-es`}
             value={vals.answer_es}
             onChange={(e) => onChange({ answer_es: e.target.value })}
             rows={3}
@@ -55,8 +61,9 @@ export default function QuestionEditForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">Answer (EN) *</label>
+          <label htmlFor={`${uid}-answer-en`} className="mb-1 block text-xs font-semibold text-text-sub">Answer (EN) *</label>
           <textarea
+            id={`${uid}-answer-en`}
             value={vals.answer_en}
             onChange={(e) => onChange({ answer_en: e.target.value })}
             rows={3}
@@ -64,11 +71,12 @@ export default function QuestionEditForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">
+          <label htmlFor={`${uid}-keywords`} className="mb-1 block text-xs font-semibold text-text-sub">
             Keywords{" "}
             <span className="font-normal text-text-faint">(separadas por coma)</span>
           </label>
           <input
+            id={`${uid}-keywords`}
             type="text"
             value={vals.keywords}
             onChange={(e) => onChange({ keywords: e.target.value })}

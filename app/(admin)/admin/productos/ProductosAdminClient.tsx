@@ -34,7 +34,7 @@ export default function ProductosAdminClient({
   lineCategories?: Record<string, string>;
   categories?: { key: string; label: string }[];
 }) {
-  const router = useRouter();
+  const { refresh } = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -110,7 +110,7 @@ export default function ProductosAdminClient({
       return;
     }
 
-    startTransition(() => router.refresh());
+    startTransition(() => refresh());
   }
 
   async function deleteProduct(id: string) {
@@ -122,7 +122,7 @@ export default function ProductosAdminClient({
       setError(data.error ?? "Error al eliminar");
     } else {
       setProducts((prev) => prev.filter((p) => p.id !== id));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setConfirmDeleteId(null);
     setDeleting(false);

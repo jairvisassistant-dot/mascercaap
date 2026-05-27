@@ -8,7 +8,7 @@ type Category = { key: string; label: string; description: string; display_order
 type Mode = "view" | "edit" | "confirm-delete";
 
 export default function CategoriasList({ initial }: { initial: Category[] }) {
-  const router = useRouter();
+  const { refresh } = useRouter();
   const [cats, setCats] = useState<Category[]>(initial);
   const [moving, setMoving] = useState<string | null>(null);
   const [rowMode, setRowMode] = useState<Record<string, Mode>>({});
@@ -52,7 +52,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
       setError(data.error ?? "Error al reordenar");
       setCats(initial);
     } else {
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setMoving(null);
   }
@@ -75,7 +75,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
     } else {
       setCats((prev) => prev.map((c) => c.key === key ? { ...c, label: vals.label.trim(), description: vals.description.trim() } : c));
       setRowMode((prev) => ({ ...prev, [key]: "view" }));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }
@@ -96,7 +96,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
       setRowMode((prev) => ({ ...prev, [key]: "view" }));
     } else {
       setCats((prev) => prev.filter((c) => c.key !== key));
-      startTransition(() => router.refresh());
+      startTransition(() => refresh());
     }
     setBusy(null);
   }

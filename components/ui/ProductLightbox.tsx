@@ -96,6 +96,7 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
         {/* Close button */}
         <button
           ref={closeButtonRef}
+          type="button"
           onClick={onClose}
           aria-label={t.close}
           className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition hover:bg-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"

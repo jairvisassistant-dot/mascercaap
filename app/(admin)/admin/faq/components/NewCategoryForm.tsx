@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import type { NewCategory } from "./types";
 
 export default function NewCategoryForm({
@@ -15,6 +16,7 @@ export default function NewCategoryForm({
   onSubmit: () => void;
   onCancel: () => void;
 }) {
+  const uid = useId();
   const canSubmit =
     newCat.id.trim() && newCat.label_es.trim() && newCat.label_en.trim();
 
@@ -25,10 +27,11 @@ export default function NewCategoryForm({
       </p>
       <div className="grid gap-3 sm:grid-cols-4">
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">
+          <label htmlFor={`${uid}-id`} className="mb-1 block text-xs font-semibold text-text-sub">
             ID *
           </label>
           <input
+            id={`${uid}-id`}
             type="text"
             autoFocus
             value={newCat.id}
@@ -41,10 +44,11 @@ export default function NewCategoryForm({
           </p>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">
+          <label htmlFor={`${uid}-label-es`} className="mb-1 block text-xs font-semibold text-text-sub">
             Label (ES) *
           </label>
           <input
+            id={`${uid}-label-es`}
             type="text"
             value={newCat.label_es}
             onChange={(e) => onChange({ ...newCat, label_es: e.target.value })}
@@ -52,10 +56,11 @@ export default function NewCategoryForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">
+          <label htmlFor={`${uid}-label-en`} className="mb-1 block text-xs font-semibold text-text-sub">
             Label (EN) *
           </label>
           <input
+            id={`${uid}-label-en`}
             type="text"
             value={newCat.label_en}
             onChange={(e) => onChange({ ...newCat, label_en: e.target.value })}
@@ -63,10 +68,11 @@ export default function NewCategoryForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">
+          <label htmlFor={`${uid}-icon`} className="mb-1 block text-xs font-semibold text-text-sub">
             Icono
           </label>
           <input
+            id={`${uid}-icon`}
             type="text"
             value={newCat.icon}
             onChange={(e) => onChange({ ...newCat, icon: e.target.value })}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import type { CategoryEdit } from "./types";
 
 export default function CategoryEditForm({
@@ -17,6 +18,8 @@ export default function CategoryEditForm({
   onSave: () => void;
   onChange: (patch: Partial<CategoryEdit>) => void;
 }) {
+  const uid = useId();
+
   return (
     <div className="rounded-2xl border border-primary/40 bg-surface-card px-4 py-4 shadow-sm ring-1 ring-primary/15">
       <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
@@ -25,8 +28,9 @@ export default function CategoryEditForm({
       </p>
       <div className="grid gap-3 sm:grid-cols-3">
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">Label (ES) *</label>
+          <label htmlFor={`${uid}-label-es`} className="mb-1 block text-xs font-semibold text-text-sub">Label (ES) *</label>
           <input
+            id={`${uid}-label-es`}
             type="text"
             autoFocus
             value={vals.label_es}
@@ -35,8 +39,9 @@ export default function CategoryEditForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">Label (EN) *</label>
+          <label htmlFor={`${uid}-label-en`} className="mb-1 block text-xs font-semibold text-text-sub">Label (EN) *</label>
           <input
+            id={`${uid}-label-en`}
             type="text"
             value={vals.label_en}
             onChange={(e) => onChange({ label_en: e.target.value })}
@@ -44,8 +49,9 @@ export default function CategoryEditForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-text-sub">Icono</label>
+          <label htmlFor={`${uid}-icon`} className="mb-1 block text-xs font-semibold text-text-sub">Icono</label>
           <input
+            id={`${uid}-icon`}
             type="text"
             value={vals.icon}
             onChange={(e) => onChange({ icon: e.target.value })}

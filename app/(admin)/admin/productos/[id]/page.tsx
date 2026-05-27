@@ -16,9 +16,7 @@ export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ id: string }> };
 
 export default async function EditarProductoPage({ params }: Props) {
-  await requireAdminSession();
-
-  const { id } = await params;
+  const [, { id }] = await Promise.all([requireAdminSession(), params]);
   const { data: product, error } = await adminClient()
     .from("products")
     .select("*")

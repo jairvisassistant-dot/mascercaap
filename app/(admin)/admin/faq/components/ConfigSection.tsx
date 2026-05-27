@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import type { ConfigForm } from "./types";
 import type { FAQConfigRow } from "@/types";
 
@@ -22,14 +23,17 @@ export default function ConfigSection({
   onSave: () => void;
   onChange: (f: ConfigForm) => void;
 }) {
+  const uid = useId();
+
   if (editConfig) {
     return (
       <div className="rounded-2xl border border-border-soft bg-surface-card px-4 py-4 shadow-sm">
         <h2 className="mb-3 text-sm font-bold text-text-main">Mensaje de fallback</h2>
         <div className="space-y-3">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Fallback (ES)</label>
+            <label htmlFor={`${uid}-fallback-es`} className="mb-1 block text-xs font-semibold text-text-sub">Fallback (ES)</label>
             <textarea
+              id={`${uid}-fallback-es`}
               value={configForm.fallback_es}
               onChange={(e) => onChange({ ...configForm, fallback_es: e.target.value })}
               rows={2}
@@ -37,8 +41,9 @@ export default function ConfigSection({
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-text-sub">Fallback (EN)</label>
+            <label htmlFor={`${uid}-fallback-en`} className="mb-1 block text-xs font-semibold text-text-sub">Fallback (EN)</label>
             <textarea
+              id={`${uid}-fallback-en`}
               value={configForm.fallback_en}
               onChange={(e) => onChange({ ...configForm, fallback_en: e.target.value })}
               rows={2}
