@@ -6,7 +6,7 @@ import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
 import { getAllProducts, getAllProductLines, getAllProductCategories } from "@/lib/supabase/queries";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
