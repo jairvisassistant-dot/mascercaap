@@ -7,7 +7,7 @@ export default function LegalView({ document: doc, lang, lastUpdatedLabel }: Pro
   const locale = lang;
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-6">
+    <div className="flex-1 overflow-y-auto p-6">
       <p className="text-xs text-text-faint mb-6">
         {lastUpdatedLabel}: {new Date(doc.lastUpdated).toLocaleDateString(locale === "es" ? "es-CO" : "en-US", { year: "numeric", month: "long", day: "numeric" })}
       </p>

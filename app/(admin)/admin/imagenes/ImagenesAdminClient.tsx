@@ -612,7 +612,7 @@ export default function ImagenesAdminClient({
                             <span className="font-medium">
                               {product?.name ?? pid}
                             </span>
-                            {" — "}
+                            {": "}
                             {ids.length} archivos. Quitá los archivos
                             sobrantes para continuar.
                           </li>
@@ -661,7 +661,7 @@ export default function ImagenesAdminClient({
                   className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {isUploading && (
-                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    <span className="inline-block size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                   )}
                   {isUploading
                     ? "Subiendo..."
@@ -782,7 +782,7 @@ function FileCard({
       {/* Preview + info */}
       <div className="flex items-start gap-3">
         {/* Thumbnail */}
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-border-soft bg-white">
+        <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border border-border-soft bg-white">
           <Image
             src={entry.previewUrl}
             alt={entry.file.name}
@@ -872,7 +872,7 @@ function FileCard({
               className="w-full rounded-lg border border-border-soft bg-white px-2.5 py-1.5 text-xs text-text-sub focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/10"
               disabled={entry.uploadStatus !== "pending"}
             >
-              <option value="">— Seleccionar producto —</option>
+              <option value="">Seleccionar producto</option>
               {groupedProducts(allProducts, lineLabels).map((group) => (
                 <optgroup key={group.label} label={group.label}>
                   {group.products.map((p) => (

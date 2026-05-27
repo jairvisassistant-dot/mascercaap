@@ -77,7 +77,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
           : "bg-surface-page shadow-md"
       }`}
     >
-      <div className="mx-auto max-w-[1680px] px-4 py-4">
+      <div className="mx-auto max-w-[1680px] p-4">
         <div className="flex items-center justify-between gap-4">
 
           {/* Logo + subtitle */}
@@ -132,7 +132,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
                 <NavDropdown label="Catálogo" id="catalogo" openMenu={openMenu} onToggle={toggleMenu}>
                   <Link href="/admin/productos/nuevo" onClick={() => setOpenMenu(null)}
                     className={`${itemCls} gap-2 font-semibold text-primary`}>
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/12 text-[10px] font-bold text-primary">+</span>
+                    <span className="flex size-4 items-center justify-center rounded-full bg-primary/12 text-[10px] font-bold text-primary">+</span>
                     Nuevo producto
                   </Link>
                   <div className="mx-3 my-1 border-t border-border-soft" />

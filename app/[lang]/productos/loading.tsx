@@ -20,7 +20,7 @@ export default function ProductosLoading() {
             <div key={section}>
               {/* Line header */}
               <div className="flex items-center gap-4 mb-5">
-                <div className="w-11 h-11 bg-surface-card rounded-xl" />
+                <div className="size-11 bg-surface-card rounded-xl" />
                 <div className="flex flex-col gap-2">
                   <div className="h-5 w-36 bg-surface-card rounded" />
                   <div className="h-3 w-52 bg-surface-card rounded" />

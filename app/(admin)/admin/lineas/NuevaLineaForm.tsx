@@ -89,7 +89,7 @@ export default function NuevaLineaForm() {
       {/* Paso 1 — Categoría */}
       <section className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
         <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
-          Paso 1 — Categoría principal
+          Paso 1: Categoría principal
         </p>
         <p className="mb-4 text-xs text-text-muted">
           Elige a qué categoría pertenece esta línea antes de continuar.
@@ -104,7 +104,7 @@ export default function NuevaLineaForm() {
             className={`${inputCls} border-primary/30`}
           >
             <option value="">
-              {loadingCategories ? "Cargando categorías..." : "— Selecciona una categoría —"}
+              {loadingCategories ? "Cargando categorías..." : "Selecciona una categoría"}
             </option>
             {categories.map((c) => (
               <option key={c.key} value={c.key}>{c.label}</option>

@@ -252,8 +252,8 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center text-center py-4"
             >
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <svg className="size-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -307,7 +307,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] mb-3"
                 >
-                  <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                     <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.534 5.857L0 24l6.335-1.518A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.797 9.797 0 01-5.092-1.424l-.366-.217-3.762.902.944-3.653-.238-.374A9.776 9.776 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z" />
                   </svg>
@@ -432,7 +432,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                           disabled={!customQty || parseInt(customQty) <= 0}
                           className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 min-h-[44px]"
                         >
-                          OK
+                          Confirmar
                         </button>
                       </div>
                     )}
@@ -539,7 +539,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                   className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] disabled:opacity-50"
                 >
                   {t.continueLabel}
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                   </svg>
                 </button>
@@ -601,7 +601,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                           type="checkbox"
                           checked={consent}
                           onChange={(e) => setConsent(e.target.checked)}
-                          className="mt-0.5 w-4 h-4 accent-primary shrink-0"
+                          className="mt-0.5 size-4 accent-primary shrink-0"
                         />
                         <span className="text-xs text-text-muted leading-relaxed">{t.consentLabel}</span>
                       </label>

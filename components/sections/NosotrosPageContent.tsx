@@ -32,8 +32,8 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       {/* Hero — el verde del campo colombiano, sin mezcla con naranja */}
       <section className="relative py-20 bg-gradient-to-br from-primary-dark via-primary to-[#5f9f63] overflow-hidden">
         {/* Luz solar filtrada — evoca amanecer sobre el campo */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-accent/10 blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+        <div className="absolute top-0 right-0 size-[600px] rounded-full bg-white/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 size-80 rounded-full bg-accent/10 blur-3xl translate-y-1/2 -translate-x-1/3 pointer-events-none" />
         {/* Forma orgánica — hoja */}
         <div className="absolute right-0 inset-y-0 pointer-events-none overflow-hidden">
           <svg viewBox="0 0 400 300" className="absolute right-0 top-0 h-full w-auto opacity-[0.07]" fill="white">
@@ -100,8 +100,8 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                 className="fade-in-up text-center"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="relative mx-auto mb-4 w-20 h-20">
-                  <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-4xl shadow-lg shadow-primary/20">
+                <div className="relative mx-auto mb-4 size-20">
+                  <div className="size-20 bg-primary rounded-full flex items-center justify-center text-4xl shadow-lg shadow-primary/20">
                     <EmojiIcon emoji={timelineIcons[index]} label={step.title} size="xl" tone="plain" />
                   </div>
                   {index < t.timeline.steps.length - 1 && (
@@ -131,7 +131,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
               <div key={value.title} className="fade-in-up group bg-surface-card rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden" style={{ animationDelay: `${index * 0.12}s` }}>
                 <div className={`h-1.5 w-full bg-gradient-to-r ${valuesMeta[index].color}`} />
                 <div className="p-8">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`size-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>
                     <EmojiIcon emoji={valuesMeta[index].icon} label={value.title} size="md" tone="plain" />
                   </div>
                   <h3 className="text-xl font-bold text-text-main mb-3">{value.title}</h3>
@@ -146,8 +146,8 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       {/* Trayectoria */}
       <section className="py-20 bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 relative overflow-hidden">
         {/* Decorative blobs */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none" />
+        <div className="absolute top-0 left-0 size-96 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 size-96 bg-emerald-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           {/* Header */}
@@ -170,7 +170,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                     style={{ animationDelay: `${i * 0.12}s` }}
                   >
                     <div className="relative flex-shrink-0 mt-1">
-                      <div className="w-6 h-6 rounded-full bg-primary border-4 border-emerald-900 shadow-lg shadow-primary/40" />
+                      <div className="size-6 rounded-full bg-primary border-4 border-emerald-900 shadow-lg shadow-primary/40" />
                     </div>
                     <div>
                       <span className="text-primary font-bold text-lg block mb-1">{milestone.year}</span>
@@ -247,7 +247,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
                     {/* Dot central */}
                     <div className="hidden md:flex md:order-2 justify-center">
                       <div
-                        className="fade-in-up w-14 h-14 rounded-full bg-primary flex items-center justify-center text-2xl shadow-xl shadow-primary/25 z-10 relative"
+                        className="fade-in-up size-14 rounded-full bg-primary flex items-center justify-center text-2xl shadow-xl shadow-primary/25 z-10 relative"
                         style={{ animationDelay: "0.18s" }}
                       >
                         <EmojiIcon emoji={step.icon} label={cardText.title} size="md" tone="plain" />

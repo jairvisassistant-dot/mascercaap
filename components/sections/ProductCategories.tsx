@@ -107,13 +107,13 @@ function CategoryCard({
     <div className={`relative h-96 rounded-[1.1rem] overflow-hidden group bg-gradient-to-br ${category.gradient} shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]`}>
 
       {/* Glow decorativo detrás de la imagen */}
-      <div className={`absolute -bottom-8 -right-8 w-64 h-64 rounded-full blur-3xl ${category.glowColor} pointer-events-none`} />
+      <div className={`absolute -bottom-8 -right-8 size-64 rounded-full blur-3xl ${category.glowColor} pointer-events-none`} />
 
       {/* Puntos decorativos */}
       <div className="absolute top-4 right-4 opacity-20 pointer-events-none">
         <div className="grid grid-cols-3 gap-1.5">
           {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="w-1.5 h-1.5 rounded-full bg-white" />
+            <div key={i} className="size-1.5 rounded-full bg-white" />
           ))}
         </div>
       </div>
@@ -172,7 +172,7 @@ function CategoryCard({
             <span className="inline-flex items-center gap-2 text-white text-sm font-semibold border-b border-white/40 pb-0.5 transition-all group-hover:border-white group-hover:gap-3">
               {viewProductsLabel}
               <svg
-                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                className="size-4 transition-transform group-hover:translate-x-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

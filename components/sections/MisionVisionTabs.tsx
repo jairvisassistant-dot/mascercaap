@@ -7,7 +7,7 @@ import type { Dictionary } from "@/lib/i18n";
 const misionVisionConfig = {
   mision: {
     icon: (
-      <svg viewBox="0 0 64 64" className="w-16 h-16" fill="none">
+      <svg viewBox="0 0 64 64" className="size-16" fill="none">
         <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="3" strokeDasharray="6 4" />
         <circle cx="32" cy="32" r="16" stroke="currentColor" strokeWidth="3" />
         <circle cx="32" cy="32" r="5" fill="currentColor" />
@@ -19,7 +19,7 @@ const misionVisionConfig = {
   },
   vision: {
     icon: (
-      <svg viewBox="0 0 64 64" className="w-16 h-16" fill="none">
+      <svg viewBox="0 0 64 64" className="size-16" fill="none">
         <path d="M4 32C4 32 14 12 32 12C50 12 60 32 60 32C60 32 50 52 32 52C14 52 4 32 4 32Z" stroke="currentColor" strokeWidth="3" />
         <circle cx="32" cy="32" r="9" stroke="currentColor" strokeWidth="3" />
         <circle cx="32" cy="32" r="3" fill="currentColor" />
@@ -98,17 +98,17 @@ export default function MisionVisionTabs({ dict }: { dict: Dictionary }) {
             style={{ background: `linear-gradient(135deg, ${config.bgFrom}, ${config.bgTo})` }}
           >
             <div
-              className="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-20 blur-3xl"
+              className="absolute -top-16 -right-16 size-64 rounded-full opacity-20 blur-3xl"
               style={{ background: config.accentColor }}
             />
             <div
-              className="absolute -bottom-16 -left-16 w-64 h-64 rounded-full opacity-20 blur-3xl"
+              className="absolute -bottom-16 -left-16 size-64 rounded-full opacity-20 blur-3xl"
               style={{ background: config.accentColor }}
             />
 
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-10 p-10 md:p-14">
               <div
-                className="shrink-0 w-28 h-28 rounded-2xl flex items-center justify-center shadow-lg"
+                className="shrink-0 size-28 rounded-2xl flex items-center justify-center shadow-lg"
                 style={{ background: "rgba(255,255,255,0.15)", color: "white" }}
               >
                 {config.icon}

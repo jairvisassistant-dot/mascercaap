@@ -64,7 +64,7 @@ export function ProductsFilterBar({
             >
               {catLabels[cat]}
               {isActive && (
-                <svg className="w-3 h-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="size-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               )}
@@ -76,9 +76,9 @@ export function ProductsFilterBar({
             type="button"
             onClick={onClearAll}
             aria-label={dict.products.filters.clear}
-            className="w-7 h-7 rounded-full flex items-center justify-center bg-surface-page hover:bg-red-50 text-text-faint hover:text-red-500 transition-all duration-200 hover:scale-110 ml-1 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
+            className="size-7 rounded-full flex items-center justify-center bg-surface-page hover:bg-red-50 text-text-faint hover:text-red-500 transition-all duration-200 hover:scale-110 ml-1 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <svg className="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>

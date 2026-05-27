@@ -188,16 +188,16 @@ export default function ProductosAdminClient({
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gradient-to-r from-[#3a7f45] via-[#438b4d] to-[#347640] text-left text-xs uppercase tracking-[0.18em] text-white/90">
-              <th className="w-12 px-4 py-4 font-semibold">Img</th>
-              <th className="px-4 py-4 font-semibold">Nombre</th>
-              <th className="hidden px-4 py-4 font-semibold md:table-cell">Línea</th>
-              <th className="hidden px-4 py-4 font-semibold sm:table-cell">Presentación</th>
-              <th className="hidden px-4 py-4 font-semibold text-right sm:table-cell">Precio</th>
-              <th className="px-4 py-4 text-center font-semibold">Dest.</th>
-              <th className="px-4 py-4 text-center font-semibold">Vendido</th>
-              <th className="hidden px-4 py-4 text-center font-semibold sm:table-cell">+ Pedido</th>
-              <th className="px-4 py-4 text-center font-semibold">Activo</th>
-              <th className="w-16 px-4 py-4"></th>
+              <th className="w-12 p-4 font-semibold">Img</th>
+              <th className="p-4 font-semibold">Nombre</th>
+              <th className="hidden p-4 font-semibold md:table-cell">Línea</th>
+              <th className="hidden p-4 font-semibold sm:table-cell">Presentación</th>
+              <th className="hidden p-4 font-semibold text-right sm:table-cell">Precio</th>
+              <th className="p-4 text-center font-semibold">Dest.</th>
+              <th className="p-4 text-center font-semibold">Vendido</th>
+              <th className="hidden p-4 text-center font-semibold sm:table-cell">+ Pedido</th>
+              <th className="p-4 text-center font-semibold">Activo</th>
+              <th className="w-16 p-4"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-soft">
@@ -208,11 +208,11 @@ export default function ProductosAdminClient({
               >
                 <td className="px-4 py-3">
                   {p.image?.startsWith("http") ? (
-                    <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl bg-surface-warm ring-1 ring-border-soft">
+                    <div className="relative size-11 flex-shrink-0 overflow-hidden rounded-xl bg-surface-warm ring-1 ring-border-soft">
                       <Image src={p.image} alt={p.name} fill sizes="44px" className="object-cover" />
                     </div>
                   ) : (
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-warm text-xs text-text-faint ring-1 ring-border-soft">
+                    <div className="flex size-11 items-center justify-center rounded-xl bg-surface-warm text-xs text-text-faint ring-1 ring-border-soft">
                       ?
                     </div>
                   )}
@@ -226,7 +226,7 @@ export default function ProductosAdminClient({
                 </td>
                 <td className="hidden px-4 py-3 text-text-sub sm:table-cell">{p.presentation}</td>
                 <td className="hidden px-4 py-3 text-right font-mono text-sm text-text-main sm:table-cell">
-                  {p.price != null ? `$${p.price.toLocaleString("es-CO")}` : <span className="text-text-faint">—</span>}
+                  {p.price != null ? `$${p.price.toLocaleString("es-CO")}` : <span className="text-text-faint">-</span>}
                 </td>
 
                 {/* Toggle: Destacado */}
@@ -298,10 +298,10 @@ export default function ProductosAdminClient({
                       <button
                         type="button"
                         onClick={() => { setError(""); setConfirmDeleteId(p.id); }}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-red-50 hover:text-red-500"
+                        className="flex size-7 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-red-50 hover:text-red-500"
                         aria-label={`Eliminar producto ${p.name}`}
                       >
-                        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
+                        <svg className="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
@@ -351,7 +351,7 @@ function Toggle({
       } ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${
+        className={`inline-block size-3.5 rounded-full bg-white shadow transition-transform ${
           value ? "translate-x-4" : "translate-x-1"
         }`}
       />

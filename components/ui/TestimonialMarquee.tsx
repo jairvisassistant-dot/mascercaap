@@ -18,7 +18,7 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <svg
           key={star}
-          className={`w-3.5 h-3.5 ${star <= rating ? "text-accent" : "text-white/20"}`}
+          className={`size-3.5 ${star <= rating ? "text-accent" : "text-white/20"}`}
           fill="currentColor"
           viewBox="0 0 20 20"
           aria-hidden="true"
@@ -41,7 +41,7 @@ function TestimonialCard({ testimonial, lang }: { testimonial: Testimonial; lang
       <StarRating rating={testimonial.rating} />
       <p className="text-white/82 text-sm leading-relaxed mb-4 line-clamp-3">{text}</p>
       <div className="flex items-center gap-2.5 pt-3 border-t border-white/10">
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shrink-0">
+        <div className="size-7 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shrink-0">
           <span className="text-white text-[10px] font-bold">
             {testimonial.name.charAt(0)}
           </span>

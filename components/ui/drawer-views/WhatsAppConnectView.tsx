@@ -24,7 +24,7 @@ export default function WhatsAppConnectView({ dict, appUrl, webUrl, leadSaved }:
     : null;
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-4 bg-surface-soft">
+    <div className="flex-1 overflow-y-auto p-4 bg-surface-soft">
       <div className="rounded-2xl border border-border-mid bg-surface-card shadow-sm p-5 flex flex-col gap-3">
         {leadSaved && (
           <p className="text-xs text-green-600 font-medium text-center">{t.leadQrSaved}</p>
@@ -50,7 +50,7 @@ export default function WhatsAppConnectView({ dict, appUrl, webUrl, leadSaved }:
             }}
             className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
           >
-            <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="size-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
               <path d={WA_ICON_PATH} />
             </svg>
             {t.leadConnectApp}

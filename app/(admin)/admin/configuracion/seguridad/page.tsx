@@ -191,7 +191,7 @@ export default function SeguridadPage() {
       {mfaState.status === "disabled" && enrollStep === "idle" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-lg">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-amber-100 text-lg">
               ⚠️
             </div>
             <div>
@@ -240,7 +240,7 @@ export default function SeguridadPage() {
                 alt="Código QR para 2FA"
                 width={192}
                 height={192}
-                className="h-48 w-48 rounded-xl border border-border-soft"
+                className="size-48 rounded-xl border border-border-soft"
               />
             )}
           </div>
@@ -292,7 +292,7 @@ export default function SeguridadPage() {
       {mfaState.status === "enabled" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 text-lg">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-green-100 text-lg">
               ✅
             </div>
             <div>

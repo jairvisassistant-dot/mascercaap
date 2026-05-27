@@ -24,7 +24,7 @@ export default function ContactoLoading() {
               </div>
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-start gap-4 py-5 border-b border-border-soft">
-                  <div className="w-10 h-10 rounded-xl bg-surface-card shrink-0" />
+                  <div className="size-10 rounded-xl bg-surface-card shrink-0" />
                   <div className="flex-1 space-y-2">
                     <div className="h-3 w-16 bg-surface-card rounded" />
                     <div className="h-4 w-40 bg-surface-card rounded" />

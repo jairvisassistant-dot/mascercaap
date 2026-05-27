@@ -216,7 +216,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         </div>
       )}
 
-      {/* Paso 1 — Categoría */}
+      {/* Paso 1: Categoría */}
       <section className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
         <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
           Paso 1 — Categoría
@@ -232,7 +232,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             className={`${inputCls} border-primary/30`}
           >
             <option value="">
-              {loadingCatalog ? "Cargando categorías..." : "— Selecciona una categoría —"}
+              {loadingCatalog ? "Cargando categorías..." : "Selecciona una categoría"}
             </option>
             {categories.map((c) => (
               <option key={c.key} value={c.key}>{c.label}</option>
@@ -252,7 +252,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       {/* Paso 2 — Línea */}
       <section className="rounded-2xl border border-accent/20 bg-accent/5 p-5">
         <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-accent-dark">
-          Paso 2 — Línea de producto
+          Paso 2: Línea de producto
         </p>
         <p className="mb-4 text-xs text-text-muted">
           {selectedCategory
@@ -367,7 +367,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       <section>
         <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Imagen</h2>
         {form.image && (
-          <div className="relative mb-3 h-24 w-24 overflow-hidden rounded-2xl bg-surface-warm ring-1 ring-border-soft">
+          <div className="relative mb-3 size-24 overflow-hidden rounded-2xl bg-surface-warm ring-1 ring-border-soft">
             <Image src={form.image} alt="preview" fill sizes="96px" className="object-cover" />
           </div>
         )}
@@ -376,7 +376,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             <span className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark">
               {uploading ? "Subiendo..." : "Subir imagen"}
             </span>
-            <span className="text-xs text-text-muted">.webp, .jpg, .png — máx 2MB</span>
+            <span className="text-xs text-text-muted">.webp, .jpg, .png (máx 2MB)</span>
             <input
               type="file"
               accept="image/webp,image/jpeg,image/png"
@@ -612,7 +612,7 @@ function ToggleField({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-border-soft bg-surface-warm px-3 py-3">
+    <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-border-soft bg-surface-warm p-3">
       <span className="text-sm font-medium text-text-sub">{label}</span>
       <button
         type="button"
@@ -622,7 +622,7 @@ function ToggleField({
         }`}
       >
         <span
-          className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${
+          className={`inline-block size-3.5 rounded-full bg-white shadow transition-transform ${
             value ? "translate-x-4" : "translate-x-1"
           }`}
         />

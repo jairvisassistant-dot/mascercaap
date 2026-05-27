@@ -147,7 +147,7 @@ export default function AdminLoginPage() {
 
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-lg font-bold text-white shadow-[0_18px_42px_-20px_rgba(63,143,70,0.75)]">
+          <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary text-lg font-bold text-white shadow-[0_18px_42px_-20px_rgba(63,143,70,0.75)]">
             AP
           </div>
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-accent-dark">
@@ -222,7 +222,7 @@ export default function AdminLoginPage() {
           /* ─── Step 2: Codigo TOTP ──────────────────────────────── */
           <div className="space-y-6 rounded-3xl border border-border-soft bg-surface-card p-7 shadow-[0_24px_70px_-34px_rgba(47,111,54,0.45)]">
             <div className="text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-xl">
+              <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-xl">
                 🔐
               </div>
               <h2 className="text-lg font-bold text-text-main">Verificacion en dos pasos</h2>

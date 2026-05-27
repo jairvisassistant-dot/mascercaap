@@ -27,7 +27,7 @@ export default function ConfigSection({
 
   if (editConfig) {
     return (
-      <div className="rounded-2xl border border-border-soft bg-surface-card px-4 py-4 shadow-sm">
+      <div className="rounded-2xl border border-border-soft bg-surface-card p-4 shadow-sm">
         <h2 className="mb-3 text-sm font-bold text-text-main">Mensaje de fallback</h2>
         <div className="space-y-3">
           <div>
@@ -74,7 +74,7 @@ export default function ConfigSection({
   }
 
   return (
-    <div className="rounded-2xl border border-border-soft bg-surface-card px-4 py-4 shadow-sm">
+    <div className="rounded-2xl border border-border-soft bg-surface-card p-4 shadow-sm">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-sm font-bold text-text-main">Mensaje de fallback</h2>

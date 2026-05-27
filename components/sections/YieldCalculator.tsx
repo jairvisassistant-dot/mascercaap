@@ -333,7 +333,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                             disabled={!customCups || parseInt(customCups, 10) <= 0}
                             className="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 transition-opacity"
                           >
-                            OK
+                            Confirmar
                           </button>
                         </div>
                       )}
@@ -343,7 +343,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   <p className="text-sm font-semibold text-text-main flex flex-wrap items-center">
                     <span className="text-primary mr-2">1.</span>
                     <span className="text-text-muted font-normal">
-                      {selectedPrep === "jugo" ? t.prepJugo : t.prepFrappe} — {targetCups} {t.cups}
+                      {selectedPrep === "jugo" ? t.prepJugo : t.prepFrappe}: {targetCups} {t.cups}
                     </span>
                     <BackLink label={t.back} onClick={handleBackToStep1} />
                   </p>
@@ -430,7 +430,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                         </p>
                       </div>
 
-                      <div className="px-5 py-5 border-b border-primary/10">
+                      <div className="p-5 border-b border-primary/10">
                         <CupGrid
                           totalCups={totalCupsFromPacks(packs, selectedPresentation, selectedPrep)}
                           fruit={selectedFruit}
@@ -438,7 +438,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                         />
                       </div>
 
-                      <div className="px-5 py-5">
+                      <div className="p-5">
                         <PreparationTimeline minutesSaved={comparison.minutesSaved} t={t} />
                       </div>
                     </div>

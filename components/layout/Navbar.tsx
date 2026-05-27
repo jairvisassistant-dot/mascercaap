@@ -91,7 +91,7 @@ export default function Navbar({ dict, lang }: Props) {
           ? "bg-surface-page/90 backdrop-blur-md shadow-sm border-b border-border-soft"
           : "bg-surface-page shadow-md"
       }`}>
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto p-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href={`/${lang}`} className="flex items-center gap-2 text-2xl font-bold text-primary">
@@ -145,7 +145,7 @@ export default function Navbar({ dict, lang }: Props) {
               aria-controls="mobile-nav"
             >
               <svg
-                className="w-6 h-6"
+                className="size-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -180,7 +180,7 @@ export default function Navbar({ dict, lang }: Props) {
           className="md:hidden overflow-hidden bg-surface-page border-t border-border-soft"
           style={{ pointerEvents: isOpen ? "auto" : "none" }}
         >
-          <div className="px-4 py-4 space-y-4">
+          <div className="p-4 space-y-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}

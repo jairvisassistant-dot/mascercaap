@@ -90,7 +90,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
     <div>
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <div aria-hidden="true" className="w-11 h-11 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-xl shadow-sm">
+        <div aria-hidden="true" className="size-11 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-xl shadow-sm">
           🫐
         </div>
         <div>
@@ -106,11 +106,11 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
           type="button"
           onClick={() => scroll("left")}
           aria-label={pulpaGridDict.scrollPrev}
-          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
+          className={`shrink-0 size-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollLeft ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -119,7 +119,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
         <div
           ref={scrollRef}
           onScroll={checkScroll}
-          className="flex gap-2 overflow-x-auto scrollbar-none flex-1 py-1 px-1"
+          className="flex gap-2 overflow-x-auto scrollbar-none flex-1 p-1"
         >
           {pulpaLines.map((line, lineIndex) => {
             const isSelected = selectedKey === line.key;
@@ -142,7 +142,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
                 aria-label={fruitName}
               >
                 <div
-                  className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 transition-all shadow-sm ${
+                  className={`relative size-16 sm:size-20 rounded-full overflow-hidden border-2 transition-all shadow-sm ${
                     isSelected ? "border-primary shadow-md" : "border-border-soft"
                   } ${isFirstAndHinting ? "animate-pulse" : ""}`}
                 >
@@ -165,11 +165,11 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
           type="button"
           onClick={() => scroll("right")}
           aria-label={pulpaGridDict.scrollNext}
-          className={`shrink-0 w-8 h-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
+          className={`shrink-0 size-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollRight ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -188,7 +188,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
           >
             <div className="flex items-center gap-3 mb-4">
               <div
-                className={`w-9 h-9 rounded-lg bg-gradient-to-br ${selectedLine.gradient} flex items-center justify-center text-base shadow-sm`}
+                className={`size-9 rounded-lg bg-gradient-to-br ${selectedLine.gradient} flex items-center justify-center text-base shadow-sm`}
               >
                 {selectedLine.iconEmoji}
               </div>

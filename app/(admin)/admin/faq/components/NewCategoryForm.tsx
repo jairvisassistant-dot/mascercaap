@@ -21,7 +21,7 @@ export default function NewCategoryForm({
     newCat.id.trim() && newCat.label_es.trim() && newCat.label_en.trim();
 
   return (
-    <div className="rounded-2xl border border-primary/40 bg-surface-card px-4 py-4 shadow-sm ring-1 ring-primary/15">
+    <div className="rounded-2xl border border-primary/40 bg-surface-card p-4 shadow-sm ring-1 ring-primary/15">
       <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
         Nueva categoría
       </p>

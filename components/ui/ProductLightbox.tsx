@@ -99,16 +99,16 @@ export default function ProductLightbox({ product, isOpen, onClose, dict, lang }
           type="button"
           onClick={onClose}
           aria-label={t.close}
-          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition hover:bg-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"
+          className="absolute right-4 top-4 z-20 flex size-8 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition hover:bg-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-4 w-4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="size-4">
             <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
           </svg>
         </button>
 
         {/* Image panel */}
         <div className="flex min-h-[260px] flex-shrink-0 items-center justify-center bg-surface-warm p-8 sm:min-h-0 sm:w-[44%] sm:p-10">
-          <div className="relative h-56 w-56 sm:h-64 sm:w-64">
+          <div className="relative size-56 sm:size-64">
             {/* alt: displayName comes from i18n dict; presentation (e.g. "120g") is a universal technical value — no translation needed */}
             <Image
               src={product.image}
