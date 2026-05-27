@@ -95,6 +95,17 @@ export function ProductsContent({
     )
   }
 
+  if (segments.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <EmojiIcon emoji="🛒" label="" size="xl" tone="neutral" decorative className="mb-4" />
+        <p className="text-text-muted text-base font-medium">
+          {dict.products.filters.empty}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-12">
       {segments.map((seg, segIndex) => {

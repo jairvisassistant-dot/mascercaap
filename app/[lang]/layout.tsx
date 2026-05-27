@@ -119,7 +119,7 @@ export default async function LangLayout({
   let prices: PriceEntry[] = [];
   let lines: CatalogLine[] = [];
   if (supabase) {
-    const [{ data: productData }, { data: lineData }] = await Promise.all([
+    const [{ data: productData, error: productErr }, { data: lineData, error: lineErr }] = await Promise.all([
       supabase
         .from("products")
         .select("id, line, name, presentation, presentation_order, price")
@@ -130,6 +130,8 @@ export default async function LangLayout({
         .eq("active", true)
         .order("display_order"),
     ]);
+    if (productErr) console.error("[layout] products query failed:", productErr);
+    if (lineErr)    console.error("[layout] product_lines query failed:", lineErr);
     if (productData?.length) prices = productData as PriceEntry[];
     if (lineData?.length)    lines  = lineData  as CatalogLine[];
   }

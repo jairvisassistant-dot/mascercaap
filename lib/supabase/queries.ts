@@ -4,10 +4,13 @@ import { supabasePublic as supabase } from "@/lib/supabase";
 import type { Product, ProductCategory, ProductLineConfig, Testimonial } from "@/types";
 
 function noClient(fn: string): never[] {
-  if (process.env.NODE_ENV !== "production") {
-    console.warn(`Supabase not configured — ${fn} returned empty. Check env vars.`);
-  }
+  // Always log — env vars missing is a critical config error, not noise.
+  console.error(`[supabase] ${fn}: client is null — NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY is missing.`);
   return [];
+}
+
+function logQueryError(fn: string, error: unknown) {
+  console.error(`[supabase] ${fn} query failed:`, error);
 }
 
 export const getAllProducts = cache(
@@ -19,7 +22,8 @@ export const getAllProducts = cache(
         .select("*")
         .eq("active", true)
         .order("display_order");
-      if (error || !data) return [];
+      if (error) { logQueryError("getAllProducts", error); return []; }
+      if (!data) return [];
       return data.map(mapRowToProduct);
     },
     ["all-products"],
@@ -38,7 +42,8 @@ export const getFeaturedProducts = cache(
         .eq("featured", true)
         .order("display_order")
         .limit(3);
-      if (error || !data) return [];
+      if (error) { logQueryError("getFeaturedProducts", error); return []; }
+      if (!data) return [];
       return data.map(mapRowToProduct);
     },
     ["featured-products"],
@@ -55,7 +60,8 @@ export const getAllTestimonials = cache(
         .select("*")
         .eq("active", true)
         .order("created_at");
-      if (error || !data) return [];
+      if (error) { logQueryError("getAllTestimonials", error); return []; }
+      if (!data) return [];
       return data;
     },
     ["all-testimonials"],
@@ -72,7 +78,8 @@ export const getAllProductLines = cache(
         .select("*")
         .eq("active", true)
         .order("display_order");
-      if (error || !data) return [];
+      if (error) { logQueryError("getAllProductLines", error); return []; }
+      if (!data) return [];
       return data.map((row) => ({
         key: row.key as string,
         label: row.label as string,
@@ -99,7 +106,8 @@ export const getAllProductCategories = cache(
         .select("key, label")
         .eq("active", true)
         .order("display_order");
-      if (error || !data) return [];
+      if (error) { logQueryError("getAllProductCategories", error); return []; }
+      if (!data) return [];
       return data.map((row) => ({
         key: row.key as string,
         label: row.label as string,
