@@ -124,7 +124,8 @@ export async function DELETE(req: Request) {
   const { count } = await sb
     .from("product_lines")
     .select("key", { count: "exact", head: true })
-    .eq("category_key", key);
+    .eq("category_key", key)
+    .eq("active", true);
 
   if (count && count > 0) {
     return NextResponse.json(
