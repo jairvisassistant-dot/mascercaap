@@ -41,7 +41,7 @@ function drawerReducer(state: { view: View; whatsAppState: WhatsAppState | null 
 const DRAWER_SESSION_KEY = "helphub:drawer-session:v1";
 
 type DrawerSessionState = {
-  view: Exclude<View, "order">;
+  view: Exclude<View, "order" | "contact">;
   whatsAppState: WhatsAppState | null;
 };
 
@@ -130,7 +130,7 @@ export default function HelpDrawer({ dict, lang, faqData, prices, lines, categor
   }, [initialView, t.whatsappMessage]);
 
   useEffect(() => {
-    if (view === "order") return;
+    if (view === "order" || view === "contact") return;
 
     const session: DrawerSessionState = {
       view,
