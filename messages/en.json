@@ -15,7 +15,7 @@
     "logoAlt": "Mas Cerca AP"
   },
   "footer": {
-      "description": "Our juices, fruit pulps, and dairy drinks are made with carefully selected fruit and high quality standards, so you can always enjoy the flavor and aroma of the fruits you love most.",
+      "description": "Our concentrates, fruit pulps, and dairy drinks are made with carefully selected fruit and high quality standards, so you can always enjoy the flavor and aroma of the fruits you love most.",
     "quickLinks": "Navigation",
     "productsTitle": "Products",
     "productLines": {
@@ -64,7 +64,7 @@
       "slides": [
         {
           "title": "The fruit leaves the farm today.\nTomorrow it's on your table.",
-          "subtitle": "100% NATURAL PULPS · NO PRESERVATIVES · NO COLORANTS",
+          "subtitle": "NATURAL PULPS · NO PRESERVATIVES · NO COLORANTS",
           "description": "Colombian fruit frozen at its exact peak of ripeness. Preserving its aromas, color and flavor — exactly as freshly harvested.",
           "cta": "View products"
         },
@@ -198,7 +198,7 @@
         {
           "number": "1",
           "title": "Pick your products",
-          "description": "Browse our catalog and note what you want: juices, pulps, or dairy."
+          "description": "Browse our catalog and note what you want: concentrates, pulps, or dairy."
         },
         {
           "number": "2",
@@ -220,7 +220,7 @@
     "testimonials": {
       "label": "Clients",
       "title": "What Our Clients Say",
-      "subtitle": "Businesses that trust Mas Cerca AP for their natural juice needs.",
+      "subtitle": "Businesses that trust Mas Cerca AP for their concentrates, pulps and dairy needs.",
       "highlights": [
         "Restaurants and coffee shops",
         "Commercial partners in Bogotá",
@@ -242,7 +242,7 @@
     "hero": {
       "eyebrow": "From the field to your business",
       "title": "Our Products",
-      "subtitle": "Juices, pulps and quality beverages, straight from the Colombian countryside to your table."
+      "subtitle": "Concentrates, pulps and quality beverages, straight from the Colombian countryside to your table."
     },
     "filters": {
       "category": "Category:",
@@ -253,7 +253,7 @@
       "countLabel": "products in",
       "empty": "No products in this size",
       "search": "Search catalog",
-      "searchPlaceholder": "Search juices, pulps, dairy...",
+      "searchPlaceholder": "Search concentrates, pulps, dairy...",
       "searchEmpty": "No results for",
       "searchCount": "results for"
     },
@@ -318,7 +318,7 @@
     },
     "history": {
       "title": "Our Story",
-      "text": "Mas Cerca AP is not just a business — it is a gift from God, and living proof that new beginnings are possible. It was founded by a couple who believed that serving people was the best way to build something. We produce and sell fruit juices, fruit pulps and fresh products sourced directly from farms, buying from farmers at their land and serving as the platform that brings their products to homes, businesses and new markets. We are driven by faith in God, guided by honesty and defined by our commitment to the Colombian countryside.",
+      "text": "Mas Cerca AP is not just a business — it is a gift from God, and living proof that new beginnings are possible. It was founded by a couple who believed that serving people was the best way to build something. We produce and sell fruit concentrates, fruit pulps and fresh products sourced directly from farms, buying from farmers at their land and serving as the platform that brings their products to homes, businesses and new markets. We are driven by faith in God, guided by honesty and defined by our commitment to the Colombian countryside.",
       "imageAlt": "Mas Cerca AP founders at their production facility in Chía, Cundinamarca",
       "headline": {
         "prefix": "We connect the",
@@ -329,7 +329,7 @@
     "timeline": {
       "sectionLabel": "Artisanal process",
       "title": "From Farm to Table",
-      "subtitle": "Our artisanal process guarantees maximum freshness and quality in every juice we produce.",
+      "subtitle": "Our artisanal process guarantees maximum freshness and quality in every concentrate and pulp we produce.",
       "steps": [
         {
           "title": "Growing",
@@ -398,7 +398,7 @@
       "stepLabel": "Step",
       "stepOf": "of",
       "title": "Our Process in Images",
-      "subtitle": "A behind-the-scenes look at how we prepare every juice.",
+      "subtitle": "A behind-the-scenes look at how we prepare every concentrate and pulp.",
       "cards": [
         {
           "title": "The origin is everything",
@@ -418,7 +418,7 @@
         },
         {
           "title": "Freshness doesn't wait",
-          "body": "From orange to jar in minutes. No pasteurizing, no preservatives — the juice reaches you with everything the fruit had when it left the field."
+          "body": "From orange to jar in minutes. No pasteurizing, no preservatives — the concentrate reaches you with everything the fruit had when it left the field."
         },
         {
           "title": "Behind every bottle",
@@ -669,17 +669,17 @@
   },
   "metadata": {
     "home": {
-      "title": "Mas Cerca AP - Natural Fruit Pulps & Juices Colombia",
-      "description": "Mas Cerca AP: 100% natural fruit pulps, kumis, yogurt and lemonades from Chía, Cundinamarca. Order directly from the producer.",
-      "keywords": "Mas Cerca AP, fruit pulp, natural juices Colombia, kumis, yogurt, lemonades, Colombian fruits, Chía Cundinamarca"
+      "title": "Mas Cerca AP - Fruit Pulps, Concentrates & Dairy Colombia",
+      "description": "Mas Cerca AP: fruit pulps, concentrated zumos, kumis, yogurt and lemonades from Chía, Cundinamarca. Order directly from the producer.",
+      "keywords": "Mas Cerca AP, fruit pulp, fruit concentrates Colombia, kumis, yogurt, lemonades, Colombian fruits, Chía Cundinamarca"
     },
     "products": {
       "title": "Products",
-      "description": "Juices, fruit pulps and natural beverages made with Colombian fruits. From farm to table."
+      "description": "Concentrates, fruit pulps and dairy beverages made with Colombian fruits. From farm to table."
     },
     "about": {
       "title": "About Us",
-      "description": "Learn the story of Mas Cerca AP: a Colombian company that produces and sells juices, pulps and fresh products buying directly from farmers."
+      "description": "Learn the story of Mas Cerca AP: a Colombian company that produces and sells concentrates, pulps and dairy products buying directly from farmers."
     },
     "contact": {
       "title": "Contact",

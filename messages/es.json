@@ -64,7 +64,7 @@
       "slides": [
         {
           "title": "La fruta sale del campo hoy.\nMañana está en tu mesa.",
-          "subtitle": "PULPAS 100% NATURALES · SIN CONSERVANTES · SIN COLORANTES",
+          "subtitle": "PULPAS NATURALES · SIN CONSERVANTES · SIN COLORANTES",
           "description": "Fruta colombiana congelada en su punto exacto de madurez. Conserva sus aromas, color y sabor — exactamente como recién cosechada.",
           "cta": "Ver productos"
         },
@@ -198,7 +198,7 @@
         {
           "number": "1",
           "title": "Elige tus productos",
-          "description": "Navega nuestro catálogo y anota lo que necesitas: jugos, pulpas o lácteos."
+          "description": "Navega nuestro catálogo y anota lo que necesitas: zumos, pulpas o lácteos."
         },
         {
           "number": "2",
@@ -220,7 +220,7 @@
     "testimonials": {
       "label": "Clientes",
       "title": "Lo que dicen nuestros clientes",
-      "subtitle": "Empresas y negocios que confían en Mas Cerca AP para sus necesidades de jugos naturales.",
+      "subtitle": "Empresas y negocios que confían en Mas Cerca AP para sus necesidades de zumos, pulpas y lácteos.",
       "highlights": [
         "Restaurantes y cafeterías",
         "Aliados comerciales en Bogotá",
@@ -253,7 +253,7 @@
       "countLabel": "productos en",
       "empty": "Sin productos en esta presentación",
       "search": "Buscar en el catálogo",
-      "searchPlaceholder": "Buscar jugos, pulpas, lácteos...",
+      "searchPlaceholder": "Buscar zumos, pulpas, lácteos...",
       "searchEmpty": "Sin resultados para",
       "searchCount": "resultados para"
     },
@@ -329,7 +329,7 @@
     "timeline": {
       "sectionLabel": "Proceso artesanal",
       "title": "Del Campo a Tu Mesa",
-      "subtitle": "Nuestro proceso artesanal garantiza la máxima frescura y calidad en cada jugo que producimos.",
+      "subtitle": "Nuestro proceso artesanal garantiza la máxima frescura y calidad en cada zumo y pulpa que producimos.",
       "steps": [
         {
           "title": "Cultivo",
@@ -398,7 +398,7 @@
       "stepLabel": "Paso",
       "stepOf": "de",
       "title": "Nuestro Proceso en Imágenes",
-      "subtitle": "Una mirada detrás de escenas a cómo preparamos cada jugo.",
+      "subtitle": "Una mirada detrás de escenas a cómo preparamos cada zumo y pulpa.",
       "cards": [
         {
           "title": "El origen lo es todo",
@@ -418,7 +418,7 @@
         },
         {
           "title": "La frescura no espera",
-          "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el jugo llega a ti con todo lo que la fruta tenía cuando salió del campo."
+          "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el zumo llega a ti con todo lo que la fruta tenía cuando salió del campo."
         },
         {
           "title": "Detrás de cada botella",
@@ -669,9 +669,9 @@
   },
   "metadata": {
     "home": {
-      "title": "Mas Cerca AP - Pulpas y Jugos Naturales Colombia",
-      "description": "Mas Cerca AP: pulpas de fruta, kumis, yogurt y limonadas 100% naturales desde Chía, Cundinamarca. Pedidos directos al productor.",
-      "keywords": "Mas Cerca AP, pulpas de fruta, jugos naturales Colombia, kumis, yogurt, limonadas, frutas colombianas, Chía Cundinamarca"
+      "title": "Mas Cerca AP - Pulpas, Zumos y Lácteos Colombia",
+      "description": "Mas Cerca AP: pulpas de fruta, zumos concentrados, kumis, yogurt y limonadas desde Chía, Cundinamarca. Pedidos directos al productor.",
+      "keywords": "Mas Cerca AP, pulpas de fruta, zumos concentrados Colombia, kumis, yogurt, limonadas, frutas colombianas, Chía Cundinamarca"
     },
     "products": {
       "title": "Productos",
@@ -679,7 +679,7 @@
     },
     "about": {
       "title": "Nosotros",
-      "description": "Conoce la historia de Mas Cerca AP: una empresa colombiana que produce y comercializa jugos, pulpas y productos frescos comprando directamente al campesino."
+      "description": "Conoce la historia de Mas Cerca AP: una empresa colombiana que produce y comercializa zumos, pulpas y lácteos comprando directamente al campesino."
     },
     "contact": {
       "title": "Contacto",

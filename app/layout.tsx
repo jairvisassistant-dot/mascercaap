@@ -6,7 +6,7 @@ import { SITE_CONFIG } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: { default: "Mas Cerca AP", template: "%s | Mas Cerca AP" },
-  description: "Mas Cerca AP — pulpas de fruta, jugos y lácteos colombianos 100% naturales. Kumis, yogurt, limonadas y más, directo desde Chía, Cundinamarca.",
+  description: "Mas Cerca AP — pulpas de fruta, zumos concentrados y lácteos de Colombia. Kumis, yogurt, limonadas y más, directo desde Chía, Cundinamarca.",
   metadataBase: new URL(SITE_CONFIG.siteUrl),
   openGraph: {
     siteName: "Mas Cerca AP",
