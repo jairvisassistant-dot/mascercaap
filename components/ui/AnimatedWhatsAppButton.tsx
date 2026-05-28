@@ -119,7 +119,7 @@ const AnimatedWhatsAppButton = memo(function AnimatedWhatsAppButton({ label }: P
       if (pauseTimerRef.current !== null) clearTimeout(pauseTimerRef.current);
       observer.disconnect();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- cleanup writes aliveRef.current (write-only, not a stale read)
+  // cleanup writes aliveRef.current (write-only, not a stale read)
   }, [widthCtrl, textCtrl, shouldReduceMotion]);
 
   return (

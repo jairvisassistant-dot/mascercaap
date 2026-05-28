@@ -19,7 +19,7 @@ import type { Dictionary } from "@/lib/i18n"
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
-import type { State, Action, Step } from "./order/types"
+import type { State, Action } from "./order/types"
 import OrderStep1 from "./order/OrderStep1"
 import OrderSteps234 from "./order/OrderSteps234"
 import OrderCart from "./order/OrderCart"
@@ -327,7 +327,6 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
             {(step === 2 || step === 3 || step === 4) && (
               <OrderSteps234
                 step={step}
-                curProductType={curProductType}
                 curLineKey={curLineKey}
                 curPresentation={curPresentation}
                 showCustomQty={showCustomQty}

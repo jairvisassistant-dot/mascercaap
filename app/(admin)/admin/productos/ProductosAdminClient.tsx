@@ -388,6 +388,7 @@ function Toggle({
       onClick={() => !disabled && onChange(!value)}
       disabled={disabled}
       title={title}
+      aria-label={title}
       className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card ${
         value ? colors[color] : "bg-border-mid"
       } ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}

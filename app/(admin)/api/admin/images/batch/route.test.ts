@@ -141,7 +141,7 @@ describe("POST /api/admin/images/batch", () => {
     const { POST } = await loadRoute(null);
 
     const fd = createFormData([{ fileIndex: 0, productId: "prod-img-null" }]);
-    const res = await POST(createRequest(fd, "https://mascercap.com"));
+    const res = await POST(createRequest(fd, "https://mascercaap.com"));
     // Should be past CSRF, now it fails at entries validation since
     // we didn't stub supabase storage beyond default — but that's fine,
     // we just care that it's not 403.

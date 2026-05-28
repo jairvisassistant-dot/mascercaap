@@ -23,12 +23,6 @@ type Props = {
   onContinueAnyway: () => void;
 };
 
-const TIPO_LABELS_ES: Record<LeadTipo, string> = {
-  pedido: "Quiero hacer un pedido",
-  negocio: "Tengo un negocio (mayoreo / distribución)",
-  consulta: "Consulta general",
-};
-
 export default function FaqLeadForm({
   t,
   lang,

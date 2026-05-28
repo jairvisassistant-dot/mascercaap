@@ -190,7 +190,7 @@ function Table({ headers, rows, emptyText }: { headers: string[]; rows: string[]
           {rows.map((row) => (
             <tr key={row.join("|")} className="border-b border-border-soft/70 last:border-b-0">
               {row.map((cell, cellIndex) => (
-                <td key={cellIndex} className="px-0 py-3 pr-4 text-text-sub">{cell}</td>
+                <td key={headers[cellIndex]} className="px-0 py-3 pr-4 text-text-sub">{cell}</td>
               ))}
             </tr>
           ))}

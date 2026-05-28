@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { assertSameOrigin } from "./csrf";
 
-const PRODUCTION_ORIGIN = "https://mascercap.com";
+const PRODUCTION_ORIGIN = "https://mascercaap.com";
 
 afterEach(() => {
   vi.unstubAllEnvs();

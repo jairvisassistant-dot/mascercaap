@@ -7,7 +7,6 @@ import StepBlock from "./StepBlock"
 
 type Props = {
   step: Step
-  curProductType: string | null
   curLineKey: string | null
   curPresentation: string | null
   showCustomQty: boolean
@@ -36,7 +35,7 @@ type Props = {
 }
 
 export default function OrderSteps234({
-  step, curProductType, curLineKey, curPresentation,
+  step, curLineKey, curPresentation,
   showCustomQty, customQty, isLacteos, isPack120gSelection,
   currentSelectionLabel, fruitOptions, presentationOptions, quantityOptions,
   items, t, dispatch, handleQtySelect, confirmCustomQty, CUSTOM_QTY,

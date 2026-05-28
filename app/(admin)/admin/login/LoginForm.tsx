@@ -1,7 +1,6 @@
 "use client";
 
-import { useReducer, useRef } from "react";
-import { flushSync } from "react-dom";
+import { useReducer, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 type Step = "credentials" | "totp";
@@ -30,6 +29,7 @@ type Action =
   | { type: "backToCredentials" };
 
 const EMPTY_CODE = ["", "", "", "", "", ""];
+const TOTP_KEYS = ["d1", "d2", "d3", "d4", "d5", "d6"] as const;
 
 const initialState: State = {
   step: "credentials",
@@ -69,6 +69,10 @@ export default function LoginForm() {
   const mfaTokenRef = useRef("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  useEffect(() => {
+    if (step === "totp") inputRefs.current[0]?.focus();
+  }, [step]);
+
   // ── Step 1: Login con credenciales ────────────────────────────────────
   async function handleCredentialsSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -91,11 +95,7 @@ export default function LoginForm() {
       if (data.needs_mfa) {
         // Pasar al step 2 - verificacion TOTP
         mfaTokenRef.current = data.mfa_token ?? "";
-        // flushSync commits DOM before focus so the TOTP inputs are mounted
-        flushSync(() => {
-          dispatch({ type: "mfaRequired", factorIds: data.factor_ids ?? [], selectedFactor: data.factor_ids?.[0] ?? "" });
-        });
-        inputRefs.current[0]?.focus();
+        dispatch({ type: "mfaRequired", factorIds: data.factor_ids ?? [], selectedFactor: data.factor_ids?.[0] ?? "" });
         return;
       }
 
@@ -285,7 +285,7 @@ export default function LoginForm() {
             >
               {code.map((digit, i) => (
                 <input
-                  key={`totp-input-${i}`}
+                  key={TOTP_KEYS[i]}
                   ref={(el) => { inputRefs.current[i] = el; }}
                   type="text"
                   inputMode="numeric"

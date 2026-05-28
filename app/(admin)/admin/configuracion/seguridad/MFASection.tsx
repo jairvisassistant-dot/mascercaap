@@ -3,6 +3,8 @@
 import Image from "next/image";
 import type { Factor, MfaStatus, EnrollStep } from "./types";
 
+const TOTP_KEYS = ["d1", "d2", "d3", "d4", "d5", "d6"] as const;
+
 interface MFASectionProps {
   mfaStatus: MfaStatus;
   enrollStep: EnrollStep;
@@ -126,7 +128,7 @@ export function MFASection({
           <div className="mb-4 flex justify-center gap-2">
             {code.map((digit, i) => (
               <input
-                key={`totp-digit-${i}`}
+                key={TOTP_KEYS[i]}
                 type="text"
                 inputMode="numeric"
                 maxLength={1}

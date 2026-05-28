@@ -275,6 +275,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                 onClick={() => move(cat.key, "up")}
                 className="flex size-6 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-primary/10 hover:text-primary disabled:cursor-not-allowed disabled:opacity-25"
                 title="Subir"
+                aria-label={`Subir categoría ${cat.label}`}
               >
                 <svg className="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
@@ -286,6 +287,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                 onClick={() => move(cat.key, "down")}
                 className="flex size-6 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-primary/10 hover:text-primary disabled:cursor-not-allowed disabled:opacity-25"
                 title="Bajar"
+                aria-label={`Bajar categoría ${cat.label}`}
               >
                 <svg className="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -312,6 +314,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                 onClick={() => dispatch({ type: "startEdit", cat })}
                 className="flex size-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-primary/10 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
                 title="Editar"
+                aria-label={`Editar categoría ${cat.label}`}
               >
                 <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -323,6 +326,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                 onClick={() => dispatch({ type: "setConfirmDelete", key: cat.key })}
                 className="flex size-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-40"
                 title="Eliminar"
+                aria-label={`Eliminar categoría ${cat.label}`}
               >
                 <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

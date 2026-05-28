@@ -7,9 +7,8 @@ import {
   is120gPackPresentation,
   formatCOP,
 } from "@/lib/order-assistant"
-import type { PriceEntry } from "@/lib/order-assistant"
 import type { OrderItem } from "@/lib/schemas/order"
-import type { Action, Step } from "./types"
+import type { Action } from "./types"
 
 type Totals = {
   hasPrice: boolean

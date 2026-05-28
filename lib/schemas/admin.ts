@@ -155,11 +155,6 @@ export const verifyMfaSchema = z.object({
   code: z.string().regex(/^\d{6}$/, MFA_MESSAGES.codeLength),
 });
 
-const mfaEnrollSchema = z.object({
-  factorType: z.literal("totp").default("totp"),
-  friendlyName: z.string().max(80).optional(),
-});
-
 export const mfaVerifyEnrollmentSchema = z.object({
   factor_id: z.string().min(1),
   code: z.string().regex(/^\d{6}$/, MFA_MESSAGES.codeLength),

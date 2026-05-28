@@ -107,15 +107,15 @@ export default function ProductCard({ product, accentGradient = "from-primary to
         )}
 
         {imageSrc ? (
-          hasPackagingImage ? (
-            <div className="absolute inset-0 z-[2] flex items-center justify-center p-3 pointer-events-none">
+          (hasPackagingImage || isDairyProduct) ? (
+            <div className={`absolute inset-0 z-[2] flex items-center justify-center pointer-events-none ${isDairyProduct ? "p-5" : "p-3"}`}>
               <div className="relative h-full w-full transition-transform duration-300 group-hover:scale-[1.02] group-hover:-translate-y-0.5">
                 {/* alt: displayName comes from i18n dict; presentation (e.g. "120g") is a universal technical value — no translation needed */}
                 <Image
                   src={imageSrc}
                   alt={`${displayName} ${product.presentation}`}
                   fill
-                  className="object-contain object-center drop-shadow-[0_20px_28px_rgba(0,0,0,0.24)]"
+                  className={`object-contain object-center${hasPackagingImage ? " drop-shadow-[0_20px_28px_rgba(0,0,0,0.24)]" : ""}`}
                   sizes="208px"
                   priority={priority}
                 />
@@ -127,10 +127,10 @@ export default function ProductCard({ product, accentGradient = "from-primary to
               src={imageSrc}
               alt={`${displayName} ${product.presentation}`}
               fill
-                className={`transition-transform duration-500 group-hover:scale-[1.04] ${isDairyProduct ? "object-contain object-center p-3" : "object-cover"}`}
-                sizes="208px"
-                priority={priority}
-              />
+              className="transition-transform duration-500 group-hover:scale-[1.04] object-cover"
+              sizes="208px"
+              priority={priority}
+            />
           )
         ) : (
           <div className={`w-full h-full bg-gradient-to-br ${accentGradient} flex flex-col items-center justify-center gap-2`}>
