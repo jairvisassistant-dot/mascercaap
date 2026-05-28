@@ -31,7 +31,7 @@ export default async function ContactoPageContent({ dict, lang, productLines, pr
 
         <div className="max-w-7xl mx-auto px-4 relative z-10 text-center text-white">
           <p className="text-xs font-bold tracking-widest text-white/60 uppercase mb-4 fade-in-up">
-            Más Cerca AP · Chía, Colombia
+            Mas Cerca AP · Chía, Colombia
           </p>
           <h1
             className="text-4xl md:text-5xl font-bold mb-4 leading-tight fade-in-up [animation-delay:50ms]"

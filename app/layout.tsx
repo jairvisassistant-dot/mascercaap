@@ -5,7 +5,7 @@ import { cookies, headers } from "next/headers";
 import { SITE_CONFIG } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: { default: "Más Cerca AP", template: "%s | Más Cerca AP" },
+  title: { default: "Mas Cerca AP", template: "%s | Mas Cerca AP" },
   description: "Productos Colombianos de alta calidad.",
   metadataBase: new URL(SITE_CONFIG.siteUrl),
 };

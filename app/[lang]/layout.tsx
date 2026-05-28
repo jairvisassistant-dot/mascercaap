@@ -6,8 +6,9 @@ import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
 import { supabasePublic as supabase } from "@/lib/supabase";
 import { getFAQData } from "@/lib/faq-data";
-import { getAllProductCategories } from "@/lib/supabase/queries";
+import { getAllProductCategories, getAllProductLines, getAllProducts } from "@/lib/supabase/queries";
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
+import type { Product, ProductCategory, ProductLineConfig } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HelpHub from "@/components/ui/HelpHub";
@@ -37,7 +38,7 @@ function getOrganizationJsonLd(lang: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Más Cerca AP",
+    name: "Mas Cerca AP",
     url: SITE_CONFIG.siteUrl,
     logo: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`,
     description:
@@ -64,7 +65,7 @@ function getWebSiteJsonLd(lang: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Más Cerca AP",
+    name: "Mas Cerca AP",
     url: SITE_CONFIG.siteUrl,
     inLanguage: lang === "es" ? "es-CO" : "en-US",
     potentialAction: {
@@ -121,8 +122,11 @@ export default async function LangLayout({
 
   let prices: PriceEntry[] = [];
   let lines: CatalogLine[] = [];
+  let productLines: ProductLineConfig[] = [];
+  let products: Product[] = [];
+  let categories: ProductCategory[] = [];
 
-  const [supabaseResult, categories] = await Promise.all([
+  const [supabaseResult, rawCategories, rawProductLines, rawProducts] = await Promise.all([
     supabase
       ? Promise.all([
           supabase
@@ -137,7 +141,13 @@ export default async function LangLayout({
         ])
       : null,
     getAllProductCategories(),
+    getAllProductLines(),
+    getAllProducts(),
   ]);
+
+  categories = rawCategories.filter((c) => c.key !== "todas");
+  productLines = rawProductLines;
+  products = rawProducts;
 
   if (supabaseResult) {
     const [{ data: productData, error: productErr }, { data: lineData, error: lineErr }] = supabaseResult;
@@ -166,7 +176,7 @@ export default async function LangLayout({
             <Navbar dict={dict} lang={lang} />
             <main id="main-content" className="flex-1" tabIndex={-1}>{children}</main>
             <Footer dict={dict} lang={lang} categories={categories} />
-            <HelpHub dict={dict} lang={lang} faqData={faqData} prices={prices} lines={lines} />
+            <HelpHub dict={dict} lang={lang} faqData={faqData} prices={prices} lines={lines} categories={categories} productLines={productLines} products={products} />
           </HelpHubProvider>
         </MotionProvider>
       </div>

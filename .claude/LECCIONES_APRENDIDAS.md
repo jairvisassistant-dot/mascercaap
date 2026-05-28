@@ -75,7 +75,7 @@ export default function Footer({ dict, lang }: { dict: Dictionary; lang: Locale 
 **Falla cometida:** Varios strings en español estaban hardcodeados en componentes de una app multilingüe:
 - `aria-label="Enviar"` en `ChatBotPanel.tsx`
 - `"Ingredientes:"` y `"Beneficios:"` en `ProductLightbox.tsx`
-- `alt="Más Cerca AP"` en `NosotrosPageContent.tsx`
+- `alt="Mas Cerca AP"` en `NosotrosPageContent.tsx`
 
 **Regla:** Cualquier texto visible al usuario (incluyendo `aria-label`, `alt`, `placeholder`, `title`) DEBE venir del diccionario i18n. Antes de hardcodear una string preguntarse: "¿Este texto aparece en pantalla o es leído por un lector de pantalla?". Si la respuesta es sí → al diccionario.
 
@@ -83,7 +83,7 @@ export default function Footer({ dict, lang }: { dict: Dictionary; lang: Locale 
 ```tsx
 // MAL
 aria-label="Enviar"
-alt="Más Cerca AP"
+alt="Mas Cerca AP"
 
 // BIEN
 aria-label={t.sendAriaLabel}
@@ -125,13 +125,13 @@ const ref = useRef<HTMLButtonElement>(null);
 ---
 
 ### L-A11Y-03 — `alt` debe describir el contenido, no el nombre de la marca
-**Falla cometida:** `alt="Más Cerca AP"` en la imagen de historia de la empresa. Esto le dice al lector de pantalla el nombre de la empresa pero nada sobre lo que muestra la imagen.
+**Falla cometida:** `alt="Mas Cerca AP"` en la imagen de historia de la empresa. Esto le dice al lector de pantalla el nombre de la empresa pero nada sobre lo que muestra la imagen.
 
 **Regla:** El `alt` debe responder: "¿Qué vería alguien que SÍ puede ver la imagen?". Siempre externalizarlo al diccionario i18n para que se traduzca.
 
 ```tsx
-// MAL: alt="Más Cerca AP"
-// BIEN: alt="Fundadoras de Más Cerca AP en su bodega de producción en Chía"
+// MAL: alt="Mas Cerca AP"
+// BIEN: alt="Fundadoras de Mas Cerca AP en su bodega de producción en Chía"
 ```
 
 ---

@@ -88,7 +88,7 @@ export default function AdminNavbar({ productCount }: { productCount?: number | 
             >
               <Image
                 src="/imgs/Logo.webp"
-                alt="Más Cerca AP"
+                alt="Mas Cerca AP"
                 width={97}
                 height={60}
                 priority

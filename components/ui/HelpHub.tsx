@@ -4,14 +4,14 @@ import dynamic from "next/dynamic";
 import { m, AnimatePresence } from "framer-motion";
 import { useHelpHub } from "@/lib/help-hub-context";
 import type { Dictionary, Locale } from "@/lib/i18n";
-import type { FAQData } from "@/types";
+import type { FAQData, Product, ProductCategory, ProductLineConfig } from "@/types";
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 
 const HelpDrawer = dynamic(() => import("./HelpDrawer"), { ssr: false });
 
-type Props = { dict: Dictionary; lang: Locale; faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[] };
+type Props = { dict: Dictionary; lang: Locale; faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[]; categories: ProductCategory[]; productLines: ProductLineConfig[]; products: Product[] };
 
-export default function HelpHub({ dict, lang, faqData, prices, lines }: Props) {
+export default function HelpHub({ dict, lang, faqData, prices, lines, categories, productLines, products }: Props) {
   const { isOpen, openDrawer, closeDrawer } = useHelpHub();
   const t = dict.helpHub;
 
@@ -34,7 +34,7 @@ export default function HelpHub({ dict, lang, faqData, prices, lines }: Props) {
       </m.button>
 
       <AnimatePresence>
-        {isOpen && <HelpDrawer dict={dict} lang={lang} faqData={faqData} prices={prices} lines={lines} onClose={closeDrawer} />}
+        {isOpen && <HelpDrawer dict={dict} lang={lang} faqData={faqData} prices={prices} lines={lines} categories={categories} productLines={productLines} products={products} onClose={closeDrawer} />}
       </AnimatePresence>
     </>
   );

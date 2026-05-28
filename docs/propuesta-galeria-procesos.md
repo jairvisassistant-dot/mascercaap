@@ -105,7 +105,7 @@ El Kumiss tiene la historia más profunda: es tradición colombiana, fermentaci�
 | 2 | **Directo del campo** | Un balde de leche recién ordeñada siendo vertido en un recipiente limpio — la leche cae densa y blanca, finca de fondo |
 | 3 | **El arte de fermentar** | Grandes recipientes de acero inoxidable tapados, con termómetro visible — ambiente limpio y controlado, temperatura precisa |
 | 4 | **El tiempo hace el trabajo** | Primer plano del interior de un recipiente de fermentación — la leche transformándose, textura visible, proceso natural |
-| 5 | **Artesanal hasta la última gota** | Manos llenando botellas de Kumiss con un embudo artesanal — el líquido blanco cayendo, botella con el label "Más Cerca AP" |
+| 5 | **Artesanal hasta la última gota** | Manos llenando botellas de Kumiss con un embudo artesanal — el líquido blanco cayendo, botella con el label "Mas Cerca AP" |
 | 6 | **Tradición que se entrega** | La botella de Kumiss terminada en una hacienda colombiana — el mismo escenario de la foto de producto, contexto completo |
 
 ---
@@ -188,7 +188,7 @@ Usuario puede flipear cada card para leer el proceso
 
 ## Resultado esperado
 
-Una sección de Nosotros que demuestra que **Más Cerca AP no es una empresa de jugos — es una empresa de procesos honestos** aplicados a tres líneas de producto distintas. El cliente que llega a esta página entiende que detrás de cada botella o bolsa hay una historia específica, un campo específico, unas manos específicas.
+Una sección de Nosotros que demuestra que **Mas Cerca AP no es una empresa de jugos — es una empresa de procesos honestos** aplicados a tres líneas de producto distintas. El cliente que llega a esta página entiende que detrás de cada botella o bolsa hay una historia específica, un campo específico, unas manos específicas.
 
 ---
 

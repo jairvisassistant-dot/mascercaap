@@ -11,8 +11,8 @@ export const privacyPolicy: LegalDocument = {
     {
       title: { es: "1. Responsable del tratamiento", en: "1. Data Controller" },
       content: {
-        es: "Más Cerca AP, con domicilio en Calle 12a # 15-53, Chía, Cundinamarca, Colombia, es responsable del tratamiento de los datos personales recopilados a través de este sitio web.",
-        en: "Más Cerca AP, located at Calle 12a # 15-53, Chía, Cundinamarca, Colombia, is responsible for the processing of personal data collected through this website.",
+        es: "Mas Cerca AP, con domicilio en Calle 12a # 15-53, Chía, Cundinamarca, Colombia, es responsable del tratamiento de los datos personales recopilados a través de este sitio web.",
+        en: "Mas Cerca AP, located at Calle 12a # 15-53, Chía, Cundinamarca, Colombia, is responsible for the processing of personal data collected through this website.",
       },
     },
     {
@@ -74,8 +74,8 @@ export const privacyPolicy: LegalDocument = {
     {
       title: { es: "10. Terceros proveedores de servicios", en: "10. Third-Party Service Providers" },
       content: {
-        es: "Para operar este sitio web, utilizamos los siguientes proveedores externos que pueden procesar o almacenar datos personales: (a) Supabase: plataforma de base de datos donde se almacenan los datos del formulario de contacto y los eventos de analítica propia. Opera bajo estándares de seguridad SOC 2. (b) Resend: servicio de envío de correos electrónicos utilizado para el envío de confirmaciones y notificaciones derivadas de sus solicitudes. Cada proveedor actúa como encargado del tratamiento y está sujeto a sus propias políticas de privacidad y a los acuerdos de tratamiento de datos suscritos con Más Cerca AP.",
-        en: "To operate this website, we use the following external providers who may process or store personal data: (a) Supabase: a database platform where contact form data and own-site analytics events are stored. It operates under SOC 2 security standards. (b) Resend: an email delivery service used to send confirmations and notifications related to your requests. Each provider acts as a data processor and is subject to their own privacy policies and the data processing agreements entered into with Más Cerca AP.",
+        es: "Para operar este sitio web, utilizamos los siguientes proveedores externos que pueden procesar o almacenar datos personales: (a) Supabase: plataforma de base de datos donde se almacenan los datos del formulario de contacto y los eventos de analítica propia. Opera bajo estándares de seguridad SOC 2. (b) Resend: servicio de envío de correos electrónicos utilizado para el envío de confirmaciones y notificaciones derivadas de sus solicitudes. Cada proveedor actúa como encargado del tratamiento y está sujeto a sus propias políticas de privacidad y a los acuerdos de tratamiento de datos suscritos con Mas Cerca AP.",
+        en: "To operate this website, we use the following external providers who may process or store personal data: (a) Supabase: a database platform where contact form data and own-site analytics events are stored. It operates under SOC 2 security standards. (b) Resend: an email delivery service used to send confirmations and notifications related to your requests. Each provider acts as a data processor and is subject to their own privacy policies and the data processing agreements entered into with Mas Cerca AP.",
       },
     },
   ],
@@ -98,8 +98,8 @@ export const termsAndConditions: LegalDocument = {
     {
       title: { es: "2. Descripción del servicio", en: "2. Service Description" },
       content: {
-        es: "Más Cerca AP opera como plataforma informativa y de contacto para la distribución de jugos naturales, pulpas de fruta y productos lácteos de origen colombiano. Las transacciones comerciales se formalizan directamente con nuestro equipo de ventas.",
-        en: "Más Cerca AP operates as an informational and contact platform for the distribution of natural juices, fruit pulps, and dairy products of Colombian origin. Commercial transactions are formalized directly with our sales team.",
+        es: "Mas Cerca AP opera como plataforma informativa y de contacto para la distribución de jugos naturales, pulpas de fruta y productos lácteos de origen colombiano. Las transacciones comerciales se formalizan directamente con nuestro equipo de ventas.",
+        en: "Mas Cerca AP operates as an informational and contact platform for the distribution of natural juices, fruit pulps, and dairy products of Colombian origin. Commercial transactions are formalized directly with our sales team.",
       },
     },
     {
@@ -112,22 +112,22 @@ export const termsAndConditions: LegalDocument = {
     {
       title: { es: "4. Propiedad intelectual", en: "4. Intellectual Property" },
       content: {
-        es: "Todo el contenido del sitio (textos, imágenes, logotipos, diseños) es propiedad de Más Cerca AP o de sus respectivos propietarios. Queda prohibida su reproducción total o parcial sin autorización expresa.",
-        en: "All content on the site (texts, images, logos, designs) is the property of Más Cerca AP or their respective owners. Reproduction in whole or in part without express authorization is prohibited.",
+        es: "Todo el contenido del sitio (textos, imágenes, logotipos, diseños) es propiedad de Mas Cerca AP o de sus respectivos propietarios. Queda prohibida su reproducción total o parcial sin autorización expresa.",
+        en: "All content on the site (texts, images, logos, designs) is the property of Mas Cerca AP or their respective owners. Reproduction in whole or in part without express authorization is prohibited.",
       },
     },
     {
       title: { es: "5. Pedidos y disponibilidad", en: "5. Orders and Availability" },
       content: {
-        es: "Los productos mostrados en el sitio están sujetos a disponibilidad. Más Cerca AP se reserva el derecho de modificar precios, cantidades mínimas de pedido y zonas de distribución, notificando a los clientes con al menos 15 días de antelación a través de los canales de comunicación registrados.",
-        en: "Products shown on the site are subject to availability. Más Cerca AP reserves the right to modify prices, minimum order quantities, and distribution areas, with at least 15 days' prior notice to customers through their registered communication channels.",
+        es: "Los productos mostrados en el sitio están sujetos a disponibilidad. Mas Cerca AP se reserva el derecho de modificar precios, cantidades mínimas de pedido y zonas de distribución, notificando a los clientes con al menos 15 días de antelación a través de los canales de comunicación registrados.",
+        en: "Products shown on the site are subject to availability. Mas Cerca AP reserves the right to modify prices, minimum order quantities, and distribution areas, with at least 15 days' prior notice to customers through their registered communication channels.",
       },
     },
     {
       title: { es: "6. Limitación de responsabilidad", en: "6. Limitation of Liability" },
       content: {
-        es: "Más Cerca AP no será responsable por daños indirectos, incidentales o consecuentes derivados del uso o imposibilidad de uso del sitio. La información publicada es de carácter referencial.",
-        en: "Más Cerca AP shall not be liable for indirect, incidental, or consequential damages arising from the use or inability to use the site. Published information is for reference purposes.",
+        es: "Mas Cerca AP no será responsable por daños indirectos, incidentales o consecuentes derivados del uso o imposibilidad de uso del sitio. La información publicada es de carácter referencial.",
+        en: "Mas Cerca AP shall not be liable for indirect, incidental, or consequential damages arising from the use or inability to use the site. Published information is for reference purposes.",
       },
     },
     {

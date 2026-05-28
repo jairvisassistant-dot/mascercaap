@@ -174,7 +174,7 @@ async function sendLeadNotification(data: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from:     `Más Cerca AP <${fromEmail}>`,
+        from:     `Mas Cerca AP <${fromEmail}>`,
         to:       [toEmail],
         reply_to: data.email ?? undefined,
         subject:  `💬 Lead chatbot — ${sanitizeSubject(data.nombre)} — ${TIPO_EMAIL_LABELS[data.tipo] ?? data.tipo}`,

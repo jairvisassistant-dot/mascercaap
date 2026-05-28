@@ -3,34 +3,8 @@
 import { useReducer, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { LeadRow } from "@/types";
-
-// ── Constantes ───────────────────────────────────────────────────────────────
-
-const TIPO_LABELS: Record<string, string> = {
-  pedido: "Pedido",
-  negocio: "Mayoreo",
-  consulta: "Consulta",
-};
-
-const TIPO_COLORS: Record<string, string> = {
-  pedido: "bg-blue-50 text-blue-700 border-blue-200",
-  negocio: "bg-purple-50 text-purple-700 border-purple-200",
-  consulta: "bg-teal-50 text-teal-700 border-teal-200",
-};
-
-const FUENTE_LABELS: Record<string, string> = {
-  chatbot_web: "Chatbot Web",
-  order_assistant: "Order Assistant",
-};
-
-const ESTADO_OPTIONS = ["nuevo", "contactado", "convertido", "perdido"] as const;
-
-const ESTADO_COLORS: Record<string, string> = {
-  nuevo:     "bg-blue-100 text-blue-700 border-blue-200",
-  contactado: "bg-amber-100 text-amber-700 border-amber-200",
-  convertido: "bg-green-100 text-green-700 border-green-200",
-  perdido:   "bg-gray-100 text-gray-500 border-gray-200",
-};
+import ConsultaFilters from "./ConsultaFilters";
+import ConsultaCard from "./ConsultaCard";
 
 // ── Reducer ──────────────────────────────────────────────────────────────────
 
@@ -168,266 +142,31 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
         </p>
       )}
 
-      {/* ── Filter bar ───────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Tipo filter */}
-        <select
-          aria-label="Filtrar por tipo"
-          value={filters.tipo ?? ""}
-          onChange={(e) => dispatch({ type: "setFilter", key: "tipo", value: e.target.value })}
-          className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
-        >
-          <option value="">Todos los tipos</option>
-          {[...new Set(leads.map((l) => l.tipo))].map((t) => (
-            <option key={t} value={t}>
-              {TIPO_LABELS[t] ?? t}
-            </option>
-          ))}
-        </select>
-
-        {/* Fuente filter */}
-        <select
-          aria-label="Filtrar por fuente"
-          value={filters.fuente ?? ""}
-          onChange={(e) => dispatch({ type: "setFilter", key: "fuente", value: e.target.value })}
-          className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
-        >
-          <option value="">Todas las fuentes</option>
-          {[...new Set(leads.map((l) => l.fuente))].map((f) => (
-            <option key={f} value={f}>
-              {FUENTE_LABELS[f] ?? f}
-            </option>
-          ))}
-        </select>
-
-        {/* Estado filter */}
-        <select
-          aria-label="Filtrar por estado"
-          value={filters.estado ?? ""}
-          onChange={(e) => dispatch({ type: "setFilter", key: "estado", value: e.target.value })}
-          className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
-        >
-          <option value="">Todos los estados</option>
-          {[...new Set(leads.map((l) => l.estado_seguimiento))].flatMap((e) =>
-            e ? [<option key={e} value={e}>{e.charAt(0).toUpperCase() + e.slice(1)}</option>] : []
-          )}
-        </select>
-
-        {activeFilters > 0 && (
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "clearFilters" })}
-            className="rounded-xl px-3 py-2 text-xs font-semibold text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
-          >
-            Limpiar filtros
-          </button>
-        )}
-      </div>
-
-      {/* Count */}
-      <p className="text-sm text-text-muted">
-        {filtered.length} consulta{filtered.length !== 1 ? "s" : ""}
-        {activeFilters > 0 && (
-          <span className="text-text-faint">
-            {" "}({leads.length} total)
-          </span>
-        )}
-      </p>
+      <ConsultaFilters
+        leads={leads}
+        filters={filters}
+        activeFilters={activeFilters}
+        filteredCount={filtered.length}
+        totalCount={leads.length}
+        onFilter={(key, value) => dispatch({ type: "setFilter", key, value })}
+        onClear={() => dispatch({ type: "clearFilters" })}
+      />
 
       {/* ── Lead cards ──────────────────────────────────────────── */}
       <div className="space-y-3">
-        {filtered.map((lead) => {
-          const isExpanded = expandedId === lead.id;
-          const createdAt = new Date(lead.created_at);
-          const dateStr = createdAt.toLocaleString("es-AR", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-
-          return (
-            <div
-              key={lead.id}
-              className={`rounded-2xl border bg-surface-card px-4 py-3 shadow-sm transition-shadow hover:shadow-md ${
-                isExpanded ? "border-primary/30 ring-1 ring-primary/10" : "border-border-soft"
-              }`}
-            >
-              {/* ── Header row ───────────────────────────────────── */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate font-semibold text-text-main">
-                      {lead.nombre}
-                    </span>
-                    {lead.email && (
-                      <span className="hidden truncate text-sm text-text-muted sm:inline">
-                        · {lead.email}
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-                    <span suppressHydrationWarning>{dateStr}</span>
-                    <span>{FUENTE_LABELS[lead.fuente] ?? lead.fuente}</span>
-                    {lead.producto_interes && (
-                      <span className="truncate">
-                        Producto: <span className="font-medium text-text-sub">{lead.producto_interes}</span>
-                      </span>
-                    )}
-                    {lead.whatsapp_number && (
-                      <span className="truncate">WA: {lead.whatsapp_number}</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex shrink-0 items-center gap-2">
-                  {/* Tipo badge */}
-                  <span
-                    className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                      TIPO_COLORS[lead.tipo] ?? "bg-gray-50 text-gray-600 border-gray-200"
-                    }`}
-                  >
-                    {TIPO_LABELS[lead.tipo] ?? lead.tipo}
-                  </span>
-
-                  {/* Estado badge */}
-                  <span
-                    className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                      ESTADO_COLORS[lead.estado_seguimiento] ?? ""
-                    }`}
-                  >
-                    {lead.estado_seguimiento}
-                  </span>
-                </div>
-              </div>
-
-              {/* ── Preguntas preview ────────────────────────────── */}
-              {lead.preguntas_bot.length > 0 && !isExpanded && (
-                <p className="mt-2 line-clamp-1 text-xs text-text-muted">
-                  {lead.preguntas_bot[lead.preguntas_bot.length - 1]}
-                </p>
-              )}
-
-              {/* ── Expand / collapse ────────────────────────────── */}
-              <button
-                type="button"
-                onClick={() => dispatch({ type: "toggleExpand", id: lead.id })}
-                className="mt-2 text-[11px] font-bold uppercase tracking-wider text-primary transition-colors hover:text-primary-dark"
-              >
-                {isExpanded ? "Contraer" : "Ver detalle"}
-              </button>
-
-              {/* ── Expanded area ────────────────────────────────── */}
-              {isExpanded && (
-                <div className="mt-3 space-y-4 border-t border-border-soft pt-3">
-                  {/* Preguntas del bot */}
-                  {lead.preguntas_bot.length > 0 && (
-                    <div>
-                      <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-text-faint">
-                        Preguntas realizadas
-                      </p>
-                      <ul className="space-y-1">
-                        {lead.preguntas_bot.map((q, i) => (
-                          <li
-                            key={`${i}-${q}`}
-                            className="rounded-lg bg-surface-warm px-3 py-1.5 text-sm text-text-sub"
-                          >
-                            <span className="mr-1.5 text-[10px] font-bold text-text-faint">{i + 1}.</span>
-                            {q}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Resumen de handoff */}
-                  {lead.resumen_handoff && (
-                    <div>
-                      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-text-faint">
-                        Resumen del handoff
-                      </p>
-                      <p className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
-                        {lead.resumen_handoff}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Email si no se mostró arriba */}
-                  {lead.email && (
-                    <div className="flex items-center gap-2 text-xs text-text-muted">
-                      <span className="font-semibold text-text-sub">Email:</span>
-                      <a
-                        href={`mailto:${lead.email}`}
-                        className="text-primary underline hover:text-primary-dark"
-                      >
-                        {lead.email}
-                      </a>
-                    </div>
-                  )}
-
-                  {/* Consentimiento */}
-                  {lead.consent_accepted && (
-                    <p className="text-[10px] text-text-faint">
-                      ✓ Consentimiento aceptado
-                    </p>
-                  )}
-
-                  {/* ── Estado de seguimiento ───────────────────── */}
-                  <div className="flex items-center gap-3">
-                    <label htmlFor={`estado-${lead.id}`} className="text-xs font-semibold text-text-sub">
-                      Estado de seguimiento
-                    </label>
-                    <select
-                      id={`estado-${lead.id}`}
-                      value={lead.estado_seguimiento}
-                      onChange={(e) => updateEstado(lead.id, e.target.value)}
-                      disabled={busy === lead.id}
-                      className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                        ESTADO_COLORS[lead.estado_seguimiento] ?? ""
-                      } disabled:cursor-not-allowed disabled:opacity-50`}
-                    >
-                      {ESTADO_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt.charAt(0).toUpperCase() + opt.slice(1)}
-                        </option>
-                      ))}
-                    </select>
-                    {busy === lead.id && (
-                      <span className="text-xs text-text-faint">Guardando…</span>
-                    )}
-                  </div>
-
-                  {/* ── Notas ────────────────────────────────────── */}
-                  <div>
-                    <label htmlFor={`notas-${lead.id}`} className="mb-1 block text-xs font-semibold text-text-sub">
-                      Notas internas
-                    </label>
-                    <div className="flex gap-2">
-                      <textarea
-                        id={`notas-${lead.id}`}
-                        defaultValue={lead.notas ?? ""}
-                        onChange={(e) => dispatch({ type: "setEditNota", id: lead.id, value: e.target.value })}
-                        rows={2}
-                        maxLength={2000}
-                        placeholder="Agregá una nota interna sobre este lead…"
-                        className="min-h-0 w-full resize-none rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main placeholder:text-text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                      <button
-                        type="button"
-                        disabled={busy === `notas-${lead.id}` || !((editNotas[lead.id]?.trim() ?? "") !== (lead.notas?.trim() ?? ""))}
-                        onClick={() => saveNotas(lead.id)}
-                        className="self-end rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {busy === `notas-${lead.id}` ? "…" : "Guardar"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+        {filtered.map((lead) => (
+          <ConsultaCard
+            key={lead.id}
+            lead={lead}
+            isExpanded={expandedId === lead.id}
+            editNota={editNotas[lead.id]}
+            busy={busy}
+            onToggleExpand={() => dispatch({ type: "toggleExpand", id: lead.id })}
+            onEditNota={(value) => dispatch({ type: "setEditNota", id: lead.id, value })}
+            onSaveNotas={() => saveNotas(lead.id)}
+            onUpdateEstado={(estado) => updateEstado(lead.id, estado)}
+          />
+        ))}
 
         {/* Empty state */}
         {filtered.length === 0 && (

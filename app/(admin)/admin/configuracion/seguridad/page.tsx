@@ -2,17 +2,8 @@
 
 import { useReducer, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-
-type Factor = { id: string; friendly_name: string | null; created_at: string };
-
-type MfaStatus =
-  | { status: "loading" }
-  | { status: "disabled" }
-  | { status: "enabled"; factors: Factor[] }
-  | { status: "error"; message: string };
-
-type EnrollStep = "idle" | "qr";
+import { MFASection } from "./MFASection";
+import type { Factor, MfaStatus, EnrollStep } from "./types";
 
 type State = {
   mfaStatus: MfaStatus;
@@ -82,14 +73,10 @@ export default function SeguridadPage() {
   const { mfaStatus, enrollStep, qrCode, code, error, loading } = state;
   const factorIdRef = useRef("");
 
-  // Cargar estado actual del MFA
   const loadStatus = useCallback(async () => {
     try {
       const res = await fetch("/api/admin/auth/mfa/status");
-      if (res.status === 401) {
-        push("/admin/login");
-        return;
-      }
+      if (res.status === 401) { push("/admin/login"); return; }
       const data = await res.json();
       if (!res.ok) {
         dispatch({ type: "mfaStatusError", message: data.error ?? "Error al cargar" });
@@ -107,16 +94,12 @@ export default function SeguridadPage() {
 
   useEffect(() => { loadStatus(); }, [loadStatus]);
 
-  // ── Enroll: iniciar ────────────────────────────────────────────────
   async function handleStartEnroll() {
     dispatch({ type: "startLoading" });
     try {
       const res = await fetch("/api/admin/auth/mfa/enroll", { method: "POST" });
       const data = await res.json();
-      if (!res.ok) {
-        dispatch({ type: "setError", error: data.error ?? "Error al generar QR" });
-        return;
-      }
+      if (!res.ok) { dispatch({ type: "setError", error: data.error ?? "Error al generar QR" }); return; }
       factorIdRef.current = data.factor_id ?? "";
       dispatch({ type: "enrollQrReady", qrCode: data.qr_code });
     } catch {
@@ -126,7 +109,6 @@ export default function SeguridadPage() {
     }
   }
 
-  // ── Enroll: verificar código ───────────────────────────────────────
   async function handleVerifyEnroll() {
     const fullCode = code.join("");
     if (fullCode.length !== 6) {
@@ -141,10 +123,7 @@ export default function SeguridadPage() {
         body: JSON.stringify({ factor_id: factorIdRef.current, code: fullCode }),
       });
       const data = await res.json();
-      if (!res.ok) {
-        dispatch({ type: "setError", error: data.error ?? "Código incorrecto" });
-        return;
-      }
+      if (!res.ok) { dispatch({ type: "setError", error: data.error ?? "Código incorrecto" }); return; }
       dispatch({ type: "enrollSuccess" });
       factorIdRef.current = "";
       await loadStatus();
@@ -155,7 +134,6 @@ export default function SeguridadPage() {
     }
   }
 
-  // ── Deshabilitar ───────────────────────────────────────────────────
   async function handleDisable(factorIdToRemove: string) {
     if (!confirm("¿Estás seguro de deshabilitar la verificación en dos pasos?")) return;
     dispatch({ type: "startLoading" });
@@ -166,10 +144,7 @@ export default function SeguridadPage() {
         body: JSON.stringify({ factor_id: factorIdToRemove }),
       });
       const data = await res.json();
-      if (!res.ok) {
-        dispatch({ type: "setError", error: data.error ?? "Error al deshabilitar" });
-        return;
-      }
+      if (!res.ok) { dispatch({ type: "setError", error: data.error ?? "Error al deshabilitar" }); return; }
       await loadStatus();
     } catch {
       dispatch({ type: "setError", error: "Error de conexión" });
@@ -178,210 +153,34 @@ export default function SeguridadPage() {
     }
   }
 
-  // ── Helper: input TOTP ────────────────────────────────────────────
   function handleCodeChange(index: number, value: string) {
     if (!/^\d?$/.test(value)) return;
     dispatch({ type: "setCodeDigit", index, value });
   }
 
-  // ── Render principal ───────────────────────────────────────────────
   return (
     <div className="mx-auto max-w-lg px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-text-main">
-          Seguridad
-        </h1>
+        <h1 className="text-2xl font-bold tracking-tight text-text-main">Seguridad</h1>
         <p className="mt-1 text-sm text-text-muted">
-          Configuración de la verificación en dos pasos (2FA) para el acceso
-          al panel de administración.
+          Configuración de la verificación en dos pasos (2FA) para el acceso al panel de administración.
         </p>
       </div>
 
-      {error && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-          {error}
-        </div>
-      )}
-
-      {/* ── Estado: Cargando ─────────────────────────────────────── */}
-      {mfaStatus.status === "loading" && (
-        <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <p className="text-sm text-text-muted">Cargando configuración…</p>
-        </div>
-      )}
-
-      {/* ── Estado: Error ────────────────────────────────────────── */}
-      {mfaStatus.status === "error" && (
-        <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <p className="text-sm text-red-600">{mfaStatus.message}</p>
-          <button
-            type="button"
-            onClick={loadStatus}
-            className="mt-3 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
-          >
-            Reintentar
-          </button>
-        </div>
-      )}
-
-      {/* ── Estado: Deshabilitado (pantalla de enrollment) ────────── */}
-      {mfaStatus.status === "disabled" && enrollStep === "idle" && (
-        <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-amber-100 text-lg">
-              ⚠️
-            </div>
-            <div>
-              <h2 className="font-semibold text-text-main">
-                Verificación en dos pasos
-              </h2>
-              <p className="text-sm text-text-muted">Deshabilitada</p>
-            </div>
-          </div>
-
-          <p className="mb-5 text-sm leading-relaxed text-text-muted">
-            La verificación en dos pasos agrega una capa extra de seguridad a
-            tu cuenta. Cada vez que inicies sesión, vas a necesitar un código
-            de 6 dígitos generado por tu app autenticadora (Google
-            Authenticator, Authy, 1Password, etc.).
-          </p>
-
-          <button
-            type="button"
-            onClick={handleStartEnroll}
-            disabled={loading}
-            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
-          >
-            {loading ? "Generando código QR…" : "Configurar verificación en dos pasos"}
-          </button>
-        </div>
-      )}
-
-      {/* ── Enrollment: Mostrar QR ───────────────────────────────── */}
-      {mfaStatus.status === "disabled" && enrollStep === "qr" && (
-        <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <div className="mb-4 text-center">
-            <h2 className="text-lg font-bold text-text-main">
-              Escaneá el código QR
-            </h2>
-            <p className="mt-1 text-sm text-text-muted">
-              Usá tu app autenticadora para escanear este código.
-            </p>
-          </div>
-
-          <div className="mb-5 flex justify-center">
-            {qrCode && (
-              <Image
-                src={`data:image/svg+xml;utf8,${encodeURIComponent(qrCode)}`}
-                alt="Código QR para 2FA"
-                width={192}
-                height={192}
-                unoptimized
-                className="size-48 rounded-xl border border-border-soft"
-              />
-            )}
-          </div>
-
-          <p className="mb-3 text-center text-sm font-semibold text-text-sub">
-            Después de escanear, ingresá el código de 6 dígitos:
-          </p>
-
-          <div className="mb-4 flex justify-center gap-2">
-            {code.map((digit, i) => (
-              <input
-                key={`totp-digit-${i}`}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                aria-label={`Dígito ${i + 1} de 6`}
-                value={digit}
-                onChange={(e) => handleCodeChange(i, e.target.value)}
-                className="h-14 w-12 rounded-xl border border-border-mid bg-surface-card text-center text-xl font-bold text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={handleVerifyEnroll}
-            disabled={loading}
-            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
-          >
-            {loading ? "Verificando…" : "Verificar y activar"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              factorIdRef.current = "";
-              dispatch({ type: "enrollCancel" });
-            }}
-            className="mt-3 w-full text-center text-sm text-text-muted transition-colors hover:text-primary"
-          >
-            Cancelar
-          </button>
-        </div>
-      )}
-
-      {/* ── Estado: Habilitado ────────────────────────────────────── */}
-      {mfaStatus.status === "enabled" && (
-        <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-green-100 text-lg">
-              ✅
-            </div>
-            <div>
-              <h2 className="font-semibold text-text-main">
-                Verificación en dos pasos
-              </h2>
-              <p className="text-sm font-medium text-green-700">Activada</p>
-            </div>
-          </div>
-
-          <div className="mb-5 space-y-2">
-            <p className="text-sm text-text-muted">
-              Tu cuenta está protegida con autenticación de dos factores.
-            </p>
-            {mfaStatus.factors.map((f) => (
-              <div
-                key={f.id}
-                className="rounded-xl border border-border-soft bg-surface-soft px-4 py-3"
-              >
-                <p className="text-sm font-medium text-text-main">
-                  {f.friendly_name ?? "Autenticador"}
-                </p>
-                <p className="text-xs text-text-faint">
-                  Desde{" "}
-                  {new Date(f.created_at).toLocaleDateString("es-AR", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => handleDisable(mfaStatus.factors[0]?.id ?? "")}
-            disabled={loading}
-            className="w-full rounded-xl border border-red-300 bg-white px-4 py-3 font-semibold text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-55"
-          >
-            {loading ? "Deshabilitando…" : "Deshabilitar verificación en dos pasos"}
-          </button>
-        </div>
-      )}
-
-      <div className="mt-6">
-        <button
-          type="button"
-          onClick={() => push("/admin/productos")}
-          className="text-sm text-text-muted transition-colors hover:text-primary"
-        >
-          ← Volver al catálogo
-        </button>
-      </div>
+      <MFASection
+        mfaStatus={mfaStatus}
+        enrollStep={enrollStep}
+        qrCode={qrCode}
+        code={code}
+        error={error}
+        loading={loading}
+        onStartEnroll={handleStartEnroll}
+        onVerifyEnroll={handleVerifyEnroll}
+        onDisable={handleDisable}
+        onCodeChange={handleCodeChange}
+        onCancelEnroll={() => { factorIdRef.current = ""; dispatch({ type: "enrollCancel" }); }}
+        onBack={() => push("/admin/productos")}
+      />
     </div>
   );
 }

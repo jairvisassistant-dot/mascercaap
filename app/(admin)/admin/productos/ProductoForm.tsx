@@ -1,10 +1,13 @@
 "use client";
 
-import { useReducer, useEffect, useMemo, useId, Children, isValidElement, cloneElement } from "react";
+import { useReducer, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { generateProductId } from "@/lib/id-generators";
+import { Field, IdChip, inputCls } from "./form-primitives";
+import { ImageUploadSection } from "./ImageUploadSection";
+import { TagListSection } from "./TagListSection";
+import { StatusToggles } from "./StatusToggles";
 
 const LINES_FALLBACK: LineOption[] = [
   { key: "limon", label: "Zumo de Limón", categoryKey: null },
@@ -460,42 +463,13 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         </div>
       </section>
 
-      {/* Imagen */}
-      <section>
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Imagen</h2>
-        {form.image && (
-          <div className="relative mb-3 size-24 overflow-hidden rounded-2xl bg-surface-warm ring-1 ring-border-soft">
-            <Image src={form.image} alt="preview" fill sizes="96px" className="object-cover" />
-          </div>
-        )}
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="flex cursor-pointer items-center gap-3">
-            <span className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm font-semibold text-text-sub transition-colors hover:border-primary-light hover:bg-primary-light/20 hover:text-primary-dark">
-              {uploading ? "Subiendo..." : "Subir imagen"}
-            </span>
-            <span className="text-xs text-text-muted">.webp, .jpg, .png (máx 2MB)</span>
-            <input
-              type="file"
-              accept="image/webp,image/jpeg,image/png"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleImageUpload(file);
-              }}
-            />
-          </label>
-          {mode === "edit" && (
-            <button
-              type="submit"
-              disabled={saving || uploading}
-              className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55"
-            >
-              {saving ? "Guardando..." : "Guardar cambios"}
-            </button>
-          )}
-        </div>
-        {form.image && <p className="mt-2 text-xs text-text-muted">{form.image}</p>}
-      </section>
+      <ImageUploadSection
+        imageUrl={form.image}
+        uploading={uploading}
+        saving={saving}
+        showInlineSave={mode === "edit"}
+        onFileChange={handleImageUpload}
+      />
 
       {/* Descripción */}
       <section>
@@ -512,104 +486,38 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         <p className="mt-1 text-xs text-text-muted">{form.description.length}/300</p>
       </section>
 
-      {/* Ingredientes */}
-      <section>
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Ingredientes</h2>
-        <div className="mb-3 space-y-2">
-          {form.ingredients.map((ing, i) => (
-            <div key={`${i}-${ing}`} className="flex items-center gap-2">
-              <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">
-                {ing}
-              </span>
-              <button
-                type="button"
-                onClick={() => set("ingredients", form.ingredients.filter((_, j) => j !== i))}
-                className="rounded-lg px-2 py-1 text-xs font-semibold text-text-muted transition-colors hover:bg-red-50 hover:text-red-600"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            aria-label="Nuevo ingrediente"
-            value={newIngredient}
-            onChange={(e) => dispatch({ type: "setNewIngredient", value: e.target.value })}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                dispatch({ type: "addIngredient" });
-              }
-            }}
-            placeholder="Agregar ingrediente..."
-            className={`${inputCls} flex-1`}
-          />
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "addIngredient" })}
-            className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
-          >
-            +
-          </button>
-        </div>
-      </section>
+      <TagListSection
+        title="Ingredientes"
+        items={form.ingredients}
+        newValue={newIngredient}
+        inputAriaLabel="Nuevo ingrediente"
+        inputPlaceholder="Agregar ingrediente..."
+        onNewValueChange={(value) => dispatch({ type: "setNewIngredient", value })}
+        onAdd={() => dispatch({ type: "addIngredient" })}
+        onRemove={(i) => set("ingredients", form.ingredients.filter((_, j) => j !== i))}
+      />
 
-      {/* Beneficios */}
-      <section>
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Beneficios</h2>
-        <div className="mb-3 space-y-2">
-          {form.benefits.map((b, i) => (
-            <div key={`${i}-${b}`} className="flex items-center gap-2">
-              <span className="flex-1 rounded-xl bg-surface-warm px-3 py-2 text-sm text-text-sub ring-1 ring-border-soft">
-                {b}
-              </span>
-              <button
-                type="button"
-                onClick={() => set("benefits", form.benefits.filter((_, j) => j !== i))}
-                className="rounded-lg px-2 py-1 text-xs font-semibold text-text-muted transition-colors hover:bg-red-50 hover:text-red-600"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            aria-label="Nuevo beneficio"
-            value={newBenefit}
-            onChange={(e) => dispatch({ type: "setNewBenefit", value: e.target.value })}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                dispatch({ type: "addBenefit" });
-              }
-            }}
-            placeholder="Agregar beneficio..."
-            className={`${inputCls} flex-1`}
-          />
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "addBenefit" })}
-            className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
-          >
-            +
-          </button>
-        </div>
-      </section>
+      <TagListSection
+        title="Beneficios"
+        items={form.benefits}
+        newValue={newBenefit}
+        inputAriaLabel="Nuevo beneficio"
+        inputPlaceholder="Agregar beneficio..."
+        onNewValueChange={(value) => dispatch({ type: "setNewBenefit", value })}
+        onAdd={() => dispatch({ type: "addBenefit" })}
+        onRemove={(i) => set("benefits", form.benefits.filter((_, j) => j !== i))}
+      />
 
-      {/* Estado */}
-      <section>
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Estado</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <ToggleField label="Destacado" value={form.featured} onChange={(v) => set("featured", v)} />
-          <ToggleField label="Más Vendido" value={form.isBestSeller} onChange={(v) => set("isBestSeller", v)} />
-          <ToggleField label="Agotado" value={form.isSoldOut} onChange={(v) => set("isSoldOut", v)} />
-          <ToggleField label="Activo" value={form.active} onChange={(v) => set("active", v)} />
-        </div>
-      </section>
+      <StatusToggles
+        featured={form.featured}
+        isBestSeller={form.isBestSeller}
+        isSoldOut={form.isSoldOut}
+        active={form.active}
+        onFeaturedChange={(v) => set("featured", v)}
+        onBestSellerChange={(v) => set("isBestSeller", v)}
+        onSoldOutChange={(v) => set("isSoldOut", v)}
+        onActiveChange={(v) => set("active", v)}
+      />
 
       {/* Acciones */}
       <div className="flex items-center gap-4 border-t border-border-soft pt-4">
@@ -629,97 +537,5 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         </button>
       </div>
     </form>
-  );
-}
-
-const inputCls =
-  "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  const id = useId();
-  const kids = Children.toArray(children);
-  const first = kids[0];
-  const rest = kids.slice(1);
-  const labelledControl = isValidElement(first)
-    ? cloneElement(first as React.ReactElement<{ id?: string }>, { id })
-    : first;
-
-  return (
-    <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-text-sub">{label}</label>
-      {labelledControl}
-      {rest}
-    </div>
-  );
-}
-
-function IdChip({
-  label,
-  value,
-  adjusted,
-  empty,
-  emptyHint,
-  fixed,
-}: {
-  label: string;
-  value: string;
-  adjusted?: boolean;
-  empty?: boolean;
-  emptyHint?: string;
-  fixed?: boolean;
-}) {
-  return (
-    <div>
-      <p className="mb-1.5 text-sm font-semibold text-text-sub">{label}</p>
-      <div className="flex items-center gap-3 rounded-xl border border-border-soft bg-surface-warm px-4 py-3">
-        {empty ? (
-          <span className="text-sm italic text-text-faint">{emptyHint ?? "—"}</span>
-        ) : (
-          <span className="font-mono text-sm text-text-sub">{value}</span>
-        )}
-        <div className="ml-auto flex items-center gap-1.5">
-          {adjusted && (
-            <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">
-              Ajustado
-            </span>
-          )}
-          <span className="rounded-md bg-border-mid/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-muted">
-            {fixed ? "Fijo" : "Auto"}
-          </span>
-        </div>
-      </div>
-      <p className="mt-1 text-xs text-text-muted">
-        {fixed ? "El ID no se puede modificar una vez creado." : "Generado automáticamente. No es editable."}
-      </p>
-    </div>
-  );
-}
-
-function ToggleField({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return (
-    <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-border-soft bg-surface-warm p-3">
-      <span className="text-sm font-medium text-text-sub">{label}</span>
-      <button
-        type="button"
-        onClick={() => onChange(!value)}
-        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-warm ${
-          value ? "bg-primary" : "bg-border-mid"
-        }`}
-      >
-        <span
-          className={`inline-block size-3.5 rounded-full bg-white shadow transition-transform ${
-            value ? "translate-x-4" : "translate-x-1"
-          }`}
-        />
-      </button>
-    </label>
   );
 }

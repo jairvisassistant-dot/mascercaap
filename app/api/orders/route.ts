@@ -104,7 +104,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from:     `Más Cerca AP <${fromEmail}>`,
+        from:     `Mas Cerca AP <${fromEmail}>`,
         to:       [toEmail],
         reply_to: data.email ?? undefined,
         subject:  `🛒 Nuevo pedido — ${sanitizeSubject(data.nombre)} — ${data.items.length} producto${data.items.length !== 1 ? "s" : ""}`,

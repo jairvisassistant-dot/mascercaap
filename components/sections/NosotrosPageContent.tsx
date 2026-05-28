@@ -119,7 +119,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
       {/* Misión & Visión */}
       <MisionVisionTabs dict={dict} />
 
-      {/* Valores — lo que mueve a Más Cerca AP, expresado en verde y naranja de marca */}
+      {/* Valores — lo que mueve a Mas Cerca AP, expresado en verde y naranja de marca */}
       <section className="py-20 bg-surface-page">
         <div className="max-w-7xl mx-auto px-4">
           <div className="fade-in-up text-center mb-14">

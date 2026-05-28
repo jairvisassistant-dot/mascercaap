@@ -4,14 +4,9 @@ import { useReducer, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { FAQCategoryRow, FAQConfigRow } from "@/types";
 import type { CategoryEdit, QuestionEdit, NewCategory, NewQuestion, ConfigForm, Mode } from "./components/types";
-import CategoryEditForm from "./components/CategoryEditForm";
 import NewCategoryForm from "./components/NewCategoryForm";
-import QuestionEditForm from "./components/QuestionEditForm";
-import NewQuestionForm from "./components/NewQuestionForm";
 import ConfigSection from "./components/ConfigSection";
-import ConfirmDeleteBox from "./components/ConfirmDeleteBox";
-import FAQCategoryCard from "./components/FAQCategoryCard";
-import FAQQuestionItem from "./components/FAQQuestionItem";
+import FAQCategorySection from "./components/FAQCategorySection";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -475,7 +470,7 @@ export default function FAQAdminClient({
         </p>
       )}
 
-      {/* ── Nueva categoría ── */}
+      {/* New category toggle */}
       {showNewCategory ? (
         <NewCategoryForm
           busy={busy === "new-category"}
@@ -499,136 +494,42 @@ export default function FAQAdminClient({
           No hay categorías FAQ aún. Usa el botón de arriba para crear una.
         </p>
       ) : (
-        categories.map((cat, catIdx) => {
-          const catMode = getMode("cat", cat.id);
-          const questions = cat.faq_questions ?? [];
-          const isCatBusy = busy === `cat-${cat.id}` || moving === `cat-${cat.id}`;
-
-          return (
-            <div key={cat.id} className="space-y-2">
-              {/* ── Card de categoría ── */}
-              {catMode === "edit" ? (
-                <CategoryEditForm
-                  cat={cat}
-                  vals={catEdit[cat.id] ?? { label_es: cat.label_es, label_en: cat.label_en, icon: cat.icon }}
-                  busy={isCatBusy}
-                  onCancel={() => dispatch({ type: "cancelRow", key: `cat-${cat.id}` })}
-                  onSave={() => saveCat(cat.id)}
-                  onChange={(patch) => dispatch({ type: "catEditChange", id: cat.id, patch })}
-                />
-              ) : catMode === "confirm-delete" ? (
-                <ConfirmDeleteBox
-                  title={<>¿Eliminar categoría{" "}<span className="font-bold">{cat.label_es}</span>?</>}
-                  subtext="Se marcará como inactiva y no se mostrará en el FAQ público."
-                  busy={isCatBusy}
-                  onConfirm={() => deleteCat(cat.id)}
-                  onCancel={() => dispatch({ type: "cancelRow", key: `cat-${cat.id}` })}
-                />
-              ) : (
-                <>
-                  <FAQCategoryCard
-                    icon={cat.icon}
-                    labelEs={cat.label_es}
-                    labelEn={cat.label_en}
-                    id={cat.id}
-                    active={cat.active}
-                    index={catIdx}
-                    total={categories.length}
-                    isMoving={moving === `cat-${cat.id}`}
-                    anyBusy={anyBusy}
-                    onMoveUp={() => moveCat(cat.id, "up")}
-                    onMoveDown={() => moveCat(cat.id, "down")}
-                    onEdit={() => dispatch({ type: "catEditStart", cat })}
-                    onDelete={() => dispatch({ type: "setConfirmDelete", key: `cat-${cat.id}` })}
-                  />
-
-                  {/* ── Preguntas dentro de la categoría ── */}
-                  <div className="ml-8 space-y-1.5 border-l-2 border-border-soft pl-4">
-                    {questions.map((q, qIdx) => {
-                      const qMode = getMode("q", q.id);
-                      const isQBusy = busy === `q-${q.id}` || moving === `q-${q.id}`;
-
-                      if (qMode === "edit") {
-                        return (
-                          <QuestionEditForm
-                            key={q.id}
-                            q={q}
-                            vals={qEdit[q.id] ?? {
-                              question_es: q.question_es,
-                              question_en: q.question_en,
-                              answer_es: q.answer_es,
-                              answer_en: q.answer_en,
-                              keywords: (q.keywords ?? []).join(", "),
-                            }}
-                            busy={isQBusy}
-                            onCancel={() => dispatch({ type: "cancelRow", key: `q-${q.id}` })}
-                            onSave={() => saveQ(q.id)}
-                            onChange={(patch) => dispatch({ type: "qEditChange", id: q.id, patch })}
-                          />
-                        );
-                      }
-
-                      if (qMode === "confirm-delete") {
-                        return (
-                          <ConfirmDeleteBox
-                            key={q.id}
-                            title="¿Eliminar esta pregunta?"
-                            subtext={q.question_es}
-                            busy={isQBusy}
-                            onConfirm={() => deleteQ(q.id)}
-                            onCancel={() => dispatch({ type: "cancelRow", key: `q-${q.id}` })}
-                          />
-                        );
-                      }
-
-                      return (
-                        <FAQQuestionItem
-                          key={q.id}
-                          questionEs={q.question_es}
-                          questionEn={q.question_en}
-                          answerEs={q.answer_es}
-                          active={q.active}
-                          index={qIdx}
-                          total={questions.length}
-                          isMoving={moving === `q-${q.id}`}
-                          anyBusy={anyBusy}
-                          onMoveUp={() => moveQ(q.id, "up")}
-                          onMoveDown={() => moveQ(q.id, "down")}
-                          onEdit={() => dispatch({ type: "qEditStart", q })}
-                          onDelete={() => dispatch({ type: "setConfirmDelete", key: `q-${q.id}` })}
-                        />
-                      );
-                    })}
-
-                    {/* ── Botón / Formulario nueva pregunta ── */}
-                    {newQuestionFor === cat.id ? (
-                      <NewQuestionForm
-                        busy={busy === `newq-${cat.id}`}
-                        newQ={newQ}
-                        onChange={(q) => dispatch({ type: "setNewQ", q })}
-                        onSubmit={submitNewQuestion}
-                        onCancel={() => dispatch({ type: "cancelNewQuestion" })}
-                      />
-                    ) : (
-                      catMode === "view" && (
-                        <button
-                          type="button"
-                          onClick={() => dispatch({ type: "showNewQuestion", categoryId: cat.id })}
-                          className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border-mid px-3 py-2 text-xs font-semibold text-text-muted transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-                        >
-                          + Nueva pregunta
-                        </button>
-                      )
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })
+        categories.map((cat, catIdx) => (
+          <FAQCategorySection
+            key={cat.id}
+            cat={cat}
+            catIdx={catIdx}
+            total={categories.length}
+            catMode={getMode("cat", cat.id)}
+            catEdit={catEdit}
+            qEdit={qEdit}
+            newQuestionFor={newQuestionFor}
+            newQ={newQ}
+            busy={busy}
+            moving={moving}
+            anyBusy={anyBusy}
+            getMode={getMode}
+            onMoveCat={moveCat}
+            onMoveQ={moveQ}
+            onCatEditStart={(c) => dispatch({ type: "catEditStart", cat: c })}
+            onCatEditChange={(id, patch) => dispatch({ type: "catEditChange", id, patch })}
+            onSaveCat={saveCat}
+            onDeleteCat={deleteCat}
+            onCancelRow={(key) => dispatch({ type: "cancelRow", key })}
+            onSetConfirmDelete={(key) => dispatch({ type: "setConfirmDelete", key })}
+            onQEditStart={(q) => dispatch({ type: "qEditStart", q })}
+            onQEditChange={(id, patch) => dispatch({ type: "qEditChange", id, patch })}
+            onSaveQ={saveQ}
+            onDeleteQ={deleteQ}
+            onShowNewQuestion={(categoryId) => dispatch({ type: "showNewQuestion", categoryId })}
+            onCancelNewQuestion={() => dispatch({ type: "cancelNewQuestion" })}
+            onSetNewQ={(q) => dispatch({ type: "setNewQ", q })}
+            onSubmitNewQuestion={submitNewQuestion}
+          />
+        ))
       )}
 
-      {/* ── Config: mensaje de fallback ── */}
+      {/* Config: fallback message */}
       <ConfigSection
         config={config}
         editConfig={editConfig}

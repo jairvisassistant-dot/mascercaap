@@ -6,8 +6,8 @@ export const testimonials: Testimonial[] = [
     name: "María Elena González",
     role: "Restaurante El Jardín, Chapinero",
     role_en: "El Jardín Restaurant, Chapinero",
-    text: "Desde que empezamos a trabajar con Más Cerca AP, nuestros clientes no paran de preguntar dónde conseguimos estos jugos. La frescura es incomparable.",
-    text_en: "Since we started working with Más Cerca AP, our customers never stop asking where we get these juices. The freshness is unmatched.",
+    text: "Desde que empezamos a trabajar con Mas Cerca AP, nuestros clientes no paran de preguntar dónde conseguimos estos jugos. La frescura es incomparable.",
+    text_en: "Since we started working with Mas Cerca AP, our customers never stop asking where we get these juices. The freshness is unmatched.",
     rating: 5,
   },
   {

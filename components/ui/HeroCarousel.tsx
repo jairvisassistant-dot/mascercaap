@@ -399,7 +399,7 @@ export default function HeroCarousel({ dict, lang }: Props) {
                   <div className="mb-4 flex items-center gap-3">
                     <span className="h-px w-10 bg-accent" />
                     <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/58">
-                      Más Cerca AP
+                      Mas Cerca AP
                     </span>
                   </div>
                   <p className="text-sm font-semibold leading-relaxed text-white/86">

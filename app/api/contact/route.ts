@@ -191,7 +191,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: `Más Cerca AP <${fromEmail}>`,
+        from: `Mas Cerca AP <${fromEmail}>`,
         to: [toEmail],
         reply_to: data.email,
         subject: `📩 Nuevo mensaje: ${tipoLabel[data.tipo]} — ${sanitizeSubject(data.nombre)}`,

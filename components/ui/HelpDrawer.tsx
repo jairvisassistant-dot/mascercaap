@@ -13,14 +13,14 @@ import { SITE_CONFIG } from "@/lib/config";
 import type { LegalDocument } from "@/types";
 import { buildWhatsAppLinks } from "@/lib/whatsapp";
 import type { Dictionary, Locale } from "@/lib/i18n";
-import type { FAQData } from "@/types";
+import type { FAQData, Product, ProductCategory, ProductLineConfig } from "@/types";
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 
 type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "order";
 
 type WhatsAppState = { appUrl: string | null; webUrl: string | null; leadSaved: boolean };
 
-type Props = { dict: Dictionary; lang: Locale; faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[]; onClose: () => void };
+type Props = { dict: Dictionary; lang: Locale; faqData: FAQData; prices: PriceEntry[]; lines: CatalogLine[]; categories: ProductCategory[]; productLines: ProductLineConfig[]; products: Product[]; onClose: () => void };
 
 // Reducer to avoid setState-in-effect lint errors
 type DrawerAction =
@@ -52,7 +52,7 @@ function buildDefaultWhatsAppState(message: string): WhatsAppState {
   };
 }
 
-export default function HelpDrawer({ dict, lang, faqData, prices, lines, onClose }: Props) {
+export default function HelpDrawer({ dict, lang, faqData, prices, lines, categories, productLines, products, onClose }: Props) {
   const locale = lang;
   const t = dict.helpHub;
   const { initialView, shouldRestoreSession } = useHelpHub();
@@ -249,7 +249,7 @@ export default function HelpDrawer({ dict, lang, faqData, prices, lines, onClose
                 <LegalView document={legalDocs.termsAndConditions} lang={locale} lastUpdatedLabel={dict.legal.lastUpdated} />
               )}
               {view === "contact" && (
-                <ContactView dict={dict} lang={locale} />
+                <ContactView dict={dict} lang={locale} categories={categories} productLines={productLines} products={products} />
               )}
               {view === "whatsapp" && whatsAppState && (
                 <WhatsAppConnectView

@@ -74,16 +74,18 @@ interface ProductosClientProps {
 
 export default function ProductosClient({ dict, lang, products, productLines, categories }: ProductosClientProps) {
   const searchParams = useSearchParams();
+  // .bind() preserves `this` for native URLSearchParams methods — direct destructuring loses it
+  const getParam = searchParams.get.bind(searchParams);
   const { replace } = useRouter();
   const pathname = usePathname();
 
-  const catFromUrl = searchParams.get("categoria") ?? DEFAULT_CATEGORY;
+  const catFromUrl = getParam("categoria") ?? DEFAULT_CATEGORY;
 
   const [state, dispatch] = useReducer(reducer, {
     activeCategory: catFromUrl,
     activeSubLines: [],
     hasInteracted: false,
-    searchQuery: searchParams.get("q") ?? "",
+    searchQuery: getParam("q") ?? "",
     activeSize: "todos",
     isSticky: false,
   });
@@ -226,7 +228,7 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
   }, [searchQuery, products, productLines, pl]);
 
   function selectCategory(cat: string) {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams);
     if (cat === DEFAULT_CATEGORY) {
       params.delete("categoria");
     } else {

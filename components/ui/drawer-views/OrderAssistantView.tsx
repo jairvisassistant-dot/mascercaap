@@ -1,11 +1,9 @@
 "use client"
 
 import { useReducer, useMemo } from "react"
-import { m, AnimatePresence } from "framer-motion"
-import ChipSelector from "@/components/ui/ChipSelector"
+import { m } from "framer-motion"
 import {
   buildWhatsappMessage,
-  calculateItemLineTotal,
   calculateOrderTotal,
   getDeliveryBenefit,
   is120gPackPresentation,
@@ -21,9 +19,12 @@ import type { Dictionary } from "@/lib/i18n"
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
-
-type Step = 1 | 2 | 3 | 4 | 5 | "cart" | 6 | "result"
-type SubmitStatus = "idle" | "sending" | "success" | "error"
+import type { State, Action, Step } from "./order/types"
+import OrderStep1 from "./order/OrderStep1"
+import OrderSteps234 from "./order/OrderSteps234"
+import OrderCart from "./order/OrderCart"
+import OrderContactForm from "./order/OrderContactForm"
+import OrderSuccess from "./order/OrderSuccess"
 
 const CUSTOM_QTY = -1
 
@@ -33,42 +34,6 @@ type Props = {
   lines:  CatalogLine[];
   onContactClick: () => void
 }
-
-type State = {
-  step: Step;
-  items: OrderItem[];
-  curProductType: string | null;
-  curLineKey: string | null;
-  curPresentation: string | null;
-  showCustomQty: boolean;
-  customQty: string;
-  nombre: string;
-  email: string;
-  waNumber: string;
-  consent: boolean;
-  status: SubmitStatus;
-  waUrl: string | null;
-};
-
-type Action =
-  | { type: "selectProductType"; value: string }
-  | { type: "editStep1" }
-  | { type: "selectLineKey"; value: string; nextStep: Step }
-  | { type: "editStep2" }
-  | { type: "selectPresentation"; value: string }
-  | { type: "editStep3" }
-  | { type: "showCustomQty" }
-  | { type: "setCustomQty"; value: string }
-  | { type: "commitItem"; item: OrderItem }
-  | { type: "cancelToCart" }
-  | { type: "goToStep"; step: Step }
-  | { type: "removeItem"; index: number }
-  | { type: "setContact"; field: "nombre" | "email" | "waNumber"; value: string }
-  | { type: "setConsent"; value: boolean }
-  | { type: "submitStart" }
-  | { type: "submitSuccess"; waUrl: string | null }
-  | { type: "submitError" }
-  | { type: "reset" };
 
 const INITIAL_STATE: State = {
   step: 1,
@@ -159,9 +124,9 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
   } = state
 
   // ── Derived ───────────────────────────────────────────────────
-  const totals   = items.length > 0 ? calculateOrderTotal(items, resolvePrice) : null
-  const has120gItems = items.some((item) => is120gPackPresentation(item.presentation))
-  const deliveryInfo = totals?.hasPrice ? getDeliveryBenefit(totals.total) : null
+  const totals        = items.length > 0 ? calculateOrderTotal(items, resolvePrice) : null
+  const has120gItems  = items.some((item) => is120gPackPresentation(item.presentation))
+  const deliveryInfo  = totals?.hasPrice ? getDeliveryBenefit(totals.total) : null
   const freeDeliveryMessage = deliveryInfo
     ? deliveryInfo.qualifiesFreeDelivery
       ? t.freeDeliveryQualified
@@ -196,7 +161,6 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
     }
   })
 
-  // Chips de presentación dinámicos según tipo de producto y fruta/producto seleccionado
   const presentationOptions = (
     curProductType && curLineKey
       ? catalog.getPresentationsForProduct(curProductType, curLineKey)
@@ -290,7 +254,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
   // ── Render ─────────────────────────────────────────────────────
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Barra de progreso */}
+      {/* Progress bar */}
       <div className="h-1 bg-border-soft shrink-0">
         <m.div
           className="h-full bg-primary"
@@ -299,6 +263,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
         />
       </div>
 
+      {/* Wholesale banner */}
       <div className="shrink-0 border-b border-accent-light/70 bg-accent-light/20 px-6 py-3">
         <div className="flex flex-col gap-3 rounded-2xl border border-accent-light/80 bg-surface-card px-4 py-3 shadow-[0_14px_34px_-28px_rgba(201,112,22,0.65)] sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold leading-snug text-accent-dark">
@@ -316,423 +281,137 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
 
       <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
 
-        {/* ── Resultado final ─────────────────────────────────── */}
+        {/* Success / result screen */}
         {step === "result" && (
-          <AnimatePresence mode="wait">
-            <m.div
-              key="result"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex flex-col items-center text-center py-4"
-            >
-              <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <svg className="size-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-bold text-text-main mb-2">{t.successTitle}</h3>
-              <p className="text-text-muted text-sm mb-6">{t.successText}</p>
-
-              {/* Resumen del pedido */}
-              {totals && (
-                <div className="w-full text-left bg-surface-page rounded-xl border border-border-soft p-4 mb-5 space-y-2">
-                  {items.map((item, i) => {
-                    const lineTotal = calculateItemLineTotal(item, resolvePrice)
-                    const qtyLabel = is120gPackPresentation(item.presentation)
-                      ? `${item.quantity} ${t.packShort}`
-                      : `${item.quantity} ${t.unitsShort}`
-                    return (
-                      <div key={`${i}-${item.fruit}-${item.presentation}`} className="flex justify-between text-sm">
-                        <span className="text-text-sub">{item.fruit}{item.presentation ? ` ${item.presentation}` : ""} × {qtyLabel}</span>
-                        <span className="text-text-muted">{lineTotal !== null ? formatCOP(lineTotal) : "—"}</span>
-                      </div>
-                    )
-                  })}
-                  {totals.hasPrice && (
-                    <>
-                      <div className="border-t border-border-soft pt-2 flex justify-between text-sm">
-                        <span className="text-text-muted">{t.subtotalLabel}</span>
-                        <span className="text-text-muted">{formatCOP(totals.subtotal)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-bold">
-                        <span className="text-text-main">{t.totalLabel}</span>
-                        <span className="text-primary">{formatCOP(totals.total)}</span>
-                      </div>
-                      <p className="text-[11px] font-medium text-text-muted">{t.taxIncludedNote}</p>
-                      <p className="text-[11px] text-text-faint">{t.priceNote}</p>
-                      {freeDeliveryMessage && (
-                        <p className={`text-[11px] font-semibold ${deliveryInfo?.qualifiesFreeDelivery ? "text-green-700" : "text-amber-700"}`}>
-                          {freeDeliveryMessage}
-                        </p>
-                      )}
-                      {has120gItems && (
-                        <p className="text-[11px] text-text-faint">{t.freeDelivery120gHint}</p>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-
-              {waUrl && (
-                <a
-                  href={waUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] mb-3"
-                >
-                  <svg className="size-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.534 5.857L0 24l6.335-1.518A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.797 9.797 0 01-5.092-1.424l-.366-.217-3.762.902.944-3.653-.238-.374A9.776 9.776 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z" />
-                  </svg>
-                  {t.ctaWhatsapp}
-                </a>
-              )}
-
-              {!waUrl && (
-                <p className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
-                  {t.successNoWhatsapp}
-                </p>
-              )}
-
-              <button
-                type="button"
-                onClick={() => dispatch({ type: "reset" })}
-                className="text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors min-h-[44px]"
-              >
-                {t.resetLabel}
-              </button>
-            </m.div>
-          </AnimatePresence>
+          <OrderSuccess
+            items={items}
+            totals={totals}
+            has120gItems={has120gItems}
+            freeDeliveryMessage={freeDeliveryMessage}
+            deliveryInfo={deliveryInfo}
+            waUrl={waUrl}
+            resolvePrice={resolvePrice}
+            t={{
+              successTitle:        t.successTitle,
+              successText:         t.successText,
+              packShort:           t.packShort,
+              unitsShort:          t.unitsShort,
+              subtotalLabel:       t.subtotalLabel,
+              totalLabel:          t.totalLabel,
+              taxIncludedNote:     t.taxIncludedNote,
+              priceNote:           t.priceNote,
+              freeDelivery120gHint: t.freeDelivery120gHint,
+              ctaWhatsapp:         t.ctaWhatsapp,
+              successNoWhatsapp:   t.successNoWhatsapp,
+              resetLabel:          t.resetLabel,
+            }}
+            dispatch={dispatch}
+          />
         )}
 
-        {/* ── Pasos 1–8 ────────────────────────────────────────── */}
+        {/* Steps 1–6 */}
         {step !== "result" && (
           <>
-            {/* Paso 1 — Tipo de producto */}
-            <StepBlock
-              number={1}
-              label={t.step1Label}
-              active={step === 1}
-              summary={curProductType ? (productTypeLabels[curProductType] ?? curProductType) : null}
-              onEdit={() => dispatch({ type: "editStep1" })}
+            {/* Step 1 — Product type */}
+            <OrderStep1
+              step={step}
+              curProductType={curProductType}
+              productOptions={productOptions}
+              productTypeLabels={productTypeLabels}
               backLabel={t.back}
-            >
-              <ChipSelector
-                options={productOptions}
-                selected={curProductType}
-                onChange={(v) => dispatch({ type: "selectProductType", value: v })}
-              />
-            </StepBlock>
+              stepLabel={t.step1Label}
+              dispatch={dispatch}
+            />
 
-            {/* ── Construcción del ítem actual (pasos 2–4) ───── */}
+            {/* Steps 2–4 — Fruit, presentation, quantity */}
             {(step === 2 || step === 3 || step === 4) && (
-              <>
-                {/* Paso 2 — Fruta */}
-                {step >= 2 && (
-                  <StepBlock
-                    number={2}
-                    label={t.step2Label}
-                    active={step === 2}
-                    summary={currentSelectionLabel}
-                    onEdit={() => dispatch({ type: "editStep2" })}
-                    backLabel={t.back}
-                  >
-                    <ChipSelector
-                      options={fruitOptions}
-                      selected={curLineKey}
-                      onChange={(v) => dispatch({ type: "selectLineKey", value: v, nextStep: isLacteos ? 4 : 3 })}
-                    />
-                  </StepBlock>
-                )}
-
-                {/* Paso 3 — Presentación (con precio) */}
-                {step >= 3 && (
-                  <StepBlock
-                    number={3}
-                    label={t.step4Label}
-                    active={step === 3}
-                    summary={curPresentation}
-                    onEdit={() => dispatch({ type: "editStep3" })}
-                    backLabel={t.back}
-                  >
-                    <ChipSelector
-                      options={presentationOptions}
-                      selected={curPresentation}
-                      onChange={(v) => dispatch({ type: "selectPresentation", value: v })}
-                    />
-                  </StepBlock>
-                )}
-
-                {/* Paso 4 — Cantidad */}
-                {step === 4 && (
-                  <StepBlock
-                    number={4}
-                    label={t.step5Label}
-                    active={true}
-                    summary={null}
-                    onEdit={() => {}}
-                    backLabel={t.back}
-                  >
-                    <ChipSelector
-                      options={quantityOptions}
-                      selected={showCustomQty ? CUSTOM_QTY : null}
-                      onChange={handleQtySelect}
-                    />
-                    {isPack120gSelection && (
-                      <p className="mt-2 text-xs text-text-muted">
-                        {t.presentation120gPackNote}
-                      </p>
-                    )}
-                    {showCustomQty && (
-                      <div className="mt-3 flex gap-2">
-                        <input
-                          type="number" min={1} max={9999}
-                          value={customQty}
-                          onChange={(e) => dispatch({ type: "setCustomQty", value: e.target.value })}
-                          placeholder={t.customQtyPlaceholder}
-                          aria-label={t.customQtyLabel}
-                          className="w-32 rounded-lg border border-border-mid px-3 py-2 text-sm bg-surface-page focus:outline-none focus:border-primary"
-                          onKeyDown={(e) => e.key === "Enter" && confirmCustomQty()}
-                        />
-                        <button
-                          type="button"
-                          onClick={confirmCustomQty}
-                          disabled={!customQty || parseInt(customQty) <= 0}
-                          className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 min-h-[44px]"
-                        >
-                          Confirmar
-                        </button>
-                      </div>
-                    )}
-                  </StepBlock>
-                )}
-
-                {/* Link para volver al carrito si ya hay ítems */}
-                {items.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: "cancelToCart" })}
-                    className="text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors"
-                  >
-                    {t.cancelToCart} ({items.length})
-                  </button>
-                )}
-              </>
+              <OrderSteps234
+                step={step}
+                curProductType={curProductType}
+                curLineKey={curLineKey}
+                curPresentation={curPresentation}
+                showCustomQty={showCustomQty}
+                customQty={customQty}
+                isLacteos={isLacteos}
+                isPack120gSelection={isPack120gSelection}
+                currentSelectionLabel={currentSelectionLabel}
+                fruitOptions={fruitOptions}
+                presentationOptions={presentationOptions}
+                quantityOptions={quantityOptions}
+                items={items}
+                t={{
+                  step2Label:               t.step2Label,
+                  step4Label:               t.step4Label,
+                  step5Label:               t.step5Label,
+                  back:                     t.back,
+                  customQtyLabel:           t.customQtyLabel,
+                  customQtyPlaceholder:     t.customQtyPlaceholder,
+                  presentation120gPackNote: t.presentation120gPackNote,
+                  cancelToCart:             t.cancelToCart,
+                }}
+                dispatch={dispatch}
+                handleQtySelect={handleQtySelect}
+                confirmCustomQty={confirmCustomQty}
+                CUSTOM_QTY={CUSTOM_QTY}
+              />
             )}
 
-            {/* ── Vista del carrito ────────────────────────────── */}
+            {/* Cart view */}
             {step === "cart" && (
-              <m.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-4"
-              >
-                <p className="text-sm font-semibold text-text-main">
-                  <span className="text-primary mr-2">🛒</span>{t.cartLabel}
-                </p>
-
-                {/* Lista de ítems */}
-                <div className="rounded-xl border border-border-soft overflow-hidden">
-                  {items.map((item, i) => {
-                    const lineTotal = calculateItemLineTotal(item, resolvePrice)
-                    const qtyLabel = is120gPackPresentation(item.presentation)
-                      ? `${item.quantity} ${t.packShort}`
-                      : `${item.quantity} ${t.unitsShort}`
-                    return (
-                      <div
-                        key={`${i}-${item.fruit}-${item.presentation}`}
-                        className="flex items-center justify-between px-4 py-3 border-b border-border-soft last:border-0 bg-surface-card"
-                      >
-                        <div>
-                          <p className="text-sm font-medium text-text-main">
-                            {item.fruit}{item.presentation ? ` ${item.presentation}` : ""}
-                          </p>
-                          <p className="text-xs text-text-muted">
-                            {qtyLabel}
-                            {lineTotal !== null && (
-                              <span className="ml-2 text-text-sub">{formatCOP(lineTotal)}</span>
-                            )}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => dispatch({ type: "removeItem", index: i })}
-                          className="text-xs text-red-500 hover:text-red-700 transition-colors min-h-[36px] px-2"
-                          aria-label={`${t.removeItem} ${item.fruit}`}
-                        >
-                          {t.removeItem}
-                        </button>
-                      </div>
-                    )
-                  })}
-                </div>
-
-                {/* Totales */}
-                {totals?.hasPrice && (
-                  <div className="rounded-xl bg-surface-page border border-border-soft p-4 space-y-1.5">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-text-muted">{t.subtotalLabel}</span>
-                      <span className="text-text-muted">{formatCOP(totals.subtotal)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm font-bold border-t border-border-soft pt-1.5">
-                      <span className="text-text-main">{t.totalLabel}</span>
-                      <span className="text-primary">{formatCOP(totals.total)}</span>
-                    </div>
-                    <p className="text-[11px] font-medium text-text-muted">{t.taxIncludedNote}</p>
-                    <p className="text-[11px] text-text-faint">{t.priceNote}</p>
-                    {freeDeliveryMessage && (
-                      <p className={`text-[11px] font-semibold ${deliveryInfo?.qualifiesFreeDelivery ? "text-green-700" : "text-amber-700"}`}>
-                        {freeDeliveryMessage}
-                      </p>
-                    )}
-                    {has120gItems && (
-                      <p className="text-[11px] text-text-faint">{t.freeDelivery120gHint}</p>
-                    )}
-                  </div>
-                )}
-
-                {/* Acciones del carrito */}
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: "editStep1" })}
-                  className="w-full text-sm text-primary border border-primary/30 rounded-full px-4 py-2.5 hover:bg-primary/5 transition-colors min-h-[44px]"
-                >
-                  {t.addAnother}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "goToStep", step: 6 })}
-                  disabled={items.length === 0}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] disabled:opacity-50"
-                >
-                  {t.continueLabel}
-                  <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </button>
-              </m.div>
+              <OrderCart
+                items={items}
+                totals={totals}
+                has120gItems={has120gItems}
+                freeDeliveryMessage={freeDeliveryMessage}
+                deliveryInfo={deliveryInfo}
+                resolvePrice={resolvePrice}
+                t={{
+                  cartLabel:           t.cartLabel,
+                  packShort:           t.packShort,
+                  unitsShort:          t.unitsShort,
+                  removeItem:          t.removeItem,
+                  subtotalLabel:       t.subtotalLabel,
+                  totalLabel:          t.totalLabel,
+                  taxIncludedNote:     t.taxIncludedNote,
+                  priceNote:           t.priceNote,
+                  freeDelivery120gHint: t.freeDelivery120gHint,
+                  addAnother:          t.addAnother,
+                  continueLabel:       t.continueLabel,
+                }}
+                dispatch={dispatch}
+              />
             )}
 
-            {/* ── Paso 6 — Datos de contacto ───────────────────── */}
+            {/* Step 6 — Contact form */}
             {step === 6 && (
-              <>
-                  <m.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <p className="text-sm font-semibold text-text-main mb-4">
-                      <span className="text-primary mr-2">5.</span>{t.step6Label}
-                    </p>
-
-                    <div className="space-y-3">
-                      <div>
-                        <label htmlFor="oa-nombre" className="block text-xs font-medium text-text-muted mb-1">{t.nameLabel} *</label>
-                        <input
-                          id="oa-nombre"
-                          type="text"
-                          value={nombre}
-                          onChange={(e) => dispatch({ type: "setContact", field: "nombre", value: e.target.value })}
-                          placeholder={t.namePlaceholder}
-                          className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="oa-email" className="block text-xs font-medium text-text-muted mb-1">{t.emailLabel}</label>
-                        <input
-                          id="oa-email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => dispatch({ type: "setContact", field: "email", value: e.target.value })}
-                          placeholder={t.emailPlaceholder}
-                          className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="oa-whatsapp" className="block text-xs font-medium text-text-muted mb-1">{t.whatsappLabel}</label>
-                        <input
-                          id="oa-whatsapp"
-                          type="tel"
-                          value={waNumber}
-                          onChange={(e) => dispatch({ type: "setContact", field: "waNumber", value: e.target.value })}
-                          placeholder={t.whatsappPlaceholder}
-                          className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                        />
-                        <p className="text-xs text-text-muted mt-1">{t.contactHint}</p>
-                      </div>
-
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={consent}
-                          onChange={(e) => dispatch({ type: "setConsent", value: e.target.checked })}
-                          className="mt-0.5 size-4 accent-primary shrink-0"
-                        />
-                        <span className="text-xs text-text-muted leading-relaxed">{t.consentLabel}</span>
-                      </label>
-                    </div>
-
-                    {status === "error" && (
-                      <p className="mt-3 text-xs text-red-600">{t.errorText}</p>
-                    )}
-
-                    <div className="mt-5">
-                      <button
-                        type="button"
-                        onClick={handleEmailSubmit}
-                        disabled={!canSubmit() || status === "sending"}
-                        className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] disabled:opacity-50"
-                      >
-                        {status === "sending" ? t.sending : t.ctaEmail}
-                      </button>
-                    </div>
-                  </m.div>
-              </>
+              <OrderContactForm
+                nombre={nombre}
+                email={email}
+                waNumber={waNumber}
+                consent={consent}
+                status={status}
+                canSubmit={canSubmit()}
+                t={{
+                  step6Label:        t.step6Label,
+                  nameLabel:         t.nameLabel,
+                  namePlaceholder:   t.namePlaceholder,
+                  emailLabel:        t.emailLabel,
+                  emailPlaceholder:  t.emailPlaceholder,
+                  whatsappLabel:     t.whatsappLabel,
+                  whatsappPlaceholder: t.whatsappPlaceholder,
+                  contactHint:       t.contactHint,
+                  consentLabel:      t.consentLabel,
+                  errorText:         t.errorText,
+                  sending:           t.sending,
+                  ctaEmail:          t.ctaEmail,
+                }}
+                dispatch={dispatch}
+                onSubmit={handleEmailSubmit}
+              />
             )}
           </>
         )}
       </div>
-    </div>
-  )
-}
-
-// ── StepBlock reutilizable ────────────────────────────────────────
-function StepBlock({
-  number, label, active, summary, onEdit, backLabel, children,
-}: {
-  number: number
-  label: string
-  active: boolean
-  summary: string | null
-  onEdit: () => void
-  backLabel: string
-  children: React.ReactNode
-}) {
-  if (!active && !summary) return null
-
-  return (
-    <div className={!active ? "pb-4 border-b border-border-soft" : ""}>
-      <p className="text-sm font-semibold text-text-main mb-3">
-        <span className="text-primary mr-2">{number}.</span>{label}
-      </p>
-      {active ? (
-        children
-      ) : (
-        <p className="text-text-muted text-sm flex flex-wrap items-center gap-1">
-          <span>{summary}</span>
-          <button
-            type="button"
-            onClick={onEdit}
-            className="inline-flex items-center justify-center min-h-[36px] px-2 text-sm text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
-          >
-            {backLabel}
-          </button>
-        </p>
-      )}
     </div>
   )
 }

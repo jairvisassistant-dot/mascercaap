@@ -1,51 +1,13 @@
 "use client"
 
 import { useReducer, useEffect, useRef, useCallback } from "react"
-import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion"
-import ChipSelector from "@/components/ui/ChipSelector"
-import {
-  packsNeeded,
-  totalCupsFromPacks,
-  freshComparison,
-  FRUIT_DATA,
-  CUP_OPTIONS,
-  type FruitKey,
-  type Presentation,
-  type PrepType,
-} from "@/lib/yield-calculator"
+import { m, useInView, useReducedMotion } from "framer-motion"
+import { CUP_OPTIONS, type FruitKey, type Presentation, type PrepType } from "@/lib/yield-calculator"
 import { useHelpHub } from "@/lib/help-hub-context"
 import type { Dictionary } from "@/lib/i18n"
-import { AnimatedNumber } from "@/components/ui/calculator/AnimatedNumber"
-import { CupGrid } from "@/components/ui/calculator/CupGrid"
-import { PreparationTimeline } from "@/components/ui/calculator/PreparationTimeline"
-import { PresentationComparison } from "@/components/ui/calculator/PresentationComparison"
+import { CalculatorInteractive, type CalcState, type CalcAction } from "./CalculatorInteractive"
 
-type Step = 1 | 2 | 3 | "result"
-
-type State = {
-  step: Step;
-  selectedPrep: PrepType | null;
-  targetCups: number | null;
-  showCustomInput: boolean;
-  customCups: string;
-  selectedFruit: FruitKey | null;
-  selectedPresentation: Presentation | null;
-};
-
-type Action =
-  | { type: "selectPrep"; prep: PrepType }
-  | { type: "selectCups"; cups: number }
-  | { type: "showCustom" }
-  | { type: "setCustomCups"; value: string }
-  | { type: "confirmCustomCups"; cups: number }
-  | { type: "selectFruit"; fruit: FruitKey }
-  | { type: "selectPresentation"; presentation: Presentation }
-  | { type: "backToStep1" }
-  | { type: "backToStep2" }
-  | { type: "backToStep3" }
-  | { type: "reset" };
-
-const initialState: State = {
+const initialState: CalcState = {
   step: 1,
   selectedPrep: null,
   targetCups: null,
@@ -55,7 +17,7 @@ const initialState: State = {
   selectedPresentation: null,
 };
 
-function reducer(state: State, action: Action): State {
+function reducer(state: CalcState, action: CalcAction): CalcState {
   switch (action.type) {
     case "selectPrep":
       return { ...state, selectedPrep: action.prep, step: state.targetCups !== null ? 2 : state.step };
@@ -83,27 +45,7 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-const FRUIT_OPTIONS_ROW1 = (
-  ["mora", "fresa", "lulo", "mango", "guayaba"] as FruitKey[]
-).map((k) => ({ value: k, label: FRUIT_DATA[k].label }))
-
-const FRUIT_OPTIONS_ROW2 = (
-  ["maracuya", "frutos_rojos", "frutos_amarillos", "guanabana", "tomate_arbol"] as FruitKey[]
-).map((k) => ({ value: k, label: FRUIT_DATA[k].label }))
-
 const CUSTOM_VALUE = -1
-
-function BackLink({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="ml-3 inline-flex items-center justify-center min-h-[36px] px-2 text-sm text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
-    >
-      {label}
-    </button>
-  )
-}
 
 export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   const t = dict.yieldCalculator
@@ -115,7 +57,6 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
   ]
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { step, selectedPrep, targetCups, showCustomInput, customCups, selectedFruit, selectedPresentation } = state;
 
   const cardRef = useRef<HTMLDivElement>(null)
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -135,20 +76,10 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     }, 50)
   }, [])
 
-  function handleCupsSelect(value: number) {
-    if (value === CUSTOM_VALUE) {
-      dispatch({ type: "showCustom" });
-    } else {
-      dispatch({ type: "selectCups", cups: value });
-    }
-  }
-
-  function handleCustomCupsConfirm() {
-    const parsed = parseInt(customCups, 10)
-    if (!isNaN(parsed) && parsed > 0) {
-      dispatch({ type: "confirmCustomCups", cups: parsed });
-    }
-  }
+  useEffect(() => {
+    const timerRef = scrollTimerRef
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [])
 
   function handleFruitSelect(value: FruitKey) {
     dispatch({ type: "selectFruit", fruit: value });
@@ -159,23 +90,6 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     dispatch({ type: "selectPresentation", presentation: value });
     scrollCard()
   }
-
-  useEffect(() => {
-    const timerRef = scrollTimerRef
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
-  }, [])
-
-  const packs = targetCups && selectedPresentation && selectedPrep
-    ? packsNeeded(targetCups, selectedPresentation, selectedPrep)
-    : null
-
-  const comparison = packs && selectedPresentation && selectedFruit
-    ? freshComparison(packs, selectedPresentation, selectedFruit)
-    : null
-
-  const isCompleted = step !== 1
 
   return (
     <section className="relative overflow-hidden border-y border-border-mid py-24 bg-[radial-gradient(circle_at_10%_18%,rgba(63,143,70,0.14)_0%,transparent_30%),radial-gradient(circle_at_92%_6%,rgba(229,138,34,0.12)_0%,transparent_28%),linear-gradient(180deg,#f8fbf7_0%,#f4f8f2_52%,#f9fbf8_100%)]">
@@ -213,8 +127,9 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           </div>
         </m.div>
 
+        {/* Animated visual frame + interactive card */}
         <div ref={visualRef} className="group relative">
-          {/* ── Decorative ambient glows — all respect prefers-reduced-motion ── */}
+          {/* Ambient glow */}
           <m.div
             className="pointer-events-none absolute -inset-x-6 -inset-y-4 rounded-[1.9rem] bg-[radial-gradient(circle_at_50%_50%,rgba(63,143,70,0.24)_0%,rgba(63,143,70,0.12)_34%,rgba(63,143,70,0.02)_64%,transparent_82%)] blur-2xl"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -306,184 +221,17 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
               />
             </m.div>
 
-            <div ref={cardRef} className="relative rounded-[1.4rem] border border-primary/20 bg-white/86 p-6 shadow-[0_30px_80px_-44px_rgba(31,74,39,0.6)] backdrop-blur-md md:p-8">
-
-              {/* Step 1 — prep type + cup count */}
-              <div className={isCompleted ? "mb-6 pb-6 border-b border-border-mid" : ""}>
-                {step === 1 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-                    <div>
-                      <p className="text-sm font-semibold text-text-main mb-3">
-                        <span className="text-primary mr-2">1.</span>{t.prepLabel}
-                      </p>
-                      <ChipSelector
-                        options={PREP_OPTIONS}
-                        selected={selectedPrep}
-                        onChange={(value) => dispatch({ type: "selectPrep", prep: value })}
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-text-main mb-3">
-                        {t.step1Label}
-                      </p>
-                      <ChipSelector
-                        options={cupChipOptions}
-                        selected={showCustomInput ? CUSTOM_VALUE : targetCups}
-                        onChange={handleCupsSelect}
-                      />
-                      {showCustomInput && (
-                        <div className="mt-3 flex gap-2 items-center">
-                          <input
-                            type="number"
-                            min={1}
-                            max={9999}
-                            value={customCups}
-                            onChange={(e) => dispatch({ type: "setCustomCups", value: e.target.value })}
-                            placeholder={t.customPlaceholder}
-                            aria-label={t.customPlaceholder}
-                            className="w-40 rounded-lg border border-border-mid px-3 py-2 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
-                            onKeyDown={(e) => e.key === "Enter" && handleCustomCupsConfirm()}
-                          />
-                          <button
-                            type="button"
-                            onClick={handleCustomCupsConfirm}
-                            disabled={!customCups || parseInt(customCups, 10) <= 0}
-                            className="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-40 transition-opacity"
-                          >
-                            Confirmar
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-sm font-semibold text-text-main flex flex-wrap items-center">
-                    <span className="text-primary mr-2">1.</span>
-                    <span className="text-text-muted font-normal">
-                      {selectedPrep === "jugo" ? t.prepJugo : t.prepFrappe}: {targetCups} {t.cups}
-                    </span>
-                    <BackLink label={t.back} onClick={() => dispatch({ type: "backToStep1" })} />
-                  </p>
-                )}
-              </div>
-
-              {/* Step 2 — fruit selection */}
-              {(step === 2 || step === 3 || step === "result") && (
-                <div className={step !== 2 ? "mb-6 pb-6 border-b border-border-mid" : ""}>
-                  <p className="text-sm font-semibold text-text-main mb-3">
-                    <span className="text-primary mr-2">2.</span>{t.step2Label}
-                  </p>
-                  {step === 2 ? (
-                    <div className="space-y-3">
-                      <ChipSelector
-                        options={FRUIT_OPTIONS_ROW1}
-                        selected={selectedFruit}
-                        onChange={handleFruitSelect}
-                        className="flex flex-wrap gap-3"
-                      />
-                      <ChipSelector
-                        options={FRUIT_OPTIONS_ROW2}
-                        selected={selectedFruit}
-                        onChange={handleFruitSelect}
-                        className="flex flex-wrap gap-3"
-                      />
-                    </div>
-                  ) : (
-                    <p className="text-text-muted text-sm flex flex-wrap items-center">
-                      <span>{selectedFruit ? FRUIT_DATA[selectedFruit].label : ""}</span>
-                      <BackLink label={t.back} onClick={() => dispatch({ type: "backToStep2" })} />
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* Step 3 — presentation comparison */}
-              {(step === 3 || step === "result") && targetCups && selectedPrep && selectedFruit && (
-                <div className={step !== 3 ? "mb-6 pb-6 border-b border-border-mid" : ""}>
-                  <p className="text-sm font-semibold text-text-main mb-4">
-                    <span className="text-primary mr-2">3.</span>{t.step3Label}
-                  </p>
-                  {step === 3 ? (
-                    <PresentationComparison
-                      targetCups={targetCups}
-                      prep={selectedPrep}
-                      fruit={selectedFruit}
-                      onSelect={handlePresentationSelect}
-                      t={t}
-                    />
-                  ) : (
-                    <p className="text-text-muted text-sm flex flex-wrap items-center">
-                      <span>{selectedPresentation}</span>
-                      <BackLink label={t.back} onClick={() => dispatch({ type: "backToStep3" })} />
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* Result */}
-              <AnimatePresence>
-                {step === "result" && packs && comparison && selectedFruit && selectedPresentation && targetCups && selectedPrep && (
-                  <m.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <div className="rounded-xl bg-primary/6 border border-primary/20 overflow-hidden mb-5">
-                      <div className="px-5 pt-6 pb-5 text-center border-b border-primary/10">
-                        <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
-                          {t.resultHeroPrefix.replace("{n}", String(targetCups))}
-                        </p>
-                        <div className="flex items-end justify-center gap-2 mb-2">
-                          <AnimatedNumber
-                            target={packs}
-                            className="text-6xl font-bold text-primary leading-none tabular-nums"
-                          />
-                          <span className="text-xl font-semibold text-text-main pb-1.5">
-                            {packs === 1 ? t.pack : t.packs}
-                          </span>
-                        </div>
-                        <p className="text-sm text-text-muted">
-                          de {FRUIT_DATA[selectedFruit].label} {selectedPresentation}
-                        </p>
-                      </div>
-
-                      <div className="p-5 border-b border-primary/10">
-                        <CupGrid
-                          totalCups={totalCupsFromPacks(packs, selectedPresentation, selectedPrep)}
-                          fruit={selectedFruit}
-                          t={t}
-                        />
-                      </div>
-
-                      <div className="p-5">
-                        <PreparationTimeline minutesSaved={comparison.minutesSaved} t={t} />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 items-start">
-                      {packs && (
-                        <button
-                          type="button"
-                          onClick={() => openDrawer("order")}
-                          className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px]"
-                        >
-                          {t.ctaWhatsapp}
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => dispatch({ type: "reset" })}
-                        className="inline-flex items-center justify-center min-h-[44px] px-4 text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors"
-                      >
-                        {t.calcAgain}
-                      </button>
-                    </div>
-
-                    <p className="mt-4 text-xs text-text-muted/70 italic">{t.disclaimer}</p>
-                  </m.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <CalculatorInteractive
+              cardRef={cardRef}
+              state={state}
+              dispatch={dispatch}
+              prepOptions={PREP_OPTIONS}
+              cupChipOptions={cupChipOptions}
+              t={t}
+              onFruitSelect={handleFruitSelect}
+              onPresentationSelect={handlePresentationSelect}
+              onOrder={() => openDrawer("order")}
+            />
           </m.div>
         </div>
       </div>
