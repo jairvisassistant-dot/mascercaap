@@ -18,7 +18,7 @@ export const SITE_CONFIG = {
   /** Email de contacto general */
   emailContact: "comercial@mascercaap.com",
   /** URL canónica del sitio */
-  siteUrl: "https://mascercap.com",
+  siteUrl: "https://mascercaap.com",
   /** Logo público usado para metadata y datos estructurados */
   logoPath: "/imgs/Logo.webp",
   /** Imagen social temporal hasta tener pieza OG final de marca */
