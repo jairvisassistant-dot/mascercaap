@@ -44,7 +44,7 @@ export default function OrderSteps234({
   return (
     <>
       {/* Step 2 — Fruit / product */}
-      {step >= 2 && (
+      {typeof step === "number" && step >= 2 && (
         <StepBlock
           number={2}
           label={t.step2Label}
@@ -62,7 +62,7 @@ export default function OrderSteps234({
       )}
 
       {/* Step 3 — Presentation (with price) */}
-      {step >= 3 && (
+      {typeof step === "number" && step >= 3 && (
         <StepBlock
           number={3}
           label={t.step4Label}

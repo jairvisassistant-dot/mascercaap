@@ -212,7 +212,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
   }
 
   function canSubmit() {
-    return nombre.trim().length >= 2 && (email.trim() || waNumber.trim()) && consent
+    return nombre.trim().length >= 2 && !!(email.trim() || waNumber.trim()) && consent
   }
 
   async function handleEmailSubmit() {
