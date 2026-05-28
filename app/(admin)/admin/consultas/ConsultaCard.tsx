@@ -4,31 +4,31 @@ import type { LeadRow } from "@/types";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-export const TIPO_LABELS: Record<string, string> = {
+const TIPO_LABELS: Record<string, string> = {
   pedido: "Pedido",
   negocio: "Mayoreo",
   consulta: "Consulta",
 };
 
-export const TIPO_COLORS: Record<string, string> = {
+const TIPO_COLORS: Record<string, string> = {
   pedido: "bg-blue-50 text-blue-700 border-blue-200",
   negocio: "bg-purple-50 text-purple-700 border-purple-200",
   consulta: "bg-teal-50 text-teal-700 border-teal-200",
 };
 
-export const FUENTE_LABELS: Record<string, string> = {
+const FUENTE_LABELS: Record<string, string> = {
   chatbot_web: "Chatbot Web",
   order_assistant: "Order Assistant",
 };
 
-export const ESTADO_OPTIONS = [
+const ESTADO_OPTIONS = [
   "nuevo",
   "contactado",
   "convertido",
   "perdido",
 ] as const;
 
-export const ESTADO_COLORS: Record<string, string> = {
+const ESTADO_COLORS: Record<string, string> = {
   nuevo: "bg-blue-100 text-blue-700 border-blue-200",
   contactado: "bg-amber-100 text-amber-700 border-amber-200",
   convertido: "bg-green-100 text-green-700 border-green-200",
