@@ -28,6 +28,7 @@ export default function ProductGridCard({ product, line, priority = false, dict,
   const isBestSeller = product.isBestSeller === true;
   const isDairyProduct = product.line.startsWith("kumiss") || product.line.startsWith("yogurt");
   const hasPackagingImage = product.line.startsWith("pulpa-") && imageSrc !== "" && !imageSrc.includes("/imgs/fruta-");
+  const isProductShot = hasPackagingImage || isDairyProduct;
   const pl = dict.productLines as Record<string, { label: string; description: string }>;
   const displayName = pl[product.line]?.label ?? product.name;
   const displayDescription = lang !== "es" ? (pl[product.line]?.description ?? product.description) : product.description;
@@ -53,8 +54,8 @@ export default function ProductGridCard({ product, line, priority = false, dict,
         <div className={`relative aspect-[4/5] ${isDairyProduct ? "bg-white" : hasPackagingImage ? `bg-gradient-to-b ${cardGradient}` : "bg-surface-page"}`}>
           {imageSrc && (
             <>
-              <div className={`pointer-events-none absolute inset-0 z-[1] ${hasPackagingImage ? "bg-[radial-gradient(circle_at_50%_12%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0.10)_24%,transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.08)_22%,transparent_55%)]"}`} />
-              <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] ${hasPackagingImage ? "h-20 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.16)_0%,transparent_68%)]" : "h-24 bg-[linear-gradient(180deg,transparent_0%,rgba(15,23,42,0.14)_100%)]"}`} />
+              <div className={`pointer-events-none absolute inset-0 z-[1] ${isProductShot ? "bg-[radial-gradient(circle_at_50%_12%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0.10)_24%,transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.08)_22%,transparent_55%)]"}`} />
+              <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] ${isProductShot ? "h-20 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.16)_0%,transparent_68%)]" : "h-24 bg-[linear-gradient(180deg,transparent_0%,rgba(15,23,42,0.14)_100%)]"}`} />
             </>
           )}
 

@@ -53,6 +53,8 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const isDairyProduct = product.line.startsWith("kumiss") || product.line.startsWith("yogurt");
   // Tratamiento nuevo solo para productos con imagen de packaging (no las fotos de campo fruta-*.webp)
   const hasPackagingImage = product.line.startsWith("pulpa-") && imageSrc !== "" && !imageSrc.includes("/imgs/fruta-");
+  // Productos que necesitan overlays suaves (sin gradiente oscuro inferior)
+  const isProductShot = hasPackagingImage || isDairyProduct;
 
   const cardGradient = CARD_GRADIENTS[product.line] ?? accentGradient;
   const cardShadowTint = CARD_SHADOW_TINTS[product.line] ?? "shadow-md hover:shadow-xl hover:shadow-primary/8";
@@ -68,7 +70,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
         <>
           <div className="pointer-events-none absolute inset-[1px] z-[1] rounded-[1.28rem] border border-white/35" />
           <div className={`pointer-events-none absolute inset-x-6 -top-10 z-[1] h-20 rounded-full bg-gradient-to-r blur-2xl transition-opacity duration-300 ${cardGradient} ${
-            hasPackagingImage ? "opacity-20 group-hover:opacity-30" : "opacity-10 group-hover:opacity-20"
+            isProductShot ? "opacity-20 group-hover:opacity-30" : "opacity-10 group-hover:opacity-20"
           }`} />
         </>
       )}
@@ -83,8 +85,8 @@ export default function ProductCard({ product, accentGradient = "from-primary to
       }`}>
         {(hasPackagingImage || imageSrc) && (
           <>
-            <div className={`pointer-events-none absolute inset-0 z-[1] ${hasPackagingImage ? "bg-[radial-gradient(circle_at_50%_14%,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.12)_24%,transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.08)_22%,transparent_55%)]"}`} />
-            <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] ${hasPackagingImage ? "h-24 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.18)_0%,transparent_68%)]" : "h-28 bg-[linear-gradient(180deg,transparent_0%,rgba(15,23,42,0.14)_100%)]"}`} />
+            <div className={`pointer-events-none absolute inset-0 z-[1] ${isProductShot ? "bg-[radial-gradient(circle_at_50%_14%,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.12)_24%,transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.08)_22%,transparent_55%)]"}`} />
+            <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] ${isProductShot ? "h-24 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.18)_0%,transparent_68%)]" : "h-28 bg-[linear-gradient(180deg,transparent_0%,rgba(15,23,42,0.14)_100%)]"}`} />
             <div className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,transparent_28%,rgba(0,0,0,0.06)_100%)]" />
           </>
         )}
