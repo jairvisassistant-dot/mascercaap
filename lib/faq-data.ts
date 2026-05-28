@@ -7,7 +7,7 @@ import type { FAQData, FAQCategoryRow, FAQConfigRow, FAQQuestionRow } from "@/ty
 type ProductRow = { name: string; line: string; presentation: string };
 
 const LINE_LABELS: Record<string, { es: string; en: string }> = {
-  jugos: { es: "jugos naturales", en: "natural juices" },
+  jugos: { es: "zumos concentrados", en: "concentrated zumos" },
   pulpas: { es: "pulpas congeladas", en: "frozen pulps" },
   lacteos: { es: "lácteos", en: "dairy products" },
 };

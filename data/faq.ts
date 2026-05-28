@@ -41,8 +41,8 @@ export const faqData: FAQData = {
         {
           id: "conservantes",
           question: {
-            es: "¿Los jugos tienen conservantes o colorantes?",
-            en: "Do the juices have preservatives or colorings?",
+            es: "¿Los zumos tienen conservantes o colorantes?",
+            en: "Do the zumos have preservatives or colorings?",
           },
           answer: {
             es: "Nuestros zumos y pulpas se elaboran sin conservantes ni colorantes. Los lácteos Del Hato tienen su propia formulación y pueden incluir azúcar o saborizantes según la referencia; revisa la ficha de cada producto antes de pedir.",

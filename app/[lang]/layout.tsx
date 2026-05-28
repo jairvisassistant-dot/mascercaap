@@ -43,8 +43,8 @@ function getOrganizationJsonLd(lang: Locale) {
     logo: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.logoPath}`,
     description:
       lang === "es"
-        ? "Productores de jugos y cítricos 100% naturales en Colombia."
-        : "Producers of 100% natural juices and citrus fruits in Colombia.",
+        ? "Productores de zumos concentrados y pulpas de fruta en Colombia."
+        : "Producers of concentrated zumos and fruit pulps in Colombia.",
     address: {
       "@type": "PostalAddress",
       streetAddress: SITE_CONFIG.address,
