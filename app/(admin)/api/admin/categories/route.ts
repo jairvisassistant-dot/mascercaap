@@ -134,6 +134,17 @@ export async function DELETE(req: Request) {
     );
   }
 
+  const { data: lines } = await sb
+    .from("product_lines")
+    .select("key")
+    .eq("category_key", key);
+
+  if (lines && lines.length > 0) {
+    const lineKeys = lines.map((l) => l.key);
+    await sb.from("products").update({ active: false }).in("line", lineKeys);
+    await sb.from("product_lines").update({ active: false }).eq("category_key", key);
+  }
+
   const { error } = await sb
     .from("product_categories")
     .update({ active: false })

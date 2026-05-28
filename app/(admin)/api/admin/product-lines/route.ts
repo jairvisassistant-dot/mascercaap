@@ -130,14 +130,17 @@ export async function DELETE(req: Request) {
   const { count } = await sb
     .from("products")
     .select("id", { count: "exact", head: true })
-    .eq("line", key);
+    .eq("line", key)
+    .eq("active", true);
 
   if (count && count > 0) {
     return NextResponse.json(
-      { error: `Esta línea tiene ${count} producto${count !== 1 ? "s" : ""} asociado${count !== 1 ? "s" : ""}. Elimínalos antes de borrar la línea.` },
+      { error: `Esta línea tiene ${count} producto${count !== 1 ? "s" : ""} activo${count !== 1 ? "s" : ""}. Elimínalos antes de borrar la línea.` },
       { status: 409 }
     );
   }
+
+  await sb.from("products").update({ active: false }).eq("line", key);
 
   const { error } = await sb
     .from("product_lines")
