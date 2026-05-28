@@ -98,8 +98,8 @@ export const termsAndConditions: LegalDocument = {
     {
       title: { es: "2. Descripción del servicio", en: "2. Service Description" },
       content: {
-        es: "Mas Cerca AP opera como plataforma informativa y de contacto para la distribución de jugos naturales, pulpas de fruta y productos lácteos de origen colombiano. Las transacciones comerciales se formalizan directamente con nuestro equipo de ventas.",
-        en: "Mas Cerca AP operates as an informational and contact platform for the distribution of natural juices, fruit pulps, and dairy products of Colombian origin. Commercial transactions are formalized directly with our sales team.",
+        es: "Mas Cerca AP opera como plataforma informativa y de contacto para la distribución de zumos concentrados, pulpas de fruta y productos lácteos de origen colombiano. Las transacciones comerciales se formalizan directamente con nuestro equipo de ventas.",
+        en: "Mas Cerca AP operates as an informational and contact platform for the distribution of concentrated zumos, fruit pulps, and dairy products of Colombian origin. Commercial transactions are formalized directly with our sales team.",
       },
     },
     {
