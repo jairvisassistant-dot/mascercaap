@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useReducer, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Product, ProductCategory, ProductLineConfig, ProductLineKey } from "@/types";
@@ -18,6 +18,52 @@ function normalizeStr(s: string): string {
   return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
+type State = {
+  activeCategory: string;
+  activeSubLines: ProductLineKey[];
+  hasInteracted: boolean;
+  searchQuery: string;
+  activeSize: string;
+  isSticky: boolean;
+};
+
+type Action =
+  | { type: "search"; query: string }
+  | { type: "selectCategory"; cat: string }
+  | { type: "toggleSubLine"; key: ProductLineKey }
+  | { type: "setSize"; size: string }
+  | { type: "clearAll" }
+  | { type: "urlSync"; category: string }
+  | { type: "setSticky"; value: boolean };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "search":
+      return { ...state, searchQuery: action.query, activeCategory: DEFAULT_CATEGORY, activeSubLines: [], activeSize: "todos", hasInteracted: false };
+    case "selectCategory":
+      if (state.activeCategory === action.cat) return { ...state, hasInteracted: true };
+      return { ...state, activeCategory: action.cat, activeSubLines: [], activeSize: "todos", hasInteracted: true };
+    case "toggleSubLine":
+      return {
+        ...state,
+        activeSubLines: state.activeSubLines.includes(action.key)
+          ? state.activeSubLines.filter((k) => k !== action.key)
+          : [...state.activeSubLines, action.key],
+        activeSize: "todos",
+      };
+    case "setSize":
+      return { ...state, activeSize: action.size };
+    case "clearAll":
+      return { ...state, activeCategory: DEFAULT_CATEGORY, activeSubLines: [], activeSize: "todos", hasInteracted: false, searchQuery: "" };
+    case "urlSync":
+      return { ...state, activeCategory: action.category, activeSubLines: [], activeSize: "todos", hasInteracted: false };
+    case "setSticky":
+      return { ...state, isSticky: action.value };
+    default:
+      return state;
+  }
+}
+
 interface ProductosClientProps {
   dict: Dictionary;
   lang: Locale;
@@ -30,6 +76,20 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const pathname = usePathname();
+
+  const catFromUrl = searchParams.get("categoria") ?? DEFAULT_CATEGORY;
+
+  const [state, dispatch] = useReducer(reducer, {
+    activeCategory: catFromUrl,
+    activeSubLines: [],
+    hasInteracted: false,
+    searchQuery: searchParams.get("q") ?? "",
+    activeSize: "todos",
+    isSticky: false,
+  });
+  const { activeCategory, activeSubLines, hasInteracted, searchQuery, activeSize, isSticky } = state;
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const categoryLines = useMemo<Record<string, string[]>>(() => {
     const map: Record<string, string[]> = { todas: productLines.map((l) => l.key) };
@@ -57,26 +117,14 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
     return labels;
   }, [categories, dict]);
 
-  const catFromUrl = searchParams.get("categoria") ?? DEFAULT_CATEGORY;
-  const [activeCategory, setActiveCategory] = useState<string>(catFromUrl);
-  const [activeSubLines, setActiveSubLines] = useState<ProductLineKey[]>([]);
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>(() => searchParams.get("q") ?? "");
-  const [activeSize, setActiveSize] = useState<string>("todos");
-  const [isSticky, setIsSticky] = useState(false);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-
   // Sync URL param → state (handles browser back/forward only; handlers update both state and URL)
   useEffect(() => {
-    setActiveCategory(catFromUrl);
-    setActiveSubLines([]);
-    setActiveSize("todos");
-    setHasInteracted(false);
+    dispatch({ type: "urlSync", category: catFromUrl });
   }, [catFromUrl]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => setIsSticky(!entry.isIntersecting),
+      ([entry]) => dispatch({ type: "setSticky", value: !entry.isIntersecting }),
       { threshold: 0 }
     );
     if (sentinelRef.current) observer.observe(sentinelRef.current);
@@ -177,14 +225,6 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
       .filter((item) => item.line !== undefined);
   }, [searchQuery, products, productLines, pl]);
 
-  function handleSearchChange(q: string) {
-    setSearchQuery(q);
-    setActiveCategory(DEFAULT_CATEGORY);
-    setActiveSubLines([]);
-    setActiveSize("todos");
-    setHasInteracted(false);
-  }
-
   function selectCategory(cat: string) {
     const params = new URLSearchParams(searchParams.toString());
     if (cat === DEFAULT_CATEGORY) {
@@ -194,29 +234,12 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
     }
     const query = params.toString();
     replace(`${pathname}${query ? `?${query}` : ""}`, { scroll: false });
-
-    if (activeCategory !== cat) {
-      setActiveCategory(cat);
-      setActiveSubLines([]);
-      setActiveSize("todos");
-    }
-    setHasInteracted(true);
-  }
-
-  function toggleSubLine(key: ProductLineKey) {
-    setActiveSubLines((prev) =>
-      prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key]
-    );
-    setActiveSize("todos");
+    dispatch({ type: "selectCategory", cat });
   }
 
   function clearAll() {
-    setActiveCategory(DEFAULT_CATEGORY);
-    setActiveSubLines([]);
-    setActiveSize("todos");
-    setHasInteracted(false);
-    setSearchQuery("");
     replace(pathname, { scroll: false });
+    dispatch({ type: "clearAll" });
   }
 
   return (
@@ -224,8 +247,8 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
       <ProductsHero
         dict={dict}
         searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
-        onClearSearch={() => setSearchQuery("")}
+        onSearchChange={(q) => dispatch({ type: "search", query: q })}
+        onClearSearch={() => dispatch({ type: "search", query: "" })}
       />
 
       <div ref={sentinelRef} className="h-px" />
@@ -242,8 +265,8 @@ export default function ProductosClient({ dict, lang, products, productLines, ca
         activeSize={activeSize}
         pl={pl}
         onSelectCategory={selectCategory}
-        onToggleSubLine={toggleSubLine}
-        onSelectSize={setActiveSize}
+        onToggleSubLine={(key) => dispatch({ type: "toggleSubLine", key })}
+        onSelectSize={(size) => dispatch({ type: "setSize", size })}
         onClearAll={clearAll}
       />
 

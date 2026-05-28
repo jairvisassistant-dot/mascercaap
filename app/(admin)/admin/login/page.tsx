@@ -1,30 +1,79 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useReducer, useRef } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type Step = "credentials" | "totp";
 
+type State = {
+  step: Step;
+  email: string;
+  password: string;
+  factorIds: string[];
+  selectedFactor: string;
+  code: string[];
+  error: string;
+  loading: boolean;
+};
+
+type Action =
+  | { type: "setEmail"; value: string }
+  | { type: "setPassword"; value: string }
+  | { type: "loginStart" }
+  | { type: "loginError"; error: string }
+  | { type: "loadingDone" }
+  | { type: "mfaRequired"; factorIds: string[]; selectedFactor: string }
+  | { type: "setCodeDigit"; index: number; value: string }
+  | { type: "setSelectedFactor"; value: string }
+  | { type: "mfaError"; error: string }
+  | { type: "backToCredentials" };
+
+const EMPTY_CODE = ["", "", "", "", "", ""];
+
+const initialState: State = {
+  step: "credentials",
+  email: "",
+  password: "",
+  factorIds: [],
+  selectedFactor: "",
+  code: EMPTY_CODE,
+  error: "",
+  loading: false,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setEmail":          return { ...state, email: action.value };
+    case "setPassword":       return { ...state, password: action.value };
+    case "loginStart":        return { ...state, loading: true, error: "" };
+    case "loginError":        return { ...state, loading: false, error: action.error };
+    case "loadingDone":       return { ...state, loading: false };
+    case "mfaRequired":       return { ...state, step: "totp", loading: false, factorIds: action.factorIds, selectedFactor: action.selectedFactor };
+    case "setCodeDigit": {
+      const code = [...state.code];
+      code[action.index] = action.value;
+      return { ...state, code };
+    }
+    case "setSelectedFactor": return { ...state, selectedFactor: action.value };
+    case "mfaError":          return { ...state, loading: false, error: action.error };
+    case "backToCredentials": return { ...state, step: "credentials", code: EMPTY_CODE, error: "" };
+    default:                  return state;
+  }
+}
+
 export default function AdminLoginPage() {
   const { push } = useRouter();
-  const [step, setStep] = useState<Step>("credentials");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { step, email, password, factorIds, selectedFactor, code, error, loading } = state;
   const mfaTokenRef = useRef("");
-  const [factorIds, setFactorIds] = useState<string[]>([]);
-  const [selectedFactor, setSelectedFactor] = useState("");
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // ── Step 1: Login con credenciales ────────────────────────────────────
   async function handleCredentialsSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+    dispatch({ type: "loginStart" });
 
     try {
       const res = await fetch("/api/admin/auth/login", {
@@ -36,7 +85,7 @@ export default function AdminLoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Credenciales invalidas");
+        dispatch({ type: "loginError", error: data.error ?? "Credenciales invalidas" });
         return;
       }
 
@@ -45,9 +94,7 @@ export default function AdminLoginPage() {
         mfaTokenRef.current = data.mfa_token ?? "";
         // flushSync commits DOM before focus so the TOTP inputs are mounted
         flushSync(() => {
-          setFactorIds(data.factor_ids ?? []);
-          setSelectedFactor(data.factor_ids?.[0] ?? "");
-          setStep("totp");
+          dispatch({ type: "mfaRequired", factorIds: data.factor_ids ?? [], selectedFactor: data.factor_ids?.[0] ?? "" });
         });
         inputRefs.current[0]?.focus();
         return;
@@ -57,19 +104,16 @@ export default function AdminLoginPage() {
       push("/admin/productos");
     } catch (err) {
       console.error("Error en login admin:", err instanceof Error ? err.message : "unknown");
-      setError("Error de conexión");
+      dispatch({ type: "loginError", error: "Error de conexión" });
     } finally {
-      setLoading(false);
+      dispatch({ type: "loadingDone" });
     }
   }
 
   // ── Step 2: Verificacion TOTP ─────────────────────────────────────────
   function handleCodeChange(index: number, value: string) {
     if (!/^\d?$/.test(value)) return;
-
-    const newCode = [...code];
-    newCode[index] = value;
-    setCode(newCode);
+    dispatch({ type: "setCodeDigit", index, value });
 
     // Auto-avanzar al siguiente input
     if (value && index < 5) {
@@ -86,12 +130,11 @@ export default function AdminLoginPage() {
   async function handleMFASubmit() {
     const fullCode = code.join("");
     if (fullCode.length !== 6) {
-      setError("Ingresa el codigo completo de 6 digitos");
+      dispatch({ type: "mfaError", error: "Ingresa el codigo completo de 6 digitos" });
       return;
     }
 
-    setError("");
-    setLoading(true);
+    dispatch({ type: "loginStart" });
 
     try {
       const res = await fetch("/api/admin/auth/verify-mfa", {
@@ -107,24 +150,22 @@ export default function AdminLoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Codigo incorrecto");
+        dispatch({ type: "mfaError", error: data.error ?? "Codigo incorrecto" });
         return;
       }
 
       push("/admin/productos");
     } catch (err) {
       console.error("Error en verificación 2FA:", err instanceof Error ? err.message : "unknown");
-      setError("Error de conexión");
+      dispatch({ type: "mfaError", error: "Error de conexión" });
     } finally {
-      setLoading(false);
+      dispatch({ type: "loadingDone" });
     }
   }
 
   function handleBackToCredentials() {
-    setStep("credentials");
-    setCode(["", "", "", "", "", ""]);
-    setError("");
     mfaTokenRef.current = "";
+    dispatch({ type: "backToCredentials" });
   }
 
   // ── Render ────────────────────────────────────────────────────────────
@@ -173,7 +214,7 @@ export default function AdminLoginPage() {
                 id="admin-email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => dispatch({ type: "setEmail", value: e.target.value })}
                 required
                 autoComplete="email"
                 className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -189,7 +230,7 @@ export default function AdminLoginPage() {
                 id="admin-password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => dispatch({ type: "setPassword", value: e.target.value })}
                 required
                 autoComplete="current-password"
                 className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -237,7 +278,7 @@ export default function AdminLoginPage() {
                 <select
                   id="totp-factor"
                   value={selectedFactor}
-                  onChange={(e) => setSelectedFactor(e.target.value)}
+                  onChange={(e) => dispatch({ type: "setSelectedFactor", value: e.target.value })}
                   className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   {factorIds.map((id, i) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useReducer, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { FAQCategoryRow, FAQConfigRow } from "@/types";
 import type { CategoryEdit, QuestionEdit, NewCategory, NewQuestion, ConfigForm, Mode } from "./components/types";
@@ -13,6 +13,186 @@ import ConfirmDeleteBox from "./components/ConfirmDeleteBox";
 import FAQCategoryCard from "./components/FAQCategoryCard";
 import FAQQuestionItem from "./components/FAQQuestionItem";
 
+// ── Types ────────────────────────────────────────────────────────────────────
+
+type Question = FAQCategoryRow["faq_questions"][number];
+
+type QuestionPatch = {
+  question_es: string; question_en: string;
+  answer_es: string; answer_en: string;
+  keywords: string[];
+};
+
+const EMPTY_NEW_CAT: NewCategory = { id: "", label_es: "", label_en: "", icon: "❓" };
+const EMPTY_NEW_Q: NewQuestion = { question_es: "", question_en: "", answer_es: "", answer_en: "" };
+
+type State = {
+  categories: FAQCategoryRow[];
+  config: FAQConfigRow | null;
+  rowMode: Record<string, Mode>;
+  catEdit: Record<string, CategoryEdit>;
+  qEdit: Record<string, QuestionEdit>;
+  busy: string | null;
+  moving: string | null;
+  error: string;
+  showNewCategory: boolean;
+  newCat: NewCategory;
+  newQuestionFor: string | null;
+  newQ: NewQuestion;
+  editConfig: boolean;
+  configForm: ConfigForm;
+};
+
+type Action =
+  | { type: "cancelRow"; key: string }
+  | { type: "setConfirmDelete"; key: string }
+  | { type: "catEditStart"; cat: FAQCategoryRow }
+  | { type: "catEditChange"; id: string; patch: Partial<CategoryEdit> }
+  | { type: "catUpdated"; id: string; label_es: string; label_en: string; icon: string }
+  | { type: "catDeleted"; id: string }
+  | { type: "qEditStart"; q: Question }
+  | { type: "qEditChange"; id: string; patch: Partial<QuestionEdit> }
+  | { type: "qUpdated"; id: string; patch: QuestionPatch }
+  | { type: "qDeleted"; id: string }
+  | { type: "movingStart"; key: string; optimistic: FAQCategoryRow[] }
+  | { type: "movingDone" }
+  | { type: "movingError"; original: FAQCategoryRow[]; error: string }
+  | { type: "busyStart"; key: string }
+  | { type: "busyDone" }
+  | { type: "setError"; error: string }
+  | { type: "showNewCategoryForm" }
+  | { type: "cancelNewCategory" }
+  | { type: "setNewCat"; cat: NewCategory }
+  | { type: "newCatSubmitted" }
+  | { type: "showNewQuestion"; categoryId: string }
+  | { type: "cancelNewQuestion" }
+  | { type: "setNewQ"; q: NewQuestion }
+  | { type: "newQSubmitted" }
+  | { type: "configEditStart" }
+  | { type: "configEditCancel" }
+  | { type: "setConfigForm"; form: ConfigForm }
+  | { type: "configUpdated"; form: ConfigForm };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "cancelRow":
+      return { ...state, rowMode: { ...state.rowMode, [action.key]: "view" } };
+    case "setConfirmDelete":
+      return { ...state, rowMode: { ...state.rowMode, [action.key]: "confirm-delete" } };
+    case "catEditStart":
+      return {
+        ...state,
+        catEdit: { ...state.catEdit, [action.cat.id]: { label_es: action.cat.label_es, label_en: action.cat.label_en, icon: action.cat.icon } },
+        rowMode: { ...state.rowMode, [`cat-${action.cat.id}`]: "edit" },
+        error: "",
+      };
+    case "catEditChange": {
+      const prev = state.catEdit[action.id] ?? { label_es: "", label_en: "", icon: "" };
+      return { ...state, catEdit: { ...state.catEdit, [action.id]: { ...prev, ...action.patch } } };
+    }
+    case "catUpdated":
+      return {
+        ...state,
+        categories: state.categories.map((c) =>
+          c.id === action.id ? { ...c, label_es: action.label_es, label_en: action.label_en, icon: action.icon } : c
+        ),
+        rowMode: { ...state.rowMode, [`cat-${action.id}`]: "view" },
+      };
+    case "catDeleted":
+      return { ...state, categories: state.categories.filter((c) => c.id !== action.id) };
+    case "qEditStart":
+      return {
+        ...state,
+        qEdit: {
+          ...state.qEdit,
+          [action.q.id]: {
+            question_es: action.q.question_es,
+            question_en: action.q.question_en,
+            answer_es: action.q.answer_es,
+            answer_en: action.q.answer_en,
+            keywords: (action.q.keywords ?? []).join(", "),
+          },
+        },
+        rowMode: { ...state.rowMode, [`q-${action.q.id}`]: "edit" },
+        error: "",
+      };
+    case "qEditChange": {
+      const prev = state.qEdit[action.id] ?? { question_es: "", question_en: "", answer_es: "", answer_en: "", keywords: "" };
+      return { ...state, qEdit: { ...state.qEdit, [action.id]: { ...prev, ...action.patch } } };
+    }
+    case "qUpdated":
+      return {
+        ...state,
+        categories: state.categories.map((c) => ({
+          ...c,
+          faq_questions: (c.faq_questions ?? []).map((q) =>
+            q.id === action.id ? { ...q, ...action.patch } : q
+          ),
+        })),
+        rowMode: { ...state.rowMode, [`q-${action.id}`]: "view" },
+      };
+    case "qDeleted":
+      return {
+        ...state,
+        categories: state.categories.map((c) => ({
+          ...c,
+          faq_questions: (c.faq_questions ?? []).filter((q) => q.id !== action.id),
+        })),
+      };
+    case "movingStart":
+      return { ...state, moving: action.key, categories: action.optimistic, error: "" };
+    case "movingDone":
+      return { ...state, moving: null };
+    case "movingError":
+      return { ...state, moving: null, categories: action.original, error: action.error };
+    case "busyStart":
+      return { ...state, busy: action.key, error: "" };
+    case "busyDone":
+      return { ...state, busy: null };
+    case "setError":
+      return { ...state, error: action.error };
+    case "showNewCategoryForm":
+      return { ...state, showNewCategory: true };
+    case "cancelNewCategory":
+      return { ...state, showNewCategory: false, newCat: EMPTY_NEW_CAT };
+    case "setNewCat":
+      return { ...state, newCat: action.cat };
+    case "newCatSubmitted":
+      return { ...state, showNewCategory: false, newCat: EMPTY_NEW_CAT };
+    case "showNewQuestion":
+      return { ...state, newQuestionFor: action.categoryId, newQ: EMPTY_NEW_Q, error: "" };
+    case "cancelNewQuestion":
+      return { ...state, newQuestionFor: null };
+    case "setNewQ":
+      return { ...state, newQ: action.q };
+    case "newQSubmitted":
+      return { ...state, newQuestionFor: null };
+    case "configEditStart":
+      return {
+        ...state,
+        editConfig: true,
+        configForm: {
+          fallback_es: state.config?.fallback_es ?? "",
+          fallback_en: state.config?.fallback_en ?? "",
+        },
+      };
+    case "configEditCancel":
+      return { ...state, editConfig: false };
+    case "setConfigForm":
+      return { ...state, configForm: action.form };
+    case "configUpdated":
+      return {
+        ...state,
+        config: state.config
+          ? { ...state.config, fallback_es: action.form.fallback_es, fallback_en: action.form.fallback_en }
+          : { id: 1, fallback_es: action.form.fallback_es, fallback_en: action.form.fallback_en },
+        editConfig: false,
+      };
+    default:
+      return state;
+  }
+}
+
 // ── Componente principal ────────────────────────────────────────
 
 export default function FAQAdminClient({
@@ -23,34 +203,27 @@ export default function FAQAdminClient({
   initialConfig: FAQConfigRow | null;
 }) {
   const { refresh } = useRouter();
-  const [categories, setCategories] = useState(initialCategories);
-  const [config, setConfig] = useState(initialConfig);
-  const [rowMode, setRowMode] = useState<Record<string, Mode>>({});
-  const [catEdit, setCatEdit] = useState<Record<string, CategoryEdit>>({});
-  const [qEdit, setQEdit] = useState<Record<string, QuestionEdit>>({});
-  const [busy, setBusy] = useState<string | null>(null);
-  const [moving, setMoving] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(reducer, {
+    categories: initialCategories,
+    config: initialConfig,
+    rowMode: {},
+    catEdit: {},
+    qEdit: {},
+    busy: null,
+    moving: null,
+    error: "",
+    showNewCategory: false,
+    newCat: EMPTY_NEW_CAT,
+    newQuestionFor: null,
+    newQ: EMPTY_NEW_Q,
+    editConfig: false,
+    configForm: {
+      fallback_es: initialConfig?.fallback_es ?? "",
+      fallback_en: initialConfig?.fallback_en ?? "",
+    },
+  });
+  const { categories, config, rowMode, catEdit, qEdit, busy, moving, error, showNewCategory, newCat, newQuestionFor, newQ, editConfig, configForm } = state;
   const [, startTransition] = useTransition();
-
-  // Formulario de nueva categoría
-  const [showNewCategory, setShowNewCategory] = useState(false);
-  const [newCat, setNewCat] = useState<NewCategory>({
-    id: "", label_es: "", label_en: "", icon: "❓",
-  });
-
-  // Formulario de nueva pregunta
-  const [newQuestionFor, setNewQuestionFor] = useState<string | null>(null);
-  const [newQ, setNewQ] = useState<NewQuestion>({
-    question_es: "", question_en: "", answer_es: "", answer_en: "",
-  });
-
-  // Edición de config
-  const [editConfig, setEditConfig] = useState(false);
-  const [configForm, setConfigForm] = useState<ConfigForm>({
-    fallback_es: initialConfig?.fallback_es ?? "",
-    fallback_en: initialConfig?.fallback_en ?? "",
-  });
 
   const anyBusy = busy !== null || moving !== null;
 
@@ -58,48 +231,15 @@ export default function FAQAdminClient({
     return rowMode[`${prefix}-${id}`] ?? "view";
   }
 
-  function cancelRow(key: string) {
-    setRowMode((prev) => ({ ...prev, [key]: "view" }));
-  }
-
-  // ── Category: empezar edición ───────────────────────────────
-  function startCatEdit(cat: FAQCategoryRow) {
-    setCatEdit((prev) => ({
-      ...prev,
-      [cat.id]: { label_es: cat.label_es, label_en: cat.label_en, icon: cat.icon },
-    }));
-    setRowMode((prev) => ({ ...prev, [`cat-${cat.id}`]: "edit" }));
-    setError("");
-  }
-
-  // ── Question: empezar edición ──────────────────────────────
-  function startQEdit(q: FAQCategoryRow["faq_questions"][number]) {
-    setQEdit((prev) => ({
-      ...prev,
-      [q.id]: {
-        question_es: q.question_es,
-        question_en: q.question_en,
-        answer_es: q.answer_es,
-        answer_en: q.answer_en,
-        keywords: (q.keywords ?? []).join(", "),
-      },
-    }));
-    setRowMode((prev) => ({ ...prev, [`q-${q.id}`]: "edit" }));
-    setError("");
-  }
-
   // ── Reordenar categoría ─────────────────────────────────────
   async function moveCat(id: string, direction: "up" | "down") {
-    setMoving(`cat-${id}`);
-    setError("");
-
     const idx = categories.findIndex((c) => c.id === id);
     const swapIdx = direction === "up" ? idx - 1 : idx + 1;
-    if (swapIdx < 0 || swapIdx >= categories.length) { setMoving(null); return; }
+    if (swapIdx < 0 || swapIdx >= categories.length) return;
 
-    const next = [...categories];
-    [next[idx], next[swapIdx]] = [next[swapIdx], next[idx]];
-    setCategories(next);
+    const optimistic = [...categories];
+    [optimistic[idx], optimistic[swapIdx]] = [optimistic[swapIdx], optimistic[idx]];
+    dispatch({ type: "movingStart", key: `cat-${id}`, optimistic });
 
     const res = await fetch("/api/admin/faq", {
       method: "PATCH",
@@ -109,37 +249,29 @@ export default function FAQAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al reordenar");
-      setCategories(initialCategories);
+      dispatch({ type: "movingError", original: initialCategories, error: data.error ?? "Error al reordenar" });
     } else {
+      dispatch({ type: "movingDone" });
       startTransition(() => refresh());
     }
-    setMoving(null);
   }
 
   // ── Reordenar pregunta ─────────────────────────────────────
   async function moveQ(id: string, direction: "up" | "down") {
-    setMoving(`q-${id}`);
-    setError("");
-
-    // Encontrar la categoría que contiene esta pregunta
-    const catIdx = categories.findIndex((c) =>
-      (c.faq_questions ?? []).some((q) => q.id === id)
-    );
-    if (catIdx === -1) { setMoving(null); return; }
+    const catIdx = categories.findIndex((c) => (c.faq_questions ?? []).some((q) => q.id === id));
+    if (catIdx === -1) return;
 
     const cat = categories[catIdx];
     const qs = cat.faq_questions ?? [];
     const localIdx = qs.findIndex((q) => q.id === id);
     const swapLocal = direction === "up" ? localIdx - 1 : localIdx + 1;
-    if (swapLocal < 0 || swapLocal >= qs.length) { setMoving(null); return; }
+    if (swapLocal < 0 || swapLocal >= qs.length) return;
 
-    // Optimistic update
     const newQs = [...qs];
     [newQs[localIdx], newQs[swapLocal]] = [newQs[swapLocal], newQs[localIdx]];
-    const next = [...categories];
-    next[catIdx] = { ...cat, faq_questions: newQs };
-    setCategories(next);
+    const optimistic = [...categories];
+    optimistic[catIdx] = { ...cat, faq_questions: newQs };
+    dispatch({ type: "movingStart", key: `q-${id}`, optimistic });
 
     const res = await fetch("/api/admin/faq", {
       method: "PATCH",
@@ -149,27 +281,24 @@ export default function FAQAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al reordenar");
-      setCategories(initialCategories);
+      dispatch({ type: "movingError", original: initialCategories, error: data.error ?? "Error al reordenar" });
     } else {
+      dispatch({ type: "movingDone" });
       startTransition(() => refresh());
     }
-    setMoving(null);
   }
 
   // ── Guardar categoría ──────────────────────────────────────
   async function saveCat(id: string) {
     const vals = catEdit[id];
     if (!vals?.label_es.trim() || !vals?.label_en.trim()) return;
-    setBusy(`cat-${id}`);
-    setError("");
+    dispatch({ type: "busyStart", key: `cat-${id}` });
 
     const res = await fetch("/api/admin/faq", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        _type: "category",
-        id,
+        _type: "category", id,
         label_es: vals.label_es.trim(),
         label_en: vals.label_en.trim(),
         icon: vals.icon.trim() || "❓",
@@ -178,52 +307,30 @@ export default function FAQAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al guardar");
+      dispatch({ type: "setError", error: data.error ?? "Error al guardar" });
     } else {
-      setCategories((prev) =>
-        prev.map((c) =>
-          c.id === id
-            ? {
-                ...c,
-                label_es: vals.label_es.trim(),
-                label_en: vals.label_en.trim(),
-                icon: vals.icon.trim() || "❓",
-              }
-            : c
-        )
-      );
-      setRowMode((prev) => ({ ...prev, [`cat-${id}`]: "view" }));
+      dispatch({ type: "catUpdated", id, label_es: vals.label_es.trim(), label_en: vals.label_en.trim(), icon: vals.icon.trim() || "❓" });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   // ── Guardar pregunta ───────────────────────────────────────
   async function saveQ(id: string) {
     const vals = qEdit[id];
-    if (
-      !vals?.question_es.trim() ||
-      !vals?.question_en.trim() ||
-      !vals?.answer_es.trim() ||
-      !vals?.answer_en.trim()
-    )
-      return;
-    setBusy(`q-${id}`);
-    setError("");
+    if (!vals?.question_es.trim() || !vals?.question_en.trim() || !vals?.answer_es.trim() || !vals?.answer_en.trim()) return;
+    dispatch({ type: "busyStart", key: `q-${id}` });
 
-    const keywords = vals.keywords
-      .split(",")
-      .flatMap((k) => {
-        const t = k.trim();
-        return t ? [t] : [];
-      });
+    const keywords = vals.keywords.split(",").flatMap((k) => {
+      const t = k.trim();
+      return t ? [t] : [];
+    });
 
     const res = await fetch("/api/admin/faq", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        _type: "question",
-        id,
+        _type: "question", id,
         question_es: vals.question_es.trim(),
         question_en: vals.question_en.trim(),
         answer_es: vals.answer_es.trim(),
@@ -234,35 +341,23 @@ export default function FAQAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al guardar");
+      dispatch({ type: "setError", error: data.error ?? "Error al guardar" });
     } else {
-      setCategories((prev) =>
-        prev.map((c) => ({
-          ...c,
-          faq_questions: (c.faq_questions ?? []).map((q) =>
-            q.id === id
-              ? {
-                  ...q,
-                  question_es: vals.question_es.trim(),
-                  question_en: vals.question_en.trim(),
-                  answer_es: vals.answer_es.trim(),
-                  answer_en: vals.answer_en.trim(),
-                  keywords,
-                }
-              : q
-          ),
-        }))
-      );
-      setRowMode((prev) => ({ ...prev, [`q-${id}`]: "view" }));
+      dispatch({ type: "qUpdated", id, patch: {
+        question_es: vals.question_es.trim(),
+        question_en: vals.question_en.trim(),
+        answer_es: vals.answer_es.trim(),
+        answer_en: vals.answer_en.trim(),
+        keywords,
+      }});
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
-  // ── Eliminar categoría (soft) ──────────────────────────────
+  // ── Eliminar categoría ─────────────────────────────────────
   async function deleteCat(id: string) {
-    setBusy(`cat-${id}`);
-    setError("");
+    dispatch({ type: "busyStart", key: `cat-${id}` });
 
     const res = await fetch("/api/admin/faq", {
       method: "DELETE",
@@ -272,19 +367,18 @@ export default function FAQAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al eliminar");
-      setRowMode((prev) => ({ ...prev, [`cat-${id}`]: "view" }));
+      dispatch({ type: "setError", error: data.error ?? "Error al eliminar" });
+      dispatch({ type: "cancelRow", key: `cat-${id}` });
     } else {
-      setCategories((prev) => prev.filter((c) => c.id !== id));
+      dispatch({ type: "catDeleted", id });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
-  // ── Eliminar pregunta (soft) ───────────────────────────────
+  // ── Eliminar pregunta ──────────────────────────────────────
   async function deleteQ(id: string) {
-    setBusy(`q-${id}`);
-    setError("");
+    dispatch({ type: "busyStart", key: `q-${id}` });
 
     const res = await fetch("/api/admin/faq", {
       method: "DELETE",
@@ -294,38 +388,19 @@ export default function FAQAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al eliminar");
-      setRowMode((prev) => ({ ...prev, [`q-${id}`]: "view" }));
+      dispatch({ type: "setError", error: data.error ?? "Error al eliminar" });
+      dispatch({ type: "cancelRow", key: `q-${id}` });
     } else {
-      setCategories((prev) =>
-        prev.map((c) => ({
-          ...c,
-          faq_questions: (c.faq_questions ?? []).filter((q) => q.id !== id),
-        }))
-      );
+      dispatch({ type: "qDeleted", id });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   // ── Nueva pregunta ─────────────────────────────────────────
-  function startNewQuestion(categoryId: string) {
-    setNewQuestionFor(categoryId);
-    setNewQ({ question_es: "", question_en: "", answer_es: "", answer_en: "" });
-    setError("");
-  }
-
   async function submitNewQuestion() {
-    if (
-      !newQuestionFor ||
-      !newQ.question_es.trim() ||
-      !newQ.question_en.trim() ||
-      !newQ.answer_es.trim() ||
-      !newQ.answer_en.trim()
-    )
-      return;
-    setBusy(`newq-${newQuestionFor}`);
-    setError("");
+    if (!newQuestionFor || !newQ.question_es.trim() || !newQ.question_en.trim() || !newQ.answer_es.trim() || !newQ.answer_en.trim()) return;
+    dispatch({ type: "busyStart", key: `newq-${newQuestionFor}` });
 
     const res = await fetch("/api/admin/faq", {
       method: "POST",
@@ -335,19 +410,18 @@ export default function FAQAdminClient({
 
     const data = await res.json();
     if (!res.ok) {
-      setError(data.error ?? "Error al crear pregunta");
+      dispatch({ type: "setError", error: data.error ?? "Error al crear pregunta" });
     } else {
-      setNewQuestionFor(null);
+      dispatch({ type: "newQSubmitted" });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   // ── Nueva categoría ────────────────────────────────────────
   async function submitNewCategory() {
     if (!newCat.id.trim() || !newCat.label_es.trim() || !newCat.label_en.trim()) return;
-    setBusy("new-category");
-    setError("");
+    dispatch({ type: "busyStart", key: "new-category" });
 
     const res = await fetch("/api/admin/faq", {
       method: "POST",
@@ -363,19 +437,17 @@ export default function FAQAdminClient({
 
     const data = await res.json();
     if (!res.ok) {
-      setError(data.error ?? "Error al crear categoría");
+      dispatch({ type: "setError", error: data.error ?? "Error al crear categoría" });
     } else {
-      setShowNewCategory(false);
-      setNewCat({ id: "", label_es: "", label_en: "", icon: "❓" });
+      dispatch({ type: "newCatSubmitted" });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   // ── Guardar config ─────────────────────────────────────────
   async function saveConfig() {
-    setBusy("config");
-    setError("");
+    dispatch({ type: "busyStart", key: "config" });
 
     const res = await fetch("/api/admin/faq", {
       method: "PUT",
@@ -385,17 +457,12 @@ export default function FAQAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al guardar configuración");
+      dispatch({ type: "setError", error: data.error ?? "Error al guardar configuración" });
     } else {
-      setConfig((prev) =>
-        prev
-          ? { ...prev, fallback_es: configForm.fallback_es, fallback_en: configForm.fallback_en }
-          : { id: 1, ...configForm }
-      );
-      setEditConfig(false);
+      dispatch({ type: "configUpdated", form: configForm });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   // ─── Render ──────────────────────────────────────────────────
@@ -413,17 +480,14 @@ export default function FAQAdminClient({
         <NewCategoryForm
           busy={busy === "new-category"}
           newCat={newCat}
-          onChange={setNewCat}
+          onChange={(cat) => dispatch({ type: "setNewCat", cat })}
           onSubmit={submitNewCategory}
-          onCancel={() => {
-            setShowNewCategory(false);
-            setNewCat({ id: "", label_es: "", label_en: "", icon: "❓" });
-          }}
+          onCancel={() => dispatch({ type: "cancelNewCategory" })}
         />
       ) : (
         <button
           type="button"
-          onClick={() => setShowNewCategory(true)}
+          onClick={() => dispatch({ type: "showNewCategoryForm" })}
           className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border-mid px-3 py-2 text-xs font-semibold text-text-muted transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
         >
           + Nueva categoría
@@ -446,35 +510,19 @@ export default function FAQAdminClient({
               {catMode === "edit" ? (
                 <CategoryEditForm
                   cat={cat}
-                  vals={
-                    catEdit[cat.id] ?? {
-                      label_es: cat.label_es,
-                      label_en: cat.label_en,
-                      icon: cat.icon,
-                    }
-                  }
+                  vals={catEdit[cat.id] ?? { label_es: cat.label_es, label_en: cat.label_en, icon: cat.icon }}
                   busy={isCatBusy}
-                  onCancel={() => cancelRow(`cat-${cat.id}`)}
+                  onCancel={() => dispatch({ type: "cancelRow", key: `cat-${cat.id}` })}
                   onSave={() => saveCat(cat.id)}
-                  onChange={(patch) =>
-                    setCatEdit((prev) => ({
-                      ...prev,
-                      [cat.id]: { ...(prev[cat.id] ?? catEdit[cat.id]), ...patch },
-                    }))
-                  }
+                  onChange={(patch) => dispatch({ type: "catEditChange", id: cat.id, patch })}
                 />
-                ) : catMode === "confirm-delete" ? (
+              ) : catMode === "confirm-delete" ? (
                 <ConfirmDeleteBox
-                  title={
-                    <>
-                      ¿Eliminar categoría{" "}
-                      <span className="font-bold">{cat.label_es}</span>?
-                    </>
-                  }
+                  title={<>¿Eliminar categoría{" "}<span className="font-bold">{cat.label_es}</span>?</>}
                   subtext="Se marcará como inactiva y no se mostrará en el FAQ público."
                   busy={isCatBusy}
                   onConfirm={() => deleteCat(cat.id)}
-                  onCancel={() => cancelRow(`cat-${cat.id}`)}
+                  onCancel={() => dispatch({ type: "cancelRow", key: `cat-${cat.id}` })}
                 />
               ) : (
                 <>
@@ -490,13 +538,8 @@ export default function FAQAdminClient({
                     anyBusy={anyBusy}
                     onMoveUp={() => moveCat(cat.id, "up")}
                     onMoveDown={() => moveCat(cat.id, "down")}
-                    onEdit={() => startCatEdit(cat)}
-                    onDelete={() =>
-                      setRowMode((prev) => ({
-                        ...prev,
-                        [`cat-${cat.id}`]: "confirm-delete",
-                      }))
-                    }
+                    onEdit={() => dispatch({ type: "catEditStart", cat })}
+                    onDelete={() => dispatch({ type: "setConfirmDelete", key: `cat-${cat.id}` })}
                   />
 
                   {/* ── Preguntas dentro de la categoría ── */}
@@ -510,38 +553,30 @@ export default function FAQAdminClient({
                           <QuestionEditForm
                             key={q.id}
                             q={q}
-                            vals={
-                              qEdit[q.id] ?? {
-                                question_es: q.question_es,
-                                question_en: q.question_en,
-                                answer_es: q.answer_es,
-                                answer_en: q.answer_en,
-                                keywords: (q.keywords ?? []).join(", "),
-                              }
-                            }
+                            vals={qEdit[q.id] ?? {
+                              question_es: q.question_es,
+                              question_en: q.question_en,
+                              answer_es: q.answer_es,
+                              answer_en: q.answer_en,
+                              keywords: (q.keywords ?? []).join(", "),
+                            }}
                             busy={isQBusy}
-                            onCancel={() => cancelRow(`q-${q.id}`)}
+                            onCancel={() => dispatch({ type: "cancelRow", key: `q-${q.id}` })}
                             onSave={() => saveQ(q.id)}
-                            onChange={(patch) =>
-                              setQEdit((prev) => ({
-                                ...prev,
-                                [q.id]: { ...(prev[q.id] ?? qEdit[q.id]), ...patch },
-                              }))
-                            }
+                            onChange={(patch) => dispatch({ type: "qEditChange", id: q.id, patch })}
                           />
                         );
                       }
 
                       if (qMode === "confirm-delete") {
-                        const subtextEl = <span className="line-clamp-1">{q.question_es}</span>;
                         return (
                           <ConfirmDeleteBox
                             key={q.id}
                             title="¿Eliminar esta pregunta?"
-                            subtext={subtextEl}
+                            subtext={q.question_es}
                             busy={isQBusy}
                             onConfirm={() => deleteQ(q.id)}
-                            onCancel={() => cancelRow(`q-${q.id}`)}
+                            onCancel={() => dispatch({ type: "cancelRow", key: `q-${q.id}` })}
                           />
                         );
                       }
@@ -559,13 +594,8 @@ export default function FAQAdminClient({
                           anyBusy={anyBusy}
                           onMoveUp={() => moveQ(q.id, "up")}
                           onMoveDown={() => moveQ(q.id, "down")}
-                          onEdit={() => startQEdit(q)}
-                          onDelete={() =>
-                            setRowMode((prev) => ({
-                              ...prev,
-                              [`q-${q.id}`]: "confirm-delete",
-                            }))
-                          }
+                          onEdit={() => dispatch({ type: "qEditStart", q })}
+                          onDelete={() => dispatch({ type: "setConfirmDelete", key: `q-${q.id}` })}
                         />
                       );
                     })}
@@ -575,15 +605,15 @@ export default function FAQAdminClient({
                       <NewQuestionForm
                         busy={busy === `newq-${cat.id}`}
                         newQ={newQ}
-                        onChange={setNewQ}
+                        onChange={(q) => dispatch({ type: "setNewQ", q })}
                         onSubmit={submitNewQuestion}
-                        onCancel={() => setNewQuestionFor(null)}
+                        onCancel={() => dispatch({ type: "cancelNewQuestion" })}
                       />
                     ) : (
                       catMode === "view" && (
                         <button
                           type="button"
-                          onClick={() => startNewQuestion(cat.id)}
+                          onClick={() => dispatch({ type: "showNewQuestion", categoryId: cat.id })}
                           className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border-mid px-3 py-2 text-xs font-semibold text-text-muted transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
                         >
                           + Nueva pregunta
@@ -604,15 +634,9 @@ export default function FAQAdminClient({
         editConfig={editConfig}
         configForm={configForm}
         busy={busy}
-        onStartEdit={() => {
-          setConfigForm({
-            fallback_es: config?.fallback_es ?? "",
-            fallback_en: config?.fallback_en ?? "",
-          });
-          setEditConfig(true);
-        }}
-        onCancel={() => setEditConfig(false)}
-        onChange={setConfigForm}
+        onStartEdit={() => dispatch({ type: "configEditStart" })}
+        onCancel={() => dispatch({ type: "configEditCancel" })}
+        onChange={(form) => dispatch({ type: "setConfigForm", form })}
         onSave={saveConfig}
       />
     </div>

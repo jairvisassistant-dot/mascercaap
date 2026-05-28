@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useReducer, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GRADIENT_PRESETS } from "@/lib/gradient-presets";
@@ -8,17 +8,58 @@ import { generateLineKey } from "@/lib/id-generators";
 
 type Category = { key: string; label: string };
 
+type State = {
+  label: string;
+  description: string;
+  iconEmoji: string;
+  gradient: string;
+  categoryKey: string;
+  categories: Category[];
+  loadingCategories: boolean;
+  saving: boolean;
+  error: string;
+};
+
+type Action =
+  | { type: "setField"; key: "label" | "description" | "iconEmoji" | "gradient" | "categoryKey"; value: string }
+  | { type: "categoriesLoaded"; cats: Category[] }
+  | { type: "categoriesError"; error: string }
+  | { type: "savingStart" }
+  | { type: "savingDone"; error?: string };
+
+const initialState: State = {
+  label: "",
+  description: "",
+  iconEmoji: "🛍️",
+  gradient: GRADIENT_PRESETS[0].tw,
+  categoryKey: "",
+  categories: [],
+  loadingCategories: true,
+  saving: false,
+  error: "",
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setField":
+      return { ...state, [action.key]: action.value };
+    case "categoriesLoaded":
+      return { ...state, categories: action.cats, loadingCategories: false };
+    case "categoriesError":
+      return { ...state, error: action.error, loadingCategories: false };
+    case "savingStart":
+      return { ...state, saving: true, error: "" };
+    case "savingDone":
+      return { ...state, saving: false, error: action.error ?? "" };
+    default:
+      return state;
+  }
+}
+
 export default function NuevaLineaForm() {
   const { push, refresh } = useRouter();
-  const [label, setLabel] = useState("");
-  const [description, setDescription] = useState("");
-  const [iconEmoji, setIconEmoji] = useState("🛍️");
-  const [gradient, setGradient] = useState<string>(GRADIENT_PRESETS[0].tw);
-  const [categoryKey, setCategoryKey] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { label, description, iconEmoji, gradient, categoryKey, categories, loadingCategories, saving, error } = state;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -26,13 +67,11 @@ export default function NuevaLineaForm() {
       try {
         const r = await fetch("/api/admin/categories", { signal: controller.signal });
         const data: Category[] = await r.json();
-        if (Array.isArray(data)) setCategories(data);
+        dispatch({ type: "categoriesLoaded", cats: Array.isArray(data) ? data : [] });
       } catch (err) {
         if ((err as DOMException).name === "AbortError") return;
         console.error("Error cargando categorías:", err instanceof Error ? err.message : "unknown");
-        setError("No se pudieron cargar las categorías. Recarga la página.");
-      } finally {
-        setLoadingCategories(false);
+        dispatch({ type: "categoriesError", error: "No se pudieron cargar las categorías. Recarga la página." });
       }
     }
     void loadCategories();
@@ -47,8 +86,7 @@ export default function NuevaLineaForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!generatedKey) return;
-    setSaving(true);
-    setError("");
+    dispatch({ type: "savingStart" });
 
     try {
       const res = await fetch("/api/admin/product-lines", {
@@ -70,9 +108,7 @@ export default function NuevaLineaForm() {
       push("/admin/lineas");
       refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error creando línea");
-    } finally {
-      setSaving(false);
+      dispatch({ type: "savingDone", error: e instanceof Error ? e.message : "Error creando línea" });
     }
   }
 
@@ -101,7 +137,7 @@ export default function NuevaLineaForm() {
           <select
             id="linea-categoria"
             value={categoryKey}
-            onChange={(e) => setCategoryKey(e.target.value)}
+            onChange={(e) => dispatch({ type: "setField", key: "categoryKey", value: e.target.value })}
             disabled={loadingCategories}
             required
             className={`${inputCls} border-primary/30`}
@@ -135,7 +171,7 @@ export default function NuevaLineaForm() {
               id="linea-nombre"
               type="text"
               value={label}
-              onChange={(e) => setLabel(e.target.value)}
+              onChange={(e) => dispatch({ type: "setField", key: "label", value: e.target.value })}
               required
               placeholder="ej: Jugos de Mora"
               className={inputCls}
@@ -157,7 +193,7 @@ export default function NuevaLineaForm() {
             <textarea
               id="linea-descripcion"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => dispatch({ type: "setField", key: "description", value: e.target.value })}
               maxLength={200}
               rows={3}
               placeholder="Breve descripción de la línea de producto..."
@@ -171,7 +207,7 @@ export default function NuevaLineaForm() {
               id="linea-icono"
               type="text"
               value={iconEmoji}
-              onChange={(e) => setIconEmoji(e.target.value)}
+              onChange={(e) => dispatch({ type: "setField", key: "iconEmoji", value: e.target.value })}
               maxLength={2}
               placeholder="🛍️"
               className={`${inputCls} w-24 text-2xl`}
@@ -190,7 +226,7 @@ export default function NuevaLineaForm() {
             <button
               key={preset.id}
               type="button"
-              onClick={() => setGradient(preset.tw)}
+              onClick={() => dispatch({ type: "setField", key: "gradient", value: preset.tw })}
               title={preset.label}
               className={`group relative h-14 rounded-2xl bg-gradient-to-br transition-all ${preset.tw} ${
                 gradient === preset.tw

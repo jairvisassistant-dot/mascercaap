@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, startTransition } from "react";
+import { useReducer, useRef, useEffect, startTransition } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useHelpHub } from "@/lib/help-hub-context";
 import { findAnswer } from "@/lib/faq-matcher";
@@ -39,11 +39,130 @@ type FaqSessionState = {
   leadConsent: boolean;
 };
 
-type FaqSessionOverrides = Partial<Omit<FaqSessionState, "locale">>;
-
 const WA_ICON = (
   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
 );
+
+type State = {
+  messages: Message[];
+  chatView: ChatView;
+  selectedCategoryId: string | null;
+  input: string;
+  showFallbackActions: boolean;
+  showAdvisorButton: boolean;
+  showLeadForm: boolean;
+  leadData: LeadData;
+  leadConsent: boolean;
+  leadSaveError: boolean;
+};
+
+type Action =
+  | { type: "setInput"; value: string }
+  | { type: "selectCategory"; message: Message; categoryId: string }
+  | { type: "showAnswer"; userMsg: Message; botMsg: Message }
+  | { type: "showFallback"; userMsg: Message; botMsg: Message }
+  | { type: "showAdvisor"; botMsg: Message }
+  | { type: "advisorFromSubmit"; userMsg: Message; botMsg: Message }
+  | { type: "submitMatch"; userMsg: Message; botMsg: Message }
+  | { type: "submitNoMatch"; userMsg: Message; botMsg: Message }
+  | { type: "setLeadField"; field: keyof LeadData; value: string }
+  | { type: "setLeadConsent"; value: boolean }
+  | { type: "setLeadSaveError"; value: boolean }
+  | { type: "leadDone" }
+  | { type: "backToCategories" }
+  | { type: "restoreSession"; session: Omit<FaqSessionState, "locale"> };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setInput":
+      return { ...state, input: action.value };
+    case "selectCategory":
+      return {
+        ...state,
+        messages: [...state.messages, action.message],
+        selectedCategoryId: action.categoryId,
+        chatView: "questions",
+        showFallbackActions: false,
+      };
+    case "showAnswer":
+      return {
+        ...state,
+        messages: [...state.messages, action.userMsg, action.botMsg],
+        showFallbackActions: false,
+        showAdvisorButton: true,
+      };
+    case "showFallback":
+      return {
+        ...state,
+        messages: [...state.messages, action.userMsg, action.botMsg],
+        showFallbackActions: true,
+        showAdvisorButton: false,
+      };
+    case "showAdvisor":
+      return {
+        ...state,
+        messages: [...state.messages, action.botMsg],
+        showLeadForm: true,
+        showAdvisorButton: false,
+        showFallbackActions: false,
+      };
+    case "advisorFromSubmit":
+      return {
+        ...state,
+        messages: [...state.messages, action.userMsg, action.botMsg],
+        input: "",
+        showLeadForm: true,
+        showAdvisorButton: false,
+        showFallbackActions: false,
+        chatView: "categories",
+        selectedCategoryId: null,
+      };
+    case "submitMatch":
+      return {
+        ...state,
+        messages: [...state.messages, action.userMsg, action.botMsg],
+        input: "",
+        showFallbackActions: false,
+        showAdvisorButton: true,
+        chatView: "categories",
+        selectedCategoryId: null,
+      };
+    case "submitNoMatch":
+      return {
+        ...state,
+        messages: [...state.messages, action.userMsg, action.botMsg],
+        input: "",
+        showFallbackActions: true,
+        showAdvisorButton: false,
+        chatView: "categories",
+        selectedCategoryId: null,
+      };
+    case "setLeadField":
+      return { ...state, leadData: { ...state.leadData, [action.field]: action.value } };
+    case "setLeadConsent":
+      return { ...state, leadConsent: action.value };
+    case "setLeadSaveError":
+      return { ...state, leadSaveError: action.value };
+    case "leadDone":
+      return { ...state, showLeadForm: false, leadSaveError: false };
+    case "backToCategories":
+      return { ...state, chatView: "categories", selectedCategoryId: null };
+    case "restoreSession":
+      return {
+        ...state,
+        messages: action.session.messages,
+        chatView: action.session.chatView,
+        selectedCategoryId: action.session.selectedCategoryId,
+        showFallbackActions: action.session.showFallbackActions,
+        showAdvisorButton: action.session.showAdvisorButton,
+        showLeadForm: action.session.showLeadForm,
+        leadData: action.session.leadData,
+        leadConsent: action.session.leadConsent,
+      };
+    default:
+      return state;
+  }
+}
 
 export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAppConnect }: Props) {
   const { drawerContext } = useHelpHub();
@@ -55,44 +174,34 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     ? th.contextGreeting.replace("{product}", drawerContext.product)
     : t.welcome;
 
-  const [messages, setMessages] = useState<Message[]>([
-    { id: "welcome", role: "bot", text: welcomeText },
-  ]);
-  const [chatView, setChatView] = useState<ChatView>("categories");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [input, setInput] = useState("");
-  const [showFallbackActions, setShowFallbackActions] = useState(false);
-  const [showAdvisorButton, setShowAdvisorButton] = useState(false);
-  const [showLeadForm, setShowLeadForm] = useState(false);
-  const [leadData, setLeadData] = useState<LeadData>({ nombre: "", email: "", tipo: "" });
-  const [leadConsent, setLeadConsent] = useState(false);
-  const [leadSaveError, setLeadSaveError] = useState(false);
+  const [state, dispatch] = useReducer(reducer, {
+    messages: [{ id: "welcome", role: "bot" as const, text: welcomeText }],
+    chatView: "categories" as ChatView,
+    selectedCategoryId: null,
+    input: "",
+    showFallbackActions: false,
+    showAdvisorButton: false,
+    showLeadForm: false,
+    leadData: { nombre: "", email: "", tipo: "" as const },
+    leadConsent: false,
+    leadSaveError: false,
+  });
+  const {
+    messages, chatView, selectedCategoryId, input,
+    showFallbackActions, showAdvisorButton, showLeadForm,
+    leadData, leadConsent, leadSaveError,
+  } = state;
+
   const pendingWhatsAppRef = useRef<{ appUrl: string | null; webUrl: string | null } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
 
-  function persistFaqSession(overrides: FaqSessionOverrides = {}) {
-    if (drawerContext?.product) {
-      window.sessionStorage.removeItem(FAQ_SESSION_KEY);
-      return;
-    }
-
-    const session: FaqSessionState = {
-      locale,
-      messages,
-      chatView,
-      selectedCategoryId,
-      showFallbackActions,
-      showAdvisorButton,
-      showLeadForm,
-      leadData,
-      leadConsent,
-      ...overrides,
-    };
-
-    window.sessionStorage.setItem(FAQ_SESSION_KEY, JSON.stringify(session));
+  function makeMsg(role: "bot" | "user", text: string): Message {
+    nextMessageIdRef.current += 1;
+    return { id: `msg-${nextMessageIdRef.current}`, role, text };
   }
 
+  // Session restore
   useEffect(() => {
     if (drawerContext?.product) return;
 
@@ -104,14 +213,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
       if (session.locale !== locale || session.messages.length === 0) return;
 
       startTransition(() => {
-        setMessages(session.messages);
-        setChatView(session.chatView);
-        setSelectedCategoryId(session.selectedCategoryId);
-        setShowFallbackActions(session.showFallbackActions);
-        setShowAdvisorButton(session.showAdvisorButton);
-        setShowLeadForm(session.showLeadForm);
-        setLeadData(session.leadData);
-        setLeadConsent(session.leadConsent);
+        dispatch({ type: "restoreSession", session });
       });
       nextMessageIdRef.current = session.messages.reduce((max, message) => {
         const numeric = Number.parseInt(message.id.replace("msg-", ""), 10);
@@ -122,10 +224,12 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     }
   }, [drawerContext?.product, locale]);
 
+  // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, showLeadForm]);
 
+  // Auto-persist
   useEffect(() => {
     if (drawerContext?.product) {
       window.sessionStorage.removeItem(FAQ_SESSION_KEY);
@@ -134,34 +238,97 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
 
     const session: FaqSessionState = {
       locale,
-      messages,
-      chatView,
-      selectedCategoryId,
-      showFallbackActions,
-      showAdvisorButton,
-      showLeadForm,
-      leadData,
-      leadConsent,
+      messages: state.messages,
+      chatView: state.chatView,
+      selectedCategoryId: state.selectedCategoryId,
+      showFallbackActions: state.showFallbackActions,
+      showAdvisorButton: state.showAdvisorButton,
+      showLeadForm: state.showLeadForm,
+      leadData: state.leadData,
+      leadConsent: state.leadConsent,
     };
 
     window.sessionStorage.setItem(FAQ_SESSION_KEY, JSON.stringify(session));
-  }, [
-    chatView,
-    drawerContext?.product,
-    leadConsent,
-    leadData,
-    locale,
-    messages,
-    selectedCategoryId,
-    showAdvisorButton,
-    showFallbackActions,
-    showLeadForm,
-  ]);
+  }, [state, drawerContext?.product, locale]);
 
-  function addMessage(role: "bot" | "user", text: string) {
-    nextMessageIdRef.current += 1;
-    const id = `msg-${nextMessageIdRef.current}`;
-    setMessages((prev) => [...prev, { id, role, text }]);
+  function handleCategoryClick(categoryId: string) {
+    const category = faqData.categories.find((c) => c.id === categoryId);
+    if (!category) return;
+    dispatch({ type: "selectCategory", message: makeMsg("user", category.label[locale]), categoryId });
+  }
+
+  function handleQuestionClick(questionId: string) {
+    const category = faqData.categories.find((c) => c.id === selectedCategoryId);
+    const question = category?.questions.find((q) => q.id === questionId);
+    if (!question) return;
+    dispatch({
+      type: "showAnswer",
+      userMsg: makeMsg("user", question.question[locale]),
+      botMsg: makeMsg("bot", question.answer[locale]),
+    });
+  }
+
+  function isAdvisorIntent(query: string): boolean {
+    const q = query.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const patterns = [
+      /asesor/, /hablar con/, /hablar a /, /persona real/, /humano/, /agente/,
+      /whatsapp/, /llamar/, /contactar/, /necesito ayuda/, /ayuda directa/,
+      /talk to/, /speak with/, /human agent/, /advisor/,
+    ];
+    return patterns.some((p) => p.test(q));
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const query = input.trim();
+    if (!query) return;
+
+    if (isAdvisorIntent(query)) {
+      trackHelpHubEvent("helphub_advisor_cta_clicked", {
+        source: "direct_intent",
+        locale,
+        has_product_context: Boolean(drawerContext?.product),
+      });
+      dispatch({
+        type: "advisorFromSubmit",
+        userMsg: makeMsg("user", query),
+        botMsg: makeMsg("bot", t.leadFormIntro),
+      });
+      return;
+    }
+
+    const match = findAnswer(query, locale, faqData);
+    if (match) {
+      dispatch({
+        type: "submitMatch",
+        userMsg: makeMsg("user", query),
+        botMsg: makeMsg("bot", match.question.answer[locale]),
+      });
+    } else {
+      trackHelpHubEvent("helphub_faq_no_match", {
+        locale,
+        query_length: query.length,
+        has_product_context: Boolean(drawerContext?.product),
+      });
+      dispatch({
+        type: "submitNoMatch",
+        userMsg: makeMsg("user", query),
+        botMsg: makeMsg("bot", t.fallback),
+      });
+    }
+  }
+
+  function handleAdvisorClick(source: "advisor_pill" | "fallback_whatsapp" | "direct_intent") {
+    trackHelpHubEvent("helphub_advisor_cta_clicked", {
+      source,
+      locale,
+      has_product_context: Boolean(drawerContext?.product),
+    });
+    dispatch({ type: "showAdvisor", botMsg: makeMsg("bot", t.leadFormIntro) });
+  }
+
+  function buildConnectUrls(message: string) {
+    return buildWhatsAppLinks(SITE_CONFIG.whatsappNumber, message);
   }
 
   function buildWhatsAppMessageText(currentMessages: Message[], lead?: Partial<LeadData>): string {
@@ -193,88 +360,10 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     return buildWhatsAppMessage(lines);
   }
 
-  function handleCategoryClick(categoryId: string) {
-    const category = faqData.categories.find((c) => c.id === categoryId);
-    if (!category) return;
-    addMessage("user", category.label[locale]);
-    setSelectedCategoryId(categoryId);
-    setChatView("questions");
-    setShowFallbackActions(false);
-  }
-
-  function handleQuestionClick(questionId: string) {
-    const category = faqData.categories.find((c) => c.id === selectedCategoryId);
-    const question = category?.questions.find((q) => q.id === questionId);
-    if (!question) return;
-    addMessage("user", question.question[locale]);
-    addMessage("bot", question.answer[locale]);
-    setShowFallbackActions(false);
-    setShowAdvisorButton(true);
-  }
-
-  function isAdvisorIntent(query: string): boolean {
-    const q = query.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-    const patterns = [
-      /asesor/, /hablar con/, /hablar a /, /persona real/, /humano/, /agente/,
-      /whatsapp/, /llamar/, /contactar/, /necesito ayuda/, /ayuda directa/,
-      /talk to/, /speak with/, /human agent/, /advisor/,
-    ];
-    return patterns.some((p) => p.test(q));
-  }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const query = input.trim();
-    if (!query) return;
-    setInput("");
-    addMessage("user", query);
-
-    if (isAdvisorIntent(query)) {
-      handleAdvisorClick("direct_intent");
-      setChatView("categories");
-      setSelectedCategoryId(null);
-      return;
-    }
-
-    const match = findAnswer(query, locale, faqData);
-    if (match) {
-      addMessage("bot", match.question.answer[locale]);
-      setShowFallbackActions(false);
-      setShowAdvisorButton(true);
-    } else {
-      addMessage("bot", t.fallback);
-      trackHelpHubEvent("helphub_faq_no_match", {
-        locale,
-        query_length: query.length,
-        has_product_context: Boolean(drawerContext?.product),
-      });
-      setShowFallbackActions(true);
-      setShowAdvisorButton(false);
-    }
-    setChatView("categories");
-    setSelectedCategoryId(null);
-  }
-
-  function handleAdvisorClick(source: "advisor_pill" | "fallback_whatsapp" | "direct_intent") {
-    trackHelpHubEvent("helphub_advisor_cta_clicked", {
-      source,
-      locale,
-      has_product_context: Boolean(drawerContext?.product),
-    });
-    addMessage("bot", t.leadFormIntro);
-    setShowLeadForm(true);
-    setShowAdvisorButton(false);
-    setShowFallbackActions(false);
-  }
-
-  function buildConnectUrls(message: string) {
-    return buildWhatsAppLinks(SITE_CONFIG.whatsappNumber, message);
-  }
-
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!leadConsent || !leadData.nombre.trim() || !leadData.tipo) return;
-    setLeadSaveError(false);
+    dispatch({ type: "setLeadSaveError", value: false });
     pendingWhatsAppRef.current = null;
 
     const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages, leadData));
@@ -315,17 +404,12 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
         tipo: leadData.tipo,
         has_email: Boolean(leadData.email.trim()),
       });
-      setLeadSaveError(true);
+      dispatch({ type: "setLeadSaveError", value: true });
       pendingWhatsAppRef.current = { appUrl, webUrl };
       return;
     }
 
-    setShowLeadForm(false);
-    persistFaqSession({
-      showLeadForm: false,
-      showAdvisorButton: false,
-      showFallbackActions: false,
-    });
+    dispatch({ type: "leadDone" });
     trackHelpHubEvent("helphub_whatsapp_opened", {
       source: "lead_submit",
       locale,
@@ -338,14 +422,8 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
   function handleLeadContinueAnyway() {
     if (!pendingWhatsAppRef.current) return;
     const { appUrl, webUrl } = pendingWhatsAppRef.current;
-    setShowLeadForm(false);
-    setLeadSaveError(false);
+    dispatch({ type: "leadDone" });
     pendingWhatsAppRef.current = null;
-    persistFaqSession({
-      showLeadForm: false,
-      showAdvisorButton: false,
-      showFallbackActions: false,
-    });
     trackHelpHubEvent("helphub_whatsapp_opened", {
       source: "lead_submit_error_continue",
       locale,
@@ -357,12 +435,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
 
   function handleLeadSkip() {
     const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages));
-    setShowLeadForm(false);
-    persistFaqSession({
-      showLeadForm: false,
-      showAdvisorButton: false,
-      showFallbackActions: false,
-    });
+    dispatch({ type: "leadDone" });
     trackHelpHubEvent("helphub_whatsapp_opened", {
       source: "lead_skip",
       locale,
@@ -427,7 +500,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
                     id="faq-lead-nombre"
                     type="text"
                     value={leadData.nombre}
-                    onChange={(e) => setLeadData((d) => ({ ...d, nombre: e.target.value }))}
+                    onChange={(e) => dispatch({ type: "setLeadField", field: "nombre", value: e.target.value })}
                     placeholder={t.leadNamePlaceholder}
                     required
                     className="w-full text-sm px-3 py-2 rounded-lg border border-border-mid bg-surface-page text-text-main focus:border-primary focus:outline-none transition-colors"
@@ -443,7 +516,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
                     id="faq-lead-email"
                     type="email"
                     value={leadData.email}
-                    onChange={(e) => setLeadData((d) => ({ ...d, email: e.target.value }))}
+                    onChange={(e) => dispatch({ type: "setLeadField", field: "email", value: e.target.value })}
                     placeholder={t.leadEmailPlaceholder}
                     className="w-full text-sm px-3 py-2 rounded-lg border border-border-mid bg-surface-page text-text-main focus:border-primary focus:outline-none transition-colors"
                   />
@@ -469,7 +542,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
                           name="tipo"
                           value={tipo}
                           checked={leadData.tipo === tipo}
-                          onChange={() => setLeadData((d) => ({ ...d, tipo }))}
+                          onChange={() => dispatch({ type: "setLeadField", field: "tipo", value: tipo })}
                           className="sr-only"
                         />
                         <span
@@ -492,7 +565,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
                   <input
                     type="checkbox"
                     checked={leadConsent}
-                    onChange={(e) => setLeadConsent(e.target.checked)}
+                    onChange={(e) => dispatch({ type: "setLeadConsent", value: e.target.checked })}
                     className="mt-0.5 accent-primary shrink-0"
                   />
                   <span className="text-xs text-text-muted leading-relaxed">
@@ -652,7 +725,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
             >
               <button
                 type="button"
-                onClick={() => { setChatView("categories"); setSelectedCategoryId(null); }}
+                onClick={() => dispatch({ type: "backToCategories" })}
                 className="text-xs text-primary hover:underline mb-2 flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
               >
                 ← {t.backToCategories}
@@ -682,7 +755,7 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
             id="faq-input"
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => dispatch({ type: "setInput", value: e.target.value })}
             placeholder={t.placeholder}
             className="flex-1 text-sm px-4 py-2.5 rounded-full border border-border-mid outline-none focus:border-primary transition-colors bg-surface-page text-text-main"
           />

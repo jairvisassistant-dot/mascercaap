@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { Dictionary, Locale } from "@/lib/i18n";
 
 interface LanguageSwitcherProps {
@@ -10,11 +10,12 @@ interface LanguageSwitcherProps {
 }
 
 export default function LanguageSwitcher({ dict, lang }: LanguageSwitcherProps) {
-  const pathname = usePathname();
   const { push } = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const switchLocale = () => {
+    // Read pathname inside the handler — avoids re-rendering on every URL change
+    const pathname = new URL(window.location.href).pathname;
     const targetLang = lang === "es" ? "en" : "es";
     const rest = pathname.startsWith(`/${lang}`) ? pathname.slice(`/${lang}`.length) : "";
     const newPath = `/${targetLang}${rest}`;

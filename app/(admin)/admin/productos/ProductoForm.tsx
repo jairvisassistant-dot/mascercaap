@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useId, Children, isValidElement, cloneElement } from "react";
+import { useReducer, useEffect, useMemo, useId, Children, isValidElement, cloneElement } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -67,19 +67,112 @@ const defaultForm: FormData = {
   displayOrder: 0,
 };
 
+type State = {
+  form: FormData;
+  lines: LineOption[];
+  categories: Category[];
+  selectedCategory: string;
+  existingIds: Set<string>;
+  loadingCatalog: boolean;
+  newIngredient: string;
+  newBenefit: string;
+  uploading: boolean;
+  saving: boolean;
+  error: string;
+};
+
+type Action =
+  | { type: "setFormField"; key: keyof FormData; value: FormData[keyof FormData] }
+  | { type: "catalogLoaded"; lines: LineOption[]; categories: Category[]; existingIds: Set<string>; selectedCategory: string; lineKey: string }
+  | { type: "catalogError"; message: string }
+  | { type: "setCategory"; catKey: string; lineKey?: string }
+  | { type: "setNewIngredient"; value: string }
+  | { type: "addIngredient" }
+  | { type: "setNewBenefit"; value: string }
+  | { type: "addBenefit" }
+  | { type: "uploadStart" }
+  | { type: "uploadSuccess"; url: string }
+  | { type: "uploadError"; message: string }
+  | { type: "saveStart" }
+  | { type: "saveError"; message: string }
+  | { type: "clearError" };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setFormField":
+      return { ...state, form: { ...state.form, [action.key]: action.value } };
+    case "catalogLoaded":
+      return {
+        ...state,
+        lines: action.lines,
+        categories: action.categories,
+        existingIds: action.existingIds,
+        loadingCatalog: false,
+        selectedCategory: action.selectedCategory || state.selectedCategory,
+        form: action.lineKey ? { ...state.form, line: action.lineKey } : state.form,
+      };
+    case "catalogError":
+      return { ...state, loadingCatalog: false, error: action.message };
+    case "setCategory":
+      return {
+        ...state,
+        selectedCategory: action.catKey,
+        form: action.lineKey !== undefined
+          ? { ...state.form, line: action.lineKey }
+          : state.form,
+      };
+    case "setNewIngredient":
+      return { ...state, newIngredient: action.value };
+    case "addIngredient":
+      if (!state.newIngredient.trim()) return state;
+      return {
+        ...state,
+        form: { ...state.form, ingredients: [...state.form.ingredients, state.newIngredient.trim()] },
+        newIngredient: "",
+      };
+    case "setNewBenefit":
+      return { ...state, newBenefit: action.value };
+    case "addBenefit":
+      if (!state.newBenefit.trim()) return state;
+      return {
+        ...state,
+        form: { ...state.form, benefits: [...state.form.benefits, state.newBenefit.trim()] },
+        newBenefit: "",
+      };
+    case "uploadStart":
+      return { ...state, uploading: true, error: "" };
+    case "uploadSuccess":
+      return { ...state, uploading: false, form: { ...state.form, image: action.url } };
+    case "uploadError":
+      return { ...state, uploading: false, error: action.message };
+    case "saveStart":
+      return { ...state, saving: true, error: "" };
+    case "saveError":
+      return { ...state, saving: false, error: action.message };
+    case "clearError":
+      return { ...state, error: "" };
+    default:
+      return state;
+  }
+}
+
 export default function ProductoForm({ mode, initial, productId }: Props) {
   const { push, refresh } = useRouter();
-  const [form, setForm] = useState<FormData>({ ...defaultForm, ...initial });
-  const [lines, setLines] = useState<LineOption[]>(LINES_FALLBACK);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [existingIds, setExistingIds] = useState<Set<string>>(new Set());
-  const [loadingCatalog, setLoadingCatalog] = useState(true);
-  const [newIngredient, setNewIngredient] = useState("");
-  const [newBenefit, setNewBenefit] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+
+  const [state, dispatch] = useReducer(reducer, {
+    form: { ...defaultForm, ...initial },
+    lines: LINES_FALLBACK,
+    categories: [],
+    selectedCategory: "",
+    existingIds: new Set<string>(),
+    loadingCatalog: true,
+    newIngredient: "",
+    newBenefit: "",
+    uploading: false,
+    saving: false,
+    error: "",
+  });
+  const { form, lines, categories, selectedCategory, existingIds, loadingCatalog, newIngredient, newBenefit, uploading, saving, error } = state;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -100,33 +193,41 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
               }))
             : LINES_FALLBACK;
 
-        setLines(mappedLines);
-        if (Array.isArray(catsData)) setCategories(catsData);
-        if (Array.isArray(productsData)) {
-          setExistingIds(new Set(productsData.map((p: { id: string }) => p.id)));
-        }
+        const mappedCategories: Category[] = Array.isArray(catsData) ? catsData : [];
+        const mappedIds: Set<string> = Array.isArray(productsData)
+          ? new Set(productsData.map((p: { id: string }) => p.id))
+          : new Set();
 
         // Pre-select category from current line (edit mode)
+        let selectedCat = "";
         const currentLineKey = initial?.line ?? "";
         if (currentLineKey) {
           const currentLine = mappedLines.find((l) => l.key === currentLineKey);
-          if (currentLine?.categoryKey) setSelectedCategory(currentLine.categoryKey);
+          if (currentLine?.categoryKey) selectedCat = currentLine.categoryKey;
         }
 
         // Default to first available line (create mode)
+        let lineKey = "";
         if (mode === "create" && !initial?.line) {
           const firstLine = mappedLines[0];
           if (firstLine) {
-            setForm((prev) => ({ ...prev, line: firstLine.key }));
-            if (firstLine.categoryKey) setSelectedCategory(firstLine.categoryKey);
+            lineKey = firstLine.key;
+            if (firstLine.categoryKey) selectedCat = firstLine.categoryKey;
           }
         }
+
+        dispatch({
+          type: "catalogLoaded",
+          lines: mappedLines,
+          categories: mappedCategories,
+          existingIds: mappedIds,
+          selectedCategory: selectedCat,
+          lineKey,
+        });
       } catch (err) {
         if ((err as DOMException).name === "AbortError") return;
         console.error("Error cargando catálogo:", err instanceof Error ? err.message : "unknown");
-        setError("No se pudo cargar el catálogo. Recarga la página.");
-      } finally {
-        setLoadingCatalog(false);
+        dispatch({ type: "catalogError", message: "No se pudo cargar el catálogo. Recarga la página." });
       }
     }
     void loadCatalog();
@@ -146,38 +247,33 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
   }, [mode, form.line, form.name, existingIds]);
 
   function handleCategoryChange(catKey: string) {
-    setSelectedCategory(catKey);
     const newFiltered = catKey ? lines.filter((l) => l.categoryKey === catKey) : lines;
-    if (newFiltered.length > 0 && !newFiltered.find((l) => l.key === form.line)) {
-      set("line", newFiltered[0].key);
-    }
+    const needsLineReset = newFiltered.length > 0 && !newFiltered.find((l) => l.key === form.line);
+    dispatch({ type: "setCategory", catKey, lineKey: needsLineReset ? newFiltered[0].key : undefined });
   }
 
+  // Generic form field setter — keeps JSX compact
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    dispatch({ type: "setFormField", key, value });
   }
 
   async function handleImageUpload(file: File) {
-    setUploading(true);
-    setError("");
+    dispatch({ type: "uploadStart" });
     try {
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      set("image", data.url);
+      dispatch({ type: "uploadSuccess", url: data.url });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error subiendo imagen");
-    } finally {
-      setUploading(false);
+      dispatch({ type: "uploadError", message: e instanceof Error ? e.message : "Error subiendo imagen" });
     }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSaving(true);
-    setError("");
+    dispatch({ type: "saveStart" });
 
     const payload = {
       ...form,
@@ -202,9 +298,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       push("/admin/productos");
       refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error guardando producto");
-    } finally {
-      setSaving(false);
+      dispatch({ type: "saveError", message: e instanceof Error ? e.message : "Error guardando producto" });
     }
   }
 
@@ -442,14 +536,11 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             type="text"
             aria-label="Nuevo ingrediente"
             value={newIngredient}
-            onChange={(e) => setNewIngredient(e.target.value)}
+            onChange={(e) => dispatch({ type: "setNewIngredient", value: e.target.value })}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                if (newIngredient.trim()) {
-                  set("ingredients", [...form.ingredients, newIngredient.trim()]);
-                  setNewIngredient("");
-                }
+                dispatch({ type: "addIngredient" });
               }
             }}
             placeholder="Agregar ingrediente..."
@@ -457,12 +548,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           />
           <button
             type="button"
-            onClick={() => {
-              if (newIngredient.trim()) {
-                set("ingredients", [...form.ingredients, newIngredient.trim()]);
-                setNewIngredient("");
-              }
-            }}
+            onClick={() => dispatch({ type: "addIngredient" })}
             className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
           >
             +
@@ -494,14 +580,11 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
             type="text"
             aria-label="Nuevo beneficio"
             value={newBenefit}
-            onChange={(e) => setNewBenefit(e.target.value)}
+            onChange={(e) => dispatch({ type: "setNewBenefit", value: e.target.value })}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                if (newBenefit.trim()) {
-                  set("benefits", [...form.benefits, newBenefit.trim()]);
-                  setNewBenefit("");
-                }
+                dispatch({ type: "addBenefit" });
               }
             }}
             placeholder="Agregar beneficio..."
@@ -509,12 +592,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
           />
           <button
             type="button"
-            onClick={() => {
-              if (newBenefit.trim()) {
-                set("benefits", [...form.benefits, newBenefit.trim()]);
-                setNewBenefit("");
-              }
-            }}
+            onClick={() => dispatch({ type: "addBenefit" })}
             className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
           >
             +

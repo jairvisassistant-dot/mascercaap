@@ -25,8 +25,7 @@ function formatDay(value: string) {
 }
 
 export default async function AnalyticsPage() {
-  await requireAdminSession();
-
+  // Sync guard first — skip the async auth round-trip when Supabase isn't configured
   if (!supabase) {
     return (
       <div className="mx-auto max-w-4xl px-6 py-10">
@@ -36,6 +35,8 @@ export default async function AnalyticsPage() {
       </div>
     );
   }
+
+  await requireAdminSession();
 
   const [funnelRes, conversionRes, pagesRes, productRes] = await Promise.all([
     supabase.from("v_funnel_summary").select("event_name, total"),

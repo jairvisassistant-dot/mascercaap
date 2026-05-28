@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useReducer, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import { createContactSchema } from "@/lib/schemas/contact";
@@ -88,20 +88,162 @@ const EMPTY_LINES: ProductLineConfig[] = [];
 const EMPTY_PRODUCTS: Product[] = [];
 const EMPTY_CATEGORIES: ProductCategory[] = [];
 
+type State = {
+  fields: FormFields;
+  fieldErrors: FieldErrors;
+  consented: boolean;
+  consentError: boolean;
+  isSubmitting: boolean;
+  submitStatus: "success" | "error" | null;
+  whatsappUrl: string | null;
+  selectedCategoryKey: string;
+  selectedLineKey: string;
+  selectedProductId: string;
+  availabilityError: string | null;
+};
+
+const INITIAL_STATE: State = {
+  fields: EMPTY,
+  fieldErrors: {},
+  consented: false,
+  consentError: false,
+  isSubmitting: false,
+  submitStatus: null,
+  whatsappUrl: null,
+  selectedCategoryKey: "",
+  selectedLineKey: "",
+  selectedProductId: "",
+  availabilityError: null,
+};
+
+type Action =
+  | { type: "setField"; key: keyof FormFields; value: string }
+  | { type: "setFieldErrors"; errors: FieldErrors }
+  | { type: "setConsented"; value: boolean }
+  | { type: "setConsentError"; value: boolean }
+  | { type: "changeType"; value: string; additionalInfoLabel: string }
+  | { type: "selectCategory"; key: string; mensaje: string }
+  | { type: "selectLine"; key: string; mensaje: string }
+  | { type: "selectProduct"; id: string; mensaje: string; clearMensajeError: boolean }
+  | { type: "setAvailabilityError"; message: string }
+  | { type: "submitStart" }
+  | { type: "submitSuccess"; whatsappUrl: string | null }
+  | { type: "submitError" }
+  | { type: "submitReset" };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setField":
+      return {
+        ...state,
+        fields: { ...state.fields, [action.key]: action.value },
+        fieldErrors: { ...state.fieldErrors, [action.key]: undefined },
+      };
+    case "setFieldErrors":
+      return { ...state, fieldErrors: action.errors };
+    case "setConsented":
+      return {
+        ...state,
+        consented: action.value,
+        consentError: action.value ? false : state.consentError,
+      };
+    case "setConsentError":
+      return { ...state, consentError: action.value };
+    case "changeType": {
+      let mensaje = state.fields.mensaje;
+      let motivoOtro = state.fields.motivoOtro;
+      const newErrors: FieldErrors = { ...state.fieldErrors, tipo: undefined };
+      let selectedCategoryKey = state.selectedCategoryKey;
+      let selectedLineKey = state.selectedLineKey;
+      let selectedProductId = state.selectedProductId;
+      let availabilityError = state.availabilityError;
+
+      if (action.value !== "disponibilidad") {
+        selectedCategoryKey = "";
+        selectedLineKey = "";
+        selectedProductId = "";
+        availabilityError = null;
+        const stripped = stripAvailabilityTemplate(mensaje, action.additionalInfoLabel);
+        if (stripped !== mensaje) mensaje = stripped;
+      }
+      if (action.value !== "otro") {
+        motivoOtro = "";
+        delete newErrors.motivoOtro;
+      }
+
+      return {
+        ...state,
+        fields: { ...state.fields, tipo: action.value, mensaje, motivoOtro },
+        fieldErrors: newErrors,
+        selectedCategoryKey,
+        selectedLineKey,
+        selectedProductId,
+        availabilityError,
+      };
+    }
+    case "selectCategory":
+      return {
+        ...state,
+        selectedCategoryKey: action.key,
+        selectedLineKey: "",
+        selectedProductId: "",
+        availabilityError: null,
+        fields: { ...state.fields, mensaje: action.mensaje },
+      };
+    case "selectLine":
+      return {
+        ...state,
+        selectedLineKey: action.key,
+        selectedProductId: "",
+        availabilityError: null,
+        fields: { ...state.fields, mensaje: action.mensaje },
+      };
+    case "selectProduct":
+      return {
+        ...state,
+        selectedProductId: action.id,
+        availabilityError: null,
+        fields: { ...state.fields, mensaje: action.mensaje },
+        fieldErrors: action.clearMensajeError
+          ? { ...state.fieldErrors, mensaje: undefined }
+          : state.fieldErrors,
+      };
+    case "setAvailabilityError":
+      return { ...state, availabilityError: action.message };
+    case "submitStart":
+      return { ...state, isSubmitting: true, consentError: false };
+    case "submitSuccess":
+      return {
+        ...state,
+        isSubmitting: false,
+        submitStatus: "success",
+        whatsappUrl: action.whatsappUrl,
+        fields: EMPTY,
+        fieldErrors: {},
+        consented: false,
+        selectedLineKey: "",
+        selectedProductId: "",
+        availabilityError: null,
+      };
+    case "submitError":
+      return { ...state, isSubmitting: false, submitStatus: "error" };
+    case "submitReset":
+      return { ...state, submitStatus: null };
+    default:
+      return state;
+  }
+}
+
 export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products = EMPTY_PRODUCTS, categories = EMPTY_CATEGORIES }: ContactFormProps) {
   const t = dict.contact.form;
   const availability = t.availabilityAssistant as AvailabilityCopy;
-  const [fields, setFields] = useState<FormFields>(EMPTY);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [consented, setConsented] = useState(false);
-  const [consentError, setConsentError] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
-  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
-  const [selectedCategoryKey, setSelectedCategoryKey] = useState("");
-  const [selectedLineKey, setSelectedLineKey] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState("");
-  const [availabilityError, setAvailabilityError] = useState<string | null>(null);
+
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const {
+    fields, fieldErrors, consented, consentError,
+    isSubmitting, submitStatus, whatsappUrl,
+    selectedCategoryKey, selectedLineKey, selectedProductId, availabilityError,
+  } = state;
 
   const linesByKey = useMemo(
     () => new Map(lines.map((line) => [line.key, line])),
@@ -120,14 +262,13 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
 
   useEffect(() => {
     if (!submitStatus) return;
-    const timer = setTimeout(() => setSubmitStatus(null), 8000);
+    const timer = setTimeout(() => dispatch({ type: "submitReset" }), 8000);
     return () => clearTimeout(timer);
   }, [submitStatus]);
 
   function update(key: keyof FormFields) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      setFields((prev) => ({ ...prev, [key]: e.target.value }));
-      setFieldErrors((prev) => ({ ...prev, [key]: undefined }));
+      dispatch({ type: "setField", key, value: e.target.value });
     };
   }
 
@@ -136,26 +277,25 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
 
     if (fields.tipo === "disponibilidad") {
       if (!selectedCategoryKey) {
-        setAvailabilityError(availability.categoryRequired);
+        dispatch({ type: "setAvailabilityError", message: availability.categoryRequired });
         return;
       }
 
       if (!selectedLineKey) {
-        setAvailabilityError(availability.lineRequired);
+        dispatch({ type: "setAvailabilityError", message: availability.lineRequired });
         return;
       }
 
       if (!selectedProductId) {
-        setAvailabilityError(availability.productRequired);
+        dispatch({ type: "setAvailabilityError", message: availability.productRequired });
         return;
       }
     }
 
     if (!consented) {
-      setConsentError(true);
+      dispatch({ type: "setConsentError", value: true });
       return;
     }
-    setConsentError(false);
 
     const schema = createContactSchema(dict.contact.validation);
     const result = schema.safeParse(fields);
@@ -166,12 +306,12 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
         const key = issue.path[0] as keyof FormFields;
         if (key && !errs[key]) errs[key] = issue.message;
       }
-      setFieldErrors(errs);
+      dispatch({ type: "setFieldErrors", errors: errs });
       return;
     }
 
     const data = result.data;
-    setIsSubmitting(true);
+    dispatch({ type: "submitStart" });
 
     try {
       const response = await fetch("/api/contact", {
@@ -199,22 +339,16 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
         ]);
 
         const waNumber = SITE_CONFIG.whatsappNumber;
-        if (waNumber) setWhatsappUrl(buildWhatsAppAppUrl(waNumber, msg));
-        setSubmitStatus("success");
-        setFields(EMPTY);
-        setSelectedLineKey("");
-        setSelectedProductId("");
-        setAvailabilityError(null);
-        setFieldErrors({});
-        setConsented(false);
+        dispatch({
+          type: "submitSuccess",
+          whatsappUrl: waNumber ? buildWhatsAppAppUrl(waNumber, msg) : null,
+        });
       } else {
-        setSubmitStatus("error");
+        dispatch({ type: "submitError" });
       }
     } catch {
       console.error("Error enviando formulario de contacto");
-      setSubmitStatus("error");
-    } finally {
-      setIsSubmitting(false);
+      dispatch({ type: "submitError" });
     }
   }
 
@@ -236,23 +370,7 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
           <select
             id="tipo"
             value={fields.tipo}
-            onChange={(e) => {
-              update("tipo")(e);
-              if (e.target.value !== "disponibilidad") {
-                setSelectedCategoryKey("");
-                setSelectedLineKey("");
-                setSelectedProductId("");
-                setAvailabilityError(null);
-                setFields((prev) => {
-                  const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
-                  return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
-                });
-              }
-              if (e.target.value !== "otro") {
-                setFields((prev) => ({ ...prev, motivoOtro: "" }));
-                setFieldErrors((prev) => ({ ...prev, motivoOtro: undefined }));
-              }
-            }}
+            onChange={(e) => dispatch({ type: "changeType", value: e.target.value, additionalInfoLabel: availability.additionalInfoLabel })}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.tipo ? "border-red-500" : "border-border-mid"
             } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
@@ -283,14 +401,8 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
                 id="availability-category"
                 value={selectedCategoryKey}
                 onChange={(e) => {
-                  setSelectedCategoryKey(e.target.value);
-                  setSelectedLineKey("");
-                  setSelectedProductId("");
-                  setAvailabilityError(null);
-                  setFields((prev) => {
-                    const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
-                    return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
-                  });
+                  const stripped = stripAvailabilityTemplate(fields.mensaje, availability.additionalInfoLabel);
+                  dispatch({ type: "selectCategory", key: e.target.value, mensaje: stripped });
                 }}
                 className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
               >
@@ -313,13 +425,8 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
                 value={selectedLineKey}
                 disabled={!selectedCategoryKey}
                 onChange={(e) => {
-                  setSelectedLineKey(e.target.value);
-                  setSelectedProductId("");
-                  setAvailabilityError(null);
-                  setFields((prev) => {
-                    const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
-                    return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
-                  });
+                  const stripped = stripAvailabilityTemplate(fields.mensaje, availability.additionalInfoLabel);
+                  dispatch({ type: "selectLine", key: e.target.value, mensaje: stripped });
                 }}
                 className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
               >
@@ -341,31 +448,24 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
                 value={selectedProductId}
                 onChange={(e) => {
                   const newProductId = e.target.value;
-                  setSelectedProductId(newProductId);
-                  setAvailabilityError(null);
                   if (newProductId && selectedCategoryKey && selectedLineKey) {
                     const cat = categories.find((c) => c.key === selectedCategoryKey);
                     const line = linesByKey.get(selectedLineKey);
                     const product = products.find((p) => p.id === newProductId);
                     if (cat && line && product) {
-                      setFields((prev) => ({
-                        ...prev,
-                        mensaje: buildAvailabilityTemplate({
-                          categoryLabel: cat.label,
-                          lineLabel: line.label,
-                          productLabel: `${product.name} (${product.presentation})`,
-                          copy: availability,
-                          existingMessage: prev.mensaje,
-                        }),
-                      }));
-                      setFieldErrors((prev) => ({ ...prev, mensaje: undefined }));
+                      const newMensaje = buildAvailabilityTemplate({
+                        categoryLabel: cat.label,
+                        lineLabel: line.label,
+                        productLabel: `${product.name} (${product.presentation})`,
+                        copy: availability,
+                        existingMessage: fields.mensaje,
+                      });
+                      dispatch({ type: "selectProduct", id: newProductId, mensaje: newMensaje, clearMensajeError: true });
+                      return;
                     }
-                  } else {
-                    setFields((prev) => {
-                      const stripped = stripAvailabilityTemplate(prev.mensaje, availability.additionalInfoLabel);
-                      return stripped !== prev.mensaje ? { ...prev, mensaje: stripped } : prev;
-                    });
                   }
+                  const stripped = stripAvailabilityTemplate(fields.mensaje, availability.additionalInfoLabel);
+                  dispatch({ type: "selectProduct", id: newProductId, mensaje: stripped, clearMensajeError: false });
                 }}
                 disabled={!selectedLineKey}
                 className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
@@ -513,10 +613,7 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
             <input
               type="checkbox"
               checked={consented}
-              onChange={(e) => {
-                setConsented(e.target.checked);
-                if (e.target.checked) setConsentError(false);
-              }}
+              onChange={(e) => dispatch({ type: "setConsented", value: e.target.checked })}
               className="mt-0.5 size-4 shrink-0 rounded border-border-mid accent-primary focus:ring-2 focus:ring-primary"
             />
             <span className="text-sm text-text-sub">
@@ -563,7 +660,7 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
               </div>
               <button
                 type="button"
-                onClick={() => setSubmitStatus(null)}
+                onClick={() => dispatch({ type: "submitReset" })}
                 aria-label={t.close}
                 className="shrink-0 p-1 text-green-600 hover:text-green-800 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600"
               >
@@ -608,7 +705,7 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
             <p className="flex-1 text-sm">{t.error}</p>
             <button
               type="button"
-              onClick={() => setSubmitStatus(null)}
+              onClick={() => dispatch({ type: "submitReset" })}
               aria-label={t.close}
               className="shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
             >

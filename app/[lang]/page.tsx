@@ -87,9 +87,8 @@ export default async function HomePage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const dict = await getDictionary(lang);
-
-  const [featuredProducts, fetchedTestimonials] = await Promise.all([
+  const [dict, featuredProducts, fetchedTestimonials] = await Promise.all([
+    getDictionary(lang),
     getFeaturedProducts(),
     getAllTestimonials(),
   ]);

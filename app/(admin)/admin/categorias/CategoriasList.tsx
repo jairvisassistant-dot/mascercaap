@@ -1,46 +1,104 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useReducer, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type Category = { key: string; label: string; description: string; display_order: number };
 type Mode = "view" | "edit" | "confirm-delete";
 
+type State = {
+  cats: Category[];
+  moving: string | null;
+  rowMode: Record<string, Mode>;
+  editValues: Record<string, { label: string; description: string }>;
+  busy: string | null;
+  error: string;
+};
+
+type Action =
+  | { type: "startEdit"; cat: Category }
+  | { type: "setEditField"; key: string; field: "label" | "description"; value: string }
+  | { type: "cancelRow"; key: string }
+  | { type: "setConfirmDelete"; key: string }
+  | { type: "moveStart"; key: string; optimistic: Category[] }
+  | { type: "moveDone" }
+  | { type: "moveError"; cats: Category[]; error: string }
+  | { type: "busyStart"; key: string }
+  | { type: "busyDone" }
+  | { type: "setError"; error: string }
+  | { type: "catUpdated"; key: string; label: string; description: string }
+  | { type: "catRemoved"; key: string };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "startEdit":
+      return {
+        ...state,
+        editValues: { ...state.editValues, [action.cat.key]: { label: action.cat.label, description: action.cat.description } },
+        rowMode: { ...state.rowMode, [action.cat.key]: "edit" },
+        error: "",
+      };
+    case "setEditField": {
+      const prev = state.editValues[action.key] ?? { label: "", description: "" };
+      return { ...state, editValues: { ...state.editValues, [action.key]: { ...prev, [action.field]: action.value } } };
+    }
+    case "cancelRow":
+      return { ...state, rowMode: { ...state.rowMode, [action.key]: "view" } };
+    case "setConfirmDelete":
+      return { ...state, rowMode: { ...state.rowMode, [action.key]: "confirm-delete" } };
+    case "moveStart":
+      return { ...state, moving: action.key, cats: action.optimistic, error: "" };
+    case "moveDone":
+      return { ...state, moving: null };
+    case "moveError":
+      return { ...state, moving: null, cats: action.cats, error: action.error };
+    case "busyStart":
+      return { ...state, busy: action.key, error: "" };
+    case "busyDone":
+      return { ...state, busy: null };
+    case "setError":
+      return { ...state, error: action.error };
+    case "catUpdated": {
+      return {
+        ...state,
+        cats: state.cats.map((c) =>
+          c.key === action.key ? { ...c, label: action.label, description: action.description } : c,
+        ),
+        rowMode: { ...state.rowMode, [action.key]: "view" },
+      };
+    }
+    case "catRemoved":
+      return { ...state, cats: state.cats.filter((c) => c.key !== action.key) };
+    default:
+      return state;
+  }
+}
+
 export default function CategoriasList({ initial }: { initial: Category[] }) {
   const { refresh } = useRouter();
-  // Intentional: mutable local copy of server data; router.refresh() remounts with fresh `initial`.
-  const [cats, setCats] = useState<Category[]>(initial);
-  const [moving, setMoving] = useState<string | null>(null);
-  const [rowMode, setRowMode] = useState<Record<string, Mode>>({});
-  const [editValues, setEditValues] = useState<Record<string, { label: string; description: string }>>({});
-  const [busy, setBusy] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(reducer, {
+    // Intentional: mutable local copy of server data; router.refresh() remounts with fresh `initial`.
+    cats: initial,
+    moving: null,
+    rowMode: {},
+    editValues: {},
+    busy: null,
+    error: "",
+  });
+  const { cats, moving, rowMode, editValues, busy, error } = state;
   const [, startTransition] = useTransition();
 
   const getMode = (key: string): Mode => rowMode[key] ?? "view";
 
-  function startEdit(cat: Category) {
-    setEditValues((prev) => ({ ...prev, [cat.key]: { label: cat.label, description: cat.description } }));
-    setRowMode((prev) => ({ ...prev, [cat.key]: "edit" }));
-    setError("");
-  }
-
-  function cancelRow(key: string) {
-    setRowMode((prev) => ({ ...prev, [key]: "view" }));
-  }
-
   async function move(key: string, direction: "up" | "down") {
-    setMoving(key);
-    setError("");
-
     const idx = cats.findIndex((c) => c.key === key);
     const swapIdx = direction === "up" ? idx - 1 : idx + 1;
-    if (swapIdx < 0 || swapIdx >= cats.length) { setMoving(null); return; }
+    if (swapIdx < 0 || swapIdx >= cats.length) return;
 
-    const next = [...cats];
-    [next[idx], next[swapIdx]] = [next[swapIdx], next[idx]];
-    setCats(next);
+    const optimistic = [...cats];
+    [optimistic[idx], optimistic[swapIdx]] = [optimistic[swapIdx], optimistic[idx]];
+    dispatch({ type: "moveStart", key, optimistic });
 
     const res = await fetch("/api/admin/categories", {
       method: "PATCH",
@@ -50,19 +108,17 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al reordenar");
-      setCats(initial);
+      dispatch({ type: "moveError", cats: initial, error: data.error ?? "Error al reordenar" });
     } else {
+      dispatch({ type: "moveDone" });
       startTransition(() => refresh());
     }
-    setMoving(null);
   }
 
   async function saveEdit(key: string) {
     const vals = editValues[key];
     if (!vals?.label.trim()) return;
-    setBusy(key);
-    setError("");
+    dispatch({ type: "busyStart", key });
 
     const res = await fetch("/api/admin/categories", {
       method: "PUT",
@@ -72,18 +128,16 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error ?? "Error al guardar");
+      dispatch({ type: "setError", error: data.error ?? "Error al guardar" });
     } else {
-      setCats((prev) => prev.map((c) => c.key === key ? { ...c, label: vals.label.trim(), description: vals.description.trim() } : c));
-      setRowMode((prev) => ({ ...prev, [key]: "view" }));
+      dispatch({ type: "catUpdated", key, label: vals.label.trim(), description: vals.description.trim() });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   async function confirmDelete(key: string) {
-    setBusy(key);
-    setError("");
+    dispatch({ type: "busyStart", key });
 
     const res = await fetch("/api/admin/categories", {
       method: "DELETE",
@@ -93,13 +147,13 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error ?? "Error al eliminar");
-      setRowMode((prev) => ({ ...prev, [key]: "view" }));
+      dispatch({ type: "setError", error: data.error ?? "Error al eliminar" });
+      dispatch({ type: "cancelRow", key });
     } else {
-      setCats((prev) => prev.filter((c) => c.key !== key));
+      dispatch({ type: "catRemoved", key });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   const anyBusy = busy !== null || moving !== null;
@@ -133,7 +187,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                     id={`${cat.key}-nombre`}
                     type="text"
                     value={vals.label}
-                    onChange={(e) => setEditValues((prev) => ({ ...prev, [cat.key]: { ...vals, label: e.target.value } }))}
+                    onChange={(e) => dispatch({ type: "setEditField", key: cat.key, field: "label", value: e.target.value })}
                     className="w-full rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main placeholder:text-text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
@@ -142,7 +196,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                   <textarea
                     id={`${cat.key}-descripcion`}
                     value={vals.description}
-                    onChange={(e) => setEditValues((prev) => ({ ...prev, [cat.key]: { ...vals, description: e.target.value } }))}
+                    onChange={(e) => dispatch({ type: "setEditField", key: cat.key, field: "description", value: e.target.value })}
                     rows={2}
                     maxLength={200}
                     className="w-full resize-none rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main placeholder:text-text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
@@ -161,7 +215,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                 <button
                   type="button"
                   disabled={isBusy}
-                  onClick={() => cancelRow(cat.key)}
+                  onClick={() => dispatch({ type: "cancelRow", key: cat.key })}
                   className="rounded-xl px-4 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
                 >
                   Cancelar
@@ -195,7 +249,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
                 <button
                   type="button"
                   disabled={isBusy}
-                  onClick={() => cancelRow(cat.key)}
+                  onClick={() => dispatch({ type: "cancelRow", key: cat.key })}
                   className="rounded-xl px-4 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
                 >
                   Cancelar
@@ -255,7 +309,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
               <button
                 type="button"
                 disabled={anyBusy}
-                onClick={() => startEdit(cat)}
+                onClick={() => dispatch({ type: "startEdit", cat })}
                 className="flex size-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-primary/10 hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
                 title="Editar"
               >
@@ -266,7 +320,7 @@ export default function CategoriasList({ initial }: { initial: Category[] }) {
               <button
                 type="button"
                 disabled={anyBusy}
-                onClick={() => setRowMode((prev) => ({ ...prev, [cat.key]: "confirm-delete" }))}
+                onClick={() => dispatch({ type: "setConfirmDelete", key: cat.key })}
                 className="flex size-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-40"
                 title="Eliminar"
               >

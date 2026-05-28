@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useReducer, useMemo } from "react"
 import { m, AnimatePresence } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
@@ -34,29 +34,129 @@ type Props = {
   onContactClick: () => void
 }
 
+type State = {
+  step: Step;
+  items: OrderItem[];
+  curProductType: string | null;
+  curLineKey: string | null;
+  curPresentation: string | null;
+  showCustomQty: boolean;
+  customQty: string;
+  nombre: string;
+  email: string;
+  waNumber: string;
+  consent: boolean;
+  status: SubmitStatus;
+  waUrl: string | null;
+};
+
+type Action =
+  | { type: "selectProductType"; value: string }
+  | { type: "editStep1" }
+  | { type: "selectLineKey"; value: string; nextStep: Step }
+  | { type: "editStep2" }
+  | { type: "selectPresentation"; value: string }
+  | { type: "editStep3" }
+  | { type: "showCustomQty" }
+  | { type: "setCustomQty"; value: string }
+  | { type: "commitItem"; item: OrderItem }
+  | { type: "cancelToCart" }
+  | { type: "goToStep"; step: Step }
+  | { type: "removeItem"; index: number }
+  | { type: "setContact"; field: "nombre" | "email" | "waNumber"; value: string }
+  | { type: "setConsent"; value: boolean }
+  | { type: "submitStart" }
+  | { type: "submitSuccess"; waUrl: string | null }
+  | { type: "submitError" }
+  | { type: "reset" };
+
+const INITIAL_STATE: State = {
+  step: 1,
+  items: [],
+  curProductType: null,
+  curLineKey: null,
+  curPresentation: null,
+  showCustomQty: false,
+  customQty: "",
+  nombre: "",
+  email: "",
+  waNumber: "",
+  consent: false,
+  status: "idle",
+  waUrl: null,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "selectProductType":
+      return { ...state, curProductType: action.value, curLineKey: null, curPresentation: null, step: 2 };
+    case "editStep1":
+      return { ...state, step: 1, curProductType: null, curLineKey: null, curPresentation: null };
+    case "selectLineKey":
+      return { ...state, curLineKey: action.value, curPresentation: null, step: action.nextStep };
+    case "editStep2":
+      return { ...state, step: 2, curLineKey: null, curPresentation: null };
+    case "selectPresentation":
+      return { ...state, curPresentation: action.value, step: 4 };
+    case "editStep3":
+      return { ...state, step: 3, curPresentation: null };
+    case "showCustomQty":
+      return { ...state, showCustomQty: true };
+    case "setCustomQty":
+      return { ...state, customQty: action.value };
+    case "commitItem":
+      return {
+        ...state,
+        items: [...state.items, action.item],
+        curProductType: null,
+        curLineKey: null,
+        curPresentation: null,
+        showCustomQty: false,
+        customQty: "",
+        step: "cart",
+      };
+    case "cancelToCart":
+      return {
+        ...state,
+        curProductType: null,
+        curLineKey: null,
+        curPresentation: null,
+        showCustomQty: false,
+        customQty: "",
+        step: "cart",
+      };
+    case "goToStep":
+      return { ...state, step: action.step };
+    case "removeItem":
+      return { ...state, items: state.items.filter((_, i) => i !== action.index) };
+    case "setContact":
+      return { ...state, [action.field]: action.value };
+    case "setConsent":
+      return { ...state, consent: action.value };
+    case "submitStart":
+      return { ...state, status: "sending" };
+    case "submitSuccess":
+      return { ...state, status: "success", waUrl: action.waUrl, step: "result" };
+    case "submitError":
+      return { ...state, status: "error" };
+    case "reset":
+      return INITIAL_STATE;
+    default:
+      return state;
+  }
+}
+
 export default function OrderAssistantView({ dict, prices, lines, onContactClick }: Props) {
   const t = dict.orderAssistant
   const resolvePrice = useMemo(() => buildPriceResolver(prices), [prices])
   const catalog      = useMemo(() => buildCatalog(lines, prices), [lines, prices])
 
-  // ── Global state ───────────────────────────────────────────────
-  const [step, setStep]       = useState<Step>(1)
-  const [items, setItems]     = useState<OrderItem[]>([])
-
-  // ── Current item being built (steps 2–5) ─────────────────────
-  const [curProductType, setCurProductType]   = useState<string | null>(null)
-  const [curLineKey, setCurLineKey]           = useState<string | null>(null)
-  const [curPresentation, setCurPresentation] = useState<string | null>(null)
-  const [showCustomQty, setShowCustomQty]     = useState(false)
-  const [customQty, setCustomQty]             = useState("")
-
-  // ── Contact & submit ──────────────────────────────────────────
-  const [nombre, setNombre]   = useState("")
-  const [email, setEmail]     = useState("")
-  const [waNumber, setWaNumber] = useState("")
-  const [consent, setConsent] = useState(false)
-  const [status, setStatus]   = useState<SubmitStatus>("idle")
-  const [waUrl, setWaUrl]     = useState<string | null>(null)
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
+  const {
+    step, items,
+    curProductType, curLineKey, curPresentation, showCustomQty, customQty,
+    nombre, email, waNumber, consent, status, waUrl,
+  } = state
 
   // ── Derived ───────────────────────────────────────────────────
   const totals   = items.length > 0 ? calculateOrderTotal(items, resolvePrice) : null
@@ -123,45 +223,27 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
   ]
 
   // ── Helpers ───────────────────────────────────────────────────
-  function resetCurrentItem() {
-    setCurProductType(null)
-    setCurLineKey(null)
-    setCurPresentation(null)
-    setShowCustomQty(false)
-    setCustomQty("")
-  }
-
-  function commitItem(qty: number) {
-    if (!curProductType || !curLineKey) return
-    if (!isLacteos && curPresentation === null) return
+  function buildCurrentItem(qty: number): OrderItem | null {
+    if (!curProductType || !curLineKey) return null
+    if (!isLacteos && curPresentation === null) return null
     const visibleLabel = catalog.getLabelForSelection(curProductType, curLineKey) ?? curLineKey
-    setItems((prev) => [
-      ...prev,
-      { productType: curProductType, fruit: visibleLabel, lineKey: curLineKey, presentation: curPresentation, quantity: qty },
-    ])
-    resetCurrentItem()
-    setStep("cart")
-  }
-
-  function removeItem(index: number) {
-    setItems((prev) => prev.filter((_, i) => i !== index))
+    return { productType: curProductType, fruit: visibleLabel, lineKey: curLineKey, presentation: curPresentation, quantity: qty }
   }
 
   function handleQtySelect(val: number) {
     if (val === CUSTOM_QTY) {
-      setShowCustomQty(true)
+      dispatch({ type: "showCustomQty" })
     } else {
-      setShowCustomQty(false)
-      setCustomQty("")
-      commitItem(val)
+      const item = buildCurrentItem(val)
+      if (item) dispatch({ type: "commitItem", item })
     }
   }
 
   function confirmCustomQty() {
     const n = parseInt(customQty, 10)
     if (!isNaN(n) && n > 0) {
-      setShowCustomQty(false)
-      commitItem(n)
+      const item = buildCurrentItem(n)
+      if (item) dispatch({ type: "commitItem", item })
     }
   }
 
@@ -181,7 +263,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
       items,
     }
 
-    setStatus("sending")
+    dispatch({ type: "submitStart" })
     try {
       const res = await fetch("/api/orders", {
         method:  "POST",
@@ -189,28 +271,20 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
         body:    JSON.stringify(payload),
       })
       if (res.ok) {
-        if (SITE_CONFIG.whatsappNumber) {
-          setWaUrl(buildWhatsappMessage(payload, SITE_CONFIG.whatsappNumber, {
-            greeting:     t.waGreeting,
-            products:     t.waProducts,
-            confirm:      t.waConfirm,
-          }))
-        }
-        setStatus("success")
-        setStep("result")
+        const newWaUrl = SITE_CONFIG.whatsappNumber
+          ? buildWhatsappMessage(payload, SITE_CONFIG.whatsappNumber, {
+              greeting: t.waGreeting,
+              products: t.waProducts,
+              confirm:  t.waConfirm,
+            })
+          : null
+        dispatch({ type: "submitSuccess", waUrl: newWaUrl })
       } else {
-        setStatus("error")
+        dispatch({ type: "submitError" })
       }
     } catch {
-      setStatus("error")
+      dispatch({ type: "submitError" })
     }
-  }
-
-  function handleReset() {
-    setStep(1); setItems([])
-    resetCurrentItem()
-    setNombre(""); setEmail(""); setWaNumber(""); setConsent(false)
-    setStatus("idle"); setWaUrl(null)
   }
 
   // ── Render ─────────────────────────────────────────────────────
@@ -323,7 +397,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
 
               <button
                 type="button"
-                onClick={handleReset}
+                onClick={() => dispatch({ type: "reset" })}
                 className="text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors min-h-[44px]"
               >
                 {t.resetLabel}
@@ -341,13 +415,13 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
               label={t.step1Label}
               active={step === 1}
               summary={curProductType ? (productTypeLabels[curProductType] ?? curProductType) : null}
-              onEdit={() => { setStep(1); setCurProductType(null); setCurLineKey(null); setCurPresentation(null) }}
+              onEdit={() => dispatch({ type: "editStep1" })}
               backLabel={t.back}
             >
               <ChipSelector
                 options={productOptions}
                 selected={curProductType}
-                onChange={(v) => { setCurProductType(v); setCurLineKey(null); setCurPresentation(null); setStep(2) }}
+                onChange={(v) => dispatch({ type: "selectProductType", value: v })}
               />
             </StepBlock>
 
@@ -361,17 +435,13 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                     label={t.step2Label}
                     active={step === 2}
                     summary={currentSelectionLabel}
-                    onEdit={() => { setStep(2); setCurLineKey(null); setCurPresentation(null) }}
+                    onEdit={() => dispatch({ type: "editStep2" })}
                     backLabel={t.back}
                   >
                     <ChipSelector
                       options={fruitOptions}
                       selected={curLineKey}
-                      onChange={(v) => {
-                        setCurLineKey(v)
-                        setCurPresentation(null)
-                        setStep(isLacteos ? 4 : 3)
-                      }}
+                      onChange={(v) => dispatch({ type: "selectLineKey", value: v, nextStep: isLacteos ? 4 : 3 })}
                     />
                   </StepBlock>
                 )}
@@ -383,13 +453,13 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                     label={t.step4Label}
                     active={step === 3}
                     summary={curPresentation}
-                    onEdit={() => { setStep(3); setCurPresentation(null) }}
+                    onEdit={() => dispatch({ type: "editStep3" })}
                     backLabel={t.back}
                   >
                     <ChipSelector
                       options={presentationOptions}
                       selected={curPresentation}
-                      onChange={(v) => { setCurPresentation(v); setStep(4) }}
+                      onChange={(v) => dispatch({ type: "selectPresentation", value: v })}
                     />
                   </StepBlock>
                 )}
@@ -419,7 +489,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                         <input
                           type="number" min={1} max={9999}
                           value={customQty}
-                          onChange={(e) => setCustomQty(e.target.value)}
+                          onChange={(e) => dispatch({ type: "setCustomQty", value: e.target.value })}
                           placeholder={t.customQtyPlaceholder}
                           aria-label={t.customQtyLabel}
                           className="w-32 rounded-lg border border-border-mid px-3 py-2 text-sm bg-surface-page focus:outline-none focus:border-primary"
@@ -442,7 +512,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                 {items.length > 0 && (
                   <button
                     type="button"
-                    onClick={() => { resetCurrentItem(); setStep("cart") }}
+                    onClick={() => dispatch({ type: "cancelToCart" })}
                     className="text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors"
                   >
                     {t.cancelToCart} ({items.length})
@@ -488,7 +558,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                         </div>
                         <button
                           type="button"
-                          onClick={() => removeItem(i)}
+                          onClick={() => dispatch({ type: "removeItem", index: i })}
                           className="text-xs text-red-500 hover:text-red-700 transition-colors min-h-[36px] px-2"
                           aria-label={`${t.removeItem} ${item.fruit}`}
                         >
@@ -526,14 +596,14 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                 {/* Acciones del carrito */}
                   <button
                     type="button"
-                    onClick={() => { resetCurrentItem(); setStep(1) }}
+                    onClick={() => dispatch({ type: "editStep1" })}
                   className="w-full text-sm text-primary border border-primary/30 rounded-full px-4 py-2.5 hover:bg-primary/5 transition-colors min-h-[44px]"
                 >
                   {t.addAnother}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStep(6)}
+                  onClick={() => dispatch({ type: "goToStep", step: 6 })}
                   disabled={items.length === 0}
                   className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors min-h-[44px] disabled:opacity-50"
                 >
@@ -564,7 +634,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                           id="oa-nombre"
                           type="text"
                           value={nombre}
-                          onChange={(e) => setNombre(e.target.value)}
+                          onChange={(e) => dispatch({ type: "setContact", field: "nombre", value: e.target.value })}
                           placeholder={t.namePlaceholder}
                           className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
                         />
@@ -576,7 +646,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                           id="oa-email"
                           type="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => dispatch({ type: "setContact", field: "email", value: e.target.value })}
                           placeholder={t.emailPlaceholder}
                           className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
                         />
@@ -588,7 +658,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                           id="oa-whatsapp"
                           type="tel"
                           value={waNumber}
-                          onChange={(e) => setWaNumber(e.target.value)}
+                          onChange={(e) => dispatch({ type: "setContact", field: "waNumber", value: e.target.value })}
                           placeholder={t.whatsappPlaceholder}
                           className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
                         />
@@ -599,7 +669,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                         <input
                           type="checkbox"
                           checked={consent}
-                          onChange={(e) => setConsent(e.target.checked)}
+                          onChange={(e) => dispatch({ type: "setConsent", value: e.target.checked })}
                           className="mt-0.5 size-4 accent-primary shrink-0"
                         />
                         <span className="text-xs text-text-muted leading-relaxed">{t.consentLabel}</span>

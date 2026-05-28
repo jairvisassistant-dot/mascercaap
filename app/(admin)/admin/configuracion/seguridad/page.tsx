@@ -1,27 +1,86 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useReducer, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
-type MfaState =
+type Factor = { id: string; friendly_name: string | null; created_at: string };
+
+type MfaStatus =
   | { status: "loading" }
   | { status: "disabled" }
-  | { status: "enabled"; factors: { id: string; friendly_name: string | null; created_at: string }[] }
+  | { status: "enabled"; factors: Factor[] }
   | { status: "error"; message: string };
 
-type EnrollStep = "idle" | "qr" | "verify";
+type EnrollStep = "idle" | "qr";
+
+type State = {
+  mfaStatus: MfaStatus;
+  enrollStep: EnrollStep;
+  qrCode: string;
+  code: string[];
+  error: string;
+  loading: boolean;
+};
+
+type Action =
+  | { type: "mfaEnabled"; factors: Factor[] }
+  | { type: "mfaDisabled" }
+  | { type: "mfaStatusError"; message: string }
+  | { type: "startLoading" }
+  | { type: "loadingDone" }
+  | { type: "setError"; error: string }
+  | { type: "enrollQrReady"; qrCode: string }
+  | { type: "enrollCancel" }
+  | { type: "enrollSuccess" }
+  | { type: "setCodeDigit"; index: number; value: string };
+
+const EMPTY_CODE = ["", "", "", "", "", ""];
+
+const initialState: State = {
+  mfaStatus: { status: "loading" },
+  enrollStep: "idle",
+  qrCode: "",
+  code: EMPTY_CODE,
+  error: "",
+  loading: false,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "mfaEnabled":
+      return { ...state, mfaStatus: { status: "enabled", factors: action.factors } };
+    case "mfaDisabled":
+      return { ...state, mfaStatus: { status: "disabled" } };
+    case "mfaStatusError":
+      return { ...state, mfaStatus: { status: "error", message: action.message } };
+    case "startLoading":
+      return { ...state, loading: true, error: "" };
+    case "loadingDone":
+      return { ...state, loading: false };
+    case "setError":
+      return { ...state, error: action.error };
+    case "enrollQrReady":
+      return { ...state, enrollStep: "qr", qrCode: action.qrCode };
+    case "enrollCancel":
+      return { ...state, enrollStep: "idle", qrCode: "", code: EMPTY_CODE, error: "" };
+    case "enrollSuccess":
+      return { ...state, enrollStep: "idle", qrCode: "", code: EMPTY_CODE };
+    case "setCodeDigit": {
+      const code = [...state.code];
+      code[action.index] = action.value;
+      return { ...state, code };
+    }
+    default:
+      return state;
+  }
+}
 
 export default function SeguridadPage() {
   const { push } = useRouter();
-  const [mfaState, setMfaState] = useState<MfaState>({ status: "loading" });
-
-  // Enrollment state
-  const [enrollStep, setEnrollStep] = useState<EnrollStep>("idle");
-  const [qrCode, setQrCode] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { mfaStatus, enrollStep, qrCode, code, error, loading } = state;
   const factorIdRef = useRef("");
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   // Cargar estado actual del MFA
   const loadStatus = useCallback(async () => {
@@ -33,16 +92,16 @@ export default function SeguridadPage() {
       }
       const data = await res.json();
       if (!res.ok) {
-        setMfaState({ status: "error", message: data.error ?? "Error al cargar" });
+        dispatch({ type: "mfaStatusError", message: data.error ?? "Error al cargar" });
         return;
       }
       if (data.mfa_enabled) {
-        setMfaState({ status: "enabled", factors: data.factors });
+        dispatch({ type: "mfaEnabled", factors: data.factors });
       } else {
-        setMfaState({ status: "disabled" });
+        dispatch({ type: "mfaDisabled" });
       }
     } catch {
-      setMfaState({ status: "error", message: "Error de conexión" });
+      dispatch({ type: "mfaStatusError", message: "Error de conexión" });
     }
   }, [push]);
 
@@ -50,25 +109,20 @@ export default function SeguridadPage() {
 
   // ── Enroll: iniciar ────────────────────────────────────────────────
   async function handleStartEnroll() {
-    setError("");
-    setLoading(true);
-
+    dispatch({ type: "startLoading" });
     try {
       const res = await fetch("/api/admin/auth/mfa/enroll", { method: "POST" });
       const data = await res.json();
-
       if (!res.ok) {
-        setError(data.error ?? "Error al generar QR");
+        dispatch({ type: "setError", error: data.error ?? "Error al generar QR" });
         return;
       }
-
-      setQrCode(data.qr_code);
       factorIdRef.current = data.factor_id ?? "";
-      setEnrollStep("qr");
+      dispatch({ type: "enrollQrReady", qrCode: data.qr_code });
     } catch {
-      setError("Error de conexión");
+      dispatch({ type: "setError", error: "Error de conexión" });
     } finally {
-      setLoading(false);
+      dispatch({ type: "loadingDone" });
     }
   }
 
@@ -76,75 +130,58 @@ export default function SeguridadPage() {
   async function handleVerifyEnroll() {
     const fullCode = code.join("");
     if (fullCode.length !== 6) {
-      setError("Ingresá el código completo de 6 dígitos");
+      dispatch({ type: "setError", error: "Ingresá el código completo de 6 dígitos" });
       return;
     }
-
-    setError("");
-    setLoading(true);
-
+    dispatch({ type: "startLoading" });
     try {
       const res = await fetch("/api/admin/auth/mfa/verify-enrollment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ factor_id: factorIdRef.current, code: fullCode }),
       });
-
       const data = await res.json();
-
       if (!res.ok) {
-        setError(data.error ?? "Código incorrecto");
+        dispatch({ type: "setError", error: data.error ?? "Código incorrecto" });
         return;
       }
-
-      // Enrollment exitoso — recargar estado
-      setEnrollStep("idle");
-      setCode(["", "", "", "", "", ""]);
-      setQrCode("");
+      dispatch({ type: "enrollSuccess" });
       factorIdRef.current = "";
       await loadStatus();
     } catch {
-      setError("Error de conexión");
+      dispatch({ type: "setError", error: "Error de conexión" });
     } finally {
-      setLoading(false);
+      dispatch({ type: "loadingDone" });
     }
   }
 
   // ── Deshabilitar ───────────────────────────────────────────────────
   async function handleDisable(factorIdToRemove: string) {
     if (!confirm("¿Estás seguro de deshabilitar la verificación en dos pasos?")) return;
-
-    setError("");
-    setLoading(true);
-
+    dispatch({ type: "startLoading" });
     try {
       const res = await fetch("/api/admin/auth/mfa/unenroll", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ factor_id: factorIdToRemove }),
       });
-
       const data = await res.json();
-
       if (!res.ok) {
-        setError(data.error ?? "Error al deshabilitar");
+        dispatch({ type: "setError", error: data.error ?? "Error al deshabilitar" });
         return;
       }
-
       await loadStatus();
     } catch {
-      setError("Error de conexión");
+      dispatch({ type: "setError", error: "Error de conexión" });
     } finally {
-      setLoading(false);
+      dispatch({ type: "loadingDone" });
     }
   }
 
-  // ── Helpers para inputs TOTP ──────────────────────────────────────
+  // ── Helper: input TOTP ────────────────────────────────────────────
   function handleCodeChange(index: number, value: string) {
     if (!/^\d?$/.test(value)) return;
-    const newCode = [...code];
-    newCode[index] = value;
-    setCode(newCode);
+    dispatch({ type: "setCodeDigit", index, value });
   }
 
   // ── Render principal ───────────────────────────────────────────────
@@ -167,16 +204,16 @@ export default function SeguridadPage() {
       )}
 
       {/* ── Estado: Cargando ─────────────────────────────────────── */}
-      {mfaState.status === "loading" && (
+      {mfaStatus.status === "loading" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <p className="text-sm text-text-muted">Cargando configuración…</p>
         </div>
       )}
 
       {/* ── Estado: Error ────────────────────────────────────────── */}
-      {mfaState.status === "error" && (
+      {mfaStatus.status === "error" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
-          <p className="text-sm text-red-600">{mfaState.message}</p>
+          <p className="text-sm text-red-600">{mfaStatus.message}</p>
           <button
             type="button"
             onClick={loadStatus}
@@ -188,7 +225,7 @@ export default function SeguridadPage() {
       )}
 
       {/* ── Estado: Deshabilitado (pantalla de enrollment) ────────── */}
-      {mfaState.status === "disabled" && enrollStep === "idle" && (
+      {mfaStatus.status === "disabled" && enrollStep === "idle" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <div className="mb-4 flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-lg bg-amber-100 text-lg">
@@ -221,7 +258,7 @@ export default function SeguridadPage() {
       )}
 
       {/* ── Enrollment: Mostrar QR ───────────────────────────────── */}
-      {mfaState.status === "disabled" && enrollStep === "qr" && (
+      {mfaStatus.status === "disabled" && enrollStep === "qr" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <div className="mb-4 text-center">
             <h2 className="text-lg font-bold text-text-main">
@@ -234,12 +271,12 @@ export default function SeguridadPage() {
 
           <div className="mb-5 flex justify-center">
             {qrCode && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={`data:image/svg+xml;utf8,${encodeURIComponent(qrCode)}`}
                 alt="Código QR para 2FA"
                 width={192}
                 height={192}
+                unoptimized
                 className="size-48 rounded-xl border border-border-soft"
               />
             )}
@@ -276,11 +313,8 @@ export default function SeguridadPage() {
           <button
             type="button"
             onClick={() => {
-              setEnrollStep("idle");
-              setCode(["", "", "", "", "", ""]);
-              setQrCode("");
               factorIdRef.current = "";
-              setError("");
+              dispatch({ type: "enrollCancel" });
             }}
             className="mt-3 w-full text-center text-sm text-text-muted transition-colors hover:text-primary"
           >
@@ -290,7 +324,7 @@ export default function SeguridadPage() {
       )}
 
       {/* ── Estado: Habilitado ────────────────────────────────────── */}
-      {mfaState.status === "enabled" && (
+      {mfaStatus.status === "enabled" && (
         <div className="rounded-2xl border border-border-soft bg-surface-card p-6">
           <div className="mb-4 flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-lg bg-green-100 text-lg">
@@ -308,7 +342,7 @@ export default function SeguridadPage() {
             <p className="text-sm text-text-muted">
               Tu cuenta está protegida con autenticación de dos factores.
             </p>
-            {mfaState.factors.map((f) => (
+            {mfaStatus.factors.map((f) => (
               <div
                 key={f.id}
                 className="rounded-xl border border-border-soft bg-surface-soft px-4 py-3"
@@ -330,7 +364,7 @@ export default function SeguridadPage() {
 
           <button
             type="button"
-            onClick={() => handleDisable(mfaState.factors[0]?.id ?? "")}
+            onClick={() => handleDisable(mfaStatus.factors[0]?.id ?? "")}
             disabled={loading}
             className="w-full rounded-xl border border-red-300 bg-white px-4 py-3 font-semibold text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-55"
           >

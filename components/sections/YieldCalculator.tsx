@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useReducer, useEffect, useRef, useCallback } from "react"
 import { m, AnimatePresence, useInView, useReducedMotion } from "framer-motion"
 import ChipSelector from "@/components/ui/ChipSelector"
 import {
@@ -21,6 +21,67 @@ import { PreparationTimeline } from "@/components/ui/calculator/PreparationTimel
 import { PresentationComparison } from "@/components/ui/calculator/PresentationComparison"
 
 type Step = 1 | 2 | 3 | "result"
+
+type State = {
+  step: Step;
+  selectedPrep: PrepType | null;
+  targetCups: number | null;
+  showCustomInput: boolean;
+  customCups: string;
+  selectedFruit: FruitKey | null;
+  selectedPresentation: Presentation | null;
+};
+
+type Action =
+  | { type: "selectPrep"; prep: PrepType }
+  | { type: "selectCups"; cups: number }
+  | { type: "showCustom" }
+  | { type: "setCustomCups"; value: string }
+  | { type: "confirmCustomCups"; cups: number }
+  | { type: "selectFruit"; fruit: FruitKey }
+  | { type: "selectPresentation"; presentation: Presentation }
+  | { type: "backToStep1" }
+  | { type: "backToStep2" }
+  | { type: "backToStep3" }
+  | { type: "reset" };
+
+const initialState: State = {
+  step: 1,
+  selectedPrep: null,
+  targetCups: null,
+  showCustomInput: false,
+  customCups: "",
+  selectedFruit: null,
+  selectedPresentation: null,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "selectPrep":
+      return { ...state, selectedPrep: action.prep, step: state.targetCups !== null ? 2 : state.step };
+    case "selectCups":
+      return { ...state, targetCups: action.cups, showCustomInput: false, customCups: "", step: state.selectedPrep !== null ? 2 : state.step };
+    case "showCustom":
+      return { ...state, showCustomInput: true, targetCups: null };
+    case "setCustomCups":
+      return { ...state, customCups: action.value };
+    case "confirmCustomCups":
+      return { ...state, targetCups: action.cups, showCustomInput: false, step: state.selectedPrep !== null ? 2 : state.step };
+    case "selectFruit":
+      return { ...state, selectedFruit: action.fruit, step: 3 };
+    case "selectPresentation":
+      return { ...state, selectedPresentation: action.presentation, step: "result" };
+    case "backToStep2":
+      return { ...state, step: 2, selectedFruit: null, selectedPresentation: null };
+    case "backToStep3":
+      return { ...state, step: 3, selectedPresentation: null };
+    case "backToStep1":
+    case "reset":
+      return { ...initialState };
+    default:
+      return state;
+  }
+}
 
 const FRUIT_OPTIONS_ROW1 = (
   ["mora", "fresa", "lulo", "mango", "guayaba"] as FruitKey[]
@@ -53,54 +114,19 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     { value: "frappe", label: t.prepFrappe },
   ]
 
-  const [step, setStep] = useState<Step>(1)
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { step, selectedPrep, targetCups, showCustomInput, customCups, selectedFruit, selectedPresentation } = state;
+
   const cardRef = useRef<HTMLDivElement>(null)
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const visualRef = useRef<HTMLDivElement>(null)
   const visualInView = useInView(visualRef, { once: true, amount: 0.35 })
   const shouldReduce = useReducedMotion()
 
-  const [selectedPrep, setSelectedPrep] = useState<PrepType | null>(null)
-  const [targetCups, setTargetCups] = useState<number | null>(null)
-  const [showCustomInput, setShowCustomInput] = useState(false)
-  const [customCups, setCustomCups] = useState("")
-  const [selectedFruit, setSelectedFruit] = useState<FruitKey | null>(null)
-  const [selectedPresentation, setSelectedPresentation] = useState<Presentation | null>(null)
-
   const cupChipOptions = [
     ...CUP_OPTIONS.map((v) => ({ value: v, label: String(v) })),
     { value: CUSTOM_VALUE, label: t.customLabel },
   ]
-
-  function advanceStep1IfReady(prep: PrepType | null, cups: number | null) {
-    if (prep !== null && cups !== null) setStep(2)
-  }
-
-  function handlePrepSelect(value: PrepType) {
-    setSelectedPrep(value)
-    advanceStep1IfReady(value, targetCups)
-  }
-
-  function handleCupsSelect(value: number) {
-    if (value === CUSTOM_VALUE) {
-      setShowCustomInput(true)
-      setTargetCups(null)
-    } else {
-      setShowCustomInput(false)
-      setCustomCups("")
-      setTargetCups(value)
-      advanceStep1IfReady(selectedPrep, value)
-    }
-  }
-
-  function handleCustomCupsConfirm() {
-    const parsed = parseInt(customCups, 10)
-    if (!isNaN(parsed) && parsed > 0) {
-      setTargetCups(parsed)
-      setShowCustomInput(false)
-      advanceStep1IfReady(selectedPrep, parsed)
-    }
-  }
 
   const scrollCard = useCallback(() => {
     if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
@@ -109,26 +135,29 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     }, 50)
   }, [])
 
+  function handleCupsSelect(value: number) {
+    if (value === CUSTOM_VALUE) {
+      dispatch({ type: "showCustom" });
+    } else {
+      dispatch({ type: "selectCups", cups: value });
+    }
+  }
+
+  function handleCustomCupsConfirm() {
+    const parsed = parseInt(customCups, 10)
+    if (!isNaN(parsed) && parsed > 0) {
+      dispatch({ type: "confirmCustomCups", cups: parsed });
+    }
+  }
+
   function handleFruitSelect(value: FruitKey) {
-    setSelectedFruit(value)
-    setStep(3)
+    dispatch({ type: "selectFruit", fruit: value });
     scrollCard()
   }
 
   function handlePresentationSelect(value: Presentation) {
-    setSelectedPresentation(value)
-    setStep("result")
+    dispatch({ type: "selectPresentation", presentation: value });
     scrollCard()
-  }
-
-  function handleReset() {
-    setStep(1)
-    setSelectedPrep(null)
-    setTargetCups(null)
-    setShowCustomInput(false)
-    setCustomCups("")
-    setSelectedFruit(null)
-    setSelectedPresentation(null)
   }
 
   useEffect(() => {
@@ -137,18 +166,6 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [])
-
-  function handleBackToStep1() {
-    setStep(1)
-    setSelectedPrep(null)
-    setTargetCups(null)
-    setShowCustomInput(false)
-    setCustomCups("")
-    setSelectedFruit(null)
-    setSelectedPresentation(null)
-  }
-  function handleBackToStep2() { setStep(2); setSelectedFruit(null); setSelectedPresentation(null) }
-  function handleBackToStep3() { setStep(3); setSelectedPresentation(null) }
 
   const packs = targetCups && selectedPresentation && selectedPrep
     ? packsNeeded(targetCups, selectedPresentation, selectedPrep)
@@ -302,7 +319,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                       <ChipSelector
                         options={PREP_OPTIONS}
                         selected={selectedPrep}
-                        onChange={handlePrepSelect}
+                        onChange={(value) => dispatch({ type: "selectPrep", prep: value })}
                       />
                     </div>
                     <div>
@@ -321,7 +338,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                             min={1}
                             max={9999}
                             value={customCups}
-                            onChange={(e) => setCustomCups(e.target.value)}
+                            onChange={(e) => dispatch({ type: "setCustomCups", value: e.target.value })}
                             placeholder={t.customPlaceholder}
                             aria-label={t.customPlaceholder}
                             className="w-40 rounded-lg border border-border-mid px-3 py-2 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
@@ -345,7 +362,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                     <span className="text-text-muted font-normal">
                       {selectedPrep === "jugo" ? t.prepJugo : t.prepFrappe}: {targetCups} {t.cups}
                     </span>
-                    <BackLink label={t.back} onClick={handleBackToStep1} />
+                    <BackLink label={t.back} onClick={() => dispatch({ type: "backToStep1" })} />
                   </p>
                 )}
               </div>
@@ -374,7 +391,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   ) : (
                     <p className="text-text-muted text-sm flex flex-wrap items-center">
                       <span>{selectedFruit ? FRUIT_DATA[selectedFruit].label : ""}</span>
-                      <BackLink label={t.back} onClick={handleBackToStep2} />
+                      <BackLink label={t.back} onClick={() => dispatch({ type: "backToStep2" })} />
                     </p>
                   )}
                 </div>
@@ -397,7 +414,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                   ) : (
                     <p className="text-text-muted text-sm flex flex-wrap items-center">
                       <span>{selectedPresentation}</span>
-                      <BackLink label={t.back} onClick={handleBackToStep3} />
+                      <BackLink label={t.back} onClick={() => dispatch({ type: "backToStep3" })} />
                     </p>
                   )}
                 </div>
@@ -455,7 +472,7 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
                       )}
                       <button
                         type="button"
-                        onClick={handleReset}
+                        onClick={() => dispatch({ type: "reset" })}
                         className="inline-flex items-center justify-center min-h-[44px] px-4 text-sm text-text-muted underline underline-offset-2 hover:text-text-main transition-colors"
                       >
                         {t.calcAgain}

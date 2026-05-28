@@ -1,17 +1,51 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { generateCategoryKey } from "@/lib/id-generators";
 
+type State = {
+  label: string;
+  description: string;
+  generatedKey: string;
+  loadingKey: boolean;
+  saving: boolean;
+  error: string;
+};
+
+type Action =
+  | { type: "setLabel"; value: string }
+  | { type: "setDescription"; value: string }
+  | { type: "keyLoaded"; key: string }
+  | { type: "keyError" }
+  | { type: "savingStart" }
+  | { type: "savingDone"; error?: string };
+
+const initialState: State = {
+  label: "",
+  description: "",
+  generatedKey: "",
+  loadingKey: true,
+  saving: false,
+  error: "",
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setLabel":       return { ...state, label: action.value };
+    case "setDescription": return { ...state, description: action.value };
+    case "keyLoaded":      return { ...state, generatedKey: action.key, loadingKey: false };
+    case "keyError":       return { ...state, generatedKey: generateCategoryKey(0), loadingKey: false };
+    case "savingStart":    return { ...state, saving: true, error: "" };
+    case "savingDone":     return { ...state, saving: false, error: action.error ?? "" };
+    default:               return state;
+  }
+}
+
 export default function NuevaCategoriaForm() {
   const { push, refresh } = useRouter();
-  const [label, setLabel] = useState("");
-  const [description, setDescription] = useState("");
-  const [generatedKey, setGeneratedKey] = useState("");
-  const [loadingKey, setLoadingKey] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { label, description, generatedKey, loadingKey, saving, error } = state;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -20,12 +54,10 @@ export default function NuevaCategoriaForm() {
         const r = await fetch("/api/admin/categories", { signal: controller.signal });
         const data: unknown[] = await r.json();
         const count = Array.isArray(data) ? data.length : 0;
-        setGeneratedKey(generateCategoryKey(count));
+        dispatch({ type: "keyLoaded", key: generateCategoryKey(count) });
       } catch (err) {
         if ((err as DOMException).name === "AbortError") return;
-        setGeneratedKey(generateCategoryKey(0));
-      } finally {
-        setLoadingKey(false);
+        dispatch({ type: "keyError" });
       }
     };
     void loadKey();
@@ -35,8 +67,7 @@ export default function NuevaCategoriaForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!generatedKey) return;
-    setSaving(true);
-    setError("");
+    dispatch({ type: "savingStart" });
     try {
       const res = await fetch("/api/admin/categories", {
         method: "POST",
@@ -48,9 +79,7 @@ export default function NuevaCategoriaForm() {
       push("/admin/categorias");
       refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error creando categoría");
-    } finally {
-      setSaving(false);
+      dispatch({ type: "savingDone", error: e instanceof Error ? e.message : "Error creando categoría" });
     }
   }
 
@@ -75,7 +104,7 @@ export default function NuevaCategoriaForm() {
               id="categoria-nombre"
               type="text"
               value={label}
-              onChange={(e) => setLabel(e.target.value)}
+              onChange={(e) => dispatch({ type: "setLabel", value: e.target.value })}
               required
               placeholder="ej: Bebidas Exóticas"
               className={inputCls}
@@ -92,7 +121,7 @@ export default function NuevaCategoriaForm() {
             <textarea
               id="categoria-descripcion"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => dispatch({ type: "setDescription", value: e.target.value })}
               maxLength={200}
               rows={3}
               placeholder="Descripción breve de esta categoría..."

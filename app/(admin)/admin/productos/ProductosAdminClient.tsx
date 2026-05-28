@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useReducer, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,6 +19,62 @@ type Product = {
   display_order: number;
 };
 
+type ToggleField = "featured" | "is_sold_out" | "is_best_seller" | "active";
+
+type State = {
+  products: Product[];
+  search: string;
+  categoryFilter: string;
+  lineFilter: string;
+  error: string;
+  confirmDeleteId: string | null;
+  deleting: boolean;
+};
+
+type Action =
+  | { type: "setSearch"; value: string }
+  | { type: "setCategoryFilter"; value: string }
+  | { type: "setLineFilter"; value: string }
+  | { type: "toggleOptimistic"; id: string; field: ToggleField; value: boolean }
+  | { type: "toggleRevert"; id: string; field: ToggleField; value: boolean; error: string }
+  | { type: "requestDelete"; id: string }
+  | { type: "cancelDelete" }
+  | { type: "deleteStart" }
+  | { type: "deleteSuccess"; id: string }
+  | { type: "deleteError"; error: string };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setSearch":
+      return { ...state, search: action.value };
+    case "setCategoryFilter":
+      // Resetting lineFilter in the same action avoids a cascade
+      return { ...state, categoryFilter: action.value, lineFilter: "all" };
+    case "setLineFilter":
+      return { ...state, lineFilter: action.value };
+    case "toggleOptimistic":
+      return { ...state, products: state.products.map((p) => p.id === action.id ? { ...p, [action.field]: action.value } : p) };
+    case "toggleRevert":
+      return {
+        ...state,
+        error: action.error,
+        products: state.products.map((p) => p.id === action.id ? { ...p, [action.field]: action.value } : p),
+      };
+    case "requestDelete":
+      return { ...state, error: "", confirmDeleteId: action.id };
+    case "cancelDelete":
+      return { ...state, confirmDeleteId: null };
+    case "deleteStart":
+      return { ...state, deleting: true, error: "" };
+    case "deleteSuccess":
+      return { ...state, deleting: false, confirmDeleteId: null, products: state.products.filter((p) => p.id !== action.id) };
+    case "deleteError":
+      return { ...state, deleting: false, confirmDeleteId: null, error: action.error };
+    default:
+      return state;
+  }
+}
+
 const EMPTY_LINE_LABELS: Record<string, string> = {};
 const EMPTY_LINE_CATEGORIES: Record<string, string> = {};
 const EMPTY_CATEGORIES: { key: string; label: string }[] = [];
@@ -35,14 +91,17 @@ export default function ProductosAdminClient({
   categories?: { key: string; label: string }[];
 }) {
   const { refresh } = useRouter();
-  const [products, setProducts] = useState(initialProducts);
-  const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [lineFilter, setLineFilter] = useState("all");
+  const [state, dispatch] = useReducer(reducer, {
+    products: initialProducts,
+    search: "",
+    categoryFilter: "all",
+    lineFilter: "all",
+    error: "",
+    confirmDeleteId: null,
+    deleting: false,
+  });
+  const { products, search, categoryFilter, lineFilter, error, confirmDeleteId, deleting } = state;
   const [, startTransition] = useTransition();
-  const [error, setError] = useState("");
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
 
   // Todas las líneas activas en product_lines (viene de DB, filtrado por active=true)
   const allLineKeys = Object.keys(lineLabels).length > 0
@@ -69,11 +128,6 @@ export default function ProductosAdminClient({
     ? allLineKeys
     : (visibleGroups.find((g) => g.key === categoryFilter)?.lineKeys ?? allLineKeys);
 
-  function handleCategoryChange(value: string) {
-    setCategoryFilter(value);
-    setLineFilter("all");
-  }
-
   const filtered = products.filter((p) => {
     const activeGroup = visibleGroups.find((g) => g.key === categoryFilter);
     const matchesCategory =
@@ -86,13 +140,8 @@ export default function ProductosAdminClient({
     return matchesCategory && matchesLine && matchesSearch;
   });
 
-  async function toggle(id: string, field: "featured" | "is_sold_out" | "is_best_seller" | "active", value: boolean) {
-    setError("");
-
-    // Optimistic update
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
-    );
+  async function toggle(id: string, field: ToggleField, value: boolean) {
+    dispatch({ type: "toggleOptimistic", id, field, value });
 
     const res = await fetch(`/api/admin/products/${id}`, {
       method: "PATCH",
@@ -102,11 +151,7 @@ export default function ProductosAdminClient({
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al actualizar");
-      // Revert optimistic update
-      setProducts((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, [field]: !value } : p))
-      );
+      dispatch({ type: "toggleRevert", id, field, value: !value, error: data.error ?? "Error al actualizar" });
       return;
     }
 
@@ -114,18 +159,15 @@ export default function ProductosAdminClient({
   }
 
   async function deleteProduct(id: string) {
-    setDeleting(true);
-    setError("");
+    dispatch({ type: "deleteStart" });
     const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al eliminar");
+      dispatch({ type: "deleteError", error: data.error ?? "Error al eliminar" });
     } else {
-      setProducts((prev) => prev.filter((p) => p.id !== id));
+      dispatch({ type: "deleteSuccess", id });
       startTransition(() => refresh());
     }
-    setConfirmDeleteId(null);
-    setDeleting(false);
   }
 
   const featuredCount = products.filter((p) => p.featured).length;
@@ -148,14 +190,14 @@ export default function ProductosAdminClient({
           aria-label="Buscar productos por nombre o ID"
           placeholder="Buscar por nombre o ID..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => dispatch({ type: "setSearch", value: e.target.value })}
           className="min-w-[220px] flex-1 rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
         />
         {/* Filtro 1: Categoría */}
         <select
           aria-label="Filtrar por categoría"
           value={categoryFilter}
-          onChange={(e) => handleCategoryChange(e.target.value)}
+          onChange={(e) => dispatch({ type: "setCategoryFilter", value: e.target.value })}
           className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
         >
           <option value="all">Todas las categorías</option>
@@ -167,7 +209,7 @@ export default function ProductosAdminClient({
         <select
           aria-label="Filtrar por línea de producto"
           value={lineFilter}
-          onChange={(e) => setLineFilter(e.target.value)}
+          onChange={(e) => dispatch({ type: "setLineFilter", value: e.target.value })}
           disabled={linesForCategory.length === 0}
           className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
         >
@@ -281,7 +323,7 @@ export default function ProductosAdminClient({
                       <button
                         type="button"
                         disabled={deleting}
-                        onClick={() => setConfirmDeleteId(null)}
+                        onClick={() => dispatch({ type: "cancelDelete" })}
                         className="rounded-lg border border-border-mid px-2.5 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:bg-surface-warm"
                       >
                         Cancelar
@@ -297,7 +339,7 @@ export default function ProductosAdminClient({
                       </Link>
                       <button
                         type="button"
-                        onClick={() => { setError(""); setConfirmDeleteId(p.id); }}
+                        onClick={() => dispatch({ type: "requestDelete", id: p.id })}
                         className="flex size-7 items-center justify-center rounded-lg text-text-faint transition-colors hover:bg-red-50 hover:text-red-500"
                         aria-label={`Eliminar producto ${p.name}`}
                       >

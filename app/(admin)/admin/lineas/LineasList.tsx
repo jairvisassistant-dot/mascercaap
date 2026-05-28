@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useReducer, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -23,53 +23,112 @@ type EditValues = {
   category_key: string | null;
 };
 
+type State = {
+  lines: Line[];
+  moving: string | null;
+  rowMode: Record<string, Mode>;
+  editValues: Record<string, EditValues>;
+  busy: string | null;
+  error: string;
+};
+
+type Action =
+  | { type: "startEdit"; line: Line }
+  | { type: "setEditPatch"; key: string; patch: Partial<EditValues> }
+  | { type: "cancelRow"; key: string }
+  | { type: "setConfirmDelete"; key: string }
+  | { type: "moveStart"; key: string; optimistic: Line[] }
+  | { type: "moveDone" }
+  | { type: "moveError"; lines: Line[]; error: string }
+  | { type: "busyStart"; key: string }
+  | { type: "busyDone" }
+  | { type: "setError"; error: string }
+  | { type: "lineUpdated"; key: string; values: Required<EditValues> }
+  | { type: "lineRemoved"; key: string };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "startEdit":
+      return {
+        ...state,
+        editValues: {
+          ...state.editValues,
+          [action.line.key]: {
+            label: action.line.label,
+            icon_emoji: action.line.icon_emoji,
+            description: action.line.description ?? "",
+            category_key: action.line.category_key,
+          },
+        },
+        rowMode: { ...state.rowMode, [action.line.key]: "edit" },
+        error: "",
+      };
+    case "setEditPatch": {
+      const prev = state.editValues[action.key] ?? { label: "", icon_emoji: "", description: "", category_key: null };
+      return { ...state, editValues: { ...state.editValues, [action.key]: { ...prev, ...action.patch } } };
+    }
+    case "cancelRow":
+      return { ...state, rowMode: { ...state.rowMode, [action.key]: "view" } };
+    case "setConfirmDelete":
+      return { ...state, rowMode: { ...state.rowMode, [action.key]: "confirm-delete" } };
+    case "moveStart":
+      return { ...state, moving: action.key, lines: action.optimistic, error: "" };
+    case "moveDone":
+      return { ...state, moving: null };
+    case "moveError":
+      return { ...state, moving: null, lines: action.lines, error: action.error };
+    case "busyStart":
+      return { ...state, busy: action.key, error: "" };
+    case "busyDone":
+      return { ...state, busy: null };
+    case "setError":
+      return { ...state, error: action.error };
+    case "lineUpdated":
+      return {
+        ...state,
+        lines: state.lines.map((l) =>
+          l.key === action.key
+            ? { ...l, label: action.values.label, icon_emoji: action.values.icon_emoji, description: action.values.description, category_key: action.values.category_key }
+            : l,
+        ),
+        rowMode: { ...state.rowMode, [action.key]: "view" },
+      };
+    case "lineRemoved":
+      return { ...state, lines: state.lines.filter((l) => l.key !== action.key) };
+    default:
+      return state;
+  }
+}
+
 export default function LineasList({ initial, categories }: { initial: Line[]; categories: Category[] }) {
   const { refresh } = useRouter();
   // Intentional: mutable local copy of server data; router.refresh() remounts with fresh `initial`.
-  const [lines, setLines] = useState<Line[]>(initial);
-  const [moving, setMoving] = useState<string | null>(null);
-  const [rowMode, setRowMode] = useState<Record<string, Mode>>({});
-  const [editValues, setEditValues] = useState<Record<string, EditValues>>({});
-  const [busy, setBusy] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(reducer, {
+    lines: initial,
+    moving: null,
+    rowMode: {},
+    editValues: {},
+    busy: null,
+    error: "",
+  });
+  const { lines, moving, rowMode, editValues, busy, error } = state;
   const [, startTransition] = useTransition();
 
   const getMode = (key: string): Mode => rowMode[key] ?? "view";
   const anyBusy = busy !== null || moving !== null;
 
-  function startEdit(line: Line) {
-    setEditValues((prev) => ({
-      ...prev,
-      [line.key]: {
-        label: line.label,
-        icon_emoji: line.icon_emoji,
-        description: line.description ?? "",
-        category_key: line.category_key,
-      },
-    }));
-    setRowMode((prev) => ({ ...prev, [line.key]: "edit" }));
-    setError("");
-  }
-
-  function cancelRow(key: string) {
-    setRowMode((prev) => ({ ...prev, [key]: "view" }));
-  }
-
   function setEdit(key: string, patch: Partial<EditValues>) {
-    setEditValues((prev) => ({ ...prev, [key]: { ...prev[key], ...patch } }));
+    dispatch({ type: "setEditPatch", key, patch });
   }
 
   async function move(key: string, direction: "up" | "down") {
-    setMoving(key);
-    setError("");
-
     const idx = lines.findIndex((l) => l.key === key);
     const swapIdx = direction === "up" ? idx - 1 : idx + 1;
-    if (swapIdx < 0 || swapIdx >= lines.length) { setMoving(null); return; }
+    if (swapIdx < 0 || swapIdx >= lines.length) return;
 
-    const next = [...lines];
-    [next[idx], next[swapIdx]] = [next[swapIdx], next[idx]];
-    setLines(next);
+    const optimistic = [...lines];
+    [optimistic[idx], optimistic[swapIdx]] = [optimistic[swapIdx], optimistic[idx]];
+    dispatch({ type: "moveStart", key, optimistic });
 
     const res = await fetch("/api/admin/product-lines", {
       method: "PATCH",
@@ -79,52 +138,43 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al reordenar");
-      setLines(initial);
+      dispatch({ type: "moveError", lines: initial, error: data.error ?? "Error al reordenar" });
     } else {
+      dispatch({ type: "moveDone" });
       startTransition(() => refresh());
     }
-    setMoving(null);
   }
 
   async function saveEdit(key: string) {
     const vals = editValues[key];
     if (!vals?.label.trim()) return;
-    setBusy(key);
-    setError("");
+    dispatch({ type: "busyStart", key });
+
+    const trimmed: Required<EditValues> = {
+      label: vals.label.trim(),
+      icon_emoji: vals.icon_emoji.trim() || "🛍️",
+      description: vals.description.trim(),
+      category_key: vals.category_key || null,
+    };
 
     const res = await fetch("/api/admin/product-lines", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        key,
-        label: vals.label.trim(),
-        icon_emoji: vals.icon_emoji.trim() || "🛍️",
-        description: vals.description.trim(),
-        category_key: vals.category_key || null,
-      }),
+      body: JSON.stringify({ key, ...trimmed }),
     });
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error ?? "Error al guardar");
+      dispatch({ type: "setError", error: data.error ?? "Error al guardar" });
     } else {
-      setLines((prev) =>
-        prev.map((l) =>
-          l.key === key
-            ? { ...l, label: vals.label.trim(), icon_emoji: vals.icon_emoji.trim() || "🛍️", description: vals.description.trim(), category_key: vals.category_key || null }
-            : l
-        )
-      );
-      setRowMode((prev) => ({ ...prev, [key]: "view" }));
+      dispatch({ type: "lineUpdated", key, values: trimmed });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   async function confirmDelete(key: string) {
-    setBusy(key);
-    setError("");
+    dispatch({ type: "busyStart", key });
 
     const res = await fetch("/api/admin/product-lines", {
       method: "DELETE",
@@ -134,13 +184,13 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.error ?? "Error al eliminar");
-      setRowMode((prev) => ({ ...prev, [key]: "view" }));
+      dispatch({ type: "setError", error: data.error ?? "Error al eliminar" });
+      dispatch({ type: "cancelRow", key });
     } else {
-      setLines((prev) => prev.filter((l) => l.key !== key));
+      dispatch({ type: "lineRemoved", key });
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   // Agrupar por categoría para mostrar
@@ -184,12 +234,12 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
                     busy={busy}
                     anyBusy={anyBusy}
                     onMove={move}
-                    onStartEdit={startEdit}
-                    onCancelRow={cancelRow}
+                    onStartEdit={(line) => dispatch({ type: "startEdit", line })}
+                    onCancelRow={(key) => dispatch({ type: "cancelRow", key })}
                     onSetEdit={setEdit}
                     onSaveEdit={saveEdit}
                     onConfirmDelete={confirmDelete}
-                    onRequestDelete={(key) => setRowMode((prev) => ({ ...prev, [key]: "confirm-delete" }))}
+                    onRequestDelete={(key) => dispatch({ type: "setConfirmDelete", key })}
                   />
                 );
               })}
@@ -219,12 +269,12 @@ export default function LineasList({ initial, categories }: { initial: Line[]; c
                   busy={busy}
                   anyBusy={anyBusy}
                   onMove={move}
-                  onStartEdit={startEdit}
-                  onCancelRow={cancelRow}
+                  onStartEdit={(line) => dispatch({ type: "startEdit", line })}
+                  onCancelRow={(key) => dispatch({ type: "cancelRow", key })}
                   onSetEdit={setEdit}
                   onSaveEdit={saveEdit}
                   onConfirmDelete={confirmDelete}
-                  onRequestDelete={(key) => setRowMode((prev) => ({ ...prev, [key]: "confirm-delete" }))}
+                  onRequestDelete={(key) => dispatch({ type: "setConfirmDelete", key })}
                 />
               );
             })}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useReducer, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { LeadRow } from "@/types";
 
@@ -32,18 +32,71 @@ const ESTADO_COLORS: Record<string, string> = {
   perdido:   "bg-gray-100 text-gray-500 border-gray-200",
 };
 
+// ── Reducer ──────────────────────────────────────────────────────────────────
+
+type State = {
+  leads: LeadRow[];
+  filters: Record<string, string>;
+  expandedId: string | null;
+  editNotas: Record<string, string>;
+  busy: string | null;
+  error: string;
+};
+
+type Action =
+  | { type: "setFilter"; key: string; value: string }
+  | { type: "clearFilters" }
+  | { type: "toggleExpand"; id: string }
+  | { type: "setEditNota"; id: string; value: string }
+  | { type: "busyStart"; key: string }
+  | { type: "busyDone" }
+  | { type: "setError"; error: string }
+  | { type: "setLeads"; leads: LeadRow[] }
+  | { type: "clearEditNota"; id: string };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "setFilter":
+      return { ...state, filters: { ...state.filters, [action.key]: action.value } };
+    case "clearFilters":
+      return { ...state, filters: {} };
+    case "toggleExpand":
+      return { ...state, expandedId: state.expandedId === action.id ? null : action.id };
+    case "setEditNota":
+      return { ...state, editNotas: { ...state.editNotas, [action.id]: action.value } };
+    case "busyStart":
+      return { ...state, busy: action.key, error: "" };
+    case "busyDone":
+      return { ...state, busy: null };
+    case "setError":
+      return { ...state, error: action.error };
+    case "setLeads":
+      return { ...state, leads: action.leads };
+    case "clearEditNota": {
+      const next = { ...state.editNotas };
+      delete next[action.id];
+      return { ...state, editNotas: next };
+    }
+    default:
+      return state;
+  }
+}
+
 // ── Componente principal ─────────────────────────────────────────────────────
 
 export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
   const { refresh } = useRouter();
   // Intentional: mutable local copy of server data. Mutations are applied optimistically;
   // router.refresh() remounts with a fresh `initial` from the server component.
-  const [leads, setLeads] = useState(initial);
-  const [filters, setFilters] = useState<Record<string, string>>({});
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [editNotas, setEditNotas] = useState<Record<string, string>>({});
-  const [busy, setBusy] = useState<string | null>(null);
-  const [error, setError] = useState("");
+  const [state, dispatch] = useReducer(reducer, {
+    leads: initial,
+    filters: {},
+    expandedId: null,
+    editNotas: {},
+    busy: null,
+    error: "",
+  });
+  const { leads, filters, expandedId, editNotas, busy, error } = state;
   const [, startTransition] = useTransition();
 
   // ── Derived data ─────────────────────────────────────────────────────────
@@ -63,12 +116,8 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   async function updateEstado(id: string, estado: string) {
-    setBusy(id);
-    setError("");
-
-    setLeads((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, estado_seguimiento: estado } : l))
-    );
+    dispatch({ type: "busyStart", key: id });
+    dispatch({ type: "setLeads", leads: leads.map((l) => l.id === id ? { ...l, estado_seguimiento: estado } : l) });
 
     const res = await fetch("/api/admin/leads", {
       method: "PATCH",
@@ -78,22 +127,18 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al actualizar estado");
-      setLeads(initial);
+      dispatch({ type: "setError", error: data.error ?? "Error al actualizar estado" });
+      dispatch({ type: "setLeads", leads: initial });
     } else {
       startTransition(() => refresh());
     }
-    setBusy(null);
+    dispatch({ type: "busyDone" });
   }
 
   async function saveNotas(id: string) {
     const notas = editNotas[id]?.trim() ?? "";
-    setBusy(`notas-${id}`);
-    setError("");
-
-    setLeads((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, notas } : l))
-    );
+    dispatch({ type: "busyStart", key: `notas-${id}` });
+    dispatch({ type: "setLeads", leads: leads.map((l) => l.id === id ? { ...l, notas } : l) });
 
     const res = await fetch("/api/admin/leads", {
       method: "PATCH",
@@ -103,21 +148,13 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
 
     if (!res.ok) {
       const data = await res.json();
-      setError(data.error ?? "Error al guardar notas");
-      setLeads(initial);
+      dispatch({ type: "setError", error: data.error ?? "Error al guardar notas" });
+      dispatch({ type: "setLeads", leads: initial });
     } else {
-      setEditNotas((prev) => {
-        const next = { ...prev };
-        delete next[id];
-        return next;
-      });
+      dispatch({ type: "clearEditNota", id });
       startTransition(() => refresh());
     }
-    setBusy(null);
-  }
-
-  function clearFilters() {
-    setFilters({});
+    dispatch({ type: "busyDone" });
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -137,7 +174,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
         <select
           aria-label="Filtrar por tipo"
           value={filters.tipo ?? ""}
-          onChange={(e) => setFilters((prev) => ({ ...prev, tipo: e.target.value }))}
+          onChange={(e) => dispatch({ type: "setFilter", key: "tipo", value: e.target.value })}
           className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
         >
           <option value="">Todos los tipos</option>
@@ -152,7 +189,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
         <select
           aria-label="Filtrar por fuente"
           value={filters.fuente ?? ""}
-          onChange={(e) => setFilters((prev) => ({ ...prev, fuente: e.target.value }))}
+          onChange={(e) => dispatch({ type: "setFilter", key: "fuente", value: e.target.value })}
           className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
         >
           <option value="">Todas las fuentes</option>
@@ -167,7 +204,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
         <select
           aria-label="Filtrar por estado"
           value={filters.estado ?? ""}
-          onChange={(e) => setFilters((prev) => ({ ...prev, estado: e.target.value }))}
+          onChange={(e) => dispatch({ type: "setFilter", key: "estado", value: e.target.value })}
           className="rounded-xl border border-border-mid bg-surface-card px-3 py-2 text-xs font-semibold text-text-sub transition-colors hover:border-primary/40"
         >
           <option value="">Todos los estados</option>
@@ -179,7 +216,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
         {activeFilters > 0 && (
           <button
             type="button"
-            onClick={clearFilters}
+            onClick={() => dispatch({ type: "clearFilters" })}
             className="rounded-xl px-3 py-2 text-xs font-semibold text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
           >
             Limpiar filtros
@@ -275,7 +312,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
               {/* ── Expand / collapse ────────────────────────────── */}
               <button
                 type="button"
-                onClick={() => setExpandedId(isExpanded ? null : lead.id)}
+                onClick={() => dispatch({ type: "toggleExpand", id: lead.id })}
                 className="mt-2 text-[11px] font-bold uppercase tracking-wider text-primary transition-colors hover:text-primary-dark"
               >
                 {isExpanded ? "Contraer" : "Ver detalle"}
@@ -370,9 +407,7 @@ export default function ConsultasList({ initial }: { initial: LeadRow[] }) {
                       <textarea
                         id={`notas-${lead.id}`}
                         defaultValue={lead.notas ?? ""}
-                        onChange={(e) =>
-                          setEditNotas((prev) => ({ ...prev, [lead.id]: e.target.value }))
-                        }
+                        onChange={(e) => dispatch({ type: "setEditNota", id: lead.id, value: e.target.value })}
                         rows={2}
                         maxLength={2000}
                         placeholder="Agregá una nota interna sobre este lead…"

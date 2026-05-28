@@ -21,7 +21,7 @@ export default function ConfirmDeleteBox({
   return (
     <div className="rounded-2xl border border-red-200 bg-red-50/60 p-4 shadow-sm">
       <p className="mb-1 text-sm font-semibold text-red-800">{title}</p>
-      {subtext && <div className="mb-3 text-xs text-red-600">{subtext}</div>}
+      {subtext && <div className="mb-3 line-clamp-2 text-xs text-red-600">{subtext}</div>}
       <div className="flex items-center gap-2">
         <button
           type="button"
