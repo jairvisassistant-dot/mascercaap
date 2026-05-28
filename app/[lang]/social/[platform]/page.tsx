@@ -105,7 +105,7 @@ export default async function SocialPlatformPage({
               width={320}
               height={320}
               priority
-              className="h-64 w-64 rounded-2xl sm:h-72 sm:w-72"
+              className="size-64 rounded-2xl sm:size-72"
             />
           </div>
           <p className="mt-6 max-w-sm text-sm leading-relaxed text-text-muted">

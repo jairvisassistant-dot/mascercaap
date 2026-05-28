@@ -134,7 +134,7 @@ export function ProductsContent({
             delay={segIndex * 0.08}
           >
             <div className="flex items-center gap-4 mb-5">
-              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
+              <div className={`size-11 rounded-xl bg-gradient-to-br ${line.gradient} flex items-center justify-center text-xl shadow-sm`}>
                 {line.iconEmoji}
               </div>
               <div>
