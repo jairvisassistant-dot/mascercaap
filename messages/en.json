@@ -12,7 +12,8 @@
     "themeLight": "Light",
     "themeActivateDark": "Activate dark mode",
     "themeActivateLight": "Activate light mode",
-    "logoAlt": "Mas Cerca AP"
+    "logoAlt": "Mas Cerca AP",
+    "skipToContent": "Skip to content"
   },
   "footer": {
       "description": "Our concentrates, fruit pulps, and dairy drinks are made with carefully selected fruit and high quality standards, so you can always enjoy the flavor and aroma of the fruits you love most.",
@@ -571,6 +572,7 @@
       },
       "error": "There was an error sending your message. Please try again.",
       "consentLabel": "I accept the processing of my personal data as per the Privacy Policy",
+      "viewPolicyLabel": "(view policy)",
       "consentRequired": "You must accept the privacy policy to send the form.",
       "whatsappMsg": {
         "greeting": "Hi Mas Cerca AP! 👋",

@@ -24,6 +24,7 @@ interface ContactFieldsProps {
     };
     consentLabel: string;
     consentRequired: string;
+    viewPolicyLabel: string;
   };
   lang: Locale;
   fields: FormFields;
@@ -62,7 +63,7 @@ export default function ContactFields({
             maxLength={200}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.motivoOtro ? "border-red-500" : "border-border-mid"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
             placeholder={t.placeholders.otherReason}
           />
           {fieldErrors.motivoOtro && (
@@ -82,9 +83,9 @@ export default function ContactFields({
           autoComplete="name"
           value={fields.nombre}
           onChange={onFieldChange("nombre")}
-          className={`w-full px-4 py-3 rounded-lg border ${
-            fieldErrors.nombre ? "border-red-500" : "border-border-mid"
-          } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            className={`w-full px-4 py-3 rounded-lg border ${
+              fieldErrors.nombre ? "border-red-500" : "border-border-mid"
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
           placeholder={t.placeholders.name}
         />
         {fieldErrors.nombre && (
@@ -103,7 +104,7 @@ export default function ContactFields({
           autoComplete="organization"
           value={fields.empresa}
           onChange={onFieldChange("empresa")}
-          className="w-full px-4 py-3 rounded-lg border border-border-mid focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main"
+          className="w-full px-4 py-3 rounded-lg border border-border-mid focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main"
           placeholder={t.placeholders.company}
         />
       </div>
@@ -122,7 +123,7 @@ export default function ContactFields({
             onChange={onFieldChange("email")}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.email ? "border-red-500" : "border-border-mid"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
             placeholder={t.placeholders.email}
           />
           {fieldErrors.email && (
@@ -141,7 +142,7 @@ export default function ContactFields({
             onChange={onFieldChange("telefono")}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.telefono ? "border-red-500" : "border-border-mid"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
             placeholder={t.placeholders.phone}
           />
           {fieldErrors.telefono && (
@@ -160,9 +161,9 @@ export default function ContactFields({
           value={fields.mensaje}
           onChange={onFieldChange("mensaje")}
           rows={4}
-          className={`w-full px-4 py-3 rounded-lg border ${
-            fieldErrors.mensaje ? "border-red-500" : "border-border-mid"
-          } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            className={`w-full px-4 py-3 rounded-lg border ${
+              fieldErrors.mensaje ? "border-red-500" : "border-border-mid"
+          } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
           placeholder={fields.tipo === "disponibilidad" ? availability.additionalInfoLabel : t.placeholders.message}
         />
         {fieldErrors.mensaje && (
@@ -177,7 +178,7 @@ export default function ContactFields({
             type="checkbox"
             checked={consented}
             onChange={(e) => onConsentChange(e.target.checked)}
-            className="mt-0.5 size-4 shrink-0 rounded border-border-mid accent-primary focus:ring-2 focus:ring-primary"
+            className="mt-0.5 size-4 shrink-0 rounded border-border-mid accent-primary focus-visible:ring-2 focus-visible:ring-primary"
           />
           <span className="text-sm text-text-sub">
             {t.consentLabel}{" "}
@@ -187,7 +188,7 @@ export default function ContactFields({
               rel="noopener noreferrer"
               className="text-primary underline underline-offset-2 hover:text-primary-dark"
             >
-              (ver política)
+              {t.viewPolicyLabel}
             </Link>
           </span>
         </label>

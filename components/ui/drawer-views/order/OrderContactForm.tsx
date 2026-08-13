@@ -51,7 +51,7 @@ export default function OrderContactForm({
             value={nombre}
             onChange={(e) => dispatch({ type: "setContact", field: "nombre", value: e.target.value })}
             placeholder={t.namePlaceholder}
-            className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
+            className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary"
           />
         </div>
 
@@ -63,7 +63,7 @@ export default function OrderContactForm({
             value={email}
             onChange={(e) => dispatch({ type: "setContact", field: "email", value: e.target.value })}
             placeholder={t.emailPlaceholder}
-            className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
+            className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary"
           />
         </div>
 
@@ -75,7 +75,7 @@ export default function OrderContactForm({
             value={waNumber}
             onChange={(e) => dispatch({ type: "setContact", field: "waNumber", value: e.target.value })}
             placeholder={t.whatsappPlaceholder}
-            className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary"
+            className="w-full rounded-lg border border-border-mid px-3 py-2.5 text-sm text-text-main bg-surface-page focus:outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-primary"
           />
           <p className="text-xs text-text-muted mt-1">{t.contactHint}</p>
         </div>

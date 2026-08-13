@@ -12,7 +12,8 @@
     "themeLight": "Claro",
     "themeActivateDark": "Activar modo oscuro",
     "themeActivateLight": "Activar modo claro",
-    "logoAlt": "Mas Cerca AP"
+    "logoAlt": "Mas Cerca AP",
+    "skipToContent": "Saltar al contenido"
   },
   "footer": {
       "description": "Zumos, pulpas de fruta y bebidas lácteas elaborados con fruta seleccionada y altos estándares de calidad, para que siempre disfrutes el sabor y el aroma de las frutas que más te gustan.",
@@ -571,6 +572,7 @@
       },
       "error": "Hubo un error al enviar. Por favor intenta de nuevo.",
       "consentLabel": "Acepto el tratamiento de mis datos personales según la Política de Privacidad",
+      "viewPolicyLabel": "(ver política)",
       "consentRequired": "Debes aceptar la política de privacidad para enviar el formulario.",
       "whatsappMsg": {
         "greeting": "Hola Mas Cerca AP! 👋",
