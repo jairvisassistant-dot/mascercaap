@@ -13,6 +13,12 @@ const CATEGORY_TO_TYPE: Record<string, ProductType> = {
   lacteos: "Lácteos",
 }
 
+/** Resolves the UI product type (Pulpas/Zumos/Lácteos) for a given catalog line key. */
+export function getProductTypeForLine(lines: CatalogLine[], lineKey: string): string | null {
+  const line = lines.find((l) => l.key === lineKey)
+  return line?.category_key ? CATEGORY_TO_TYPE[line.category_key] ?? null : null
+}
+
 export const QUANTITY_OPTIONS = [5, 10, 20, 50] as const
 export const QUANTITY_OPTIONS_120G_PACKS = [1, 2, 3, 4, 5, 10] as const
 export const PRESENTATION_120G = "120g"

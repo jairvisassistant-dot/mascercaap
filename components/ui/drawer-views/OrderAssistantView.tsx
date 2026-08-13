@@ -14,9 +14,10 @@ import {
   PRODUCT_TYPE_OPTIONS,
   buildPriceResolver,
   buildCatalog,
+  getProductTypeForLine,
 } from "@/lib/order-assistant"
 import type { Dictionary } from "@/lib/i18n"
-import type { PriceEntry, CatalogLine } from "@/lib/order-assistant"
+import type { PriceEntry, CatalogLine, Catalog } from "@/lib/order-assistant"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 import type { State, Action } from "./order/types"
@@ -33,6 +34,8 @@ type Props = {
   prices: PriceEntry[];
   lines:  CatalogLine[];
   onContactClick: () => void
+  initialLineKey?: string | null
+  initialPresentation?: string | null
 }
 
 const INITIAL_STATE: State = {
@@ -50,6 +53,38 @@ const INITIAL_STATE: State = {
   status: "idle",
   waUrl: null,
 };
+
+// Preselects productType/lineKey (and presentation, when valid) from the card
+// the user clicked, so the assistant lands past the redundant step-1/2 prompts.
+function buildInitialState(
+  lines: CatalogLine[],
+  catalog: Catalog,
+  initialLineKey: string | null,
+  initialPresentation: string | null
+): State {
+  if (!initialLineKey) return INITIAL_STATE
+
+  const productType = getProductTypeForLine(lines, initialLineKey)
+  if (!productType) return INITIAL_STATE
+
+  const lineIsSelectable = catalog.getProductOptionsForType(productType).some((o) => o.value === initialLineKey)
+  if (!lineIsSelectable) return INITIAL_STATE
+
+  if (productType === "Lácteos") {
+    return { ...INITIAL_STATE, curProductType: productType, curLineKey: initialLineKey, step: 4 };
+  }
+
+  const presentations = catalog.getPresentationsForProduct(productType, initialLineKey)
+  const presentation = initialPresentation && presentations.includes(initialPresentation) ? initialPresentation : null
+
+  return {
+    ...INITIAL_STATE,
+    curProductType: productType,
+    curLineKey: initialLineKey,
+    curPresentation: presentation,
+    step: presentation ? 4 : 3,
+  };
+}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -111,12 +146,16 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-export default function OrderAssistantView({ dict, prices, lines, onContactClick }: Props) {
+export default function OrderAssistantView({ dict, prices, lines, onContactClick, initialLineKey = null, initialPresentation = null }: Props) {
   const t = dict.orderAssistant
   const resolvePrice = useMemo(() => buildPriceResolver(prices), [prices])
   const catalog      = useMemo(() => buildCatalog(lines, prices), [lines, prices])
 
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
+  const [state, dispatch] = useReducer(
+    reducer,
+    INITIAL_STATE,
+    () => buildInitialState(lines, catalog, initialLineKey, initialPresentation)
+  )
   const {
     step, items,
     curProductType, curLineKey, curPresentation, showCustomQty, customQty,

@@ -6,6 +6,8 @@ type View = "menu" | "faq" | "privacy" | "terms" | "contact" | "whatsapp" | "ord
 
 type DrawerContext = {
   product?: string;
+  lineKey?: string;
+  presentation?: string;
 };
 
 type OpenDrawerOptions = {

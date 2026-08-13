@@ -55,7 +55,7 @@ function buildDefaultWhatsAppState(message: string): WhatsAppState {
 export default function HelpDrawer({ dict, lang, faqData, prices, lines, categories, productLines, products, onClose }: Props) {
   const locale = lang;
   const t = dict.helpHub;
-  const { initialView, shouldRestoreSession } = useHelpHub();
+  const { initialView, shouldRestoreSession, drawerContext } = useHelpHub();
   const [{ view, whatsAppState }, dispatch] = useReducer(drawerReducer, { view: initialView, whatsAppState: null });
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -260,7 +260,14 @@ export default function HelpDrawer({ dict, lang, faqData, prices, lines, categor
                 />
               )}
               {view === "order" && (
-                <OrderAssistantView dict={dict} prices={prices} lines={lines} onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })} />
+                <OrderAssistantView
+                  dict={dict}
+                  prices={prices}
+                  lines={lines}
+                  onContactClick={() => dispatch({ type: "SET_VIEW", view: "contact" })}
+                  initialLineKey={drawerContext?.lineKey ?? null}
+                  initialPresentation={drawerContext?.presentation ?? null}
+                />
               )}
             </m.div>
           </AnimatePresence>

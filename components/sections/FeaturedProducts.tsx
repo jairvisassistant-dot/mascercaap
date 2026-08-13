@@ -61,17 +61,13 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
   const hooks = dict.home.featured.productHooks;
   const { openDrawer } = useHelpHub();
   const pl = dict.productLines as Record<string, { label: string }>;
-  // Lazy initializers avoid setState-in-effect for the mount snapshot
-  const [canFlip, setCanFlip] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  });
-  const [reducedMotion, setReducedMotion] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  });
+  // Both start false to match the SSR markup exactly — matchMedia doesn't exist
+  // on the server, so branching on `typeof window` here would render a different
+  // subtree than the client's first pass and break hydration. The real values
+  // are read in the effect below, right after mount.
+  const [canFlip, setCanFlip] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-  // Subscribe to subsequent changes only — initial value already captured above
   useEffect(() => {
     const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -80,6 +76,7 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
       setCanFlip(hoverQuery.matches);
       setReducedMotion(reducedMotionQuery.matches);
     };
+    update();
 
     const addListener = (mq: MediaQueryList, cb: () => void) => {
       if (typeof mq.addEventListener === "function") {
@@ -213,7 +210,13 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
                           <div className="mt-auto">
                             <button
                               type="button"
-                              onClick={() => openDrawer("order")}
+                              onClick={() =>
+                                openDrawer("order", {
+                                  product: displayName,
+                                  lineKey: product.line,
+                                  presentation: product.presentation,
+                                })
+                              }
                               className="group inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                             >
                               <span>{hook.cta}</span>
@@ -260,7 +263,13 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
                         </p>
                         <button
                           type="button"
-                          onClick={() => openDrawer("order")}
+                          onClick={() =>
+                            openDrawer("order", {
+                              product: displayName,
+                              lineKey: product.line,
+                              presentation: product.presentation,
+                            })
+                          }
                           className="group mt-6 inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                         >
                           <span>{hook.cta}</span>
