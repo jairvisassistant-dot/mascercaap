@@ -5,6 +5,9 @@ import { randomUUID } from "crypto";
 import { extname } from "path";
 import { z } from "zod";
 import { requireAdminAuth } from "@/lib/admin/auth";
+import { checkAdminWriteRateLimit } from "@/lib/admin/rate-limit";
+import { assertSameOrigin } from "@/lib/csrf";
+import { matchesDeclaredImageType } from "@/lib/security/file-signature";
 
 const ALLOWED_TYPES = ["image/webp", "image/jpeg", "image/png"] as const;
 const MAX_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
@@ -43,6 +46,12 @@ function checkUploadRateLimit(ip: string): boolean {
 export async function POST(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   if (!supabase) {
     return NextResponse.json({ error: "Servicio no disponible" }, { status: 503 });
@@ -89,9 +98,14 @@ export async function POST(req: Request) {
   const filename = `products/${randomUUID()}${ext}`;
 
   const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  if (!matchesDeclaredImageType(buffer, file.type)) {
+    return NextResponse.json({ error: "El archivo no coincide con el tipo declarado" }, { status: 400 });
+  }
+
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(filename, Buffer.from(bytes), {
+    .upload(filename, buffer, {
       contentType: file.type,
       upsert: false,
     });

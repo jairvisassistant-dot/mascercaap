@@ -7,6 +7,8 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/admin/supabase-service";
 import { requireAdminAuth } from "@/lib/admin/auth";
 import { assertSameOrigin } from "@/lib/csrf";
+import { checkAdminWriteRateLimit } from "@/lib/admin/rate-limit";
+import { matchesDeclaredImageType } from "@/lib/security/file-signature";
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
 import { extname } from "path";
@@ -35,6 +37,9 @@ export async function POST(req: Request) {
 
   const csrfError = assertSameOrigin(req);
   if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   if (!supabase) {
     return NextResponse.json({ error: "Servicio no disponible" }, { status: 503 });
@@ -195,8 +200,18 @@ export async function POST(req: Request) {
 
       try {
         const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        if (!matchesDeclaredImageType(buffer, file.type)) {
+          return {
+            fileIndex: entry.fileIndex,
+            productId: entry.productId,
+            status: "error",
+            error: "El archivo no coincide con el tipo declarado",
+          };
+        }
+
         const { error: uploadError } = await bucket
-          .upload(filename, Buffer.from(bytes), {
+          .upload(filename, buffer, {
             contentType: file.type,
             upsert: false,
           });

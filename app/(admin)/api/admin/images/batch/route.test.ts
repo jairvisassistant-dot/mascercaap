@@ -9,7 +9,7 @@ function createFormData(
   const fd = new FormData();
   fd.append("entries", JSON.stringify(entries));
 
-  const content = fileOpts?.content ?? "fake-image-data";
+  const content = fileOpts?.content ?? "RIFF\x08\x00\x00\x00WEBPfake-image-data";
   const defaultName = "test-image.webp";
   const type = fileOpts?.type ?? "image/webp";
 
