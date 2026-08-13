@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { requireAdminAuth } from "@/lib/admin/auth";
+import { assertSameOrigin } from "@/lib/csrf";
+import { checkAdminWriteRateLimit } from "@/lib/admin/rate-limit";
 import { faqPostSchema, faqReorderSchema, faqPutSchema, faqDeleteSchema } from "@/lib/schemas/admin";
 
 function adminClient() {
@@ -51,6 +53,12 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   let rawBody: unknown;
   try {
@@ -124,6 +132,12 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   let rawBody: unknown;
   try {
@@ -227,6 +241,12 @@ export async function PUT(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
 
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
+
   let rawBody: unknown;
   try {
     rawBody = await req.json();
@@ -288,6 +308,12 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   let rawBody: unknown;
   try {

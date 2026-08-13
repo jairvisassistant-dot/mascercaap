@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { requireAdminAuth } from "@/lib/admin/auth";
+import { assertSameOrigin } from "@/lib/csrf";
+import { checkAdminWriteRateLimit } from "@/lib/admin/rate-limit";
 import { revalidatePath } from "next/cache";
 import { productUpdateSchema, productPatchSchema } from "@/lib/schemas/admin";
 
@@ -21,6 +23,12 @@ type Params = { params: Promise<{ id: string }> };
 export async function PUT(req: Request, { params }: Params) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   const { id } = await params;
 
@@ -89,6 +97,12 @@ export async function PATCH(req: Request, { params }: Params) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
 
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
+
   const { id } = await params;
 
   let body: unknown;
@@ -133,6 +147,12 @@ export async function PATCH(req: Request, { params }: Params) {
 export async function DELETE(req: Request, { params }: Params) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   const { id } = await params;
   const supabase = adminClient();

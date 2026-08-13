@@ -2,6 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 import { leadUpdateSchema } from "@/lib/schemas/admin";
 import { requireAdminAuth } from "@/lib/admin/auth";
+import { checkAdminWriteRateLimit } from "@/lib/admin/rate-limit";
+import { assertSameOrigin } from "@/lib/csrf";
 
 function adminClient() {
   return createClient(
@@ -39,6 +41,12 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   let body: unknown;
   try { body = await req.json(); } catch {

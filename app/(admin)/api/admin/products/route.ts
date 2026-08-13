@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { requireAdminAuth } from "@/lib/admin/auth";
+import { assertSameOrigin } from "@/lib/csrf";
+import { checkAdminWriteRateLimit } from "@/lib/admin/rate-limit";
 import { revalidatePath } from "next/cache";
 import { productCreateSchema } from "@/lib/schemas/admin";
 
@@ -29,6 +31,12 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const authError = await requireAdminAuth(req);
   if (authError) return authError;
+
+  const csrfError = assertSameOrigin(req);
+  if (csrfError) return csrfError;
+
+  const rlError = await checkAdminWriteRateLimit(req);
+  if (rlError) return rlError;
 
   let body: unknown;
   try {
