@@ -70,7 +70,7 @@ export default function NuevaLineaForm() {
         dispatch({ type: "categoriesLoaded", cats: Array.isArray(data) ? data : [] });
       } catch (err) {
         if ((err as DOMException).name === "AbortError") return;
-        console.error("Error cargando categorías:", err instanceof Error ? err.message : "unknown");
+        console.error("Error cargando categorías:", err instanceof Error ? err.message.slice(0, 120) : "unknown");
         dispatch({ type: "categoriesError", error: "No se pudieron cargar las categorías. Recarga la página." });
       }
     }

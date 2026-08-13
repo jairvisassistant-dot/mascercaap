@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error(
       "[whatsapp-webhook] error:",
-      err instanceof Error ? err.message : "unknown"
+      err instanceof Error ? err.message.slice(0, 120) : "unknown"
     );
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }

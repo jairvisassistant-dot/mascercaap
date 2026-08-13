@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         consented_at:     new Date().toISOString(),
       })
       if (dbError) {
-        console.error("Supabase insert error (order):", dbError.message)
+        console.error("Supabase insert error (order):", dbError.message.slice(0, 120))
       }
     }
 
@@ -125,7 +125,7 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
-    console.error("Error al enviar pedido:", error instanceof Error ? error.message.slice(0, 100) : "unknown")
+    console.error("Error al enviar pedido:", error instanceof Error ? error.message.slice(0, 120) : "unknown")
     return NextResponse.json(
       { success: false, error: "Error al enviar el pedido" },
       { status: 500 }

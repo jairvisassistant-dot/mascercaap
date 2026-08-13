@@ -151,8 +151,8 @@ export default async function LangLayout({
 
   if (supabaseResult) {
     const [{ data: productData, error: productErr }, { data: lineData, error: lineErr }] = supabaseResult;
-    if (productErr) console.error("[layout] products query failed:", productErr);
-    if (lineErr)    console.error("[layout] product_lines query failed:", lineErr);
+    if (productErr) console.error("[layout] products query failed:", productErr.message.slice(0, 120));
+    if (lineErr)    console.error("[layout] product_lines query failed:", lineErr.message.slice(0, 120));
     if (productData?.length) prices = productData as PriceEntry[];
     if (lineData?.length)    lines  = lineData  as CatalogLine[];
   }

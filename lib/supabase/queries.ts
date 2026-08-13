@@ -10,7 +10,7 @@ function noClient(fn: string): never[] {
 }
 
 function logQueryError(fn: string, error: unknown) {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = error instanceof Error ? error.message.slice(0, 120) : String(error).slice(0, 120);
   console.error(`[supabase] ${fn} query failed: ${message}`);
 }
 

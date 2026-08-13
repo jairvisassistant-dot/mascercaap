@@ -102,7 +102,7 @@ export default function LoginForm() {
       // Sin MFA -> redirigir directo
       push("/admin/productos");
     } catch (err) {
-      console.error("Error en login admin:", err instanceof Error ? err.message : "unknown");
+      console.error("Error en login admin:", err instanceof Error ? err.message.slice(0, 120) : "unknown");
       dispatch({ type: "loginError", error: "Error de conexión" });
     } finally {
       dispatch({ type: "loadingDone" });
@@ -155,7 +155,7 @@ export default function LoginForm() {
 
       push("/admin/productos");
     } catch (err) {
-      console.error("Error en verificación 2FA:", err instanceof Error ? err.message : "unknown");
+      console.error("Error en verificación 2FA:", err instanceof Error ? err.message.slice(0, 120) : "unknown");
       dispatch({ type: "mfaError", error: "Error de conexión" });
     } finally {
       dispatch({ type: "loadingDone" });

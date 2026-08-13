@@ -235,7 +235,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (error) {
-      console.error("Supabase insert error:", error.message);
+      console.error("Supabase insert error:", error.message.slice(0, 120));
       return NextResponse.json({ error: "Error al guardar" }, { status: 500 });
     }
 
@@ -246,7 +246,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("Error en /api/leads:", err instanceof Error ? err.message : "unknown");
+    console.error("Error en /api/leads:", err instanceof Error ? err.message.slice(0, 120) : "unknown");
     return NextResponse.json({ error: "Error del servidor" }, { status: 500 });
   }
 }
