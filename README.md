@@ -31,9 +31,9 @@ Sitio web profesional para **Mas Cerca AP**, empresa colombiana de jugos y pulpa
 
 ```
 Supabase (PostgreSQL)               data/*.ts (fallback estático)
-├── products                        ├── products.ts  (~47 productos)
-├── testimonials                    └── testimonials.ts
-└── leads  (pedidos y contacto)
+├── products                        ├── faq.ts
+├── testimonials                    ├── legal.ts
+└── leads  (pedidos y contacto)     └── testimonials.ts
 ```
 
 - **Supabase** es la fuente de verdad en producción.
@@ -156,7 +156,8 @@ mas-cerca-ap/
 │   ├── i18n/                 # getDictionary, DictionaryProvider, MotionProvider
 │   └── schemas/              # Schemas Zod para validación de APIs y formularios
 ├── data/                     # Fallback estático (cuando Supabase no disponible)
-│   ├── products.ts
+│   ├── faq.ts
+│   ├── legal.ts
 │   └── testimonials.ts
 ├── messages/                 # Diccionarios i18n
 │   ├── es.json
