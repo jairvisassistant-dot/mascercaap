@@ -51,6 +51,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
   const isDairyProduct = product.line.startsWith("kumiss") || product.line.startsWith("yogurt");
+  const isKumissProduct = product.line.startsWith("kumiss");
   // Tratamiento nuevo solo para productos con imagen de packaging (no las fotos de campo fruta-*.webp)
   const hasPackagingImage = product.line.startsWith("pulpa-") && imageSrc !== "" && !imageSrc.includes("/imgs/fruta-");
   // Productos que necesitan overlays suaves (sin gradiente oscuro inferior)
@@ -110,7 +111,7 @@ export default function ProductCard({ product, accentGradient = "from-primary to
 
         {imageSrc ? (
           (hasPackagingImage || isDairyProduct) ? (
-            <div className={`absolute inset-0 z-[2] flex items-center justify-center pointer-events-none ${isDairyProduct ? "p-5" : "p-3"}`}>
+            <div className={`absolute inset-0 z-[2] flex items-center justify-center pointer-events-none ${isKumissProduct ? "p-10" : isDairyProduct ? "p-5" : "p-3"}`}>
               <div className="relative h-full w-full transition-transform duration-300 group-hover:scale-[1.02] group-hover:-translate-y-0.5">
                 {/* alt: displayName comes from i18n dict; presentation (e.g. "120g") is a universal technical value — no translation needed */}
                 <Image
