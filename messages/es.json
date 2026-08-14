@@ -345,12 +345,8 @@
           "description": "Lavado profundo con agua purificada para máxima higiene."
         },
         {
-          "title": "Exprimido",
-          "description": "Expresión en frío para preservar vitaminas y nutrientes."
-        },
-        {
-          "title": "Embotellado",
-          "description": "Envasado esterilizado para mantener la frescura."
+          "title": "Empacado",
+          "description": "Envasado y congelado en el momento justo para sellar frescura y nutrientes."
         },
         {
           "title": "Entrega",
@@ -414,16 +410,16 @@
           "body": "Antes de entrar a producción, cada fruta pasa por manos que saben lo que buscan. Si no cumple, no entra. Así de simple, así de honesto."
         },
         {
-          "title": "Artesanal por convicción",
-          "body": "No somos una planta industrial. Cada naranja pasa por manos que saben lo que hacen — sin atajos, sin máquinas que pierdan el alma del fruto. Eso es lo que sientes en el sabor."
+          "title": "Despulpado el mismo día",
+          "body": "Nada de bodegas ni esperas largas. Lavamos, deshuesamos y despulpamos cada fruta el mismo día que llega de la finca, con higiene de planta y ojo de quien conoce el oficio."
+        },
+        {
+          "title": "Detrás de cada bolsa",
+          "body": "Somos una pareja que apostó por lo natural cuando nadie lo pedía. Cada entrega lleva nuestro nombre — y eso nos obliga a dar siempre lo mejor."
         },
         {
           "title": "La frescura no espera",
-          "body": "De la naranja al frasco en minutos. Sin pasteurizar, sin conservantes — el zumo llega a ti con todo lo que la fruta tenía cuando salió del campo."
-        },
-        {
-          "title": "Detrás de cada botella",
-          "body": "Somos una pareja que apostó por lo natural cuando nadie lo pedía. Cada entrega lleva nuestro nombre — y eso nos obliga a dar siempre lo mejor."
+          "body": "De la fruta al congelador en minutos. Sin pasteurizar, sin conservantes — la pulpa llega a ti con todo lo que la fruta tenía el día que salió del campo."
         }
       ]
     },

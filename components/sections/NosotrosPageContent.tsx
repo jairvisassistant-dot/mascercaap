@@ -5,15 +5,15 @@ import EmojiIcon from "@/components/ui/EmojiIcon";
 import type { Dictionary } from "@/lib/i18n";
 import { SITE_CONFIG } from "@/lib/config";
 
-const timelineIcons = ["🌱", "👀", "🚿", "🧃", "🫙", "📦"];
+const timelineIcons = ["🌱", "👀", "🚿", "❄️", "📦"];
 
 const processSteps = [
-  { src: "/imgs/Naranja-Seleccion.webp", icon: "🌅" },
-  { src: "/imgs/Naranja-Compra.webp", icon: "🤝" },
-  { src: "/imgs/Naranja-Tiene-Juez.webp", icon: "🔍" },
-  { src: "/imgs/Naranja-Frio.webp", icon: "🧃" },
-  { src: "/imgs/Naranja-Frescuras.webp", icon: "✨" },
-  { src: "/imgs/Naranja-Detras-Cada-Botella.webp", icon: "💚" },
+  { src: "/imgs/Pulpa-Proceso-Cultivo.webp", icon: "🌅" },
+  { src: "/imgs/Pulpa-Proceso-CompraFinca.webp", icon: "🤝" },
+  { src: "/imgs/Pulpa-Proceso-Seleccion.webp", icon: "🔍" },
+  { src: "/imgs/Pulpa-Proceso-Despulpado.webp", icon: "🌀" },
+  { src: "/imgs/Pulpa-Proceso-Bolsa.webp", icon: "💚" },
+  { src: "/imgs/Pulpa-Proceso-Congelado.webp", icon: "🧊" },
 ];
 
 const valuesMeta = [
@@ -93,7 +93,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
             <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-4">{t.timeline.title}</h2>
             <p className="text-text-muted max-w-2xl mx-auto">{t.timeline.subtitle}</p>
           </div>
-          <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <div className="grid md:grid-cols-5 gap-6">
             {t.timeline.steps.map((step, index) => (
               <div
                 key={step.title}

@@ -345,12 +345,8 @@
           "description": "Deep cleaning with purified water for maximum hygiene."
         },
         {
-          "title": "Pressing",
-          "description": "Cold pressing to preserve vitamins and nutrients."
-        },
-        {
-          "title": "Bottling",
-          "description": "Sterilized packaging to maintain freshness."
+          "title": "Packing",
+          "description": "Packed and flash-frozen right away to lock in freshness and nutrients."
         },
         {
           "title": "Delivery",
@@ -414,16 +410,16 @@
           "body": "Before entering production, every fruit passes through hands that know what they're looking for. If it doesn't meet the standard, it doesn't get in. That simple, that honest."
         },
         {
-          "title": "Artisanal by conviction",
-          "body": "We're not an industrial plant. Every orange passes through hands that know what they're doing — no shortcuts, no machines that lose the soul of the fruit. That's what you taste."
+          "title": "Pulped the same day",
+          "body": "No warehousing, no long waits. We wash, deseed, and pulp every fruit the same day it arrives from the farm, with plant-grade hygiene and an eye for the craft."
+        },
+        {
+          "title": "Behind every bag",
+          "body": "We're a couple who bet on natural when nobody was asking for it. Every delivery carries our name — and that drives us to always give our best."
         },
         {
           "title": "Freshness doesn't wait",
-          "body": "From orange to jar in minutes. No pasteurizing, no preservatives — the concentrate reaches you with everything the fruit had when it left the field."
-        },
-        {
-          "title": "Behind every bottle",
-          "body": "We're a couple who bet on natural when nobody was asking for it. Every delivery carries our name — and that drives us to always give our best."
+          "body": "From fruit to freezer in minutes. No pasteurizing, no preservatives — the pulp reaches you with everything the fruit had the day it left the field."
         }
       ]
     },
