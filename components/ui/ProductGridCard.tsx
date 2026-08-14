@@ -26,8 +26,8 @@ export default function ProductGridCard({ product, line, priority = false, dict,
   const isComingSoon = product.presentation === "Próximamente";
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
-  const isDairyProduct = product.line.startsWith("kumiss") || product.line.startsWith("yogurt");
-  const isKumissProduct = product.line.startsWith("kumiss");
+  const isDairyProduct = product.line.startsWith("kumis") || product.line.startsWith("yogurt");
+  const isKumissProduct = product.line.startsWith("kumis");
   const hasPackagingImage = product.line.startsWith("pulpa-") && imageSrc !== "" && !imageSrc.includes("/imgs/fruta-");
   const isProductShot = hasPackagingImage || isDairyProduct;
   const pl = dict.productLines as Record<string, { label: string; description: string }>;

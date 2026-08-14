@@ -50,8 +50,8 @@ export default function ProductCard({ product, accentGradient = "from-primary to
   const displayDescription = lang !== "es" ? (pl[product.line]?.description ?? product.description) : product.description;
   const isSoldOut = product.isSoldOut === true;
   const isBestSeller = product.isBestSeller === true;
-  const isDairyProduct = product.line.startsWith("kumiss") || product.line.startsWith("yogurt");
-  const isKumissProduct = product.line.startsWith("kumiss");
+  const isDairyProduct = product.line.startsWith("kumis") || product.line.startsWith("yogurt");
+  const isKumissProduct = product.line.startsWith("kumis");
   // Tratamiento nuevo solo para productos con imagen de packaging (no las fotos de campo fruta-*.webp)
   const hasPackagingImage = product.line.startsWith("pulpa-") && imageSrc !== "" && !imageSrc.includes("/imgs/fruta-");
   // Productos que necesitan overlays suaves (sin gradiente oscuro inferior)
