@@ -249,7 +249,7 @@ export default function ProductosAdminClient({
                 className={`${p.active ? "bg-surface-card hover:bg-[#f7ffe6]/40" : "bg-surface-warm/55 opacity-60"} transition-colors`}
               >
                 <td className="px-4 py-3">
-                  {p.image?.startsWith("http") ? (
+                  {p.image ? (
                     <div className="relative size-11 flex-shrink-0 overflow-hidden rounded-xl bg-surface-warm ring-1 ring-border-soft">
                       <Image src={p.image} alt={p.name} fill sizes="44px" className="object-cover" />
                     </div>
