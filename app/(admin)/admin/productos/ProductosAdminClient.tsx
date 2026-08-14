@@ -251,7 +251,7 @@ export default function ProductosAdminClient({
                 <td className="px-4 py-3">
                   {p.image ? (
                     <div className="relative size-11 flex-shrink-0 overflow-hidden rounded-xl bg-surface-warm ring-1 ring-border-soft">
-                      <Image src={p.image} alt={p.name} fill sizes="44px" className="object-cover" />
+                      <Image src={p.image} alt={p.name} fill sizes="44px" className="object-contain p-0.5" />
                     </div>
                   ) : (
                     <div className="flex size-11 items-center justify-center rounded-xl bg-surface-warm text-xs text-text-faint ring-1 ring-border-soft">
