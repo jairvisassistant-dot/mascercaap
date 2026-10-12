@@ -128,7 +128,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
           </div>
           <div className="grid sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {t.values.items.map((value, index) => (
-              <div key={value.title} className="fade-in-up group bg-surface-card rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden" style={{ animationDelay: `${index * 0.12}s` }}>
+              <div key={value.title} className="fade-in-up group bg-surface-card rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-[transform,box-shadow] duration-300 overflow-hidden" style={{ animationDelay: `${index * 0.12}s` }}>
                 <div className={`h-1.5 w-full bg-gradient-to-r ${valuesMeta[index].color}`} />
                 <div className="p-8">
                   <div className={`size-14 rounded-xl bg-gradient-to-br ${valuesMeta[index].color} flex items-center justify-center shadow-md mb-5 group-hover:scale-110 transition-transform duration-300`}>
@@ -280,7 +280,7 @@ export default function NosotrosPageContent({ dict, lang }: { dict: Dictionary; 
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{t.cta.title}</h2>
           <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">{t.cta.text}</p>
-          <Link href={`/${lang}/contacto`} className="inline-block bg-white text-primary font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-all hover:scale-105">
+          <Link href={`/${lang}/contacto`} className="inline-block bg-white text-primary font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-[transform,background-color] hover:scale-105">
             {t.cta.button}
           </Link>
         </div>

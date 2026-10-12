@@ -1,19 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import {
-  isNonProductAsset,
-  matchFileToProducts,
-  type ProductBrief,
-} from "@/lib/match-product-image";
 import type { ProductRow, FileEntry } from "./types";
 import {
-  generateId,
-  ACCEPTED_MIME,
+  buildEntriesFromFiles,
   RETRYABLE_STATUSES,
   BATCH_LIMIT,
-  matchToEntryResult,
 } from "./helpers";
+import { runBatchUpload } from "./batchUpload";
 import { ImageUploader } from "./ImageUploader";
 import { ImageEntryPanel } from "./ImageEntryPanel";
 
@@ -32,7 +26,11 @@ export default function ImagenesAdminClient({
   const [entries, setEntries] = useState<FileEntry[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const entriesRef = useRef(entries);
-  entriesRef.current = entries;
+  // Written in an effect, never during render: mutating a ref while rendering
+  // is not allowed (React may discard or repeat a render at any time).
+  useEffect(() => {
+    entriesRef.current = entries;
+  }, [entries]);
 
   // Limpiar object URLs al desmontar (solo una vez, sin dep en entries)
   useEffect(() => {
@@ -143,46 +141,8 @@ export default function ImagenesAdminClient({
   // ── File processing ───────────────────────────────────────────────
 
   function processFiles(files: FileList | File[]) {
-    const fileArray = Array.from(files).filter((f) =>
-      ACCEPTED_MIME.includes(f.type),
-    );
-
-    if (fileArray.length === 0) return;
-
-    const productBriefs: ProductBrief[] = products.map((p) => ({
-      id: p.id,
-      line: p.line,
-      presentation: p.presentation,
-      image: p.image,
-    }));
-
-    const newEntries: FileEntry[] = fileArray.map((file) => {
-      // Detectar assets no-producto (logos, slides, portadas, etc.)
-      if (isNonProductAsset(file.name)) {
-        return {
-          id: generateId(),
-          file,
-          previewUrl: URL.createObjectURL(file),
-          match: {
-            type: "skipped",
-            reason: "No es una imagen de producto (logo, slide, portada, etc.)",
-          },
-          manualProductId: null,
-          uploadStatus: "pending",
-        };
-      }
-
-      const match = matchFileToProducts(file.name, productBriefs);
-      return {
-        id: generateId(),
-        file,
-        previewUrl: URL.createObjectURL(file),
-        match: matchToEntryResult(match, products),
-        manualProductId: null,
-        uploadStatus: "pending",
-      };
-    });
-
+    const newEntries = buildEntriesFromFiles(files, products);
+    if (newEntries.length === 0) return;
     setEntries((prev) => [...prev, ...newEntries]);
   }
 
@@ -208,145 +168,16 @@ export default function ImagenesAdminClient({
     );
   }
 
-  // ── Upload ───────────────────────────────────────────────────────
+  // ── Upload ───────────────────────────────────────────────────────────
 
-  async function handleBatchUpload() {
-    if (!canExecute) return;
-    setIsUploading(true);
-
-    const formData = new FormData();
-    const sentEntries: Array<{
-      fileIndex: number;
-      productId: string;
-      entryId: string;
-    }> = [];
-
-    // Tomar entradas pendientes + con error (reintentos), respetando el límite del lote
-    const pendingEntries = entries.filter((e) =>
-      RETRYABLE_STATUSES.has(e.uploadStatus),
-    );
-    const batchEntries = pendingEntries.slice(0, BATCH_LIMIT);
-
-    setEntries((prev) =>
-      prev.map((e) =>
-        pendingEntries.includes(e)
-          ? { ...e, uploadStatus: "pending" as const }
-          : e,
-      ),
-    );
-
-    let fileIndex = 0;
-    for (const entry of batchEntries) {
-      const resolvedProductId =
-        entry.match.type === "replace" || entry.match.type === "new"
-          ? entry.match.product.id
-          : entry.manualProductId;
-
-      if (!resolvedProductId) continue;
-
-      formData.append(`file_${fileIndex}`, entry.file);
-      sentEntries.push({
-        fileIndex,
-        productId: resolvedProductId,
-        entryId: entry.id,
-      });
-      fileIndex++;
-    }
-
-    formData.append(
-      "entries",
-      JSON.stringify(
-        sentEntries.map((se) => ({
-          fileIndex: se.fileIndex,
-          productId: se.productId,
-        })),
-      ),
-    );
-
-    try {
-      const res = await fetch("/api/admin/images/batch", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        // Mark batch entries as error, leave others untouched
-        const sentIds = new Set(sentEntries.map((e) => e.entryId));
-        setEntries((prev) =>
-          prev.map((e) =>
-            sentIds.has(e.id)
-              ? {
-                  ...e,
-                  uploadStatus: "error" as const,
-                  errorMessage: data.error ?? "Error en la carga masiva",
-                }
-              : e,
-          ),
-        );
-        setIsUploading(false);
-        return;
-      }
-
-      const results: Array<{
-        fileIndex: number;
-        productId: string;
-        status: string;
-        url?: string;
-        error?: string;
-      }> = data.results ?? [];
-
-      // Map results by fileIndex back to the original entry
-      const resultByFileIndex = new Map(results.map((r) => [r.fileIndex, r]));
-
-      setEntries((prev) => {
-        const next = [...prev];
-        const entryIndexMap = new Map(next.map((e, i) => [e.id, i]));
-        for (const sent of sentEntries) {
-          const result = resultByFileIndex.get(sent.fileIndex);
-          if (!result) continue;
-
-          const idx = entryIndexMap.get(sent.entryId) ?? -1;
-          if (idx === -1) continue;
-
-          if (result.status === "done") {
-            next[idx] = {
-              ...next[idx],
-              uploadStatus: "done",
-              uploadedUrl: result.url,
-            };
-
-            if (result.url) {
-              const pid = sent.productId;
-              setProducts((prevProducts) =>
-                prevProducts.map((p) =>
-                  p.id === pid ? { ...p, image: result.url! } : p,
-                ),
-              );
-            }
-          } else {
-            next[idx] = {
-              ...next[idx],
-              uploadStatus: "error",
-              errorMessage: result.error ?? "Error desconocido",
-            };
-          }
-        }
-        return next;
-      });
-    } catch (e) {
-      setEntries((prev) =>
-        prev.map((entry) => ({
-          ...entry,
-          uploadStatus: "error" as const,
-          errorMessage:
-            e instanceof Error ? e.message : "Error de red inesperado",
-        })),
-      );
-    }
-
-    setIsUploading(false);
+  function handleBatchUpload() {
+    return runBatchUpload({
+      entries,
+      canExecute,
+      setEntries,
+      setProducts,
+      setIsUploading,
+    });
   }
 
   // ── Render ───────────────────────────────────────────────────────

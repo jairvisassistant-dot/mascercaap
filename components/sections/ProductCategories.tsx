@@ -169,7 +169,7 @@ function CategoryCard({
             {text.description}
           </p>
           {!category.comingSoon && (
-            <span className="inline-flex items-center gap-2 text-white text-sm font-semibold border-b border-white/40 pb-0.5 transition-all group-hover:border-white group-hover:gap-3">
+            <span className="inline-flex items-center gap-2 text-white text-sm font-semibold border-b border-white/40 pb-0.5 transition-[border-color,gap] group-hover:border-white group-hover:gap-3">
               {viewProductsLabel}
               <svg
                 className="size-4 transition-transform group-hover:translate-x-1"

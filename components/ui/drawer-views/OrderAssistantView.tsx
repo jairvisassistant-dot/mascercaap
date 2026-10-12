@@ -4,14 +4,7 @@ import { useReducer, useMemo } from "react"
 import { m } from "framer-motion"
 import {
   buildWhatsappMessage,
-  calculateOrderTotal,
-  getDeliveryBenefit,
   is120gPackPresentation,
-  PRESENTATION_120G,
-  formatCOP,
-  QUANTITY_OPTIONS,
-  QUANTITY_OPTIONS_120G_PACKS,
-  PRODUCT_TYPE_OPTIONS,
   buildPriceResolver,
   buildCatalog,
   getProductTypeForLine,
@@ -21,13 +14,25 @@ import type { PriceEntry, CatalogLine, Catalog } from "@/lib/order-assistant"
 import { SITE_CONFIG } from "@/lib/config"
 import type { OrderItem, OrderInput } from "@/lib/schemas/order"
 import type { State, Action } from "./order/types"
+import {
+  CUSTOM_QTY,
+  buildCurrentItem,
+  buildFruitOptions,
+  buildPresentationOptions,
+  buildProductOptions,
+  buildQuantityOptions,
+  canSubmitOrder,
+  computeDeliveryInfo,
+  computeFreeDeliveryMessage,
+  computeOrderTotals,
+  computeProgress,
+  isValidCustomQty,
+} from "./order-derived"
 import OrderStep1 from "./order/OrderStep1"
 import OrderSteps234 from "./order/OrderSteps234"
 import OrderCart from "./order/OrderCart"
 import OrderContactForm from "./order/OrderContactForm"
 import OrderSuccess from "./order/OrderSuccess"
-
-const CUSTOM_QTY = -1
 
 type Props = {
   dict: Dictionary;
@@ -163,99 +168,54 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
   } = state
 
   // ── Derived ───────────────────────────────────────────────────
-  const totals        = items.length > 0 ? calculateOrderTotal(items, resolvePrice) : null
-  const has120gItems  = items.some((item) => is120gPackPresentation(item.presentation))
-  const deliveryInfo  = totals?.hasPrice ? getDeliveryBenefit(totals.total) : null
-  const freeDeliveryMessage = deliveryInfo
-    ? deliveryInfo.qualifiesFreeDelivery
-      ? t.freeDeliveryQualified
-      : t.freeDeliveryPending.replace("{amount}", formatCOP(deliveryInfo.missingAmount))
-    : null
-  const stepNum  = step === "result" ? 6 : step === "cart" ? 4.5 : (step as number)
-  const progress = Math.min((stepNum / 5) * 100, 100)
+  const totals              = computeOrderTotals(items, resolvePrice)
+  const has120gItems        = items.some((item) => is120gPackPresentation(item.presentation))
+  const deliveryInfo        = computeDeliveryInfo(totals)
+  const freeDeliveryMessage = computeFreeDeliveryMessage(deliveryInfo, t)
+  const progress            = computeProgress(step)
 
   const productTypeLabels = t.productTypes as Record<string, string>
+  const productOptions    = buildProductOptions(t)
 
-  const productOptions = PRODUCT_TYPE_OPTIONS.map((v) => ({
-    value: v,
-    label: productTypeLabels[v] ?? v,
-  }))
-
-  const isLacteos = curProductType === "Lácteos"
+  const isLacteos            = curProductType === "Lácteos"
   const currentSelectionLabel = catalog.getLabelForSelection(curProductType ?? "", curLineKey)
-
-  const fruitOptions = catalog.getProductOptionsForType(curProductType ?? "").map((option) => {
-    const price = isLacteos
-      ? resolvePrice({
-          productType: curProductType ?? "",
-          fruit: option.label,
-          lineKey: option.value,
-          presentation: null,
-        })
-      : null
-    return {
-      value: option.value,
-      label: option.label,
-      sublabel: price !== null ? formatCOP(price) : undefined,
-    }
-  })
-
-  const presentationOptions = (
-    curProductType && curLineKey
-      ? catalog.getPresentationsForProduct(curProductType, curLineKey)
-      : []
-  ).map((pres) => {
-    const price = resolvePrice({
-      productType: curProductType ?? "",
-      fruit: currentSelectionLabel ?? "",
-      lineKey: curLineKey,
-      presentation: pres,
-    })
-    return {
-      value: pres,
-      label: price !== null ? `${pres} — ${formatCOP(price)}` : pres,
-      sublabel: pres === PRESENTATION_120G ? t.presentation120gPackNote : undefined,
-    }
-  })
+  const fruitOptions         = buildFruitOptions(catalog, curProductType, isLacteos, resolvePrice)
+  const presentationOptions  = buildPresentationOptions(
+    catalog,
+    curProductType,
+    curLineKey,
+    currentSelectionLabel,
+    resolvePrice,
+    t
+  )
 
   const isPack120gSelection = is120gPackPresentation(curPresentation)
-  const quantityBaseOptions = isPack120gSelection ? QUANTITY_OPTIONS_120G_PACKS : QUANTITY_OPTIONS
-  const quantityOptions = [
-    ...quantityBaseOptions.map((v) => ({ value: v, label: String(v) })),
-    { value: CUSTOM_QTY, label: t.customQtyLabel },
-  ]
+  const quantityOptions     = buildQuantityOptions(isPack120gSelection, t)
 
   // ── Helpers ───────────────────────────────────────────────────
-  function buildCurrentItem(qty: number): OrderItem | null {
-    if (!curProductType || !curLineKey) return null
-    if (!isLacteos && curPresentation === null) return null
-    const visibleLabel = catalog.getLabelForSelection(curProductType, curLineKey) ?? curLineKey
-    return { productType: curProductType, fruit: visibleLabel, lineKey: curLineKey, presentation: curPresentation, quantity: qty }
+  function buildOrderItem(qty: number): OrderItem | null {
+    return buildCurrentItem(qty, catalog, isLacteos, curProductType, curLineKey, curPresentation)
   }
 
   function handleQtySelect(val: number) {
     if (val === CUSTOM_QTY) {
       dispatch({ type: "showCustomQty" })
     } else {
-      const item = buildCurrentItem(val)
+      const item = buildOrderItem(val)
       if (item) dispatch({ type: "commitItem", item })
     }
   }
 
   function confirmCustomQty() {
-    const n = parseInt(customQty, 10)
-    if (!isNaN(n) && n > 0) {
-      const item = buildCurrentItem(n)
+    const n = isValidCustomQty(customQty)
+    if (n !== null) {
+      const item = buildOrderItem(n)
       if (item) dispatch({ type: "commitItem", item })
     }
   }
 
-  function canSubmit() {
-    return nombre.trim().length >= 2 && !!(email.trim() || waNumber.trim()) && consent
-  }
-
   async function handleEmailSubmit() {
-    if (!canSubmit() || items.length === 0) return
+    if (!canSubmitOrder(nombre, email, waNumber, consent) || items.length === 0) return
 
     const payload: OrderInput = {
       nombre:          nombre.trim(),
@@ -296,8 +256,8 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
       {/* Progress bar */}
       <div className="h-1 bg-border-soft shrink-0">
         <m.div
-          className="h-full bg-primary"
-          animate={{ width: `${progress}%` }}
+          className="h-full w-full origin-left bg-primary"
+          animate={{ scaleX: Math.max(0, Math.min(1, progress / 100)) }}
           transition={{ duration: 0.3 }}
         />
       </div>
@@ -428,7 +388,7 @@ export default function OrderAssistantView({ dict, prices, lines, onContactClick
                 waNumber={waNumber}
                 consent={consent}
                 status={status}
-                canSubmit={canSubmit()}
+                canSubmit={canSubmitOrder(nombre, email, waNumber, consent)}
                 t={{
                   step6Label:        t.step6Label,
                   nameLabel:         t.nameLabel,

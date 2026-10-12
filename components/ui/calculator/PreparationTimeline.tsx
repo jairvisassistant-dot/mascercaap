@@ -28,9 +28,9 @@ export function PreparationTimeline({ minutesSaved, t }: { minutesSaved: number;
         </div>
         <div className="h-2.5 bg-white/60 rounded-full overflow-hidden border border-border-soft">
           <m.div
-            className="h-full rounded-full bg-amber-400"
-            initial={{ width: "0%" }}
-            animate={{ width: "80%" }}
+            className="h-full w-full origin-left rounded-full bg-amber-400"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 0.8 }}
             transition={{ duration: 1.1, ease: "easeOut", delay: 0.3 }}
           />
         </div>
@@ -43,9 +43,9 @@ export function PreparationTimeline({ minutesSaved, t }: { minutesSaved: number;
         </div>
         <div className="h-2.5 bg-white/60 rounded-full overflow-hidden border border-border-soft">
           <m.div
-            className="h-full rounded-full bg-primary"
-            initial={{ width: "0%" }}
-            animate={{ width: `${pulpaPct}%` }}
+            className="h-full w-full origin-left rounded-full bg-primary"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: Math.max(0, Math.min(1, pulpaPct / 100)) }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.85 }}
           />
         </div>

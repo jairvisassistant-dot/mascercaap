@@ -5,19 +5,21 @@ import { m, AnimatePresence } from "framer-motion";
 import { useHelpHub } from "@/lib/help-hub-context";
 import { findAnswer } from "@/lib/faq-matcher";
 import type { FAQData } from "@/types";
-import { SITE_CONFIG } from "@/lib/config";
 import { trackHelpHubEvent } from "@/lib/help-hub-analytics";
-import { buildWhatsAppLinks, buildWhatsAppMessage } from "@/lib/whatsapp";
-import { buildHandoffSummary } from "@/lib/handoff-summary";
 import type { Dictionary, Locale } from "@/lib/i18n";
+import {
+  isAdvisorIntent,
+  type FaqChatMessage,
+  type FaqLeadData,
+} from "./faq-chat-utils";
+import { useFaqLeadFlow } from "./faq-lead-flow";
 import FaqLeadForm from "./faq/FaqLeadForm";
 import FaqAnswerView from "./faq/FaqAnswerView";
 import FaqCategoryView from "./faq/FaqCategoryView";
 
-type Message = { id: string; role: "bot" | "user"; text: string };
+type Message = FaqChatMessage;
 type ChatView = "categories" | "questions";
-type LeadTipo = "pedido" | "negocio" | "consulta";
-type LeadData = { nombre: string; email: string; tipo: LeadTipo | "" };
+type LeadData = FaqLeadData;
 
 type Props = {
   dict: Dictionary;
@@ -190,7 +192,6 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     leadData, leadConsent, leadSaveError,
   } = state;
 
-  const pendingWhatsAppRef = useRef<{ appUrl: string | null; webUrl: string | null } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
 
@@ -266,16 +267,6 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     });
   }
 
-  function isAdvisorIntent(query: string): boolean {
-    const q = query.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-    const patterns = [
-      /asesor/, /hablar con/, /hablar a /, /persona real/, /humano/, /agente/,
-      /whatsapp/, /llamar/, /contactar/, /necesito ayuda/, /ayuda directa/,
-      /talk to/, /speak with/, /human agent/, /advisor/,
-    ];
-    return patterns.some((p) => p.test(q));
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const query = input.trim();
@@ -325,123 +316,16 @@ export default function FaqView({ dict, lang, faqData, onContactClick, onWhatsAp
     dispatch({ type: "showAdvisor", botMsg: makeMsg("bot", t.leadFormIntro) });
   }
 
-  function buildConnectUrls(message: string) {
-    return buildWhatsAppLinks(SITE_CONFIG.whatsappNumber, message);
-  }
-
-  function buildWhatsAppMessageText(currentMessages: Message[], lead?: Partial<LeadData>): string {
-    const lines: string[] = ["Hola! Vine del chatbot de su página web."];
-
-    if (lead?.nombre) lines.push(`\nNombre: *${lead.nombre}*`);
-    if (lead?.email) lines.push(`\nEmail: ${lead.email}`);
-    if (lead?.tipo) {
-      const label: Record<LeadTipo, string> = {
-        pedido: "Quiero hacer un pedido",
-        negocio: "Tengo un negocio (mayoreo / distribución)",
-        consulta: "Consulta general",
-      };
-      lines.push(`\nMotivo: ${label[lead.tipo as LeadTipo] ?? lead.tipo}`);
-    }
-    if (drawerContext?.product) lines.push(`\nProducto de interés: *${drawerContext.product}*`);
-
-    const conversation = currentMessages
-      .flatMap((msg) => {
-        if (msg.id === "welcome") return [];
-        return [msg.role === "user"
-          ? `Yo: "${msg.text}"`
-          : `Bot: "${msg.text.length > 120 ? msg.text.slice(0, 120) + "…" : msg.text}"`];
-      })
-      .join("\n");
-
-    if (conversation) lines.push(`\nConversación:\n${conversation}`);
-    lines.push("\n¿Me pueden ayudar?");
-    return buildWhatsAppMessage(lines);
-  }
-
-  async function handleLeadSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!leadConsent || !leadData.nombre.trim() || !leadData.tipo) return;
-    dispatch({ type: "setLeadSaveError", value: false });
-    pendingWhatsAppRef.current = null;
-
-    const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages, leadData));
-
-    let leadSaved = false;
-    try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: leadData.nombre.trim(),
-          email: leadData.email.trim() || null,
-          tipo: leadData.tipo,
-          producto_interes: drawerContext?.product ?? null,
-          preguntas_bot: messages.flatMap((m) =>
-            m.role === "user" && m.id !== "welcome" ? [m.text] : []
-          ),
-          resumen_handoff: buildHandoffSummary(messages, {
-            nombre: leadData.nombre.trim(),
-            email: leadData.email.trim() || null,
-            tipo: leadData.tipo,
-            producto_interes: drawerContext?.product ?? null,
-          }),
-        }),
-      });
-      leadSaved = res.ok;
-      trackHelpHubEvent("helphub_lead_submit_result", {
-        locale,
-        result: res.ok ? "success" : "error",
-        tipo: leadData.tipo,
-        has_email: Boolean(leadData.email.trim()),
-      });
-    } catch {
-      console.error("Error guardando lead");
-      trackHelpHubEvent("helphub_lead_submit_result", {
-        locale,
-        result: "network_error",
-        tipo: leadData.tipo,
-        has_email: Boolean(leadData.email.trim()),
-      });
-      dispatch({ type: "setLeadSaveError", value: true });
-      pendingWhatsAppRef.current = { appUrl, webUrl };
-      return;
-    }
-
-    dispatch({ type: "leadDone" });
-    trackHelpHubEvent("helphub_whatsapp_opened", {
-      source: "lead_submit",
-      locale,
-      destination: appUrl ? "app" : webUrl ? "web" : "unavailable",
-      lead_saved: leadSaved,
-    });
-    onWhatsAppConnect(appUrl, webUrl, leadSaved);
-  }
-
-  function handleLeadContinueAnyway() {
-    if (!pendingWhatsAppRef.current) return;
-    const { appUrl, webUrl } = pendingWhatsAppRef.current;
-    dispatch({ type: "leadDone" });
-    pendingWhatsAppRef.current = null;
-    trackHelpHubEvent("helphub_whatsapp_opened", {
-      source: "lead_submit_error_continue",
-      locale,
-      destination: appUrl ? "app" : webUrl ? "web" : "unavailable",
-      lead_saved: false,
-    });
-    onWhatsAppConnect(appUrl, webUrl, false);
-  }
-
-  function handleLeadSkip() {
-    const { appUrl, webUrl } = buildConnectUrls(buildWhatsAppMessageText(messages));
-    dispatch({ type: "leadDone" });
-    trackHelpHubEvent("helphub_whatsapp_opened", {
-      source: "lead_skip",
-      locale,
-      destination: appUrl ? "app" : webUrl ? "web" : "unavailable",
-      lead_saved: false,
-    });
-    onWhatsAppConnect(appUrl, webUrl, false);
-  }
+  const { handleLeadSubmit, handleLeadSkip, handleLeadContinueAnyway } = useFaqLeadFlow({
+    messages,
+    leadData,
+    leadConsent,
+    locale,
+    product: drawerContext?.product ?? null,
+    onWhatsAppConnect,
+    onLeadDone: () => dispatch({ type: "leadDone" }),
+    onLeadSaveError: (value) => dispatch({ type: "setLeadSaveError", value }),
+  });
 
   return (
     <div className="flex flex-col h-full">
