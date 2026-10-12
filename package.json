@@ -16,13 +16,15 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "i18n:validate": "tsx scripts/validate-i18n.ts"
+    "i18n:validate": "tsx scripts/validate-i18n.ts",
+    "chat:migrate": "tsx --conditions=react-server scripts/chat-migrate.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
     "framer-motion": "^12.38.0",
+    "mysql2": "^3.24.5",
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
