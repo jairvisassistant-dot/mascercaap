@@ -690,6 +690,10 @@
     "terms": {
       "title": "Términos y Condiciones",
       "description": "Lee los términos y condiciones de uso de los servicios y productos de Mas Cerca AP."
+    },
+    "chat": {
+      "title": "Chat en vivo",
+      "description": "Habla con un asesor de Mas Cerca AP en tiempo real."
     }
   },
   "helpHub": {
@@ -707,7 +711,62 @@
       "privacy": "Políticas y privacidad",
       "terms": "Términos y condiciones",
       "contact": "Formulario de contacto",
-      "whatsapp": "Contactar por WhatsApp"
+      "whatsapp": "Contactar por WhatsApp",
+      "chat": "Contactar a un asesor"
+    },
+    "chat": {
+      "entryTitle": "Cuéntanos qué necesitas",
+      "entrySubtitle": "Déjanos tus datos para iniciar la conversación.",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Tu nombre",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "phoneLabel": "Teléfono (opcional)",
+      "phonePlaceholder": "300 123 4567",
+      "servicePurpose": "Usamos tu nombre y correo para garantizar el contacto si no respondemos de inmediato.",
+      "privacyLink": "Ver política de privacidad",
+      "marketingOptIn": "Acepto recibir novedades y promociones (opcional).",
+      "startButton": "Iniciar conversación",
+      "starting": "Iniciando...",
+      "loading": "Cargando chat...",
+      "formError": "No pudimos iniciar la conversación. Intenta de nuevo.",
+      "nameError": "Escribe tu nombre (2 a 60 caracteres).",
+      "emailError": "Escribe un correo electrónico válido.",
+      "phoneError": "Escribe un teléfono válido o déjalo vacío.",
+      "composerLabel": "Escribe tu mensaje",
+      "composerPlaceholder": "Escribe tu mensaje...",
+      "sendLabel": "Enviar",
+      "retry": "Reintentar",
+      "failedToSend": "No se pudo enviar.",
+      "emptyThread": "Aún no hay mensajes. Escribe el primero.",
+      "waiting": "Un asesor te responderá lo antes posible.",
+      "sending": "Enviando...",
+      "youLabel": "Tú",
+      "operatorLabel": "Asesor",
+      "botLabel": "Asistente",
+      "closedTitle": "Conversación cerrada",
+      "closedText": "Esta conversación fue cerrada. Puedes iniciar una nueva.",
+      "newConversation": "Iniciar nueva conversación",
+      "offlineTitle": "Sin conexión",
+      "offlineText": "Revisa tu conexión a internet e intenta de nuevo.",
+      "unavailableTitle": "El chat no está disponible ahora",
+      "unavailableText": "Puedes escribirnos por WhatsApp o desde el formulario de contacto.",
+      "errorTitle": "No pudimos cargar el chat",
+      "errorText": "Intenta de nuevo en unos momentos.",
+      "loadRetry": "Reintentar",
+      "rateLimited": "Estás enviando mensajes muy rápido. Espera un momento.",
+      "whatsappFallback": "Escribir por WhatsApp",
+      "contactFallback": "Usar formulario de contacto"
+    },
+    "resume": {
+      "title": "Reanudar conversación",
+      "pending": "Validando tu enlace...",
+      "successTitle": "Conversación reanudada",
+      "successText": "Ya puedes continuar tu conversación.",
+      "openChat": "Abrir chat",
+      "errorTitle": "Enlace no disponible",
+      "errorText": "Este enlace ya no es válido. Puedes iniciar una conversación nueva.",
+      "backHome": "Volver al inicio"
     }
   },
   "orderAssistant": {

@@ -690,6 +690,10 @@
     "terms": {
       "title": "Terms and Conditions",
       "description": "Read the terms and conditions of use for Mas Cerca AP services and products."
+    },
+    "chat": {
+      "title": "Live chat",
+      "description": "Talk to a Mas Cerca AP advisor in real time."
     }
   },
   "helpHub": {
@@ -707,7 +711,62 @@
       "privacy": "Privacy policy",
       "terms": "Terms and conditions",
       "contact": "Contact form",
-      "whatsapp": "Contact via WhatsApp"
+      "whatsapp": "Contact via WhatsApp",
+      "chat": "Contact an advisor"
+    },
+    "chat": {
+      "entryTitle": "Tell us what you need",
+      "entrySubtitle": "Leave your details to start the conversation.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "phoneLabel": "Phone (optional)",
+      "phonePlaceholder": "300 123 4567",
+      "servicePurpose": "We use your name and email to guarantee contact if we cannot reply right away.",
+      "privacyLink": "View privacy policy",
+      "marketingOptIn": "I agree to receive news and promotions (optional).",
+      "startButton": "Start conversation",
+      "starting": "Starting...",
+      "loading": "Loading chat...",
+      "formError": "We couldn't start the conversation. Please try again.",
+      "nameError": "Enter your name (2 to 60 characters).",
+      "emailError": "Enter a valid email address.",
+      "phoneError": "Enter a valid phone number or leave it empty.",
+      "composerLabel": "Write your message",
+      "composerPlaceholder": "Write your message...",
+      "sendLabel": "Send",
+      "retry": "Retry",
+      "failedToSend": "Couldn't send.",
+      "emptyThread": "No messages yet. Write the first one.",
+      "waiting": "An advisor will reply as soon as possible.",
+      "sending": "Sending...",
+      "youLabel": "You",
+      "operatorLabel": "Advisor",
+      "botLabel": "Assistant",
+      "closedTitle": "Conversation closed",
+      "closedText": "This conversation was closed. You can start a new one.",
+      "newConversation": "Start new conversation",
+      "offlineTitle": "No connection",
+      "offlineText": "Check your internet connection and try again.",
+      "unavailableTitle": "Chat is not available right now",
+      "unavailableText": "You can reach us on WhatsApp or through the contact form.",
+      "errorTitle": "We couldn't load the chat",
+      "errorText": "Please try again in a moment.",
+      "loadRetry": "Retry",
+      "rateLimited": "You're sending messages too fast. Please wait a moment.",
+      "whatsappFallback": "Write on WhatsApp",
+      "contactFallback": "Use contact form"
+    },
+    "resume": {
+      "title": "Resume conversation",
+      "pending": "Validating your link...",
+      "successTitle": "Conversation resumed",
+      "successText": "You can continue your conversation now.",
+      "openChat": "Open chat",
+      "errorTitle": "Link unavailable",
+      "errorText": "This link is no longer valid. You can start a new conversation.",
+      "backHome": "Back to home"
     }
   },
   "orderAssistant": {
