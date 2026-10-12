@@ -45,7 +45,7 @@ export function ImageUploadSection({
           <button
             type="submit"
             disabled={saving || uploading}
-            className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55"
+            className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_rgba(63,143,70,0.8)] transition-[transform,opacity,background-color] hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55"
           >
             {saving ? "Guardando..." : "Guardar cambios"}
           </button>

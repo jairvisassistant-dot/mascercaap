@@ -2,12 +2,17 @@
 
 import { useReducer, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { generateProductId } from "@/lib/id-generators";
-import { Field, IdChip, inputCls } from "./form-primitives";
 import { ImageUploadSection } from "./ImageUploadSection";
 import { TagListSection } from "./TagListSection";
 import { StatusToggles } from "./StatusToggles";
+import { CategoryStepSection } from "./CategoryStepSection";
+import { LineStepSection } from "./LineStepSection";
+import { ProductInfoSection } from "./ProductInfoSection";
+import { PriceSection } from "./PriceSection";
+import { DescriptionSection } from "./DescriptionSection";
+import { FormActions } from "./FormActions";
+import { filterLinesByCategory, type Category, type LineOption } from "./producto-form-utils";
 
 const LINES_FALLBACK: LineOption[] = [
   { key: "limon", label: "Zumo de Limón", categoryKey: null },
@@ -43,9 +48,6 @@ type FormData = {
   active: boolean;
   displayOrder: number;
 };
-
-type LineOption = { key: string; label: string; categoryKey?: string | null };
-type Category = { key: string; label: string };
 
 type Props = {
   mode: "create" | "edit";
@@ -181,10 +183,19 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
     const controller = new AbortController();
     async function loadCatalog() {
       try {
+        // fetch() resolves on 4xx/5xx: reject before reading the body so an
+        // error payload is never mistaken for catalog data. On failure the
+        // reducer keeps the initial LINES_FALLBACK and surfaces the error banner.
+        const readJson = async (response: Response): Promise<unknown> => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        };
         const [linesData, catsData, productsData] = await Promise.all([
-          fetch("/api/admin/product-lines", { signal: controller.signal }).then((r) => r.json()),
-          fetch("/api/admin/categories", { signal: controller.signal }).then((r) => r.json()),
-          mode === "create" ? fetch("/api/admin/products", { signal: controller.signal }).then((r) => r.json()) : Promise.resolve([]),
+          fetch("/api/admin/product-lines", { signal: controller.signal }).then(readJson),
+          fetch("/api/admin/categories", { signal: controller.signal }).then(readJson),
+          mode === "create"
+            ? fetch("/api/admin/products", { signal: controller.signal }).then(readJson)
+            : Promise.resolve([]),
         ]);
 
         const mappedLines: LineOption[] =
@@ -237,9 +248,7 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
     return () => controller.abort();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const filteredLines = selectedCategory
-    ? lines.filter((l) => l.categoryKey === selectedCategory)
-    : lines;
+  const filteredLines = filterLinesByCategory(lines, selectedCategory);
 
   // Auto-generated product ID (create mode only)
   const { id: generatedId, adjusted: idAdjusted } = useMemo(() => {
@@ -317,151 +326,37 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
       )}
 
       {/* Paso 1: Categoría */}
-      <section className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
-        <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
-          Paso 1 — Categoría
-        </p>
-        <p className="mb-4 text-xs text-text-muted">
-          Elige a qué categoría pertenece este producto.
-        </p>
-        <Field label="Categoría *">
-          <select
-            value={selectedCategory}
-            onChange={(e) => handleCategoryChange(e.target.value)}
-            disabled={loadingCatalog}
-            className={`${inputCls} border-primary/30`}
-          >
-            <option value="">
-              {loadingCatalog ? "Cargando categorías..." : "Selecciona una categoría"}
-            </option>
-            {categories.map((c) => (
-              <option key={c.key} value={c.key}>{c.label}</option>
-            ))}
-          </select>
-          {!loadingCatalog && categories.length === 0 && (
-            <p className="mt-1.5 text-xs text-text-muted">
-              No hay categorías creadas.{" "}
-              <Link href="/admin/categorias/nueva" className="font-semibold text-primary underline">
-                Crear categoría
-              </Link>
-            </p>
-          )}
-        </Field>
-      </section>
+      <CategoryStepSection
+        selectedCategory={selectedCategory}
+        loadingCatalog={loadingCatalog}
+        categories={categories}
+        onCategoryChange={handleCategoryChange}
+      />
 
       {/* Paso 2 — Línea */}
-      <section className="rounded-2xl border border-accent/20 bg-accent/5 p-5">
-        <p className="mb-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-accent-dark">
-          Paso 2: Línea de producto
-        </p>
-        <p className="mb-4 text-xs text-text-muted">
-          {selectedCategory
-            ? "Líneas disponibles para la categoría seleccionada."
-            : "Selecciona primero una categoría para filtrar las líneas."}
-        </p>
-        <Field label="Línea *">
-          <select
-            value={form.line}
-            onChange={(e) => set("line", e.target.value)}
-            disabled={loadingCatalog || filteredLines.length === 0}
-            required
-            className={inputCls}
-          >
-            {filteredLines.length === 0 ? (
-              <option value="">
-                {loadingCatalog ? "Cargando líneas..." : "Sin líneas para esta categoría"}
-              </option>
-            ) : (
-              filteredLines.map((l) => (
-                <option key={l.key} value={l.key}>{l.label}</option>
-              ))
-            )}
-          </select>
-          {!loadingCatalog && selectedCategory && filteredLines.length === 0 && (
-            <p className="mt-1.5 text-xs text-text-muted">
-              No hay líneas en esta categoría.{" "}
-              <Link href="/admin/lineas/nueva" className="font-semibold text-primary underline">
-                Crear línea
-              </Link>
-            </p>
-          )}
-        </Field>
-      </section>
+      <LineStepSection
+        selectedCategory={selectedCategory}
+        loadingCatalog={loadingCatalog}
+        lines={filteredLines}
+        line={form.line}
+        onLineChange={(value) => set("line", value)}
+      />
 
-      {/* Información del producto */}
-      <section>
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">
-          Información del producto
-        </h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <Field label="Nombre *">
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => set("name", e.target.value)}
-              required
-              className={inputCls}
-            />
-          </Field>
-          <Field label="Presentación *">
-            <input
-              type="text"
-              value={form.presentation}
-              onChange={(e) => set("presentation", e.target.value)}
-              required
-              placeholder="ej: 300g, 1L"
-              className={inputCls}
-            />
-          </Field>
-          <Field label="Orden dentro de línea">
-            <input
-              type="number"
-              value={form.presentationOrder}
-              onChange={(e) => set("presentationOrder", Number(e.target.value))}
-              min={1}
-              className={inputCls}
-            />
-          </Field>
-        </div>
+      <ProductInfoSection
+        mode={mode}
+        line={form.line}
+        name={form.name}
+        presentation={form.presentation}
+        presentationOrder={form.presentationOrder}
+        generatedId={generatedId}
+        idAdjusted={idAdjusted}
+        productId={productId}
+        onNameChange={(value) => set("name", value)}
+        onPresentationChange={(value) => set("presentation", value)}
+        onPresentationOrderChange={(value) => set("presentationOrder", value)}
+      />
 
-        {/* ID chip — create mode: auto-generated / edit mode: fixed existing */}
-        <div className="mt-4">
-          {mode === "create" ? (
-            <IdChip
-              label="ID del producto"
-              value={generatedId}
-              adjusted={idAdjusted}
-              empty={!generatedId}
-              emptyHint={
-                !form.line
-                  ? "Selecciona una línea primero"
-                  : !form.name.trim()
-                    ? "Escribe el nombre para generar el ID"
-                    : "—"
-              }
-            />
-          ) : (
-            <IdChip label="ID del producto" value={productId ?? ""} fixed />
-          )}
-        </div>
-      </section>
-
-      {/* Precio */}
-      <section>
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Precio</h2>
-        <div className="max-w-sm">
-          <Field label="Precio (COP)">
-            <input
-              type="number"
-              value={form.price}
-              onChange={(e) => set("price", e.target.value)}
-              min={0}
-              placeholder="Opcional"
-              className={inputCls}
-            />
-          </Field>
-        </div>
-      </section>
+      <PriceSection price={form.price} onPriceChange={(value) => set("price", value)} />
 
       <ImageUploadSection
         imageUrl={form.image}
@@ -471,20 +366,10 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         onFileChange={handleImageUpload}
       />
 
-      {/* Descripción */}
-      <section>
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-dark">Descripción</h2>
-        <textarea
-          aria-label="Descripción"
-          value={form.description}
-          onChange={(e) => set("description", e.target.value)}
-          required
-          maxLength={300}
-          rows={3}
-          className={`${inputCls} resize-none`}
-        />
-        <p className="mt-1 text-xs text-text-muted">{form.description.length}/300</p>
-      </section>
+      <DescriptionSection
+        description={form.description}
+        onDescriptionChange={(value) => set("description", value)}
+      />
 
       <TagListSection
         title="Ingredientes"
@@ -519,23 +404,13 @@ export default function ProductoForm({ mode, initial, productId }: Props) {
         onActiveChange={(v) => set("active", v)}
       />
 
-      {/* Acciones */}
-      <div className="flex items-center gap-4 border-t border-border-soft pt-4">
-        <button
-          type="submit"
-          disabled={saving || uploading || (mode === "create" && !generatedId)}
-          className="rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
-        >
-          {saving ? "Guardando..." : mode === "create" ? "Crear producto" : "Guardar cambios"}
-        </button>
-        <button
-          type="button"
-          onClick={() => push("/admin/productos")}
-          className="rounded-xl px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-surface-warm hover:text-text-main"
-        >
-          Cancelar
-        </button>
-      </div>
+      <FormActions
+        saving={saving}
+        uploading={uploading}
+        mode={mode}
+        generatedId={generatedId}
+        onCancel={() => push("/admin/productos")}
+      />
     </form>
   );
 }

@@ -89,7 +89,7 @@ export function MFASection({
             type="button"
             onClick={onStartEnroll}
             disabled={loading}
-            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
+            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-[transform,opacity,background-color] hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
             {loading ? "Generando código QR…" : "Configurar verificación en dos pasos"}
           </button>
@@ -135,7 +135,7 @@ export function MFASection({
                 aria-label={`Dígito ${i + 1} de 6`}
                 value={digit}
                 onChange={(e) => onCodeChange(i, e.target.value)}
-                className="h-14 w-12 rounded-xl border border-border-mid bg-surface-card text-center text-xl font-bold text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                className="h-14 w-12 rounded-xl border border-border-mid bg-surface-card text-center text-xl font-bold text-text-main transition-[box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
               />
             ))}
           </div>
@@ -144,7 +144,7 @@ export function MFASection({
             type="button"
             onClick={onVerifyEnroll}
             disabled={loading}
-            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
+            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white transition-[transform,opacity,background-color] hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
             {loading ? "Verificando…" : "Verificar y activar"}
           </button>
@@ -192,6 +192,10 @@ export function MFASection({
                     year: "numeric",
                     month: "long",
                     day: "numeric",
+                    // Explicit timeZone: without it the server renders in UTC and the
+                    // browser in the user's zone, so any timestamp between 00:00 and
+                    // 05:00 UTC would show a different day after hydration.
+                    timeZone: "America/Bogota",
                   })}
                 </p>
               </div>
@@ -202,7 +206,7 @@ export function MFASection({
             type="button"
             onClick={() => onDisable(mfaStatus.factors[0]?.id ?? "")}
             disabled={loading}
-            className="w-full rounded-xl border border-red-300 bg-white px-4 py-3 font-semibold text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-55"
+            className="w-full rounded-xl border border-red-300 bg-white px-4 py-3 font-semibold text-red-600 transition-[opacity,color,background-color] hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-55"
           >
             {loading ? "Deshabilitando…" : "Deshabilitar verificación en dos pasos"}
           </button>

@@ -106,7 +106,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
           type="button"
           onClick={() => scroll("left")}
           aria-label={pulpaGridDict.scrollPrev}
-          className={`shrink-0 size-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
+          className={`shrink-0 size-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-[opacity,border-color,box-shadow,outline-color,color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollLeft ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >
@@ -133,7 +133,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
                 type="button"
                 key={line.key}
                 onClick={() => handleSelect(line.key)}
-                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page shrink-0 w-20 sm:w-24 ${
+                className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-[box-shadow,outline-color,background-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page shrink-0 w-20 sm:w-24 ${
                   isSelected
                     ? "bg-primary/8 ring-2 ring-primary ring-offset-1"
                     : "hover:bg-surface-page"
@@ -142,7 +142,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
                 aria-label={fruitName}
               >
                 <div
-                  className={`relative size-16 sm:size-20 rounded-full overflow-hidden border-2 transition-all shadow-sm ${
+                  className={`relative size-16 sm:size-20 rounded-full overflow-hidden border-2 transition-[border-color,box-shadow] shadow-sm ${
                     isSelected ? "border-primary shadow-md" : "border-border-soft"
                   } ${isFirstAndHinting ? "animate-pulse" : ""}`}
                 >
@@ -165,7 +165,7 @@ export default function PulpaFruitGrid({ pulpaLines, products, pl, pulpaGridDict
           type="button"
           onClick={() => scroll("right")}
           aria-label={pulpaGridDict.scrollNext}
-          className={`shrink-0 size-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
+          className={`shrink-0 size-8 rounded-full border border-border-soft bg-surface-card shadow-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary transition-[opacity,border-color,box-shadow,outline-color,color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
             canScrollRight ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
         >

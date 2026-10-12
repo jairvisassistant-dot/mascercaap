@@ -46,7 +46,7 @@ export default function WhatsAppConnectView({ dict, appUrl, webUrl, leadSaved }:
                 source: "whatsapp_connect_view",
                 destination: "app",
               });
-              window.open(appUrl, "_blank");
+              window.open(appUrl, "_blank", "noopener,noreferrer");
             }}
             className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
           >
@@ -65,7 +65,7 @@ export default function WhatsAppConnectView({ dict, appUrl, webUrl, leadSaved }:
                 source: "whatsapp_connect_view",
                 destination: "web",
               });
-              window.open(webUrl, "_blank");
+              window.open(webUrl, "_blank", "noopener,noreferrer");
             }}
             className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl border border-border-mid text-text-sub hover:border-primary hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card"
           >

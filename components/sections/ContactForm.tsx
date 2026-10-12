@@ -315,7 +315,7 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
             onChange={(e) => dispatch({ type: "changeType", value: e.target.value, additionalInfoLabel: availability.additionalInfoLabel })}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.tipo ? "border-red-500" : "border-border-mid"
-            } focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus:ring-2 focus:ring-primary focus:border-transparent transition-[border-color,box-shadow] bg-surface-card text-text-main`}
           >
             <option value="">{t.options.default}</option>
             <option value="pedido">{t.options.order}</option>
@@ -363,7 +363,7 @@ export default function ContactForm({ dict, lang, lines = EMPTY_LINES, products 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition-[opacity,background-color] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? t.submitting : t.submit}
         </button>

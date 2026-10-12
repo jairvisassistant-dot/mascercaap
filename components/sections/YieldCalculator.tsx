@@ -6,6 +6,14 @@ import { CUP_OPTIONS, type FruitKey, type Presentation, type PrepType } from "@/
 import { useHelpHub } from "@/lib/help-hub-context"
 import type { Dictionary } from "@/lib/i18n"
 import { CalculatorInteractive, type CalcState, type CalcAction } from "./CalculatorInteractive"
+import {
+  ambientFloorMotion,
+  ambientGlowMotion,
+  ambientGridMotion,
+  ambientRingMotion,
+  cardConicMotion,
+  cardShineMotion,
+} from "./calculator-motion"
 
 const initialState: CalcState = {
   step: 1,
@@ -68,6 +76,13 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
     ...CUP_OPTIONS.map((v) => ({ value: v, label: String(v) })),
     { value: CUSTOM_VALUE, label: t.customLabel },
   ]
+
+  const glowMotion = ambientGlowMotion(visualInView, shouldReduce)
+  const ringMotion = ambientRingMotion(visualInView, shouldReduce)
+  const gridMotion = ambientGridMotion(visualInView, shouldReduce)
+  const floorMotion = ambientFloorMotion(visualInView, shouldReduce)
+  const conicMotion = cardConicMotion(visualInView, shouldReduce)
+  const shineMotion = cardShineMotion(visualInView, shouldReduce)
 
   const scrollCard = useCallback(() => {
     if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
@@ -133,21 +148,14 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           <m.div
             className="pointer-events-none absolute -inset-x-6 -inset-y-4 rounded-[1.9rem] bg-[radial-gradient(circle_at_50%_50%,rgba(63,143,70,0.24)_0%,rgba(63,143,70,0.12)_34%,rgba(63,143,70,0.02)_64%,transparent_82%)] blur-2xl"
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={visualInView ? (shouldReduce ? { opacity: 0.26, scale: 1 } : { opacity: [0.18, 0.34, 0.18], scale: [0.98, 1.03, 0.98] }) : { opacity: 0, scale: 0.9 }}
-            transition={shouldReduce ? {} : { duration: 6.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+            animate={glowMotion.animate}
+            transition={glowMotion.transition}
           />
           <m.div
             className="pointer-events-none absolute -inset-1.5 rounded-[1.12rem]"
             initial={{ opacity: 0, rotate: 0 }}
-            animate={
-              visualInView
-                ? (shouldReduce ? { opacity: 0.3, rotate: 0 } : { opacity: [0.3, 0.64, 0.3], rotate: 360 })
-                : { opacity: 0, rotate: 0 }
-            }
-            transition={shouldReduce ? {} : {
-              opacity: { duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
-              rotate: { duration: 9.5, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
-            }}
+            animate={ringMotion.animate}
+            transition={ringMotion.transition}
             style={{
               background:
                 "conic-gradient(from 0deg, rgba(63,143,70,0) 0deg, rgba(63,143,70,0) 44deg, rgba(171,224,130,0.62) 70deg, rgba(227,255,207,0.95) 92deg, rgba(145,205,99,0.55) 112deg, rgba(63,143,70,0) 146deg, rgba(63,143,70,0) 360deg)",
@@ -162,18 +170,14 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
           <m.div
             className="pointer-events-none absolute -inset-x-2 -inset-y-2 rounded-[1.6rem] opacity-85 [background-image:linear-gradient(to_right,rgba(63,143,70,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(63,143,70,0.12)_1px,transparent_1px)] [background-size:22px_22px]"
             initial={{ opacity: 0 }}
-            animate={visualInView ? (shouldReduce ? { opacity: 0.7 } : { opacity: [0.56, 0.85, 0.56], backgroundPosition: ["0px 0px", "22px 11px", "0px 0px"] }) : { opacity: 0 }}
-            transition={shouldReduce ? {} : { duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+            animate={gridMotion.animate}
+            transition={gridMotion.transition}
           />
           <m.div
             className="pointer-events-none absolute -inset-x-8 -bottom-12 h-28 rounded-full bg-primary/30 blur-3xl"
             initial={{ opacity: 0, scale: 0.92 }}
-            animate={
-              visualInView
-                ? (shouldReduce ? { opacity: 0.29, scale: 1 } : { opacity: [0.2, 0.38, 0.2], scale: [0.96, 1.06, 0.96] })
-                : { opacity: 0, scale: 0.92 }
-            }
-            transition={shouldReduce ? {} : { duration: 5.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+            animate={floorMotion.animate}
+            transition={floorMotion.transition}
           />
 
           <m.div
@@ -194,8 +198,8 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
               <m.div
                 className="absolute inset-0 rounded-2xl"
                 initial={{ opacity: 0 }}
-                animate={visualInView ? (shouldReduce ? { opacity: 0.4 } : { opacity: [0.25, 0.55, 0.25] }) : { opacity: 0 }}
-                transition={shouldReduce ? {} : { duration: 4.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                animate={conicMotion.animate}
+                transition={conicMotion.transition}
                 style={{
                   background:
                     "conic-gradient(from 0deg, transparent 0deg, rgba(63,143,70,0.0) 74deg, rgba(63,143,70,0.58) 110deg, rgba(255,255,255,0.7) 128deg, rgba(63,143,70,0.0) 170deg, transparent 360deg)",
@@ -216,8 +220,8 @@ export default function YieldCalculator({ dict }: { dict: Dictionary }) {
               <m.div
                 className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c6f59f] to-transparent"
                 initial={{ opacity: 0.2 }}
-                animate={visualInView ? (shouldReduce ? { opacity: 0.5 } : { opacity: [0.15, 0.85, 0.15] }) : { opacity: 0.2 }}
-                transition={shouldReduce ? {} : { duration: 2.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                animate={shineMotion.animate}
+                transition={shineMotion.transition}
               />
             </m.div>
 

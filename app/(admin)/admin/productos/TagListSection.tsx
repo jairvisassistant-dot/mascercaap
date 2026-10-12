@@ -35,6 +35,7 @@ export function TagListSection({
             <button
               type="button"
               onClick={() => onRemove(i)}
+              aria-label={`Quitar ${item}`}
               className="rounded-lg px-2 py-1 text-xs font-semibold text-text-muted transition-colors hover:bg-red-50 hover:text-red-600"
             >
               ✕
@@ -60,6 +61,7 @@ export function TagListSection({
         <button
           type="button"
           onClick={onAdd}
+          aria-label="Agregar"
           className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
         >
           +

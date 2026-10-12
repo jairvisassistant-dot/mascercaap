@@ -217,7 +217,7 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
                                   presentation: product.presentation,
                                 })
                               }
-                              className="group inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                              className="group inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-[transform,box-shadow,outline-color,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                             >
                               <span>{hook.cta}</span>
                               <span className="flex size-9 items-center justify-center rounded-full bg-white text-gray-950 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
@@ -270,7 +270,7 @@ export default function FeaturedProducts({ products, dict, lang }: FeaturedProdu
                               presentation: product.presentation,
                             })
                           }
-                          className="group mt-6 inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                          className="group mt-6 inline-flex w-full items-center justify-between rounded-full bg-gray-950 py-2 pl-5 pr-2 text-sm font-bold text-white transition-[transform,box-shadow,outline-color,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-primary active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                         >
                           <span>{hook.cta}</span>
                           <span className="flex size-9 items-center justify-center rounded-full bg-white text-gray-950 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Ignore non-source trees: Tailwind v4 scans every file (including Markdown), so
+   audit reports and skill docs that merely mention a utility name would otherwise
+   emit that utility into the production bundle. */
+@source not "../Otros";
+@source not "../docs";
+@source not "../.agents";
+@source not "../.claude";
+
 /* dark: activa cuando <html data-theme="dark"> */
 @variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 

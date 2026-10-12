@@ -66,6 +66,9 @@ export default function NuevaLineaForm() {
     async function loadCategories() {
       try {
         const r = await fetch("/api/admin/categories", { signal: controller.signal });
+        // Reject before reading the body: a 5xx error payload must not be
+        // dispatched as the category list (it would silently render an empty select).
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const data: Category[] = await r.json();
         dispatch({ type: "categoriesLoaded", cats: Array.isArray(data) ? data : [] });
       } catch (err) {
@@ -228,7 +231,7 @@ export default function NuevaLineaForm() {
               type="button"
               onClick={() => dispatch({ type: "setField", key: "gradient", value: preset.tw })}
               title={preset.label}
-              className={`group relative h-14 rounded-2xl bg-gradient-to-br transition-all ${preset.tw} ${
+              className={`group relative h-14 rounded-2xl bg-gradient-to-br transition-[opacity,box-shadow,transform] ${preset.tw} ${
                 gradient === preset.tw
                   ? "scale-105 shadow-lg ring-2 ring-primary ring-offset-2"
                   : "opacity-75 hover:scale-105 hover:opacity-100"
@@ -264,7 +267,7 @@ export default function NuevaLineaForm() {
         <button
           type="submit"
           disabled={saving || !generatedKey || !label || !categoryKey}
-          className="rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
+          className="rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-[transform,opacity,background-color] hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
         >
           {saving ? "Creando..." : "Crear línea"}
         </button>
@@ -281,7 +284,7 @@ export default function NuevaLineaForm() {
 }
 
 const inputCls =
-  "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
+  "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-[border-color,outline-color,box-shadow] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
 
 function Field({ label, htmlFor, children }: { label: string; htmlFor?: string; children: React.ReactNode }) {
   return (

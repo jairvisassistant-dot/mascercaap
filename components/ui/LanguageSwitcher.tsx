@@ -28,7 +28,7 @@ export default function LanguageSwitcher({ dict, lang }: LanguageSwitcherProps) 
       type="button"
       onClick={switchLocale}
       disabled={isPending}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm font-medium transition-[opacity,border-color,box-shadow,outline-color,color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
         isPending
           ? "border-primary/40 text-primary opacity-70 cursor-wait"
           : "border-border-mid text-text-muted hover:border-primary hover:text-primary"

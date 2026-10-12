@@ -70,7 +70,7 @@ export default function Footer({ dict, lang, categories }: FooterProps) {
                 const internalSocialHref = social.name === "Facebook" ? `/${lang}/social/facebook` : social.name === "Instagram" ? `/${lang}/social/instagram` : social.name === "TikTok" ? `/${lang}/social/tiktok` : undefined;
                 const href = internalSocialHref ?? social.href;
                 if (!href) return null;
-                const cls = `size-11 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                const cls = `size-11 rounded-full flex items-center justify-center transition-[background-color,transform] hover:scale-110 ${
                   index === 1 ? "bg-accent hover:bg-accent/90" : "bg-primary hover:bg-primary/90"
                 }`;
                 const label = `${dict.footer.socialLabel} ${social.name}`;

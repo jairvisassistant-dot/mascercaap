@@ -6,6 +6,7 @@ import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import ProductosClient from "./ProductosClient";
 import { SITE_CONFIG } from "@/lib/config";
 import { getAllProducts, getAllProductLines, getAllProductCategories } from "@/lib/supabase/queries";
+import { serializeJsonLd } from "@/lib/json-ld";
 
 export const revalidate = 60;
 
@@ -82,11 +83,11 @@ export default async function ProductosPage({ params }: Props) {
 
   return (
     <>
-      {/* safe: JSON-LD breadcrumb — JSON.stringify escapes <>/& as unicode escapes; data is server-typed, not user input */}
+      {/* JSON-LD breadcrumb — serializeJsonLd() escapes `<`/`>` so no value can close the script tag early */}
       <script
         nonce={nonce}
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <Suspense fallback={<div className="min-h-screen animate-pulse bg-surface-warm" />}>
         <ProductosClient

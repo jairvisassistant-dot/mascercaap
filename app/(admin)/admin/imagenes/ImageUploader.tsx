@@ -54,7 +54,7 @@ export function ImageUploader({ onFiles }: Props) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`w-full relative min-h-[240px] cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 md:min-h-[300px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+        className={`w-full relative min-h-[240px] cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-[box-shadow,border-color,outline-color,background-color] duration-200 md:min-h-[300px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
           dragOver
             ? "border-primary/60 bg-primary/5 shadow-[0_0_0_4px_rgba(63,143,70,0.10)]"
             : "border-border-soft bg-surface-card hover:border-primary/30 hover:bg-primary/[0.03]"

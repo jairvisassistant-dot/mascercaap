@@ -64,7 +64,7 @@ export default function CategoryEditForm({
           type="button"
           disabled={busy || !vals.label_es.trim() || !vals.label_en.trim()}
           onClick={onSave}
-          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition-[opacity,background-color,transform] hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy ? "Guardando…" : "Guardar"}
         </button>

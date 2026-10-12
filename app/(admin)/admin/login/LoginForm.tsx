@@ -201,7 +201,7 @@ export default function LoginForm() {
               onChange={(e) => dispatch({ type: "setEmail", value: e.target.value })}
               required
               autoComplete="email"
-              className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-[box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="admin@example.com"
             />
           </div>
@@ -217,7 +217,7 @@ export default function LoginForm() {
               onChange={(e) => dispatch({ type: "setPassword", value: e.target.value })}
               required
               autoComplete="current-password"
-              className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main placeholder:text-text-faint transition-[box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="********"
             />
           </div>
@@ -231,7 +231,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
+            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-[transform,opacity,background-color,box-shadow,outline-color] hover:-translate-y-0.5 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
             {loading ? "Ingresando..." : "Ingresar"}
           </button>
@@ -263,7 +263,7 @@ export default function LoginForm() {
                 id="totp-factor"
                 value={selectedFactor}
                 onChange={(e) => dispatch({ type: "setSelectedFactor", value: e.target.value })}
-                className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-[box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {factorIds.map((id, i) => (
                   <option key={id} value={id}>
@@ -295,7 +295,7 @@ export default function LoginForm() {
                   value={digit}
                   onChange={(e) => handleCodeChange(i, e.target.value)}
                   onKeyDown={(e) => handleCodeKeyDown(i, e)}
-                  className="h-14 w-12 rounded-xl border border-border-mid bg-surface-card text-center text-xl font-bold text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="h-14 w-12 rounded-xl border border-border-mid bg-surface-card text-center text-xl font-bold text-text-main transition-[box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               ))}
             </fieldset>
@@ -311,7 +311,7 @@ export default function LoginForm() {
             type="button"
             onClick={handleMFASubmit}
             disabled={loading}
-            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
+            className="w-full rounded-xl bg-primary px-4 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-[transform,opacity,background-color,box-shadow,outline-color] hover:-translate-y-0.5 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-card active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
           >
             {loading ? "Verificando..." : "Verificar"}
           </button>
