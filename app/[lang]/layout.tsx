@@ -6,6 +6,7 @@ import { MotionProvider } from "@/lib/i18n/MotionProvider";
 import { HelpHubProvider } from "@/lib/help-hub-context";
 import { supabasePublic as supabase } from "@/lib/supabase";
 import { getFAQData } from "@/lib/faq-data";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { getAllProductCategories, getAllProductLines, getAllProducts } from "@/lib/supabase/queries";
 import type { PriceEntry, CatalogLine } from "@/lib/order-assistant";
 import type { Product, ProductCategory, ProductLineConfig } from "@/types";
@@ -159,10 +160,12 @@ export default async function LangLayout({
 
   return (
     <>
-      {/* safe: JSON-LD structured data — JSON.stringify escapes <>/& as unicode escapes; data is server-typed, not user input */}
-      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
-      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
-      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      {/* JSON-LD: serializeJsonLd() escapes `<`/`>` as unicode escapes so no value can
+          close this script tag early. Required here because the FAQ payload is built from
+          database content (admin-authored questions/answers and product names). */}
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd) }} />
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(webSiteJsonLd) }} />
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }} />
       <div className={`${poppins.variable} ${dmSerifDisplay.variable} font-poppins antialiased min-h-screen flex flex-col overflow-x-clip`}>
         <MotionProvider>
           <HelpHubProvider>

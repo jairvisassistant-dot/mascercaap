@@ -51,7 +51,7 @@ export default function ThemeToggle({ labels }: ThemeToggleProps) {
       onClick={toggle}
       aria-label={isDark ? labels.activateLight : labels.activateDark}
       title={isDark ? labels.light : labels.dark}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-[transform,border-color,background-color,box-shadow,outline-color,color] duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page ${
         isDark
           ? "bg-amber-400/15 border-amber-400/40 text-amber-400 hover:bg-amber-400/25"
           : "bg-accent/10 border-accent/30 text-text-sub hover:bg-accent/20"

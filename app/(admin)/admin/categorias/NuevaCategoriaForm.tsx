@@ -52,6 +52,9 @@ export default function NuevaCategoriaForm() {
     const loadKey = async () => {
       try {
         const r = await fetch("/api/admin/categories", { signal: controller.signal });
+        // Reject before reading the body: a 5xx error payload must not be
+        // counted as a category list when deriving the new category key.
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const data: unknown[] = await r.json();
         const count = Array.isArray(data) ? data.length : 0;
         dispatch({ type: "keyLoaded", key: generateCategoryKey(count) });
@@ -140,7 +143,7 @@ export default function NuevaCategoriaForm() {
         <button
           type="submit"
           disabled={saving || loadingKey || !label}
-          className="rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
+          className="rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-[0_14px_30px_-18px_rgba(63,143,70,0.9)] transition-[transform,opacity,background-color] hover:-translate-y-0.5 hover:bg-primary-dark active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0"
         >
           {saving ? "Creando..." : "Crear categoría"}
         </button>
@@ -157,7 +160,7 @@ export default function NuevaCategoriaForm() {
 }
 
 const inputCls =
-  "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
+  "w-full rounded-xl border border-border-mid bg-surface-card px-4 py-3 text-sm text-text-main placeholder:text-text-faint transition-[border-color,outline-color,box-shadow] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary";
 
 function Field({ label, htmlFor, children }: { label: string; htmlFor?: string; children: React.ReactNode }) {
   return (

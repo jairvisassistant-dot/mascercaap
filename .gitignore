@@ -45,7 +45,15 @@ next-env.d.ts
 # agent registry
 .atl/
 
+# local agent caches
+.codebase-memory/
+.codegraph/
+.claude/settings.local.json
+
 Otros/
 /public/uploads/
 WhatsApp.jpeg
 gentleman.dots
+
+# Documentos
+docs

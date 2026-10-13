@@ -378,7 +378,7 @@ function LineRow({
             type="button"
             disabled={isBusy || !vals.label.trim()}
             onClick={() => onSaveEdit(line.key)}
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition-[opacity,background-color,transform] hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isBusy ? "Guardando…" : "Guardar"}
           </button>
@@ -409,7 +409,7 @@ function LineRow({
             type="button"
             disabled={isBusy}
             onClick={() => onConfirmDelete(line.key)}
-            className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-[opacity,background-color] hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isBusy ? "Eliminando…" : "Sí, eliminar"}
           </button>

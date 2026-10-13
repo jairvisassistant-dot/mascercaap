@@ -27,7 +27,7 @@ export default function ConfirmDeleteBox({
           type="button"
           disabled={busy}
           onClick={onConfirm}
-          className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-[opacity,background-color] hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy ? busyText : confirmText}
         </button>

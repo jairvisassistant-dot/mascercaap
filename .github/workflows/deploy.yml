@@ -61,7 +61,15 @@ jobs:
             echo "── Deploying unified app ───────────────────────"
             cd ${{ secrets.MAIN_APP_PATH }}
             git pull origin main
-            npm ci --include=dev
+
+            # Security: install with lifecycle scripts DISABLED so no dependency can
+            # execute arbitrary code next to this app's production secrets. Exactly
+            # four packages in package-lock.json declare install scripts (esbuild,
+            # sharp, unrs-resolver, supabase) and are re-enabled explicitly below,
+            # so build/runtime behaviour is unchanged.
+            npm ci --include=dev --ignore-scripts
+            npm rebuild esbuild sharp unrs-resolver supabase
+
             npm run build
             touch tmp/restart.txt
             echo "✓ App rebuilt and restarted"

@@ -191,14 +191,14 @@ export default function ProductosAdminClient({
           placeholder="Buscar por nombre o ID..."
           value={search}
           onChange={(e) => dispatch({ type: "setSearch", value: e.target.value })}
-          className="min-w-[220px] flex-1 rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main placeholder:text-text-faint transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+          className="min-w-[220px] flex-1 rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main placeholder:text-text-faint transition-[box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
         />
         {/* Filtro 1: Categoría */}
         <select
           aria-label="Filtrar por categoría"
           value={categoryFilter}
           onChange={(e) => dispatch({ type: "setCategoryFilter", value: e.target.value })}
-          className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+          className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-[box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
         >
           <option value="all">Todas las categorías</option>
           {visibleGroups.map((g) => (
@@ -211,7 +211,7 @@ export default function ProductosAdminClient({
           value={lineFilter}
           onChange={(e) => dispatch({ type: "setLineFilter", value: e.target.value })}
           disabled={linesForCategory.length === 0}
-          className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+          className="rounded-xl border border-border-mid bg-surface-card px-4 py-2.5 text-sm text-text-main transition-[opacity,box-shadow,border-color,outline-color] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
         >
           <option value="all">
             {linesForCategory.length === 0 ? "Sin líneas en esta categoría" : "Todas las líneas"}

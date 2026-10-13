@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { m } from "framer-motion";
-// m solo se usa para el menú mobile animado — el header no usa animaciones
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -86,7 +84,7 @@ export default function Navbar({ dict, lang }: Props) {
 
   return (
     <>
-      <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 transition-[box-shadow,backdrop-filter,border-color,background-color] duration-300 ${
         isScrolled
           ? "bg-surface-page/90 backdrop-blur-md shadow-sm border-b border-border-soft"
           : "bg-surface-page shadow-md"
@@ -128,7 +126,7 @@ export default function Navbar({ dict, lang }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => {}}
-                className="bg-accent hover:bg-accent-dark text-gray-900 font-semibold py-2 px-6 rounded-full transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
+                className="bg-accent hover:bg-accent-dark text-gray-900 font-semibold py-2 px-6 rounded-full transition-[transform,box-shadow,outline-color,background-color] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-page"
               >
                 {dict.nav.cta}
               </a>
@@ -171,15 +169,23 @@ export default function Navbar({ dict, lang }: Props) {
         </div>
 
         {/* Mobile Menu */}
-        <m.div
+        {/*
+          Collapsible driven by CSS grid tracks rather than an animated `height`:
+          animating height reflows every element below the header on each frame,
+          which is exactly what makes a mobile menu feel heavy. `0fr → 1fr`
+          animates one track, needs no JS measurement of "auto", and starts
+          working before hydration.
+        */}
+        <div
           id="mobile-nav"
-          initial={false}
-          animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
           aria-hidden={!isOpen}
           {...(!isOpen ? { inert: true } : {})}
-          className="md:hidden overflow-hidden bg-surface-page border-t border-border-soft"
+          className={`md:hidden grid overflow-hidden bg-surface-page border-t border-border-soft transition-[grid-template-rows,opacity] duration-300 ease-out ${
+            isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          }`}
           style={{ pointerEvents: isOpen ? "auto" : "none" }}
         >
+          <div className="min-h-0 overflow-hidden">
           <div className="p-4 space-y-4">
             {navLinks.map((link) => (
               <Link
@@ -210,7 +216,8 @@ export default function Navbar({ dict, lang }: Props) {
               </a>
             </div>
           </div>
-        </m.div>
+          </div>
+        </div>
       </header>
     </>
   );

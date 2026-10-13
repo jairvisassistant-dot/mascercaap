@@ -48,7 +48,7 @@ export default function HowToBuy({ dict }: { dict: Dictionary }) {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="relative mb-6">
-                <div className="flex items-center justify-center size-20 rounded-2xl bg-primary/8 border border-primary/15 transition-all duration-300 group-hover:bg-primary/14 group-hover:border-primary/30 group-hover:scale-105">
+                <div className="flex items-center justify-center size-20 rounded-2xl bg-primary/8 border border-primary/15 transition-[transform,border-color,background-color] duration-300 group-hover:bg-primary/14 group-hover:border-primary/30 group-hover:scale-105">
                   <span className="text-primary">{stepIcons[index]}</span>
                 </div>
                 <span className="absolute -top-2 -right-2 flex items-center justify-center size-6 rounded-full bg-primary text-white text-[11px] font-bold shadow-sm">

@@ -196,6 +196,152 @@ const slides: SlideStructure[] = [
 
 type Props = { dict: Dictionary; lang: Locale };
 
+type SlideText = Dictionary["home"]["hero"]["slides"][number];
+
+function localizeHref(lang: Locale, href: string): string | null {
+  if (href === "__whatsapp__") return null;
+  return `/${lang}${href}`;
+}
+
+type SlideBackgroundProps = {
+  shouldReduceMotion: boolean;
+  frame: SlideFrame;
+  frameKey: string;
+  frameDurationMs: number;
+  alt: string;
+  priority: boolean;
+};
+
+function HeroSlideBackground({ shouldReduceMotion, frame, frameKey, frameDurationMs, alt, priority }: SlideBackgroundProps) {
+  return (
+    <AnimatePresence mode="sync">
+      <m.div
+        key={frameKey}
+        initial={shouldReduceMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: shouldReduceMotion ? 0 : FRAME_CROSSFADE_S, ease: "easeInOut" }}
+        className="absolute inset-0"
+      >
+        <m.div
+          initial={shouldReduceMotion ? false : frame.kenBurns.initial}
+          animate={shouldReduceMotion ? { scale: 1, x: "0%" } : frame.kenBurns.animate}
+          transition={{ duration: shouldReduceMotion ? 0 : frameDurationMs / 1000, ease: "linear" }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={frame.image}
+            alt={alt}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+            className="object-cover"
+            priority={priority}
+            quality={70}
+          />
+        </m.div>
+      </m.div>
+    </AnimatePresence>
+  );
+}
+
+type SlideContentProps = {
+  shouldReduceMotion: boolean;
+  slideText: SlideText;
+  slide: SlideStructure;
+  ctaTextClass: string;
+  lang: Locale;
+  onCtaAction: () => void;
+};
+
+function HeroSlideContent({ shouldReduceMotion, slideText, slide, ctaTextClass, lang, onCtaAction }: SlideContentProps) {
+  // Builds the fade-up reveal props framer-motion expects, collapsing the repeated
+  // reduced-motion ternaries into one place.
+  const reveal = (delay: number) => ({
+    initial: shouldReduceMotion ? false : { y: 20, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    transition: { delay: shouldReduceMotion ? 0 : delay, duration: shouldReduceMotion ? 0 : 0.5 },
+  });
+
+  const ctaClass = `inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold ${ctaTextClass} shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-[transform,box-shadow,outline-color,background-color] duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950 md:text-base`;
+
+  return (
+    <div className="max-w-2xl text-left text-white">
+
+      <m.p
+        {...reveal(0.2)}
+        className="mb-5 inline-flex max-w-full items-center rounded-none border-l-2 border-accent bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm"
+      >
+        {slideText.subtitle}
+      </m.p>
+
+      <m.h1
+        {...reveal(0.3)}
+        className="mb-5 whitespace-pre-line text-balance text-2xl font-bold leading-[1.05] tracking-[-0.04em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-3xl md:text-4xl lg:text-6xl"
+      >
+        {slideText.title}
+      </m.h1>
+
+      <m.p
+        {...reveal(0.4)}
+        className="mb-8 max-w-[58ch] text-pretty text-sm leading-relaxed text-white/82 drop-shadow-[0_8px_22px_rgba(0,0,0,0.35)] sm:text-base md:text-lg"
+      >
+        {slideText.description}
+      </m.p>
+
+      <m.div
+        {...reveal(0.5)}
+        className="flex flex-col items-start gap-4 sm:flex-row sm:items-center"
+      >
+        {slide.ctaHref === "__whatsapp__" ? (
+          <button
+            type="button"
+            onClick={onCtaAction}
+            className={ctaClass}
+          >
+            {slideText.cta}
+          </button>
+        ) : (
+          <Link
+            href={localizeHref(lang, slide.ctaHref)!}
+            className={ctaClass}
+          >
+            {slideText.cta}
+          </Link>
+        )}
+      </m.div>
+
+    </div>
+  );
+}
+
+type SlideTaglineProps = {
+  shouldReduceMotion: boolean;
+  text: string;
+};
+
+function HeroSlideTagline({ shouldReduceMotion, text }: SlideTaglineProps) {
+  return (
+    <m.div
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 26 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: shouldReduceMotion ? 0 : 0.62, duration: shouldReduceMotion ? 0 : 0.55 }}
+      className="pointer-events-none mt-10 hidden self-end justify-self-end md:block"
+    >
+      <div className="max-w-[310px] border border-white/16 bg-emerald-950/34 p-5 text-white shadow-[0_24px_80px_rgba(0,0,0,0.26),inset_0_1px_0_rgba(255,255,255,0.10)] backdrop-blur-md">
+        <div className="mb-4 flex items-center gap-3">
+          <span className="h-px w-10 bg-accent" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/58">
+            Mas Cerca AP
+          </span>
+        </div>
+        <p className="text-sm font-semibold leading-relaxed text-white/86">
+          {text}
+        </p>
+      </div>
+    </m.div>
+  );
+}
+
 export default function HeroCarousel({ dict, lang }: Props) {
   const { openDrawer } = useHelpHub();
   const [{ currentSlide, currentFrame }, dispatch] = useReducer(carouselReducer, {
@@ -207,14 +353,16 @@ export default function HeroCarousel({ dict, lang }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const isVisible = useInView(sectionRef, { amount: 0.1 });
   const prefersReducedMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(max-width: 767px)").matches;
-  });
+  // Always false during SSR and during the client's first (hydration) render,
+  // then resolved right after mount in the effect below. Reading matchMedia in
+  // the initializer would give the server `false` and a mobile client `true`,
+  // which changes framer-motion's initial/animate props and breaks hydration.
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     const update = () => setIsMobile(mq.matches);
+    update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
@@ -223,14 +371,15 @@ export default function HeroCarousel({ dict, lang }: Props) {
 
   const slide = slides[currentSlide];
   const slideText = dict.home.hero.slides[currentSlide];
+  // White on `bg-accent` (#e58a22) measures 2.62:1 — below the 4.5:1 WCAG AA
+  // minimum that applies to 14px bold text. Accent CTAs therefore carry ink-dark
+  // text (6.75:1 on accent, 4.91:1 on the accent-dark hover), matching the
+  // Navbar's WhatsApp button; the primary-green CTAs keep white, which already
+  // clears the threshold comfortably.
+  const ctaTextClass = slide.ctaColor.includes("bg-accent") ? "text-gray-900" : "text-white";
   const frameCount = slide.frames.length;
   const frameDurationMs = Math.floor(slide.duration / frameCount);
   const frame = slide.frames[Math.min(currentFrame, frameCount - 1)];
-
-  const resolveHref = (href: string) => {
-    if (href === "__whatsapp__") return null;
-    return `/${lang}${href}`;
-  };
 
   useEffect(() => {
     if (!isVisible || shouldReduceMotion) return;
@@ -279,6 +428,14 @@ export default function HeroCarousel({ dict, lang }: Props) {
     pauseAndResume();
   };
 
+  const handleCtaAction = () => {
+    if (isMobile) {
+      window.open(`https://wa.me/${SITE_CONFIG.whatsappNumber}`, "_blank", "noopener,noreferrer");
+    } else {
+      openDrawer("order");
+    }
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -295,118 +452,29 @@ export default function HeroCarousel({ dict, lang }: Props) {
           transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
           className="absolute inset-0"
         >
-          <AnimatePresence mode="sync">
-            <m.div
-              key={`${currentSlide}-${currentFrame}`}
-              initial={shouldReduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: shouldReduceMotion ? 0 : FRAME_CROSSFADE_S, ease: "easeInOut" }}
-              className="absolute inset-0"
-            >
-              <m.div
-                initial={shouldReduceMotion ? false : frame.kenBurns.initial}
-                animate={shouldReduceMotion ? { scale: 1, x: "0%" } : frame.kenBurns.animate}
-                transition={{ duration: shouldReduceMotion ? 0 : frameDurationMs / 1000, ease: "linear" }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={frame.image}
-                  alt={slideText.title.replace(/\n/g, " ")}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                  className="object-cover"
-                  priority={currentSlide === 0 && currentFrame === 0}
-                  quality={70}
-                />
-              </m.div>
-            </m.div>
-          </AnimatePresence>
+          <HeroSlideBackground
+            shouldReduceMotion={shouldReduceMotion}
+            frame={frame}
+            frameKey={`${currentSlide}-${currentFrame}`}
+            frameDurationMs={frameDurationMs}
+            alt={slideText.title.replace(/\n/g, " ")}
+            priority={currentSlide === 0 && currentFrame === 0}
+          />
 
           <div className="hero-overlay absolute inset-0" />
 
           <div className="relative h-full min-h-[540px] md:min-h-[640px]">
             <div className="mx-auto grid h-full min-h-[600px] max-w-7xl items-center px-6 py-16 sm:py-24 sm:px-8 md:min-h-[640px] md:py-28 md:grid-cols-[minmax(0,0.92fr)_minmax(260px,0.58fr)] md:px-12 lg:px-16">
-              <div className="max-w-2xl text-left text-white">
+              <HeroSlideContent
+                shouldReduceMotion={shouldReduceMotion}
+                slideText={slideText}
+                slide={slide}
+                ctaTextClass={ctaTextClass}
+                lang={lang}
+                onCtaAction={handleCtaAction}
+              />
 
-              <m.p
-                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 0.2, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className="mb-5 inline-flex max-w-full items-center rounded-none border-l-2 border-accent bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-sm"
-              >
-                {slideText.subtitle}
-              </m.p>
-
-              <m.h1
-                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 0.3, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className="mb-5 whitespace-pre-line text-balance text-2xl font-bold leading-[1.05] tracking-[-0.04em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:text-3xl md:text-4xl lg:text-6xl"
-              >
-                {slideText.title}
-              </m.h1>
-
-              <m.p
-                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 0.4, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className="mb-8 max-w-[58ch] text-pretty text-sm leading-relaxed text-white/82 drop-shadow-[0_8px_22px_rgba(0,0,0,0.35)] sm:text-base md:text-lg"
-              >
-                {slideText.description}
-              </m.p>
-
-              <m.div
-                initial={shouldReduceMotion ? false : { y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 0.5, duration: shouldReduceMotion ? 0 : 0.5 }}
-                className="flex flex-col items-start gap-4 sm:flex-row sm:items-center"
-              >
-                {slide.ctaHref === "__whatsapp__" ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (isMobile) {
-                        window.open(`https://wa.me/${SITE_CONFIG.whatsappNumber}`, "_blank", "noopener,noreferrer");
-                      } else {
-                        openDrawer("order");
-                      }
-                    }}
-                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950 md:text-base`}
-                  >
-                    {slideText.cta}
-                  </button>
-                ) : (
-                  <Link
-                    href={resolveHref(slide.ctaHref)!}
-
-                    className={`inline-flex min-h-12 items-center justify-center rounded-full ${slide.ctaColor} px-7 py-3 text-sm font-bold text-white shadow-[0_18px_35px_rgba(0,0,0,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950 md:text-base`}
-                  >
-                    {slideText.cta}
-                  </Link>
-                )}
-              </m.div>
-
-              </div>
-
-              <m.div
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 26 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: shouldReduceMotion ? 0 : 0.62, duration: shouldReduceMotion ? 0 : 0.55 }}
-                className="pointer-events-none mt-10 hidden self-end justify-self-end md:block"
-              >
-                <div className="max-w-[310px] border border-white/16 bg-emerald-950/34 p-5 text-white shadow-[0_24px_80px_rgba(0,0,0,0.26),inset_0_1px_0_rgba(255,255,255,0.10)] backdrop-blur-md">
-                  <div className="mb-4 flex items-center gap-3">
-                    <span className="h-px w-10 bg-accent" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/58">
-                      Mas Cerca AP
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold leading-relaxed text-white/86">
-                    {dict.home.hero.tagline}
-                  </p>
-                </div>
-              </m.div>
+              <HeroSlideTagline text={dict.home.hero.tagline} shouldReduceMotion={shouldReduceMotion} />
 
             </div>
           </div>
@@ -416,7 +484,7 @@ export default function HeroCarousel({ dict, lang }: Props) {
       <button
         type="button"
         onClick={prevSlide}
-        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
+        className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-[transform,color,background-color] hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:left-5 sm:p-3"
         aria-label={dict.home.hero.prevSlide}
       >
         <svg className="size-4 sm:size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -426,7 +494,7 @@ export default function HeroCarousel({ dict, lang }: Props) {
       <button
         type="button"
         onClick={nextSlide}
-        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-all hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
+        className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex rounded-full border border-white/20 bg-emerald-950/28 p-2 text-white shadow-lg backdrop-blur-md transition-[transform,color,background-color] hover:bg-white hover:text-primary hover:scale-105 active:scale-95 sm:right-5 sm:p-3"
         aria-label={dict.home.hero.nextSlide}
       >
         <svg className="size-4 sm:size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,7 +508,7 @@ export default function HeroCarousel({ dict, lang }: Props) {
             type="button"
             key={s.id}
             onClick={() => goToSlide(index)}
-            className={`h-2.5 rounded-full border border-white/20 transition-all duration-300 ${
+            className={`h-2.5 rounded-full border border-white/20 transition-[background-color] duration-300 ${
               index === currentSlide
                 ? "bg-white w-8"
                 : "bg-white/35 hover:bg-white/70 w-2.5"

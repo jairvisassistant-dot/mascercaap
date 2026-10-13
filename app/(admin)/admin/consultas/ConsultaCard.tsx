@@ -35,7 +35,23 @@ const ESTADO_COLORS: Record<string, string> = {
   perdido: "bg-gray-100 text-gray-500 border-gray-200",
 };
 
-// ── Component ────────────────────────────────────────────────────────────────
+// ── Pure helpers ─────────────────────────────────────────────────────────────
+
+function formatCreatedAt(createdAt: string): string {
+  return new Date(createdAt).toLocaleString("es-AR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function isNotaChanged(editNota: string | undefined, notas: string | null): boolean {
+  return (editNota?.trim() ?? "") !== (notas?.trim() ?? "");
+}
+
+// ── Types ────────────────────────────────────────────────────────────────────
 
 interface ConsultaCardProps {
   lead: LeadRow;
@@ -48,6 +64,266 @@ interface ConsultaCardProps {
   onUpdateEstado: (estado: string) => void;
 }
 
+interface ConsultaCardHeaderProps {
+  lead: LeadRow;
+  dateStr: string;
+}
+
+interface ConsultaCardPreviewProps {
+  lead: LeadRow;
+  isExpanded: boolean;
+}
+
+interface ConsultaCardExpandedProps {
+  lead: LeadRow;
+  busy: string | null;
+  editNota: string | undefined;
+  onEditNota: (value: string) => void;
+  onSaveNotas: () => void;
+  onUpdateEstado: (estado: string) => void;
+}
+
+interface ConsultaCardEstadoSelectProps {
+  lead: LeadRow;
+  busy: string | null;
+  onUpdateEstado: (estado: string) => void;
+}
+
+interface ConsultaCardNotasProps {
+  lead: LeadRow;
+  busy: string | null;
+  editNota: string | undefined;
+  onEditNota: (value: string) => void;
+  onSaveNotas: () => void;
+}
+
+// ── Child components ─────────────────────────────────────────────────────────
+
+function ConsultaCardHeader({ lead, dateStr }: ConsultaCardHeaderProps) {
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="truncate font-semibold text-text-main">
+            {lead.nombre}
+          </span>
+          {lead.email && (
+            <span className="hidden truncate text-sm text-text-muted sm:inline">
+              · {lead.email}
+            </span>
+          )}
+        </div>
+        <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
+          <span suppressHydrationWarning>{dateStr}</span>
+          <span>{FUENTE_LABELS[lead.fuente] ?? lead.fuente}</span>
+          {lead.producto_interes && (
+            <span className="truncate">
+              Producto:{" "}
+              <span className="font-medium text-text-sub">
+                {lead.producto_interes}
+              </span>
+            </span>
+          )}
+          {lead.whatsapp_number && (
+            <span className="truncate">WA: {lead.whatsapp_number}</span>
+          )}
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2">
+        {/* Tipo badge */}
+        <span
+          className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+            TIPO_COLORS[lead.tipo] ?? "bg-gray-50 text-gray-600 border-gray-200"
+          }`}
+        >
+          {TIPO_LABELS[lead.tipo] ?? lead.tipo}
+        </span>
+
+        {/* Estado badge */}
+        <span
+          className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+            ESTADO_COLORS[lead.estado_seguimiento] ?? ""
+          }`}
+        >
+          {lead.estado_seguimiento}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function ConsultaCardPreview({ lead, isExpanded }: ConsultaCardPreviewProps) {
+  if (lead.preguntas_bot.length === 0 || isExpanded) return null;
+
+  return (
+    <p className="mt-2 line-clamp-1 text-xs text-text-muted">
+      {lead.preguntas_bot[lead.preguntas_bot.length - 1]}
+    </p>
+  );
+}
+
+function ConsultaCardEstadoSelect({
+  lead,
+  busy,
+  onUpdateEstado,
+}: ConsultaCardEstadoSelectProps) {
+  return (
+    <div className="flex items-center gap-3">
+      <label
+        htmlFor={`estado-${lead.id}`}
+        className="text-xs font-semibold text-text-sub"
+      >
+        Estado de seguimiento
+      </label>
+      <select
+        id={`estado-${lead.id}`}
+        value={lead.estado_seguimiento}
+        onChange={(e) => onUpdateEstado(e.target.value)}
+        disabled={busy === lead.id}
+        className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors ${
+          ESTADO_COLORS[lead.estado_seguimiento] ?? ""
+        } disabled:cursor-not-allowed disabled:opacity-50`}
+      >
+        {ESTADO_OPTIONS.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt.charAt(0).toUpperCase() + opt.slice(1)}
+          </option>
+        ))}
+      </select>
+      {busy === lead.id && (
+        <span className="text-xs text-text-faint">Guardando…</span>
+      )}
+    </div>
+  );
+}
+
+function ConsultaCardNotas({
+  lead,
+  busy,
+  editNota,
+  onEditNota,
+  onSaveNotas,
+}: ConsultaCardNotasProps) {
+  return (
+    <div>
+      <label
+        htmlFor={`notas-${lead.id}`}
+        className="mb-1 block text-xs font-semibold text-text-sub"
+      >
+        Notas internas
+      </label>
+      <div className="flex gap-2">
+        <textarea
+          id={`notas-${lead.id}`}
+          defaultValue={lead.notas ?? ""}
+          onChange={(e) => onEditNota(e.target.value)}
+          rows={2}
+          maxLength={2000}
+          placeholder="Agregá una nota interna sobre este lead…"
+          className="min-h-0 w-full resize-none rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main placeholder:text-text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <button
+          type="button"
+          disabled={
+            busy === `notas-${lead.id}` ||
+            !isNotaChanged(editNota, lead.notas)
+          }
+          onClick={onSaveNotas}
+          className="self-end rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white transition-[opacity,background-color,transform] hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {busy === `notas-${lead.id}` ? "…" : "Guardar"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ConsultaCardExpanded({
+  lead,
+  busy,
+  editNota,
+  onEditNota,
+  onSaveNotas,
+  onUpdateEstado,
+}: ConsultaCardExpandedProps) {
+  return (
+    <div className="mt-3 space-y-4 border-t border-border-soft pt-3">
+      {/* Preguntas del bot */}
+      {lead.preguntas_bot.length > 0 && (
+        <div>
+          <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-text-faint">
+            Preguntas realizadas
+          </p>
+          <ul className="space-y-1">
+            {lead.preguntas_bot.map((q, i) => (
+              <li
+                key={`${i}-${q}`}
+                className="rounded-lg bg-surface-warm px-3 py-1.5 text-sm text-text-sub"
+              >
+                <span className="mr-1.5 text-[10px] font-bold text-text-faint">
+                  {i + 1}.
+                </span>
+                {q}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Resumen de handoff */}
+      {lead.resumen_handoff && (
+        <div>
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-text-faint">
+            Resumen del handoff
+          </p>
+          <p className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
+            {lead.resumen_handoff}
+          </p>
+        </div>
+      )}
+
+      {/* Email si no se mostró arriba */}
+      {lead.email && (
+        <div className="flex items-center gap-2 text-xs text-text-muted">
+          <span className="font-semibold text-text-sub">Email:</span>
+          <a
+            href={`mailto:${lead.email}`}
+            className="text-primary underline hover:text-primary-dark"
+          >
+            {lead.email}
+          </a>
+        </div>
+      )}
+
+      {/* Consentimiento */}
+      {lead.consent_accepted && (
+        <p className="text-[10px] text-text-faint">
+          ✓ Consentimiento aceptado
+        </p>
+      )}
+
+      {/* ── Estado de seguimiento ───────────────────── */}
+      <ConsultaCardEstadoSelect
+        lead={lead}
+        busy={busy}
+        onUpdateEstado={onUpdateEstado}
+      />
+
+      {/* ── Notas ────────────────────────────────────── */}
+      <ConsultaCardNotas
+        lead={lead}
+        busy={busy}
+        editNota={editNota}
+        onEditNota={onEditNota}
+        onSaveNotas={onSaveNotas}
+      />
+    </div>
+  );
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
+
 export default function ConsultaCard({
   lead,
   isExpanded,
@@ -58,14 +334,7 @@ export default function ConsultaCard({
   onSaveNotas,
   onUpdateEstado,
 }: ConsultaCardProps) {
-  const createdAt = new Date(lead.created_at);
-  const dateStr = createdAt.toLocaleString("es-AR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const dateStr = formatCreatedAt(lead.created_at);
 
   return (
     <div
@@ -73,65 +342,13 @@ export default function ConsultaCard({
         isExpanded ? "border-primary/30 ring-1 ring-primary/10" : "border-border-soft"
       }`}
     >
-      {/* ── Header row ───────────────────────────────────── */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="truncate font-semibold text-text-main">
-              {lead.nombre}
-            </span>
-            {lead.email && (
-              <span className="hidden truncate text-sm text-text-muted sm:inline">
-                · {lead.email}
-              </span>
-            )}
-          </div>
-          <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-            <span suppressHydrationWarning>{dateStr}</span>
-            <span>{FUENTE_LABELS[lead.fuente] ?? lead.fuente}</span>
-            {lead.producto_interes && (
-              <span className="truncate">
-                Producto:{" "}
-                <span className="font-medium text-text-sub">
-                  {lead.producto_interes}
-                </span>
-              </span>
-            )}
-            {lead.whatsapp_number && (
-              <span className="truncate">WA: {lead.whatsapp_number}</span>
-            )}
-          </div>
-        </div>
+      {/* ── Header row ───────────────────────────────── */}
+      <ConsultaCardHeader lead={lead} dateStr={dateStr} />
 
-        <div className="flex shrink-0 items-center gap-2">
-          {/* Tipo badge */}
-          <span
-            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-              TIPO_COLORS[lead.tipo] ?? "bg-gray-50 text-gray-600 border-gray-200"
-            }`}
-          >
-            {TIPO_LABELS[lead.tipo] ?? lead.tipo}
-          </span>
+      {/* ── Preguntas preview ────────────────────────── */}
+      <ConsultaCardPreview lead={lead} isExpanded={isExpanded} />
 
-          {/* Estado badge */}
-          <span
-            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-              ESTADO_COLORS[lead.estado_seguimiento] ?? ""
-            }`}
-          >
-            {lead.estado_seguimiento}
-          </span>
-        </div>
-      </div>
-
-      {/* ── Preguntas preview ────────────────────────────── */}
-      {lead.preguntas_bot.length > 0 && !isExpanded && (
-        <p className="mt-2 line-clamp-1 text-xs text-text-muted">
-          {lead.preguntas_bot[lead.preguntas_bot.length - 1]}
-        </p>
-      )}
-
-      {/* ── Expand / collapse ────────────────────────────── */}
+      {/* ── Expand / collapse ────────────────────────── */}
       <button
         type="button"
         onClick={onToggleExpand}
@@ -140,123 +357,16 @@ export default function ConsultaCard({
         {isExpanded ? "Contraer" : "Ver detalle"}
       </button>
 
-      {/* ── Expanded area ────────────────────────────────── */}
+      {/* ── Expanded area ────────────────────────────── */}
       {isExpanded && (
-        <div className="mt-3 space-y-4 border-t border-border-soft pt-3">
-          {/* Preguntas del bot */}
-          {lead.preguntas_bot.length > 0 && (
-            <div>
-              <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-text-faint">
-                Preguntas realizadas
-              </p>
-              <ul className="space-y-1">
-                {lead.preguntas_bot.map((q, i) => (
-                  <li
-                    key={`${i}-${q}`}
-                    className="rounded-lg bg-surface-warm px-3 py-1.5 text-sm text-text-sub"
-                  >
-                    <span className="mr-1.5 text-[10px] font-bold text-text-faint">
-                      {i + 1}.
-                    </span>
-                    {q}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Resumen de handoff */}
-          {lead.resumen_handoff && (
-            <div>
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-text-faint">
-                Resumen del handoff
-              </p>
-              <p className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
-                {lead.resumen_handoff}
-              </p>
-            </div>
-          )}
-
-          {/* Email si no se mostró arriba */}
-          {lead.email && (
-            <div className="flex items-center gap-2 text-xs text-text-muted">
-              <span className="font-semibold text-text-sub">Email:</span>
-              <a
-                href={`mailto:${lead.email}`}
-                className="text-primary underline hover:text-primary-dark"
-              >
-                {lead.email}
-              </a>
-            </div>
-          )}
-
-          {/* Consentimiento */}
-          {lead.consent_accepted && (
-            <p className="text-[10px] text-text-faint">
-              ✓ Consentimiento aceptado
-            </p>
-          )}
-
-          {/* ── Estado de seguimiento ───────────────────── */}
-          <div className="flex items-center gap-3">
-            <label
-              htmlFor={`estado-${lead.id}`}
-              className="text-xs font-semibold text-text-sub"
-            >
-              Estado de seguimiento
-            </label>
-            <select
-              id={`estado-${lead.id}`}
-              value={lead.estado_seguimiento}
-              onChange={(e) => onUpdateEstado(e.target.value)}
-              disabled={busy === lead.id}
-              className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                ESTADO_COLORS[lead.estado_seguimiento] ?? ""
-              } disabled:cursor-not-allowed disabled:opacity-50`}
-            >
-              {ESTADO_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
-                </option>
-              ))}
-            </select>
-            {busy === lead.id && (
-              <span className="text-xs text-text-faint">Guardando…</span>
-            )}
-          </div>
-
-          {/* ── Notas ────────────────────────────────────── */}
-          <div>
-            <label
-              htmlFor={`notas-${lead.id}`}
-              className="mb-1 block text-xs font-semibold text-text-sub"
-            >
-              Notas internas
-            </label>
-            <div className="flex gap-2">
-              <textarea
-                id={`notas-${lead.id}`}
-                defaultValue={lead.notas ?? ""}
-                onChange={(e) => onEditNota(e.target.value)}
-                rows={2}
-                maxLength={2000}
-                placeholder="Agregá una nota interna sobre este lead…"
-                className="min-h-0 w-full resize-none rounded-xl border border-border-mid bg-surface-page px-3 py-2 text-sm text-text-main placeholder:text-text-faint focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button
-                type="button"
-                disabled={
-                  busy === `notas-${lead.id}` ||
-                  !((editNota?.trim() ?? "") !== (lead.notas?.trim() ?? ""))
-                }
-                onClick={onSaveNotas}
-                className="self-end rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {busy === `notas-${lead.id}` ? "…" : "Guardar"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConsultaCardExpanded
+          lead={lead}
+          busy={busy}
+          editNota={editNota}
+          onEditNota={onEditNota}
+          onSaveNotas={onSaveNotas}
+          onUpdateEstado={onUpdateEstado}
+        />
       )}
     </div>
   );

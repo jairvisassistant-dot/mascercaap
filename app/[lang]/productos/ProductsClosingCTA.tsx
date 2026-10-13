@@ -24,7 +24,7 @@ export function ProductsClosingCTA({ dict, lang }: Props) {
             </p>
             <Link
               href={`/${lang}/contacto`}
-              className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-8 rounded-full transition-all hover:scale-105 shadow-lg shadow-primary/30"
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-8 rounded-full transition-[transform,background-color] hover:scale-105 shadow-lg shadow-primary/30"
             >
               {dict.products.cta.button}
               <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

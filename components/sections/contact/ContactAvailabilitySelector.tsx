@@ -78,7 +78,7 @@ export default function ContactAvailabilitySelector({
             const stripped = stripAvailabilityTemplate(mensaje, availability.additionalInfoLabel);
             onSelectCategory(e.target.value, stripped);
           }}
-          className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
+          className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-[border-color,box-shadow] focus:border-transparent focus:ring-2 focus:ring-primary"
         >
           <option value="">{availability.categoryPlaceholder}</option>
           {categories.map((cat) => (
@@ -102,7 +102,7 @@ export default function ContactAvailabilitySelector({
             const stripped = stripAvailabilityTemplate(mensaje, availability.additionalInfoLabel);
             onSelectLine(e.target.value, stripped);
           }}
-          className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-[opacity,border-color,box-shadow] focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
         >
           <option value="">{availability.linePlaceholder}</option>
           {visibleLines.map((line) => (
@@ -143,7 +143,7 @@ export default function ContactAvailabilitySelector({
             onSelectProduct(newProductId, stripped, false);
           }}
           disabled={!selectedLineKey}
-          className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-all focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-3 w-full rounded-lg border border-border-mid bg-surface-card px-4 py-3 text-text-main transition-[opacity,border-color,box-shadow] focus:border-transparent focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
         >
           <option value="">{availability.productPlaceholder}</option>
           {visibleProducts.map((product) => (

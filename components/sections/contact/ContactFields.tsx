@@ -63,7 +63,7 @@ export default function ContactFields({
             maxLength={200}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.motivoOtro ? "border-red-500" : "border-border-mid"
-            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-[border-color,box-shadow] bg-surface-card text-text-main`}
             placeholder={t.placeholders.otherReason}
           />
           {fieldErrors.motivoOtro && (
@@ -85,7 +85,7 @@ export default function ContactFields({
           onChange={onFieldChange("nombre")}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.nombre ? "border-red-500" : "border-border-mid"
-            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-[border-color,box-shadow] bg-surface-card text-text-main`}
           placeholder={t.placeholders.name}
         />
         {fieldErrors.nombre && (
@@ -104,7 +104,7 @@ export default function ContactFields({
           autoComplete="organization"
           value={fields.empresa}
           onChange={onFieldChange("empresa")}
-          className="w-full px-4 py-3 rounded-lg border border-border-mid focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main"
+          className="w-full px-4 py-3 rounded-lg border border-border-mid focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-[border-color,box-shadow] bg-surface-card text-text-main"
           placeholder={t.placeholders.company}
         />
       </div>
@@ -123,7 +123,7 @@ export default function ContactFields({
             onChange={onFieldChange("email")}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.email ? "border-red-500" : "border-border-mid"
-            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-[border-color,box-shadow] bg-surface-card text-text-main`}
             placeholder={t.placeholders.email}
           />
           {fieldErrors.email && (
@@ -142,7 +142,7 @@ export default function ContactFields({
             onChange={onFieldChange("telefono")}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.telefono ? "border-red-500" : "border-border-mid"
-            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+            } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-[border-color,box-shadow] bg-surface-card text-text-main`}
             placeholder={t.placeholders.phone}
           />
           {fieldErrors.telefono && (
@@ -163,7 +163,7 @@ export default function ContactFields({
           rows={4}
             className={`w-full px-4 py-3 rounded-lg border ${
               fieldErrors.mensaje ? "border-red-500" : "border-border-mid"
-          } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-all bg-surface-card text-text-main`}
+          } focus-visible:ring-2 focus-visible:ring-primary focus:border-transparent transition-[border-color,box-shadow] bg-surface-card text-text-main`}
           placeholder={fields.tipo === "disponibilidad" ? availability.additionalInfoLabel : t.placeholders.message}
         />
         {fieldErrors.mensaje && (
